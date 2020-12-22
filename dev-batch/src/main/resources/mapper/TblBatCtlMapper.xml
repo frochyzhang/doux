@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.batch.mapper.TblBatCtlMapper">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.model.TblBatCtl">
+        <result column="SYS_ORG_ID" jdbcType="VARCHAR" property="sysOrgId"/>
+        <result column="TRIGGER_NAME" jdbcType="VARCHAR" property="triggerName"/>
+        <result column="JOB_DETAIL_NAME" jdbcType="VARCHAR" property="jobDetailName"/>
+        <result column="TARGET_OBJECT" jdbcType="VARCHAR" property="targetObject"/>
+        <result column="CRON_EXPRESSION" jdbcType="VARCHAR" property="cronExpression"/>
+        <result column="RECORD_STAT" jdbcType="VARCHAR" property="recordStat"/>
+        <result column="JOB_DESC" jdbcType="VARCHAR" property="jobDesc"/>
+        <result column="RESERVE_1" jdbcType="VARCHAR" property="reserve1"/>
+        <result column="RESERVE_2" jdbcType="VARCHAR" property="reserve2"/>
+        <result column="RESERVE_3" jdbcType="VARCHAR" property="reserve3"/>
+    </resultMap>
+    <update id="deleteCompletedJobExecution">
+        update BATCH_JOB_EXECUTION
+        set status = 'DONE'
+        where job_execution_id = #{jobExecutionId}
+    </update>
+    <delete id="deleteCompletedJobContext">
+        delete
+        from BATCH_JOB_EXECUTION_Context
+        where job_execution_id = #{jobExecutionId}
+    </delete>
+    <delete id="deleteCompletedJobParams">
+        delete
+        from BATCH_JOB_EXECUTION_PARAMS
+        where job_execution_id = #{jobExecutionId}
+    </delete>
+    <delete id="deleteCompletedStepExecution">
+        delete
+        from BATCH_STEP_EXECUTION
+        where job_execution_id = #{jobExecutionId}
+    </delete>
+    <delete id="deleteCompletedStepExecutionContext">
+        delete
+        from BATCH_STEP_EXECUTION_CONTEXT
+        where step_execution_id in (
+            select step_execution_id
+            from BATCH_STEP_EXECUTION
+            where job_execution_id = #{jobExecutionId})
+    </delete>
+    <select id="selectJobExecution" resultType="java.util.Map">
+        select je.job_execution_id, je.job_instance_id, je.status, je.exit_code, ji.job_name
+        from BATCH_JOB_EXECUTION je
+                 left join BATCH_JOB_INSTANCE ji on je.job_instance_id = ji.job_instance_id
+        where je.status in ('STOPPED', 'FAILED')
+    </select>
+    <select id="selectCompletedJobExecution" resultType="java.util.Map">
+        select *
+        from batch_job_execution
+        where job_instance_id = (select job_instance_id
+                                 from batch_job_execution
+                                 where job_execution_id = #{jobExecutionId}
+                                   and status in ('STOPPED', 'FAILED'))
+          and status = 'COMPLETED'
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from TBL_BAT_CTL
+    </select>
+    <insert id="insert" parameterType="com.allinfinance.dev.batch.model.TblBatCtl">
+        insert into TBL_BAT_CTL (SYS_ORG_ID, TRIGGER_NAME, JOB_DETAIL_NAME,
+                                 TARGET_OBJECT, CRON_EXPRESSION, RECORD_STAT,
+                                 JOB_DESC, RESERVE_1, RESERVE_2,
+                                 RESERVE_3)
+        values (#{sysOrgId,jdbcType=VARCHAR}, #{triggerName,jdbcType=VARCHAR}, #{jobDetailName,jdbcType=VARCHAR},
+                #{targetObject,jdbcType=VARCHAR}, #{cronExpression,jdbcType=VARCHAR}, #{recordStat,jdbcType=VARCHAR},
+                #{jobDesc,jdbcType=VARCHAR}, #{reserve1,jdbcType=VARCHAR}, #{reserve2,jdbcType=VARCHAR},
+                #{reserve3,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.allinfinance.dev.batch.model.TblBatCtl">
+        insert into TBL_BAT_CTL
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysOrgId != null">
+                SYS_ORG_ID,
+            </if>
+            <if test="triggerName != null">
+                TRIGGER_NAME,
+            </if>
+            <if test="jobDetailName != null">
+                JOB_DETAIL_NAME,
+            </if>
+            <if test="targetObject != null">
+                TARGET_OBJECT,
+            </if>
+            <if test="cronExpression != null">
+                CRON_EXPRESSION,
+            </if>
+            <if test="recordStat != null">
+                RECORD_STAT,
+            </if>
+            <if test="jobDesc != null">
+                JOB_DESC,
+            </if>
+            <if test="reserve1 != null">
+                RESERVE_1,
+            </if>
+            <if test="reserve2 != null">
+                RESERVE_2,
+            </if>
+            <if test="reserve3 != null">
+                RESERVE_3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysOrgId != null">
+                #{sysOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="triggerName != null">
+                #{triggerName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobDetailName != null">
+                #{jobDetailName,jdbcType=VARCHAR},
+            </if>
+            <if test="targetObject != null">
+                #{targetObject,jdbcType=VARCHAR},
+            </if>
+            <if test="cronExpression != null">
+                #{cronExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="recordStat != null">
+                #{recordStat,jdbcType=VARCHAR},
+            </if>
+            <if test="jobDesc != null">
+                #{jobDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="reserve1 != null">
+                #{reserve1,jdbcType=VARCHAR},
+            </if>
+            <if test="reserve2 != null">
+                #{reserve2,jdbcType=VARCHAR},
+            </if>
+            <if test="reserve3 != null">
+                #{reserve3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>
