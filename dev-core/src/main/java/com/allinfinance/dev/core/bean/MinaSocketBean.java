@@ -14,7 +14,6 @@ public class MinaSocketBean {
     private String name;
     private Integer port;
     private Integer processorCount;
-    private Integer threadCount;
     private Integer decodeMsgLength;
     private Integer encodeMsgLength;
     private String decodeCharset;
@@ -24,18 +23,11 @@ public class MinaSocketBean {
     private String handlerClassName;
     private String decoderClassName;
     private String encoderClassName;
-    private Boolean soLinger;
-
-    //长链接相关参数
-    private Integer beatTimeout;
-    private Integer beatInterval;
-    private Boolean keepAlive;
 
     public MinaSocketBean(Map<SocketBeanLoaderEnum, String> propertyValueMap) throws Exception {
         this.name = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKKET_APP_NAME);
         this.port = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_PORT));
         this.processorCount = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_PROC_COUNT));
-        this.threadCount = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_THREAD_COUNT));
         this.decodeMsgLength = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DEC_LENGTH));
         this.encodeMsgLength = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENC_LENGTH));
         this.decodeCharset = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DEC_CHARSET);
@@ -45,10 +37,6 @@ public class MinaSocketBean {
         this.handlerClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_HANDLER);
         this.decoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DECODER);
         this.encoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENCODER);
-        this.soLinger = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_SOLINGER));
-        this.beatTimeout = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_TIMEOUT));
-        this.beatInterval = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_INTERVAL));
-        this.keepAlive = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_KEEPALIVE));
         if (this.port == 0 || StringUtils.isBlank(this.handlerClassName)) {
             throw new Exception("运行端口及报文路径类全路径未指定!");
         }
@@ -76,14 +64,6 @@ public class MinaSocketBean {
 
     public void setProcessorCount(Integer processorCount) {
         this.processorCount = processorCount;
-    }
-
-    public Integer getThreadCount() {
-        return threadCount;
-    }
-
-    public void setThreadCount(Integer threadCount) {
-        this.threadCount = threadCount;
     }
 
     public Integer getDecodeMsgLength() {
@@ -158,58 +138,17 @@ public class MinaSocketBean {
         this.encoderClassName = encoderClassName;
     }
 
-    public Boolean getSoLinger() {
-        return soLinger;
-    }
-
-    public void setSoLinger(Boolean soLinger) {
-        this.soLinger = soLinger;
-    }
-
-    public Integer getBeatTimeout() {
-        return beatTimeout;
-    }
-
-    public void setBeatTimeout(Integer beatTimeout) {
-        this.beatTimeout = beatTimeout;
-    }
-
-    public Integer getBeatInterval() {
-        return beatInterval;
-    }
-
-    public void setBeatInterval(Integer beatInterval) {
-        this.beatInterval = beatInterval;
-    }
-
-    public Boolean getKeepAlive() {
-        return keepAlive;
-    }
-
-    public void setKeepAlive(Boolean keepAlive) {
-        this.keepAlive = keepAlive;
-    }
-
     @Override
     public String toString() {
         return "MinaSocketBean{" +
-                "name='" + name + '\'' +
-                ", port=" + port +
+                "port=" + port +
                 ", processorCount=" + processorCount +
-                ", threadCount=" + threadCount +
                 ", decodeMsgLength=" + decodeMsgLength +
                 ", encodeMsgLength=" + encodeMsgLength +
                 ", decodeCharset='" + decodeCharset + '\'' +
                 ", encodeCharset='" + encodeCharset + '\'' +
                 ", bufferSize=" + bufferSize +
                 ", timeOut=" + timeOut +
-                ", handlerClassName='" + handlerClassName + '\'' +
-                ", decoderClassName='" + decoderClassName + '\'' +
-                ", encoderClassName='" + encoderClassName + '\'' +
-                ", soLinger=" + soLinger +
-                ", beatTimeout='" + beatTimeout + '\'' +
-                ", beatInterval='" + beatInterval + '\'' +
-                ", keepAlive=" + keepAlive +
                 '}';
     }
 }

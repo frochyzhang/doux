@@ -10,10 +10,10 @@ public class CommonConstants {
 
     public static final String FILE_PREFIX = "socket-";
     public static final String FILE_SUF_FIX = ".properties";
-    public static final String FILE_PARENT_PATH = "socket-config-path";
-    public static final String DEFAULT_MAPPER_PACKAGE = "com.allinfinance.dev.batch.dao.mapper";
+    public static final String FILE_PARENT_PATH = "/";
+    public static final String DB_PROPERTY_FILE = "/etc/db.properties";
+    public static final String DEFAULT_MAPPER_PACKAGE = "com.allinfinance.dev.batch.mapper";
     public static final String XML_BEAN_VALIDATOR_REQUIRE = "dev.xml.field.verify";
-    public static final String KEY_SESSION_CLIENT_IP = "KEY_SESSION_CLIENT_IP";
     // -------------------------------【SYMBOL】-----------------------//
     public static final String BLANK = " ";
     public static final String EMPTY = "";

@@ -92,13 +92,13 @@ public class ByteFixedLengthTokenizer extends AbstractLineTokenizer {
             throw new FlatFileFormatException("文件编码格式不支持!");
         }
 
-//        if (lineLength < maxRange && isStrict()) {
-//            throw new IncorrectLineLengthException("Line is shorter than max range " + maxRange, maxRange, lineLength, line);
-//        }
-//
-//        if (!open && lineLength > maxRange && isStrict()) {
-//            throw new IncorrectLineLengthException("Line is longer than max range " + maxRange, maxRange, lineLength, line);
-//        }
+        if (lineLength < maxRange && isStrict()) {
+            throw new IncorrectLineLengthException("Line is shorter than max range " + maxRange, maxRange, lineLength, line);
+        }
+
+        if (!open && lineLength > maxRange && isStrict()) {
+            throw new IncorrectLineLengthException("Line is longer than max range " + maxRange, maxRange, lineLength, line);
+        }
 
         for (Range range : ranges) {
 

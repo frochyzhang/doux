@@ -1,6 +1,6 @@
 package com.allinfinance.dev.core.util.xml.xstream;
 
-import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
+import com.allinfinance.dev.core.util.xml.XmlConvertValidator;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
@@ -19,7 +19,7 @@ public class XStreamUtils {
     private static final Logger logger = LoggerFactory.getLogger(XStreamUtils.class);
 
     public static String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    private static String ALIAS = "SERVICE";
+    private static String alias = "SERVICE";
 
     public static XStream xsFriendly;
     public static XStream xs;
@@ -45,15 +45,15 @@ public class XStreamUtils {
         };
     }
 
-    public static <T> T xmlToBean(String xml, Class<T> load, boolean omitFlag) {
+    public static Object xmlToBean(String xml, Class<?> load, boolean omitFlag) {
         if (!omitFlag) {
             xs = xsFriendly;
         }
         xs.autodetectAnnotations(true);
-        xs.alias(ALIAS, load);
-        T o = (T) xs.fromXML(xml);
+        xs.alias(alias, load);
+        Object o = xs.fromXML(xml);
         try {
-            BeanConvertValidator.beanVerify(o, "UTF-8");
+            XmlConvertValidator.beanToXmlVerify(o, "UTF-8");
         } catch (IllegalArgumentException e) {
             logger.error("xml -> bean, 字段校验异常!");
             throw e;
@@ -63,12 +63,12 @@ public class XStreamUtils {
 
     public static String beanToXml(Object object, String encoding) {
         try {
-            BeanConvertValidator.beanVerify(object, encoding);
+            XmlConvertValidator.beanToXmlVerify(object, encoding);
         } catch (IllegalArgumentException e) {
             logger.error("bean -> xml, 字段校验异常!");
             throw e;
         }
-        xsFriendly.alias(ALIAS, object.getClass());
+        xsFriendly.alias(alias, object.getClass());
         xsFriendly.processAnnotations(object.getClass());
         return XML_HEAD + "\n" + xsFriendly.toXML(object);
     }
@@ -78,8 +78,8 @@ public class XStreamUtils {
      *
      * @param alias 根节点别名，默认值为SERVICE
      */
-    public static void setALIAS(String alias) {
-        ALIAS = alias;
+    public static void setAlias(String alias) {
+        XStreamUtils.alias = alias;
     }
 
     /**

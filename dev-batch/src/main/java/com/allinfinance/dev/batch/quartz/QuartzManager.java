@@ -1,7 +1,7 @@
 package com.allinfinance.dev.batch.quartz;
 
-import com.allinfinance.dev.batch.dao.model.TblBatCtl;
-import com.allinfinance.dev.batch.dao.service.TblBatCtlService;
+import com.allinfinance.dev.batch.model.TblBatCtl;
+import com.allinfinance.dev.batch.service.TblBatCtlService;
 import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;

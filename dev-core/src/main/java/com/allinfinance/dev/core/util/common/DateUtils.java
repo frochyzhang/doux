@@ -20,11 +20,10 @@ public class DateUtils {
 
     /**
      * 日期转换
-     *
-     * @param time
-     * @param fmt  : yyyy-MM-dd HH:mm:ss
-     * @return
      * @author jared
+     * @param time
+     * @param fmt : yyyy-MM-dd HH:mm:ss
+     * @return
      */
     public static String formatTime(Timestamp time, String fmt) {
         if (time == null) {
@@ -36,9 +35,8 @@ public class DateUtils {
 
     /**
      * 获取系统当前时间（秒）
-     *
-     * @return
      * @author jared
+     * @return
      */
     public static Timestamp getTime() {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,9 +47,8 @@ public class DateUtils {
 
     /**
      * 获取当前日期(时间 00:00:00)
-     *
-     * @return
      * @author jared
+     * @return
      */
     public static Timestamp getDateFirst() {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
@@ -62,9 +59,8 @@ public class DateUtils {
 
     /**
      * 获取当前日期(时间 23:59:59)
-     *
-     * @return
      * @author jared
+     * @return
      */
     public static Timestamp getDateLast() {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
@@ -75,9 +71,8 @@ public class DateUtils {
 
     /**
      * 获取当前日期
-     *
-     * @return
      * @author jared
+     * @return
      */
     public static Date getDate() {
         Calendar calendar = Calendar.getInstance();
@@ -86,23 +81,20 @@ public class DateUtils {
 
     /**
      * yyyy-MM-dd HH:mm:ss 转换成 Timestamp
-     *
+     * @author jared
      * @param timeString
      * @return
-     * @author jared
      */
     public static Timestamp getTime(String timeString) {
         return Timestamp.valueOf(timeString);
     }
-
     /**
      * 自定义格式的字符串转换成日期
-     *
+     * @author jared
      * @param timeString
      * @param fmt
      * @return
      * @throws Exception
-     * @author jared
      */
     public static Timestamp getTime(String timeString, String fmt) throws Exception {
         SimpleDateFormat myFormat = new SimpleDateFormat(fmt);
@@ -113,14 +105,13 @@ public class DateUtils {
 
     /**
      * 格式化日期
-     *
+     * @author jared
      * @param date
      * @param fmt
      * @return
      * @throws Exception
-     * @author jared
      */
-    public static String formatDate(Date date, String fmt) {
+    public static String formatDate(Date date, String fmt){
         if (date == null) {
             return "";
         }
@@ -130,14 +121,13 @@ public class DateUtils {
 
     /**
      * 返回日期或者时间，如果传入的是日期，返回日期的 00:00:00 时间
-     *
+     * @author jared
      * @param timeString
      * @return
      * @throws Exception
-     * @author jared
      */
     public static Timestamp getDateFirst(String timeString) throws Exception {
-        if (timeString == null || "".equals(timeString)) {
+        if (timeString == null || timeString.equals("")) {
             return null;
         }
         if (timeString.length() > 10) {
@@ -149,35 +139,32 @@ public class DateUtils {
 
     /**
      * 返回日期或者时间，如果传入的是日期，返回日期的 23:59:59 时间
-     *
+     * @author jared
      * @param timeString
      * @return
      * @throws Exception
-     * @author jared
      */
-    public static Timestamp getDateLast(String timeString) throws Exception {
-        if (timeString == null || "".equals(timeString)) {
+    public static Timestamp getDateLast(String timeString) throws Exception{
+        if (timeString == null || timeString.equals("")) {
             return null;
         }
         if (timeString.length() > 10) {
             return getTime(timeString, "yyyy-MM-dd HH:mm:ss");
         } else {
-            return getTime(timeString + " 23:59:59", "yyyy-MM-dd HH:mm:ss");
+            return getTime(timeString +" 23:59:59", "yyyy-MM-dd HH:mm:ss");
         }
     }
 
     /**
      * 获取本周周一时间，返回格式 yyyy-MM-dd 00:00:00
-     *
-     * @return
      * @author jared
+     * @return
      */
-    public static Timestamp getMonday() {
+    public static Timestamp getMonday(){
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (dayofweek == 0) {
+        if (dayofweek == 0)
             dayofweek = 7;
-        }
         calendar.add(Calendar.DATE, -dayofweek + 1);
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         String mystrdate = myFormat.format(calendar.getTime());
@@ -187,16 +174,14 @@ public class DateUtils {
 
     /**
      * 获取本周周日时间，返回格式 yyyy-MM-dd 23:59:59
-     *
-     * @return
      * @author jared
+     * @return
      */
-    public static Timestamp getSunday() {
+    public static Timestamp getSunday(){
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (dayofweek == 0) {
+        if (dayofweek == 0)
             dayofweek = 7;
-        }
         calendar.add(Calendar.DATE, -dayofweek + 7);
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         String mystrdate = myFormat.format(calendar.getTime());
@@ -205,24 +190,22 @@ public class DateUtils {
 
     /**
      * 增加天数
-     *
+     * @author jared
      * @param time
      * @param day
      * @return
-     * @author jared
      */
     public static Timestamp addDay(Timestamp time, Long day) {
-        Timestamp time2 = new Timestamp(time.getTime() + day * 1000 * 60 * 60 * 24);
+        Timestamp time2 = new Timestamp(time.getTime()+ day * 1000 * 60 * 60 * 24);
         return time2;
     }
 
     /**
      * 比较 2 个日期格式的字符串
-     *
+     * @author jared
      * @param str1 格式 ：yyyyMMdd
      * @param str2 格式 ：yyyyMMdd
      * @return
-     * @author jared
      */
     public static Integer compareDate(String str1, String str2) throws Exception {
         return Integer.parseInt(str1) - Integer.parseInt(str2);
@@ -230,11 +213,10 @@ public class DateUtils {
 
     /**
      * 2 个时间的相差天数
-     *
+     * @author jared
      * @param time1
      * @param time2
      * @return
-     * @author jared
      */
     public static Integer getDay(Timestamp time1, Timestamp time2) {
         Long dayTime = (time1.getTime() - time2.getTime()) / (1000 * 60 * 60 * 24);
@@ -243,9 +225,8 @@ public class DateUtils {
 
     /**
      * 获取系统当前时间（分）
-     *
-     * @return
      * @author jared
+     * @return
      */
     public static String getMinute() {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyyMMddHHmm");
@@ -254,14 +235,13 @@ public class DateUtils {
 
     /**
      * 转换成时间 字符串格式必须为 yyyy-MM-dd HH:mm:ss 或 yyyy-MM-dd
-     *
+     * @author jared
      * @return
      * @throws ParseException
-     * @author jared
      */
-    public static Date parseToDate(String val) throws ParseException {
+    public static Date parseToDate(String val) throws ParseException{
         Date date = null;
-        if (val != null && val.trim().length() != 0 && !"null".equals(val.trim().toLowerCase())) {
+        if (val != null && val.trim().length() != 0 && !val.trim().toLowerCase().equals("null")){
             val = val.trim();
             if (val.length() > 10) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -277,9 +257,8 @@ public class DateUtils {
 
     /**
      * 获取上月的第一天 yyyy-MM-dd 00:00:00 和最后一天 yyyy-MM-dd 23:59:59
-     *
-     * @return
      * @author jared
+     * @return
      */
     @SuppressWarnings("static-access")
     public static Map<String, String> getPreMonth() {
@@ -305,7 +284,7 @@ public class DateUtils {
         StringBuffer endStr = new StringBuffer().append(day_end_prevM).append(" 23:59:59");
         day_end_prevM = endStr.toString();  //上月最后一天
 
-        Map<String, String> map = new HashMap<>(16);
+        Map<String, String> map = new HashMap<String, String>();
         map.put("prevMonthFD", day_first_prevM);
         map.put("prevMonthPD", day_end_prevM);
         return map;
@@ -314,12 +293,11 @@ public class DateUtils {
 
     /**
      * 获取上周周一时间，返回格式 yyyy-MM-dd 00:00:00
-     *
-     * @return
      * @author jared
+     * @return
      */
     @SuppressWarnings("static-access")
-    public static Timestamp getPreMonday() {
+    public static Timestamp getPreMonday(){
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
         System.out.println(dayofweek);
@@ -337,9 +315,8 @@ public class DateUtils {
 
     /**
      * 获取上周周日时间，返回格式 yyyy-MM-dd 23:59:59
-     *
-     * @return
      * @author jared
+     * @return
      */
     @SuppressWarnings("static-access")
     public static Timestamp getPreSunday() {
@@ -349,7 +326,7 @@ public class DateUtils {
             calendar.add(calendar.WEEK_OF_MONTH, +1);
         }
 
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        calendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
         calendar.add(calendar.WEEK_OF_MONTH, -1);
 
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
@@ -359,14 +336,13 @@ public class DateUtils {
 
     /**
      * 字符串日期加n天
-     *
-     * @param date       日期
-     * @param days       加的天数
+     * @param date 日期
+     * @param days 加的天数
      * @param dateFormat 字符串日期格式
      * @return
      */
-    public static String addDay(String date, int days, String dateFormat) {
-        if (dateFormat == null || "".equals(dateFormat)) {
+    public static String addDay(String date, int days, String dateFormat){
+        if(dateFormat == null||"".equals(dateFormat)){
             dateFormat = "yyyyMMdd";
         }
         try {
@@ -580,7 +556,7 @@ public class DateUtils {
      * @return
      */
     public static final String toLongDateTmPartGBKString(Date aDate) {
-        return toFormatDateString(aDate, LONG_DATE_TM_PART_GBK_FORMAT);
+        return toFormatDateString(aDate, Long_DATE_TM_PART_GBK_FORMAT);
     }
 
     /**
@@ -890,7 +866,7 @@ public class DateUtils {
     /**
      * 为一个日期加上指定天数
      *
-     * @param aDate  yyyyMMdd格式字串
+     * @param aDate yyyyMMdd格式字串
      * @param amount 天数
      * @return
      */
@@ -985,8 +961,10 @@ public class DateUtils {
      * 得到指定时间的指定时区的时间
      *
      * @param aDate 时间戳,Date是一个瞬间的long型距离历年的位移偏量， 在不同的指定的Locale/TimeZone的jvm中，它toString成不同的显示值，
-     *              所以没有必要为它再指定一个TimeZone变量表示获取它时的jvm的TimeZone
-     * @param tz    要转换成timezone
+     *            所以没有必要为它再指定一个TimeZone变量表示获取它时的jvm的TimeZone
+     *
+     * @param tz 要转换成timezone
+     *
      * @return yyyy-MM-dd HH:mm:ss 格式
      */
     public static final String getSpecifiedZoneTime(Date aDate, TimeZone tz) {
@@ -1021,7 +999,7 @@ public class DateUtils {
      * 计算两个日期之间相差的月数
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      */
     public static final int getDifferenceMonths(String startDateStr, String endDateStr) {
@@ -1043,43 +1021,43 @@ public class DateUtils {
      * 计算两个日期之间相差的天数
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      */
     public static final int getDifferenceDays(String startDateStr, String endDateStr) {
-        return Math.toIntExact(getDifferenceMillis(startDateStr, endDateStr) / (NANO_ONE_DAY));
+        return new Long(getDifferenceMillis(startDateStr, endDateStr) / (NANO_ONE_DAY)).intValue();
     }
 
     /**
      * 计算两个日期之间相差的天数
      *
      * @param startDateStr yyyymmdd
-     * @param endDateStr   yyyymmdd
+     * @param endDateStr yyyymmdd
      * @return
      */
     public static final int getDifferenceDays2(String startDateStr, String endDateStr) {
-        return Math.toIntExact(getDifferenceMillis(startDateStr, endDateStr, MAIL_DATE_DT_PART_FORMAT)
-                / (NANO_ONE_DAY));
+        return new Long(getDifferenceMillis(startDateStr, endDateStr, MAIL_DATE_DT_PART_FORMAT)
+                / (NANO_ONE_DAY)).intValue();
     }
 
     /* ------- start ------------ */
-
     /**
      * 两个日期之间相减（存在负数）
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      */
     public static final int getDaysSubtract(String startDateStr, String endDateStr) {
-        return Math.toIntExact(getDaysSubtractMillis(startDateStr, endDateStr) / (NANO_ONE_DAY));
+        return new Long(getDaysSubtractMillis(startDateStr, endDateStr) / (NANO_ONE_DAY))
+                .intValue();
     }
 
     /**
      * 两个日期之间相减（存在负数）判断日期有效性
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      * @throws ParseException
      */
@@ -1098,19 +1076,19 @@ public class DateUtils {
      * 两个日期之间相减（存在负数）
      *
      * @param startDateStr yyyymmdd
-     * @param endDateStr   yyyymmdd
+     * @param endDateStr yyyymmdd
      * @return
      */
     public static final int getDaysSubtract2(String startDateStr, String endDateStr) {
-        return Math.toIntExact(getDaysSubtractMillis(startDateStr, endDateStr, MAIL_DATE_DT_PART_FORMAT)
-                / (NANO_ONE_DAY));
+        return new Long(getDaysSubtractMillis(startDateStr, endDateStr, MAIL_DATE_DT_PART_FORMAT)
+                / (NANO_ONE_DAY)).intValue();
     }
 
     /**
      * 两个日期之间相减（存在负数）
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      * @throws ParseException
      */
@@ -1122,7 +1100,7 @@ public class DateUtils {
      * 两个日期之间相减（存在负数）
      *
      * @param startDateStr yyyymmddhhmmss
-     * @param endDateStr   yyyymmddhhmmss
+     * @param endDateStr yyyymmddhhmmss
      * @return
      * @throws ParseException
      */
@@ -1134,7 +1112,7 @@ public class DateUtils {
      * 相隔天数
      *
      * @param startDateStr yyyymmdd
-     * @param endDateStr   yyyymmdd
+     * @param endDateStr yyyymmdd
      * @return
      * @throws ParseException
      */
@@ -1163,7 +1141,7 @@ public class DateUtils {
      * 相隔天数,如相隔一年的时间，指20150120-20160119
      *
      * @param startDateStr yyyymmdd
-     * @param endDateStr   yyyymmdd
+     * @param endDateStr yyyymmdd
      * @return
      * @throws ParseException
      */
@@ -1199,8 +1177,8 @@ public class DateUtils {
     public static final long getDaysSubtractMillis(String startDateStr, String endDateStr,
                                                    String dateFormat) {
         try {
-            return getDaysSubtractMillis(Objects.requireNonNull(parser(startDateStr, dateFormat)),
-                    Objects.requireNonNull(parser(endDateStr, dateFormat)));
+            return getDaysSubtractMillis(parser(startDateStr, dateFormat),
+                    parser(endDateStr, dateFormat));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -1227,7 +1205,7 @@ public class DateUtils {
      * @return
      */
     public static final int getDifferenceDays(Date startDate, Date endDate) {
-        return Math.toIntExact(getDifferenceMillis(startDate, endDate) / (NANO_ONE_DAY));
+        return new Long(getDifferenceMillis(startDate, endDate) / (NANO_ONE_DAY)).intValue();
 
     }
 
@@ -1235,7 +1213,7 @@ public class DateUtils {
      * 计算两个日期之间相差的的毫秒数
      *
      * @param startDateStr yyyy-mm-dd
-     * @param endDateStr   yyyy-mm-dd
+     * @param endDateStr yyyy-mm-dd
      * @return
      * @throws ParseException
      */
@@ -1247,7 +1225,7 @@ public class DateUtils {
      * 计算两个日期之间相差的的毫秒数
      *
      * @param startDateStr yyyyMMddHHmmss
-     * @param endDateStr   yyyyMMddHHmmss
+     * @param endDateStr yyyyMMddHHmmss
      * @return
      * @throws ParseException
      */
@@ -1266,8 +1244,8 @@ public class DateUtils {
     public static final long getDifferenceMillis(String startDateStr, String endDateStr,
                                                  String dateFormat) {
         try {
-            return getDifferenceMillis(Objects.requireNonNull(parser(startDateStr, dateFormat)),
-                    Objects.requireNonNull(parser(endDateStr, dateFormat)));
+            return getDifferenceMillis(parser(startDateStr, dateFormat),
+                    parser(endDateStr, dateFormat));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -1286,7 +1264,7 @@ public class DateUtils {
 
     /**
      * 检验 日期是否在指定区间内，如果格式错误，返回false
-     * <p>
+     *
      * 如果maxDateStr或minDateStr为空则比较时变为正负无穷大，如果都为空，则返回false
      *
      * @param aDate
@@ -1310,9 +1288,6 @@ public class DateUtils {
                     break;
                 case 4:
                     ret = aDate.after(dMinDate);
-                    break;
-                default:
-                    break;
             }
         } catch (ParseException e) {
         }
@@ -1355,7 +1330,7 @@ public class DateUtils {
      * @return
      */
     public static String getWeekOfDate(Date dt) {
-        String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         Calendar cal = Calendar.getInstance();
         cal.setTime(dt);
         int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
@@ -1414,15 +1389,15 @@ public class DateUtils {
     }
 
 
-    public static final String convertFmt(String dateStr, String oldFmt, String newFmt) throws ParseException {
-        if (StringUtils.isEmpty(dateStr) || StringUtils.isEmpty(oldFmt) || StringUtils.isEmpty(newFmt)) {
+    public static final String convertFmt(String dateStr,String oldFmt, String newFmt) throws ParseException{
+        if(StringUtils.isEmpty(dateStr)||StringUtils.isEmpty(oldFmt)||StringUtils.isEmpty(newFmt)) {
             return null;
         }
         Date date = parser(dateStr, oldFmt);
-        return toFormatDateString(date, newFmt);
+        return toFormatDateString(date,newFmt);
     }
 
-    public static Date parseDateAndTime(String value) {
+    public static Date parseDateAndTime(String value){
         Date date = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -1450,7 +1425,7 @@ public class DateUtils {
     public static final String MAIL_DATE_DT_PART_FORMAT = "yyyyMMdd";
     public static final String MAIL_TIME_TM_PART_FORMAT = "HHmmss";
     public static final String LONG_DATE_TM_PART_FORMAT = "HH:mm:ss";
-    public static final String LONG_DATE_TM_PART_GBK_FORMAT = "HH时mm分ss秒";
+    public static final String Long_DATE_TM_PART_GBK_FORMAT = "HH时mm分ss秒";
     public static final String MAIL_DATA_DTM_PART_FORMAT = "MM月dd日HH:mm";
     public static final String MAIL_DATA_YDTM_PART_FORMAT = "yyyy年MM月dd日  HH:mm";
     public static final String POINT_DATA_DTM_PART_FORMAT = "yyyy.MM.dd";

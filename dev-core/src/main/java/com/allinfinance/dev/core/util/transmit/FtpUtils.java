@@ -61,9 +61,8 @@ public class FtpUtils {
             if (!flag) {
                 logger.error("FTP上传失败：" + ftpFileName);
                 return false;
-            } else {
+            } else
                 logger.info("FTP上传成功：" + ftpFileName);
-            }
             ftp.logout();
         } catch (IOException e) {
             logger.error("FTP上传出现IO异常", e);
@@ -74,6 +73,7 @@ public class FtpUtils {
                     ftp.disconnect();
                 } catch (IOException ioe) {
                     logger.error("FTP上传出现IO异常", ioe);
+                    return false;
                 }
             }
         }
@@ -128,9 +128,8 @@ public class FtpUtils {
             if (!flag) {
                 logger.error("FTP下载失败：" + ftpFileName);
                 return false;
-            } else {
+            } else
                 logger.info("FTP下载成功：" + ftpFileName);
-            }
             ftp.logout();
         } catch (IOException e) {
             logger.error("FTP下载出现IO异常", e);
@@ -141,6 +140,7 @@ public class FtpUtils {
                     ftp.disconnect();
                 } catch (IOException ioe) {
                     logger.error("FTP下载出现IO异常", ioe);
+                    return false;
                 }
             }
         }
@@ -167,9 +167,8 @@ public class FtpUtils {
         try {
             fileInputStream = new FileInputStream(localFileFullName);
             boolean flag = uploadFile(host, port, username, password, ftpPath, ftpFileName, fileInputStream);
-            if (flag == false) {
+            if (flag == false)
                 return false;
-            }
         } catch (IOException e) {
             logger.error("FTP上传出现IO异常", e);
             return false;
@@ -179,6 +178,7 @@ public class FtpUtils {
                     fileInputStream.close();
                 } catch (IOException e) {
                     logger.error("FTP上传出现IO异常", e);
+                    return false;
                 }
             }
         }
@@ -205,9 +205,8 @@ public class FtpUtils {
         try {
             fileOutputStream = new FileOutputStream(localFileFullName);
             boolean flag = downFile(host, port, username, password, ftpPath, ftpFileName, fileOutputStream);
-            if (flag == false) {
+            if (flag == false)
                 return false;
-            }
         } catch (IOException e) {
             logger.error("FTP下载出现IO异常", e);
             return false;
@@ -217,6 +216,7 @@ public class FtpUtils {
                     fileOutputStream.close();
                 } catch (IOException e) {
                     logger.error("FTP下载出现IO异常", e);
+                    return false;
                 }
             }
         }
@@ -290,9 +290,8 @@ public class FtpUtils {
             if (!flag) {
                 logger.error("FTP下载失败:" + ftpFileName);
                 return false;
-            } else {
+            } else
                 logger.info("FTP下载成功：" + ftpFileName);
-            }
             ftp.logout();
         } catch (IOException e) {
             logger.error("FTP下载出现IO异常", e);
@@ -303,6 +302,7 @@ public class FtpUtils {
                     os.close();
                 } catch (IOException e) {
                     logger.error("FTP下载出现IO异常", e);
+                    return false;
                 }
             }
             if (ftp.isConnected()) {
@@ -310,6 +310,7 @@ public class FtpUtils {
                     ftp.disconnect();
                 } catch (IOException ioe) {
                     logger.error("FTP下载出现IO异常", ioe);
+                    return false;
                 }
             }
         }
@@ -383,9 +384,8 @@ public class FtpUtils {
                     return true;
                 }
                 is = new FileInputStream(f);
-                if (is.skip(remoteSize) == remoteSize) {
+                if (is.skip(remoteSize) == remoteSize)
                     ftp.setRestartOffset(remoteSize);
-                }
                 logger.info("需要断点上传:" + ftpFileName);
             } else {
                 logger.error("远程文件不唯一:" + ftpFileName);
@@ -395,9 +395,8 @@ public class FtpUtils {
             if (!flag) {
                 logger.error("FTP上传失败：" + ftpFileName);
                 return false;
-            } else {
+            } else
                 logger.info("FTP上传成功：" + ftpFileName);
-            }
             ftp.logout();
         } catch (IOException e) {
             logger.error("FTP上传出现IO异常", e);
@@ -408,6 +407,7 @@ public class FtpUtils {
                     is.close();
                 } catch (IOException e) {
                     logger.error("FTP上传出现IO异常", e);
+                    return false;
                 }
             }
             if (ftp.isConnected()) {
@@ -415,6 +415,7 @@ public class FtpUtils {
                     ftp.disconnect();
                 } catch (IOException ioe) {
                     logger.error("FTP上传出现IO异常", ioe);
+                    return false;
                 }
             }
         }

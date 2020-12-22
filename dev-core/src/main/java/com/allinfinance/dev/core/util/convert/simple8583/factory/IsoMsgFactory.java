@@ -49,7 +49,7 @@ public class IsoMsgFactory extends AbstractIsoMsgFactory {
 			if (field.getValue() == null) {
 				continue;
 			}
-			if ("49".equals(field.getId())) {
+			if (field.getId().equals("49")) {
 				accum.append(field.getValue().substring(1));
 			} else {
 				accum.append(field.getValue());
