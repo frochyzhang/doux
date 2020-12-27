@@ -69,9 +69,8 @@ public class ClientIoHandler extends IoHandlerAdapter {
 	}
 	
 	private boolean checkMac(Object pkg) {
-		if (!checkMac || pkg == null) {
+		if (!checkMac || pkg == null)
 			return true;
-		}
 		return true;
 	}
 }

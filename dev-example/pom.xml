@@ -5,22 +5,29 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.1.16-RELEASE</version>
+        <version>1.0.5-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>dev-example 各模块使用示例</name>
+
     <artifactId>dev-example</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dev-dubbo-example</module>
-        <module>dev-mq-rabbit-example</module>
-        <module>dev-socket-example</module>
-        <module>dev-redis-example</module>
-        <module>dev-batch-example</module>
-    </modules>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-batch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket</artifactId>
+        </dependency>
+    </dependencies>
 </project>

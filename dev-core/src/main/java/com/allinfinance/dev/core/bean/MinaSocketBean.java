@@ -141,7 +141,8 @@ public class MinaSocketBean {
     @Override
     public String toString() {
         return "MinaSocketBean{" +
-                "port=" + port +
+                "name='" + name + '\'' +
+                ", port=" + port +
                 ", processorCount=" + processorCount +
                 ", decodeMsgLength=" + decodeMsgLength +
                 ", encodeMsgLength=" + encodeMsgLength +
@@ -149,6 +150,9 @@ public class MinaSocketBean {
                 ", encodeCharset='" + encodeCharset + '\'' +
                 ", bufferSize=" + bufferSize +
                 ", timeOut=" + timeOut +
+                ", handlerClassName='" + handlerClassName + '\'' +
+                ", decoderClassName='" + decoderClassName + '\'' +
+                ", encoderClassName='" + encoderClassName + '\'' +
                 '}';
     }
 }

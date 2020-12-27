@@ -1,12 +1,15 @@
 package com.allinfinance.dev.socket.handler;
 
-import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractMessageIOHandler extends IoHandlerAdapter {
+/**
+ * @author zhangyong
+ */
+public class AbstractMessageIOHandler implements IoHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageIOHandler.class);
 
@@ -26,14 +29,14 @@ public class AbstractMessageIOHandler extends IoHandlerAdapter {
     }
 
     @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        logger.info("message:{}" + "已发送完毕@" + session, message);
+    public void messageSent(IoSession session, Object message) {
+        logger.info("已发送完毕@" + session);
     }
 
     @Override
-    public void inputClosed(IoSession session) throws Exception {
+    public void inputClosed(IoSession session) {
         logger.info("输入关闭@" + session);
-        super.inputClosed(session);
+        session.closeNow();
     }
 
     @Override
@@ -43,13 +46,13 @@ public class AbstractMessageIOHandler extends IoHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause)
-            throws Exception {
+    public void exceptionCaught(IoSession session, Throwable cause) {
         logger.error("连接异常@" + session, cause);
-        super.exceptionCaught(session, cause);
+        session.closeNow();
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        //调用方自行实现
     }
 }

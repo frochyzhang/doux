@@ -1,5 +1,6 @@
 package com.allinfinance.dev.core.util.socket.codec;
 
+import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author 张勇
  * @date 2020-11-28 01:24
-*/
+ */
 public class DemuxingMessageEncoder implements MessageEncoder<String> {
 
     private static Logger logger = LoggerFactory.getLogger(DemuxingMessageEncoder.class);
@@ -19,9 +20,9 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
     private Integer msgLengthSize;
     private String msgEncode;
 
-    DemuxingMessageEncoder(){
-        this.msgLengthSize=0;
-        this.msgEncode="UTF-8";
+    DemuxingMessageEncoder() {
+        this.msgLengthSize = 0;
+        this.msgEncode = "UTF-8";
     }
 
     public DemuxingMessageEncoder(Integer msgLengthSize, String msgEncode) {
@@ -33,9 +34,9 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
     public void encode(IoSession session, String message,
                        ProtocolEncoderOutput out) throws Exception {
         if (StringUtils.isEmpty(message)) {
-            if(this.getMsgLengthSize()!=0){
+            if (this.getMsgLengthSize() != 0) {
                 IoBuffer buf = IoBuffer.allocate(this.getMsgLengthSize());
-                buf.put(String.format("%0"+this.getMsgLengthSize()+"d",0).getBytes());
+                buf.put(String.format("%0" + this.getMsgLengthSize() + "d", 0).getBytes());
                 buf.flip();
                 out.write(buf);
             }
@@ -49,15 +50,15 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
             bodyLen = body.length;
         }
         IoBuffer buf = IoBuffer.allocate(bodyLen + this.getMsgLengthSize()).setAutoExpand(true);
-        if(this.getMsgLengthSize()!=0) {
-            buf.put(String.format("%0"+this.getMsgLengthSize()+"d",bodyLen).getBytes());
+        if (this.getMsgLengthSize() != 0) {
+            buf.put(String.format("%0" + this.getMsgLengthSize() + "d", bodyLen).getBytes());
         }
         if (body != null) {
             buf.put(body);
         }
         buf.flip();
-        logger.debug("编码完成：字符length=" + buf.limit() + ", content["
-                + buf.toString() + "]");
+        logger.info("编码完成：字符length=" + buf.limit() + ", content["
+                + ConvertUtils.bytesArrayToHexString(body) + "]");
         session.write(buf);
     }
 

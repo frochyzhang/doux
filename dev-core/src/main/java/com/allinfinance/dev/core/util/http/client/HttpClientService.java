@@ -2,6 +2,7 @@ package com.allinfinance.dev.core.util.http.client;
 
 import com.allinfinance.dev.core.loader.SpringConfigTool;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -69,6 +70,15 @@ public class HttpClientService {
                 logger.info("http post 请求成功!");
                 HttpEntity httpEntity = httpResponse.getEntity();
                 response = EntityUtils.toString(httpEntity);
+                Header msgTp = httpResponse.getFirstHeader("MsgTp");
+                if(msgTp==null){
+                    logger.error("返回报文消息头错误! MsgTp不存在");
+                    return null;
+                }
+                if(!header.get("MsgTp").equals(msgTp.getValue())){
+                    logger.error("返回报文消息MsgTp与请求报文不符值应为："+header.get("MsgTp"));
+                    return null;
+                }
                 httpResponse.close();
                 if (StringUtils.isEmpty(response)) {
                     logger.error("http应答报文为空!");
