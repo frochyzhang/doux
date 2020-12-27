@@ -70,8 +70,8 @@ public class DemuxingMessageDecoder implements MessageDecoder {
             len = Integer.parseInt(new String(bLen));
         }
 
-        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
-                + "]");
+//        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
+//                + "]");
         if (len == 0 && this.getMsgLengthSize() != 0) {
             if (this.getMsgLengthSize() != 0) {
                 out.write(String.format("%0" + this.getMsgLengthSize() + "d", 0));
@@ -82,10 +82,12 @@ public class DemuxingMessageDecoder implements MessageDecoder {
         byte[] bBody = new byte[blen];
         in.get(bBody);
 
+        logger.info("编码消息: 字节length = " + len + ", content[" + ConvertUtils.bytesArrayToHexString(bBody) + "]");
+
         StringBuilder buf = new StringBuilder("");
         buf.append(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
 
-        logger.info("解码完成：字符串length=" + buf.length() + ", content["
+        logger.debug("解码完成：字符串length=" + buf.length() + ", content["
                 + buf.toString() + "]");
         out.write(buf.toString());
 

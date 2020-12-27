@@ -1,4 +1,4 @@
-package com.allinfinance.dev.socket.config;
+package com.allinfinance.dev.core.loader;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

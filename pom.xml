@@ -12,6 +12,7 @@
         <module>dev-socket</module>
         <module>dev-core</module>
         <module>dev-batch</module>
+        <module>dev-example</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
@@ -35,6 +36,11 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-batch</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>

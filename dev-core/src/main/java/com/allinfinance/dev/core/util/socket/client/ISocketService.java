@@ -1,4 +1,4 @@
-package com.allinfinance.dev.core.util.socket.codec.client;
+package com.allinfinance.dev.core.util.socket.client;
 
 /**
  * ISocketService

@@ -1,6 +1,7 @@
 package com.allinfinance.dev.socket.config;
 
 import com.allinfinance.dev.core.bean.MinaSocketBean;
+import com.allinfinance.dev.core.loader.SpringConfigTool;
 import com.allinfinance.dev.core.util.socket.codec.MessageCodecFactory;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
@@ -61,9 +62,9 @@ public class ShortSwitchServer {
                 acceptor.setCloseOnDeactivation(true);
 
                 acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));
-                logger.info("[ {} ] 服务端启动成功，线程数为：{}，端口号为：{}", minaSocketBean.getName(), minaSocketBean.getProcessorCount(), minaSocketBean.getPort());
+                logger.info("[ {} ] 服务端启动成功! 参数为{}", minaSocketBean.getName(), minaSocketBean);
             } catch (Exception e2) {
-                logger.error("[ {}] 启动服务失败!", minaSocketBean.getName(), e2);
+                logger.error("[ {}] 启动服务失败! 参数为{}", minaSocketBean.getName(), minaSocketBean, e2);
                 System.exit(0);
             }
         });

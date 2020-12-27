@@ -1,4 +1,4 @@
-package com.allinfinance.dev.core.util.socket.codec.client;
+package com.allinfinance.dev.core.util.socket.client;
 
 
 import com.allinfinance.dev.core.util.socket.codec.*;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service("socketService")
 public class SocketService implements ISocketService {
-    private final Logger logger = LoggerFactory.getLogger(SocketService.class);
+    private Logger logger = LoggerFactory.getLogger(SocketService.class);
 
     @Override
     public String clientRequest(String remoteIp, int remotePort, String format, int timeOut, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
@@ -38,10 +38,10 @@ public class SocketService implements ISocketService {
                 clientConnector.getFilterChain().addLast(
                         "8583MsgCodec",
                         new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
-            } else {
+            }else{
                 clientConnector.getFilterChain().addLast(
                         "diyMsgCodec",
-                        new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode), new DemuxingMessageEncoder(msgLengthSize, msgEncode))));
+                        new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode), new DemuxingMessageEncoder(msgLengthSize,msgEncode))));
             }
             clientConnector.setHandler(new ClientIoHandler(checkMac));
             clientConnector.getSessionConfig().setUseReadOperation(true);
@@ -74,6 +74,27 @@ public class SocketService implements ISocketService {
             }
             if (clientConnector != null)
                 clientConnector.dispose();
+        }
+    }
+
+
+    public static void main(String[] args) {
+        try {
+            SocketService client = new SocketService();
+            String reqMess = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<SMS>\n" +
+                    "    <ORG_ID>000064163056</ORG_ID>\n" +
+                    "    <SMS_NO>113133000326</SMS_NO>\n" +
+                    "    <SMS_TYPE>00</SMS_TYPE>\n" +
+                    "    <TEL>13585961521</TEL>\n" +
+                    "    <CONTENT>您好,您用于开通快捷支付的验证码为[226230].</CONTENT>\n" +
+                    "    <REQUEST_TIME>20170612113133</REQUEST_TIME>\n" +
+                    "    <RESERVED></RESERVED>\n" +
+                    "</SMS>";
+            String response1 = client.clientRequest("127.0.0.1", 4493, "sms", 30, false, reqMess,6,"UTF-8");
+            System.out.println("resultResp:" + response1);
+        } finally {
+            System.out.println("end");
         }
     }
 }
