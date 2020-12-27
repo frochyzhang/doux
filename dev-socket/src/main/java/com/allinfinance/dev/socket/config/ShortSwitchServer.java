@@ -1,8 +1,7 @@
 package com.allinfinance.dev.socket.config;
 
 import com.allinfinance.dev.core.bean.MinaSocketBean;
-import com.allinfinance.dev.socket.codec.MessageCodecFactory;
-import org.apache.commons.lang3.StringUtils;
+import com.allinfinance.dev.core.util.socket.codec.MessageCodecFactory;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
@@ -46,8 +45,8 @@ public class ShortSwitchServer {
         socketBeans.forEach(minaSocketBean -> {
             try {
                 MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
-                        .getConstructor(Integer.class, String.class, Integer.class)
-                        .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset(), minaSocketBean.getBufferSize());
+                        .getConstructor(Integer.class, String.class)
+                        .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
                 MessageEncoder messageEncoder = (MessageEncoder) Class.forName(minaSocketBean.getEncoderClassName())
                         .getConstructor(Integer.class, String.class)
                         .newInstance(minaSocketBean.getEncodeMsgLength(), minaSocketBean.getEncodeCharset());

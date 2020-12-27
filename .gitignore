@@ -2,10 +2,3 @@
 *.iml
 /target/
 */target
-dev-example/dev-dubbo/target/
-dev-example/dev-dubbo-example/dev-dubbo-example-api/target/
-dev-example/dev-dubbo-example/dev-dubbo-example-consumer/target/
-dev-example/dev-dubbo-example/dev-dubbo-example-provider/target/
-dev-example/dev-dubbo-example/target/
-dev-example/dev-socket-example/target/
-dev-example/dev-mq-rabbit-example/target/

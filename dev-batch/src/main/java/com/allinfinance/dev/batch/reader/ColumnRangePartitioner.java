@@ -54,7 +54,7 @@ public class ColumnRangePartitioner implements Partitioner {
         try {
             lineCount = Files.lines(Paths.get(filePath)).count();
         } catch (IOException e) {
-            logger.error("文件行数获取失败!");
+            logger.error("文件行数获取失败!",e);
         }
         return lineCount;
     }

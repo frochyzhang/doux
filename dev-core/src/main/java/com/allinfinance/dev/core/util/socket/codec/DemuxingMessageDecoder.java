@@ -42,7 +42,7 @@ public class DemuxingMessageDecoder implements MessageDecoder {
             in.get(temp, 0, this.getMsgLengthSize());
             int len = 0;
             try {
-                len = Integer.parseInt(new String(temp),16);
+                len = Integer.parseInt(new String(temp));
             } catch (NumberFormatException ex) {
                 // 长度头异常时会引发粘包问题，直接丢弃当前连接，等待新建连接
                 logger.debug("报文长度含有非数字内容，关闭连接:  " + temp);
@@ -70,8 +70,8 @@ public class DemuxingMessageDecoder implements MessageDecoder {
             len = Integer.parseInt(new String(bLen));
         }
 
-//        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
-//                + "]");
+        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
+                + "]");
         if (len == 0 && this.getMsgLengthSize() != 0) {
             if (this.getMsgLengthSize() != 0) {
                 out.write(String.format("%0" + this.getMsgLengthSize() + "d", 0));
@@ -82,12 +82,10 @@ public class DemuxingMessageDecoder implements MessageDecoder {
         byte[] bBody = new byte[blen];
         in.get(bBody);
 
-        logger.info("编码消息: 字节length = " + len + ", content[" + ConvertUtils.bytesArrayToHexString(bBody) + "]");
-
         StringBuilder buf = new StringBuilder("");
         buf.append(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
 
-        logger.debug("解码完成：字符串length=" + buf.length() + ", content["
+        logger.info("解码完成：字符串length=" + buf.length() + ", content["
                 + buf.toString() + "]");
         out.write(buf.toString());
 

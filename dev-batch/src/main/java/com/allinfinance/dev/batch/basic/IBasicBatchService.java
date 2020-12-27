@@ -1,6 +1,7 @@
 package com.allinfinance.dev.batch.basic;
 
 import com.allinfinance.dev.core.bean.BatchJobDto;
+import com.allinfinance.dev.core.dto.JobSummaryInfo;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -49,7 +50,7 @@ public interface IBasicBatchService {
     /**
      * 暂停SpringBatch Job
      */
-    Map<Long,Boolean> pauseJob(List<Long> executionIdList);
+    Map<Long, Boolean> pauseJob(List<Long> executionIdList);
 
     /**
      * Restart a failed or stopped {@link JobExecution}. Fails with an exception
@@ -73,6 +74,7 @@ public interface IBasicBatchService {
 
     /**
      * 根据任务名暂停任务
+     *
      * @param jobName
      * @return
      * @throws JobInstanceAlreadyCompleteException
@@ -81,6 +83,7 @@ public interface IBasicBatchService {
 
     /**
      * 批量暂停任务
+     *
      * @param jobExecutionIds
      * @return
      * @throws JobInstanceAlreadyCompleteException
@@ -89,7 +92,12 @@ public interface IBasicBatchService {
 
     List<Long> abandonJob(List<Long> jobExecutionIds);
 
-    List<String> getJobSummaryInfo(String jobName);
+    List<JobSummaryInfo> getJobSummaryInfo(List<Long> jobExecutionIdList);
 
     List<BatchJobDto> getResumableJob();
+
+    List<Long> getRunningExecution(String jobName);
+
+    String getParameters(Long jobExecutionId);
+
 }

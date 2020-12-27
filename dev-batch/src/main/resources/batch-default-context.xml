@@ -66,7 +66,7 @@
     <!--    </bean>-->
 
     <!--    <bean id="batCtlScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">-->
-    <!--        <property name="basePackage" value="com.allinfinance.dev.batch.mapper"/>-->
+    <!--        <property name="basePackage" value="com.allinfinance.dev.batch.dao.mapper"/>-->
     <!--    </bean>-->
 
     <bean name="transactionManager"
@@ -91,7 +91,7 @@
     </aop:config>
 
     <aop:config>
-        <aop:pointcut id="allManagerMethod" expression="execution(* com.allinfinance.dev.batch.service.*.*(..))"/>
+        <aop:pointcut id="allManagerMethod" expression="execution(* com.allinfinance.dev.batch.dao.service.*.*(..))"/>
         <aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" order="10"/>
     </aop:config>
 

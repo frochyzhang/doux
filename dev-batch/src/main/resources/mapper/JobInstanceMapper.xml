@@ -13,20 +13,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from batch_job_instance
+    from "batch_job_instance"
     where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete
-    from batch_job_instance
+    delete from "batch_job_instance"
     where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="job_instance_id" keyProperty="jobInstanceId" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance" useGeneratedKeys="true">
-    insert into batch_job_instance (version, job_name, job_key)
-    values (#{version,jdbcType=BIGINT}, #{jobName,jdbcType=VARCHAR}, #{jobKey,jdbcType=VARCHAR})
+    insert into "batch_job_instance" (version, job_name, job_key
+      )
+    values (#{version,jdbcType=BIGINT}, #{jobName,jdbcType=VARCHAR}, #{jobKey,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="job_instance_id" keyProperty="jobInstanceId" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance" useGeneratedKeys="true">
-    insert into batch_job_instance
+    insert into "batch_job_instance"
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="version != null">
         version,
@@ -51,7 +52,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance">
-    update batch_job_instance
+    update "batch_job_instance"
     <set>
       <if test="version != null">
         version = #{version,jdbcType=BIGINT},
@@ -66,10 +67,10 @@
     where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance">
-    update batch_job_instance
-    set version  = #{version,jdbcType=BIGINT},
-        job_name = #{jobName,jdbcType=VARCHAR},
-        job_key  = #{jobKey,jdbcType=VARCHAR}
+    update "batch_job_instance"
+    set version = #{version,jdbcType=BIGINT},
+      job_name = #{jobName,jdbcType=VARCHAR},
+      job_key = #{jobKey,jdbcType=VARCHAR}
     where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
   </update>
 </mapper>

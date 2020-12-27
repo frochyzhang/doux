@@ -23,29 +23,29 @@
     </resultMap>
     <sql id="Base_Column_List">
         step_execution_id
-        , version, step_name, job_execution_id, start_time, end_time, status,
+        , version, step_name, job_execution_id, start_time, end_time, "status",
     commit_count, read_count, filter_count, write_count, read_skip_count, write_skip_count, 
     process_skip_count, rollback_count, exit_code, exit_message, last_updated
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from batch_step_execution
+        from "batch_step_execution"
         where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from batch_step_execution
+        from "batch_step_execution"
         where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
     </delete>
     <insert id="insert" keyColumn="step_execution_id" keyProperty="stepExecutionId"
             parameterType="com.allinfinance.dev.batch.dao.model.StepExecution" useGeneratedKeys="true">
-        insert into batch_step_execution (version, step_name, job_execution_id,
-                                          start_time, end_time, "status",
-                                          commit_count, read_count, filter_count,
-                                          write_count, read_skip_count, write_skip_count,
-                                          process_skip_count, rollback_count, exit_code,
-                                          exit_message, last_updated)
+        insert into "batch_step_execution" (version, step_name, job_execution_id,
+                                            start_time, end_time, "status",
+                                            commit_count, read_count, filter_count,
+                                            write_count, read_skip_count, write_skip_count,
+                                            process_skip_count, rollback_count, exit_code,
+                                            exit_message, last_updated)
         values (#{version,jdbcType=BIGINT}, #{stepName,jdbcType=VARCHAR}, #{jobExecutionId,jdbcType=BIGINT},
                 #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},
                 #{commitCount,jdbcType=BIGINT}, #{readCount,jdbcType=BIGINT}, #{filterCount,jdbcType=BIGINT},
@@ -55,7 +55,7 @@
     </insert>
     <insert id="insertSelective" keyColumn="step_execution_id" keyProperty="stepExecutionId"
             parameterType="com.allinfinance.dev.batch.dao.model.StepExecution" useGeneratedKeys="true">
-        insert into batch_step_execution
+        insert into "batch_step_execution"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="version != null">
                 version,
@@ -164,7 +164,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.StepExecution">
-        update batch_step_execution
+        update "batch_step_execution"
         <set>
             <if test="version != null">
                 version = #{version,jdbcType=BIGINT},
@@ -221,7 +221,7 @@
         where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.StepExecution">
-        update batch_step_execution
+        update "batch_step_execution"
         set version            = #{version,jdbcType=BIGINT},
             step_name          = #{stepName,jdbcType=VARCHAR},
             job_execution_id   = #{jobExecutionId,jdbcType=BIGINT},

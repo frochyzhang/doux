@@ -5,7 +5,7 @@ stmt_file=${basedir}/STMT_000064500000_${batch_date}_E
 stmttxn_file=${basedir}/STMTTXN_000064500000_${batch_date}
 echo "STMT_000064500000_${batch_date}_E" >${stmt_file}
 echo "STMTTXN_000064500000_${batch_date}" >${stmttxn_file}
-stmt_number=2000
+stmt_number=10000
 stmttxn_number=1
 for a in $( seq 1 ${stmt_number} )
 do 

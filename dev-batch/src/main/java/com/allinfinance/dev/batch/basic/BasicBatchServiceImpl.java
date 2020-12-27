@@ -1,7 +1,12 @@
 package com.allinfinance.dev.batch.basic;
 
-import com.allinfinance.dev.batch.service.TblBatCtlService;
+import com.allinfinance.dev.batch.dao.service.JobExecutionParamsService;
+import com.allinfinance.dev.batch.dao.service.JobExecutionService;
+import com.allinfinance.dev.batch.dao.service.JobInstanceService;
+import com.allinfinance.dev.batch.dao.service.TblBatCtlService;
 import com.allinfinance.dev.core.bean.BatchJobDto;
+import com.allinfinance.dev.core.dto.JobParamsDto;
+import com.allinfinance.dev.core.dto.JobSummaryInfo;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +18,8 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * BasicBatchServiceImpl
@@ -33,6 +36,12 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
     private JobOperator jobOperator;
     @Autowired
     private TblBatCtlService tblBatCtlService;
+    @Autowired
+    private JobExecutionService jobExecutionService;
+    @Autowired
+    private JobInstanceService jobInstanceService;
+    @Autowired
+    private JobExecutionParamsService jobExecutionParamsService;
 
     /**
      * 启动SpringBatch Job
@@ -62,6 +71,7 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
     @Override
     public Long startJob(String jobName, String parameters) throws NoSuchJobException, JobInstanceAlreadyExistsException, JobParametersInvalidException {
         logger.info("新增任务名：{}, 参数信息：{}", jobName, parameters);
+        parameters += ",run.month=" + System.currentTimeMillis();
         return jobOperator.start(jobName, parameters);
     }
 
@@ -147,21 +157,35 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
 
 
     @Override
-    public List<String> getJobSummaryInfo(String jobName) {
-        List<String> summaryInfoList = new ArrayList<>();
-        try {
-            for (Long runningExecution : jobOperator.getRunningExecutions(jobName)) {
-                String summaryInfo = jobOperator.getSummary(runningExecution);
-                logger.info("任务执行概要信息:{}", summaryInfo);
-                summaryInfoList.add(summaryInfo);
-            }
-        } catch (NoSuchJobException | NoSuchJobExecutionException e) {
-            logger.error("{}不存在,请检查任务名是否正确!", jobName, e);
+    public List<JobSummaryInfo> getJobSummaryInfo(List<Long> jobExecutionIdList) {
+        List<JobSummaryInfo> summaryInfoList = new ArrayList<>();
+        for (Long runningExecution : jobExecutionIdList) {
+            JobSummaryInfo jobSummaryInfo = new JobSummaryInfo();
+
+            com.allinfinance.dev.batch.dao.model.JobExecution jobExecution = jobExecutionService.selectByPrimaryKey(runningExecution);
+            jobSummaryInfo.setJobExecutionId(jobExecution.getJobExecutionId());
+            jobSummaryInfo.setJobExecutionVersion(jobExecution.getVersion());
+            jobSummaryInfo.setStartTime(jobExecution.getStartTime());
+            jobSummaryInfo.setEndTime(jobExecution.getEndTime());
+            jobSummaryInfo.setLastUpdated(jobExecution.getLastUpdated());
+            jobSummaryInfo.setStatus(jobExecution.getStatus());
+            jobSummaryInfo.setExitCode(jobExecution.getExitCode());
+            jobSummaryInfo.setExitMessage(jobExecution.getExitMessage());
+
+            com.allinfinance.dev.batch.dao.model.JobInstance jobInstance = jobInstanceService.selectByPrimaryKey(jobExecution.getJobInstanceId());
+            jobSummaryInfo.setJobInstanceId(jobExecution.getJobInstanceId());
+            jobSummaryInfo.setJobInstanceVersion(jobInstance.getVersion());
+            jobSummaryInfo.setJobName(jobInstance.getJobName());
+
+            List<JobParamsDto> jobParamsDtos = jobExecutionParamsService.selectByJobExecutionId(jobExecution.getJobExecutionId())
+                    .stream().map(map -> new JobParamsDto((String) map.get("paramname"), (String) map.get("paramvalue"))).collect(Collectors.toList());
+
+
+            jobSummaryInfo.setJobParamsDtoList(jobParamsDtos);
+            summaryInfoList.add(jobSummaryInfo);
         }
         return summaryInfoList;
     }
-
-    // TODO: 2020/12/17 加上完全放弃job和无状态关联的JOB
 
     @Override
     public List<BatchJobDto> getResumableJob() {
@@ -177,6 +201,29 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
             batchJobDtos.add(batchJobDto);
         }
         return batchJobDtos;
+    }
+
+    @Override
+    public List<Long> getRunningExecution(String jobName) {
+        List<Long> runningExecutions = null;
+        try {
+            Set<Long> executions = jobOperator.getRunningExecutions(jobName);
+            runningExecutions = new ArrayList<>(executions);
+        } catch (NoSuchJobException e) {
+            logger.error("{}：该job不存在!", jobName, e);
+        }
+        return runningExecutions;
+    }
+
+    @Override
+    public String getParameters(Long jobExecutionId) {
+        String parameters = "";
+        try {
+            parameters = jobOperator.getParameters(jobExecutionId);
+        } catch (NoSuchJobExecutionException e) {
+            logger.error("执行job:{}不存在!", jobExecutionId, e);
+        }
+        return parameters;
     }
 
 
