@@ -1,4 +1,4 @@
-package com.allinfinance.dev.socket.codec;
+package com.allinfinance.dev.core.util.socket.codec;
 
 import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -18,17 +18,15 @@ public class DemuxingMessageDecoder implements MessageDecoder {
 
     private Integer msgLengthSize;
     private String msgEncode;
-    private Integer bufferSize;
 
     public DemuxingMessageDecoder() {
         this.msgLengthSize = 0;
         this.msgEncode = "UTF-8";
     }
 
-    public DemuxingMessageDecoder(Integer msgLengthSize, String msgEncode, Integer bufferSize) {
+    public DemuxingMessageDecoder(Integer msgLengthSize, String msgEncode) {
         this.msgLengthSize = msgLengthSize;
         this.msgEncode = msgEncode;
-        this.bufferSize = bufferSize;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class DemuxingMessageDecoder implements MessageDecoder {
 
             // TODO: 2020/12/7 how to control this error report
             logger.info("剩余报文长度:{}", in.remaining());
-            if (in.remaining() < len && in.remaining() < this.bufferSize) {
+            if (in.remaining() < len) {
                 logger.error("报文数据未到齐: " + in.remaining() + ":" + len);
                 return MessageDecoderResult.NEED_DATA;
             }
@@ -112,13 +110,5 @@ public class DemuxingMessageDecoder implements MessageDecoder {
 
     public void setMsgEncode(String msgEncode) {
         this.msgEncode = msgEncode;
-    }
-
-    public Integer getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(Integer bufferSize) {
-        this.bufferSize = bufferSize;
     }
 }

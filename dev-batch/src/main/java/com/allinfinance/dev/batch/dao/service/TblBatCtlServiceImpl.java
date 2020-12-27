@@ -1,7 +1,8 @@
-package com.allinfinance.dev.batch.service;
+package com.allinfinance.dev.batch.dao.service;
 
-import com.allinfinance.dev.batch.mapper.TblBatCtlMapper;
-import com.allinfinance.dev.batch.model.TblBatCtl;
+import com.allinfinance.dev.batch.dao.mapper.JobExecutionMapper;
+import com.allinfinance.dev.batch.dao.mapper.TblBatCtlMapper;
+import com.allinfinance.dev.batch.dao.model.TblBatCtl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import java.util.Map;
 public class TblBatCtlServiceImpl implements TblBatCtlService {
     @Autowired
     private TblBatCtlMapper tblBatCtlMapper;
+    @Autowired
+    private JobExecutionMapper jobExecutionMapper;
 
     @Override
     public List<TblBatCtl> selectAll() {
@@ -35,7 +38,7 @@ public class TblBatCtlServiceImpl implements TblBatCtlService {
 //        tblBatCtlMapper.deleteCompletedStepExecution(jobExecutionId);
 //        tblBatCtlMapper.deleteCompletedJobParams(jobExecutionId);
 //        tblBatCtlMapper.deleteCompletedJobContext(jobExecutionId);
-        return tblBatCtlMapper.deleteCompletedJobExecution(jobExecutionId);
+        return jobExecutionMapper.deleteCompletedJobExecution(jobExecutionId);
     }
 
     @Override

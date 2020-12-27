@@ -24,7 +24,7 @@
         <appender-ref ref="QPS-CONSOLE"/>
     </logger>
 
-    <logger name="java.sql" level="info" additivity="false">
+    <logger name="java.sql" level="debug" additivity="false">
         <appender-ref ref="QPS-CONSOLE"/>
     </logger>
 

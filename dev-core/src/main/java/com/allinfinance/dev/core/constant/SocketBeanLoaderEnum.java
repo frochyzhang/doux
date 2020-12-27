@@ -32,9 +32,9 @@ public enum SocketBeanLoaderEnum {
     /* 请求处理类类名 */
     DEV_SOCKET_HANDLER("dev.socket.handler", ""),
     /* 请求处理类类名 */
-    DEV_SOCKET_DECODER("dev.socket.decoder","com.allinfinance.dev.socket.codec.DemuxingMessageDecoder"),
+    DEV_SOCKET_DECODER("dev.socket.decoder","com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder"),
     /* 请求处理类类名 */
-    DEV_SOCKET_ENCODER("dev.socket.encoder","com.allinfinance.dev.socket.codec.DemuxingMessageEncoder");
+    DEV_SOCKET_ENCODER("dev.socket.encoder","com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder");
 
     private final String keyName;
     private final String defaultValue;

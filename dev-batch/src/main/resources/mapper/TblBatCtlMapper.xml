@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.allinfinance.dev.batch.mapper.TblBatCtlMapper">
-    <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.model.TblBatCtl">
+<mapper namespace="com.allinfinance.dev.batch.dao.mapper.TblBatCtlMapper">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.dao.model.TblBatCtl">
         <result column="SYS_ORG_ID" jdbcType="VARCHAR" property="sysOrgId"/>
         <result column="TRIGGER_NAME" jdbcType="VARCHAR" property="triggerName"/>
         <result column="JOB_DETAIL_NAME" jdbcType="VARCHAR" property="jobDetailName"/>
@@ -13,34 +13,7 @@
         <result column="RESERVE_2" jdbcType="VARCHAR" property="reserve2"/>
         <result column="RESERVE_3" jdbcType="VARCHAR" property="reserve3"/>
     </resultMap>
-    <update id="deleteCompletedJobExecution">
-        update BATCH_JOB_EXECUTION
-        set status = 'DONE'
-        where job_execution_id = #{jobExecutionId}
-    </update>
-    <delete id="deleteCompletedJobContext">
-        delete
-        from BATCH_JOB_EXECUTION_Context
-        where job_execution_id = #{jobExecutionId}
-    </delete>
-    <delete id="deleteCompletedJobParams">
-        delete
-        from BATCH_JOB_EXECUTION_PARAMS
-        where job_execution_id = #{jobExecutionId}
-    </delete>
-    <delete id="deleteCompletedStepExecution">
-        delete
-        from BATCH_STEP_EXECUTION
-        where job_execution_id = #{jobExecutionId}
-    </delete>
-    <delete id="deleteCompletedStepExecutionContext">
-        delete
-        from BATCH_STEP_EXECUTION_CONTEXT
-        where step_execution_id in (
-            select step_execution_id
-            from BATCH_STEP_EXECUTION
-            where job_execution_id = #{jobExecutionId})
-    </delete>
+
     <select id="selectJobExecution" resultType="java.util.Map">
         select je.job_execution_id, je.job_instance_id, je.status, je.exit_code, ji.job_name
         from BATCH_JOB_EXECUTION je
@@ -60,7 +33,7 @@
         select *
         from TBL_BAT_CTL
     </select>
-    <insert id="insert" parameterType="com.allinfinance.dev.batch.model.TblBatCtl">
+    <insert id="insert" parameterType="com.allinfinance.dev.batch.dao.model.TblBatCtl">
         insert into TBL_BAT_CTL (SYS_ORG_ID, TRIGGER_NAME, JOB_DETAIL_NAME,
                                  TARGET_OBJECT, CRON_EXPRESSION, RECORD_STAT,
                                  JOB_DESC, RESERVE_1, RESERVE_2,
@@ -70,7 +43,7 @@
                 #{jobDesc,jdbcType=VARCHAR}, #{reserve1,jdbcType=VARCHAR}, #{reserve2,jdbcType=VARCHAR},
                 #{reserve3,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.allinfinance.dev.batch.model.TblBatCtl">
+    <insert id="insertSelective" parameterType="com.allinfinance.dev.batch.dao.model.TblBatCtl">
         insert into TBL_BAT_CTL
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="sysOrgId != null">

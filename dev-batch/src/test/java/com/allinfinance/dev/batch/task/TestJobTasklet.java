@@ -1,7 +1,7 @@
 package com.allinfinance.dev.batch.task;
 
 import com.allinfinance.dev.batch.basic.IBasicBatchService;
-import com.allinfinance.dev.batch.service.TblBatCtlService;
+import com.allinfinance.dev.batch.dao.service.JobExecutionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -11,7 +11,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author 张勇
@@ -26,9 +26,9 @@ public class TestJobTasklet implements Tasklet {
     @Autowired
     private JobOperator jobOperator;
     @Autowired
-    private TblBatCtlService tblBatCtlService;
-    @Autowired
     private IBasicBatchService basicBatchService;
+    @Autowired
+    private JobExecutionService jobExecutionService;
 
 
     public void setSysOrgId(String sysOrgId) {
@@ -42,13 +42,9 @@ public class TestJobTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
         logger.info("机构{}的测试任务!", sysOrgId);
-//        for (Long aLong : jobOperator.getRunningExecutions(stepContribution.getStepExecution().getJobExecution().getJobInstance().getJobName())) {
-//            jobOperator.stop(aLong);
-//        }
-        for (String summaryInfo : basicBatchService.getJobSummaryInfo(stepContribution.getStepExecution().getJobExecution().getJobInstance().getJobName())) {
-            logger.info("summaryInfo: {}",summaryInfo);
 
-        }
+        List<Long> runningExecution = basicBatchService.getRunningExecution(stepContribution.getStepExecution().getJobExecution().getJobInstance().getJobName());
+        basicBatchService.getJobSummaryInfo(runningExecution).forEach(jobSummaryInfo -> logger.info("summaryInfo:{}", jobSummaryInfo));
         return RepeatStatus.FINISHED;
     }
 }

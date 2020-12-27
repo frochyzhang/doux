@@ -52,8 +52,8 @@ socket通信模块主要集成了[Spring-5.3.1](https://docs.spring.io/spring-fr
 | dev.socket.bufferSize     | Integer     | 8096                                                     |
 | dev.socket.timeout        | Integer     | 30                                                       |
 | **dev.socket.handler**    | **String**  | **必填**                                                 |
-| dev.socket.decoder        | String      | com.allinfinance.dev.socket.codec.DemuxingMessageDecoder |
-| dev.socket.encoder        | String      | com.allinfinance.dev.socket.codec.DemuxingMessageEncoder |
+| dev.socket.decoder        | String      | com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder |
+| dev.socket.encoder        | String      | com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder |
 
 ### 使用举例：
 
@@ -175,7 +175,7 @@ dev.socket.port=4493
 
   ```java
   <bean id="batCtlScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-  		<property name="basePackage" value="com.allinfinance.dev.batch.mapper"/>
+  		<property name="basePackage" value="com.allinfinance.dev.batch.dao.mapper"/>
   </bean>
   ```
 
@@ -344,7 +344,7 @@ public class TestJobQuartz implements Job {
 package com.allinfinance.dev.batch.task;
 
 import com.allinfinance.dev.batch.basic.IBasicBatchService;
-import com.allinfinance.dev.batch.service.TblBatCtlService;
+import com.allinfinance.dev.batch.dao.service.TblBatCtlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -384,7 +384,7 @@ public class TestJobTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
         logger.info("机构{}的测试任务!", sysOrgId);
         for (String summaryInfo : basicBatchService.getJobSummaryInfo(stepContribution.getStepExecution().getJobExecution().getJobInstance().getJobName())) {
-            logger.info("summaryInfo: {}",summaryInfo);
+            logger.info("summaryInfo: {}", summaryInfo);
 
         }
         return RepeatStatus.FINISHED;

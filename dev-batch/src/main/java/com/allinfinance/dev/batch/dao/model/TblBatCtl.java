@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.model;
+package com.allinfinance.dev.batch.dao.model;
 
 import java.io.Serializable;
 

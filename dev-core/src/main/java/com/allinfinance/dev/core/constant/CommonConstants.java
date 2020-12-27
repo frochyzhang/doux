@@ -12,7 +12,7 @@ public class CommonConstants {
     public static final String FILE_SUF_FIX = ".properties";
     public static final String FILE_PARENT_PATH = "/";
     public static final String DB_PROPERTY_FILE = "/etc/db.properties";
-    public static final String DEFAULT_MAPPER_PACKAGE = "com.allinfinance.dev.batch.mapper";
+    public static final String DEFAULT_MAPPER_PACKAGE = "com.allinfinance.dev.batch.dao.mapper";
     public static final String XML_BEAN_VALIDATOR_REQUIRE = "dev.xml.field.verify";
     // -------------------------------【SYMBOL】-----------------------//
     public static final String BLANK = " ";

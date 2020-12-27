@@ -1,7 +1,7 @@
-package com.allinfinance.dev.batch.service;
+package com.allinfinance.dev.batch.dao.service;
 
 
-import com.allinfinance.dev.batch.model.TblBatCtl;
+import com.allinfinance.dev.batch.dao.model.TblBatCtl;
 
 import java.util.List;
 import java.util.Map;
