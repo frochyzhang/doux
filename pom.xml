@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.5-RELEASE</version>
+    <version>1.0.7-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -17,13 +17,18 @@
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.0.5-RELEASE</dev.version>
+        <dev.version>1.0.7-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springframework.boot.version>2.4.1</springframework.boot.version>
         <springframework.version>5.3.1</springframework.version>
+        <batch.version>4.3.0</batch.version>
         <mina.version>2.0.16</mina.version>
+        <dubbo.version>2.7.8</dubbo.version>
+        <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
         <commons.version>2.8.0</commons.version>
         <logback.version>1.1.7</logback.version>
+        <quartz.version>2.3.2</quartz.version>
     </properties>
 
     <dependencyManagement>
@@ -48,11 +53,19 @@
                 <artifactId>mina-core</artifactId>
                 <version>${mina.version}</version>
             </dependency>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springframework.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!--  spring framwork  -->
             <dependency>
                 <groupId>org.springframework.batch</groupId>
                 <artifactId>spring-batch-core</artifactId>
-                <version>4.3.0</version>
+                <version>${batch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -123,7 +136,7 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.3.2</version>
+                <version>${quartz.version}</version>
             </dependency>
             <!-- db connector -->
             <dependency>
@@ -326,6 +339,43 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.75</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.6.2</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
         </dependencies>
