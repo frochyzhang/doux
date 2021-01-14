@@ -1,15 +1,11 @@
 package com.allinfinance.dev.batch;
 
-import com.allinfinance.dev.batch.mybatis.MapperScanner;
 import com.allinfinance.dev.core.constant.CommonConstants;
+import com.allinfinance.dev.dal.mybatis.MapperScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-
-import java.util.Map;
 
 /**
  * @author 张勇
