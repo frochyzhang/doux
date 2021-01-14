@@ -10,6 +10,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.demux.MessageDecoder;
 import org.apache.mina.filter.codec.demux.MessageEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +55,18 @@ public class ShortSwitchServer {
                 IoAcceptor acceptor = new NioSocketAcceptor(minaSocketBean.getProcessorCount());
                 acceptor.getFilterChain().addLast("MsgCodec",
                         new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder)));
-                acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
+                acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newFixedThreadPool(minaSocketBean.getThreadCount())));
                 acceptor.setHandler((IoHandler) Class.forName(minaSocketBean.getHandlerClassName())
                         .cast(SpringConfigTool.getBeanByClassName(minaSocketBean.getHandlerClassName())));
                 acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
                 acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
                 acceptor.setCloseOnDeactivation(true);
+
+                if (minaSocketBean.getSoLinger()) {
+                    logger.info("TIME_WAIT SO_LINGER = 0生效!");
+                    SocketSessionConfig sessionConfig = (SocketSessionConfig) acceptor.getSessionConfig();
+                    sessionConfig.setSoLinger(0);
+                }
 
                 acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));
                 logger.info("[ {} ] 服务端启动成功! 参数为{}", minaSocketBean.getName(), minaSocketBean);

@@ -7,22 +7,24 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.7-RELEASE</version>
+    <version>1.0.15-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
         <module>dev-batch</module>
         <module>dev-example</module>
+        <module>dev-dubbo</module>
+        <module>dev-dal</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.0.7-RELEASE</dev.version>
+        <dev.version>1.0.15-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.1</springframework.boot.version>
         <springframework.version>5.3.1</springframework.version>
         <batch.version>4.3.0</batch.version>
-        <mina.version>2.0.16</mina.version>
+        <mina.version>2.0.19</mina.version>
         <dubbo.version>2.7.8</dubbo.version>
         <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -46,6 +48,16 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-batch</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-dubbo</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-dal</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
@@ -348,7 +360,7 @@
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>3.6.2</version>
+                <version>3.4.13</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>slf4j-log4j12</artifactId>
@@ -377,7 +389,6 @@
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -419,6 +430,7 @@
     </dependencies>
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

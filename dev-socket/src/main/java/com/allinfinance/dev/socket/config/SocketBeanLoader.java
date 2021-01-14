@@ -27,7 +27,7 @@ public class SocketBeanLoader {
     @Bean(name = "socketBeans")
     public List<MinaSocketBean> loadSocketBeansFromFile() throws Exception {
         Configurations configurations = new Configurations();
-        String fileParentPath = SocketBeanLoader.class.getResource(CommonConstants.FILE_PARENT_PATH).getPath();
+        String fileParentPath = SocketBeanLoader.class.getClassLoader().getResource(CommonConstants.FILE_PARENT_PATH).getPath();
         logger.info("加载配置文件路径:{}", fileParentPath);
 
         //文件名必须以【socket-】开头，以【.properties】结束

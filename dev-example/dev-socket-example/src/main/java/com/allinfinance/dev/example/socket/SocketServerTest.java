@@ -1,6 +1,5 @@
 package com.allinfinance.dev.example.socket;
 
-import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
 import com.allinfinance.dev.socket.MinaApplication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SocketServerTest {
     public static void main(String[] args) {
         new ClassPathXmlApplicationContext("classpath:application-context-test.xml");
-        BeanConvertValidator.beanVerify("abc", "utf-8");
         MinaApplication.run(SocketServerTest.class);
     }
 }

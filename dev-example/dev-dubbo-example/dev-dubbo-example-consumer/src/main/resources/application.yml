@@ -1,4 +1,20 @@
+dubbo:
+  application:
+    name: dubbo-example-consumer
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+    timeout: 10000
+  protocol:
+    name: dubbo
+    port: 31245
+  provider:
+    timeout: 10000
+    retries: 0
+  consumer:
+    check: false
+    timeout: 10000
+    retries: 0
+
 server:
   port: 8081
-
-dev.mrp.switch: RPC

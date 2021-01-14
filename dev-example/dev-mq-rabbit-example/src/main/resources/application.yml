@@ -1,1 +1,6 @@
-debug: false
+spring:
+  rabbitmq:
+    host: 10.250.1.17
+    port: 5672
+    username: guest
+    password: guest
