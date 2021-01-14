@@ -17,6 +17,8 @@ public enum SocketBeanLoaderEnum {
     DEV_SOCKET_PORT("dev.socket.port", "0"),
     /* 核心处理线程数 */
     DEV_SOCKET_PROC_COUNT("dev.socket.processCount", "10"),
+    /* 线程池大小 */
+    DEV_SOCKET_THREAD_COUNT("dev.socket.threadCount", "50"),
     /* 请求报文头中长度位数 */
     DEV_SOCKET_DEC_LENGTH("dev.socket.decode.length", "6"),
     /* 响应报文头中长度位数 */
@@ -32,9 +34,11 @@ public enum SocketBeanLoaderEnum {
     /* 请求处理类类名 */
     DEV_SOCKET_HANDLER("dev.socket.handler", ""),
     /* 请求处理类类名 */
-    DEV_SOCKET_DECODER("dev.socket.decoder","com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder"),
+    DEV_SOCKET_DECODER("dev.socket.decoder", "com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder"),
     /* 请求处理类类名 */
-    DEV_SOCKET_ENCODER("dev.socket.encoder","com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder");
+    DEV_SOCKET_ENCODER("dev.socket.encoder", "com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder"),
+    /* TIME_WAIT生效开关 */
+    DEV_SOCKET_SOLINGER("dev.socket.soLinger", "fase");
 
     private final String keyName;
     private final String defaultValue;
