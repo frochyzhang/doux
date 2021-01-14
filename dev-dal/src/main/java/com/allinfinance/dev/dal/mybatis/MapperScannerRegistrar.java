@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.mybatis;
+package com.allinfinance.dev.dal.mybatis;
 
 import com.allinfinance.dev.core.constant.CommonConstants;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -89,6 +89,12 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     }
 
+    /**
+     * 新增占位符解析
+     *
+     * @param pro 占位符名
+     * @return 占位符值
+     */
     private String parsePlaceHolder(String pro) {
         if (pro != null && pro.contains(PropertySourcesPlaceholderConfigurer.DEFAULT_PLACEHOLDER_PREFIX)) {
             String propertyName = pro.substring(2, pro.length() - 1);

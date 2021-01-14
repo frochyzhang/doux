@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.mybatis;
+package com.allinfinance.dev.dal.mybatis;
 
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
