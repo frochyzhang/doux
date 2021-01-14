@@ -5,10 +5,10 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.1.16-RELEASE</version>
+        <version>1.0.15-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>dev-dal 数据库连接操作模块</name>
+
     <artifactId>dev-dal</artifactId>
 
     <dependencies>
@@ -49,36 +49,8 @@
             <artifactId>spring-context-support</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-configuration2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-autoconfigure</artifactId>
+            <artifactId>dev-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ibm.db2</groupId>
-            <artifactId>jcc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm.db2</groupId>
-            <artifactId>db2jcc</artifactId>
-        </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.postgresql</groupId>-->
-        <!--            <artifactId>postgresql</artifactId>-->
-        <!--        </dependency>-->
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>
