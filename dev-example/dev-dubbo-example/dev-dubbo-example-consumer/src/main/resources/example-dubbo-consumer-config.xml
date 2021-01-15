@@ -6,4 +6,9 @@
     <dubbo:reference id="exampleService" interface="com.allinfinance.dev.dev.example.dubbo.ExampleInterface"
                      group="0001"
                      version="0.0.1"/>
+
+    <bean id="dubboService" class="com.allinfinance.dev.dubbo.config.DynamicDubboService">
+        <property name="version" value="0.0.1"/>
+        <property name="zkAddress" value="127.0.0.1:2181"/>
+    </bean>
 </beans>
