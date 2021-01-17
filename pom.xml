@@ -15,6 +15,7 @@
         <module>dev-example</module>
         <module>dev-dubbo</module>
         <module>dev-dal</module>
+        <module>dev-rabbitmq</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
@@ -58,6 +59,11 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-dal</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-rabbitmq</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
@@ -388,6 +394,22 @@
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
+            </dependency>
+            <!-- fix the bug:  java.lang.ClassNotFoundException: com.fasterxml.jackson.databind.JavaType-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.12.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.12.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.12.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
