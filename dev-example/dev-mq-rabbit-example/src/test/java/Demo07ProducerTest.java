@@ -25,7 +25,7 @@ public class Demo07ProducerTest {
         int i = 0;
         while (i++ < 1000000) {
             int id = (int) (System.currentTimeMillis() / 1000) + i;
-            producer.syncSend(id);
+            producer.syncSend("test-queue-key", id);
             logger.info("[testSyncSend][发送编号：[{}] 发送成功]", id);
         }
         // 阻塞等待，保证消费
