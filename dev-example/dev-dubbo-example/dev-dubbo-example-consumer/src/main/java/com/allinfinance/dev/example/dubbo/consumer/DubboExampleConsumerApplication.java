@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.allinfinance")
 @ImportResource(locations = {"classpath:example-dubbo-consumer-config.xml"})
 public class DubboExampleConsumerApplication {
     private static final Logger logger = LoggerFactory.getLogger(DubboExampleConsumerApplication.class);

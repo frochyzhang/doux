@@ -13,6 +13,6 @@ public class RabbitSetupConfig {
     private static final Logger logger = LoggerFactory.getLogger(RabbitSetupConfig.class);
 
     public RabbitSetupConfig() {
-        logger.info("初始化rabbitMq初始化连接参数。");
+        logger.info("初始化rabbitMq连接参数。");
     }
 }
