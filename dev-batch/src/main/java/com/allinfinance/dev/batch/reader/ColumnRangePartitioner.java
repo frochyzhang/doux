@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,8 +26,7 @@ public class ColumnRangePartitioner implements Partitioner {
         if (targetSize == 0) {
             targetSize = 1L;
         }
-        logger.info("OUR PARTITION SIZE WILL BE [" + targetSize + "]");
-        logger.info("WE WILL HAVE [" + gridSize + "] PARTITIONS");
+        logger.info("分片总数: {}, 每片处理记录数: {}, 记录总数: {}", gridSize, targetSize, endLine - startLine + 1);
         Map<String, ExecutionContext> result = new HashMap<String, ExecutionContext>();
         int number = 0;
         Long start = startLine;
@@ -45,12 +43,12 @@ public class ColumnRangePartitioner implements Partitioner {
             end += targetSize;
             number++;
         }
-        logger.info("WE ARE RETURNING [" + result.size() + "] PARTITIONS");
+        logger.info("共返回{}个分片", result.size());
         return result;
     }
 
     private Long getFileLineCount() {
-        Long lineCount = 0L;
+        long lineCount = 0L;
         try {
             lineCount = Files.lines(Paths.get(filePath)).count();
         } catch (IOException e) {
