@@ -7,19 +7,18 @@ import java.util.List;
 
 /**
  * <p>位图类.</p>
- *
  */
 public class BitMap {
 
 	private int[] bits = null;
 	private int length;
-	private final static int[] bitValue = { 0x80000000, 0x40000000, 0x20000000,
+	private final static int[] BIT_VALUE = {0x80000000, 0x40000000, 0x20000000,
 			0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
 			0x00800000, 0x00400000, 0x00200000, 0x00100000, 0x00080000,
 			0x00040000, 0x00020000, 0x00010000, 0x00008000, 0x00004000,
 			0x00002000, 0x00001000, 0x00000800, 0x00000400, 0x00000200,
 			0x00000100, 0x00000080, 0x00000040, 0x00000020, 0x00000010,
-			0x00000008, 0x00000004, 0x00000002, 0x00000001 };
+			0x00000008, 0x00000004, 0x00000002, 0x00000001};
 
 	public BitMap(int length) {
 		if (length < 0) {
@@ -35,20 +34,20 @@ public class BitMap {
 			return 0;
 		}
 		int intData = bits[index / 32];
-		return ((intData & bitValue[index % 32]) >>> (32 - index % 32 - 1));
+		return ((intData & BIT_VALUE[index % 32]) >>> (32 - index % 32 - 1));
 	}
-	
-	public byte[] addBits(List<Integer> list){
-		for(int val:list){
+
+	public byte[] addBits(List<Integer> list) {
+		for (int val : list) {
 			//本处-1的原因是，BitMap在1~64之间，而实际存储为0~63
-			addBit(val-1);
+			addBit(val - 1);
 		}
 		return getBitMap();
 	}
-	
-	public byte[] addBits(int[] bitArray){
-		for(int i=0;i<bitArray.length;i++){
-			if(bitArray[i]==1){
+
+	public byte[] addBits(int[] bitArray) {
+		for (int i = 0; i < bitArray.length; i++) {
+			if (bitArray[i] == 1) {
 				addBit(i);
 			}
 		}
@@ -85,19 +84,19 @@ public class BitMap {
 			throw new IllegalArgumentException("长度有误!");
 		}
 		int intData = bits[index / 32];
-		bits[index / 32] = intData | bitValue[index % 32];
+		bits[index / 32] = intData | BIT_VALUE[index % 32];
 //		if (value == 1) {
 //		}/* else {
 //			bits[index / 32] = intData & ~bitValue[index % 32];
 //		}*/
 	}
-	
-	
-	public byte[] getBitMap(){
+
+
+	public byte[] getBitMap() {
 		StringBuffer accum = new StringBuffer();
-		for(int index=1;index<=length;index++){
+		for (int index = 1; index <= length; index++) {
 //			System.out.println(index);
-			accum.append(this.getBit(index-1));
+			accum.append(this.getBit(index - 1));
 		}
 		return EncodeUtil.binary(accum.toString());
 	}

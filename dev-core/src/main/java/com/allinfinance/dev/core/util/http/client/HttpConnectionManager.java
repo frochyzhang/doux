@@ -119,6 +119,7 @@ public class HttpConnectionManager {
 				.build();
 		//请求重试处理
 		HttpRequestRetryHandler httpRequestRetryHandler = new HttpRequestRetryHandler() {
+			@Override
 			public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
 				if (executionCount >= retryTimes) {
 					return false;

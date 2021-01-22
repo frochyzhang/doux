@@ -81,17 +81,15 @@ public class SftpUtils {
         boolean flag = true;
         try {
             fileInputStream = new FileInputStream(localFileFullName);
-            if(StringUtils.isNotEmpty(remotePath))
-                try
-                {
+            if (StringUtils.isNotEmpty(remotePath)) {
+                try {
                     channelSftp.cd(remotePath);
-                }
-                catch (SftpException e)
-                {
-                    logger.info("目标地址目录不存在，创建目标地址目录" +  remotePath);
+                } catch (SftpException e) {
+                    logger.info("目标地址目录不存在，创建目标地址目录" + remotePath);
                     channelSftp.mkdir(remotePath);
                     channelSftp.cd(remotePath);
                 }
+            }
             channelSftp.put(fileInputStream, remoteFileName);
         } catch(Exception e){
             e.printStackTrace();
@@ -129,8 +127,9 @@ public class SftpUtils {
         boolean flag = true;
         try {
             fileOutputStream = new FileOutputStream(localFileFullName);
-            if(StringUtils.isNotEmpty(remotePath))
+            if (StringUtils.isNotEmpty(remotePath)) {
                 channelSftp.cd(remotePath);
+            }
             channelSftp.get(remoteFileName, fileOutputStream);
         }catch (Exception e) {
             e.printStackTrace();
@@ -178,14 +177,16 @@ public class SftpUtils {
         try {
             // 打开SFTP通道
             session = connect(host, port, username, password);
-            if(session == null)
+            if (session == null) {
                 flag = false;
+            }
             // 打开SFTP通道
             channel = (ChannelSftp) session.openChannel("sftp");
             channel.connect();
             // 上传文件
-            if(!uploadFile(remotePath, remoteFileName, localFileFullName, channel))
+            if (!uploadFile(remotePath, remoteFileName, localFileFullName, channel)) {
                 flag = false;
+            }
         } catch (Exception e){
             e.printStackTrace();
             flag = false;
@@ -235,14 +236,16 @@ public class SftpUtils {
         try {
             // 获得SESSION
             session = connect(host, port, username, password);
-            if(session == null)
+            if (session == null) {
                 flag = false;
+            }
             channel = (ChannelSftp) session.openChannel("sftp");
             // 打开SFTP通道
             channel.connect();
             // 下载文件
-            if (!downloadFile(remotePath, remoteFileName, localFileFullName, channel))
+            if (!downloadFile(remotePath, remoteFileName, localFileFullName, channel)) {
                 flag = false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             flag = false;

@@ -26,8 +26,8 @@ public class StrUtils {
 
         StringBuffer sbBuffer=new StringBuffer();
         for (String s:obj){
-            if (s!=null && !s.equals("")){
-                if (sbBuffer.length()==0) {
+            if (s != null && !"".equals(s)) {
+                if (sbBuffer.length() == 0) {
                     sbBuffer.append(s);
                 } else {
                     sbBuffer.append(split).append(s);
@@ -69,11 +69,11 @@ public class StrUtils {
             return false;
         }
         for (Object s : objects) {
-            if (s==null || s.toString().trim().equals("")){
+            if (s == null || "".equals(s.toString().trim())) {
                 if (!checkAll) {
                     return false;
                 } else {
-                    ret= false;
+                    ret = false;
                 }
             }
         }

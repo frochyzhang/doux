@@ -7,30 +7,31 @@ import java.util.regex.Pattern;
 
 /**
  * <p>编码转换工具类.如:BCD和HEX</p>
- *
  */
 public class SimpleUtil {
 
-    //不允许实例化
-    private SimpleUtil(){
+	private static Pattern pattern = Pattern.compile("[0-9]*");
 
-    }
-	
+	//不允许实例化
+	private SimpleUtil() {
+
+	}
+
 	//判断字符串是否都是由数字组成
-	public static boolean isNumeric(String str){
-		if(str==null){
+	public static boolean isNumeric(String str) {
+		if (str == null) {
 			return false;
 		}
-	   Pattern pattern = Pattern.compile("[0-9]*"); 
-	   Matcher isNum = pattern.matcher(str);
-	   if( !isNum.matches() ){
-	       return false; 
-	   } 
-	   return true; 
+
+		Matcher isNum = pattern.matcher(str);
+		if (!isNum.matches()) {
+			return false;
+		}
+		return true;
 	}
-	
+
 	//用于处理tlv格式的数据,返回tag+length+flag格式
-	public static String tlv(String tag,String flag){
+	public static String tlv(String tag, String flag) {
 		StringBuffer accum = new StringBuffer(tag);
 		//将flag长度偶数化
 		accum.append(evenLength(flag));

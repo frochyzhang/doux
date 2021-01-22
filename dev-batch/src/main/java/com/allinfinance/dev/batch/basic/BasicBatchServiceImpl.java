@@ -77,7 +77,7 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
 
     @Override
     public Map<Long, Boolean> pauseJob(List<Long> executionIdList) {
-        Map<Long, Boolean> pauseResult = new HashMap<>();
+        Map<Long, Boolean> pauseResult = new HashMap<>(16);
         try {
             for (Long runningExecution : executionIdList) {
                 logger.info("任务执行概要信息:{}", jobOperator.getSummary(runningExecution));
