@@ -1,6 +1,6 @@
 package com.allinfinance.dev.core.util.xml.jaxb;
 
-import com.allinfinance.dev.core.util.xml.XmlConvertValidator;
+import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class JAXBUtils {
         T t = (T) unmarshaller.unmarshal(new StringReader(xml));
 
         try {
-             XmlConvertValidator.beanToXmlVerify(t, "UTF-8");
+            BeanConvertValidator.beanVerify(t, "UTF-8");
         } catch (IllegalArgumentException e) {
             logger.error("xml -> bean, 字段校验异常!");
             throw e;
@@ -37,7 +37,7 @@ public class JAXBUtils {
     //将对象转换成xml
     public static String beanToXml(Object object, String encoding) throws JAXBException {
         try {
-            XmlConvertValidator.beanToXmlVerify(object, encoding);
+            BeanConvertValidator.beanVerify(object, encoding);
         } catch (IllegalArgumentException e) {
             logger.error("bean -> xml, 字段校验异常!");
             throw e;

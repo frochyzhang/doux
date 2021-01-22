@@ -57,7 +57,7 @@ public class BeanConvertValidator {
                     }
                     boolean maxMinVerify = checkAnno.length() != 0 && valueLength != checkAnno.length();
                     boolean minVerify = checkAnno.minLength() != 0 && valueLength < checkAnno.minLength();
-                    boolean maxVerify = checkAnno.maxLength() != 0 && valueLength > checkAnno.maxLength();
+                    boolean maxVerify = checkAnno.maxLength() != 0 && valueLength != checkAnno.maxLength();
                     if (maxMinVerify || minVerify || maxVerify) {
                         throw new IllegalArgumentException(filedName + " 长度不符合要求,源数据为: " + value);
                     }
@@ -77,7 +77,7 @@ public class BeanConvertValidator {
     static {
         Configurations configurations = new Configurations();
 
-        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
+        String fileParentPath = BeanConvertValidator.class.getClassLoader().getResource(CommonConstants.FILE_PARENT_PATH).getPath();
         String[] configFiles = new File(fileParentPath).list((dir, name) -> {
             if (name.endsWith(CommonConstants.FILE_SUF_FIX)) {
                 return Boolean.TRUE;
@@ -89,7 +89,7 @@ public class BeanConvertValidator {
             for (String fileName : configFiles) {
                 PropertiesConfiguration properties = null;
                 try {
-                    properties = configurations.properties(fileParentPath + fileName);
+                    properties = configurations.properties(fileName);
                 } catch (ConfigurationException e) {
                     e.printStackTrace();
                 }

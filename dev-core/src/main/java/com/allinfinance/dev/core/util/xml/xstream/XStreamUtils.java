@@ -1,6 +1,6 @@
 package com.allinfinance.dev.core.util.xml.xstream;
 
-import com.allinfinance.dev.core.util.xml.XmlConvertValidator;
+import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
@@ -53,7 +53,7 @@ public class XStreamUtils {
         xs.alias(alias, load);
         Object o = xs.fromXML(xml);
         try {
-            XmlConvertValidator.beanToXmlVerify(o, "UTF-8");
+            BeanConvertValidator.beanVerify(o, "UTF-8");
         } catch (IllegalArgumentException e) {
             logger.error("xml -> bean, 字段校验异常!");
             throw e;
@@ -63,7 +63,7 @@ public class XStreamUtils {
 
     public static String beanToXml(Object object, String encoding) {
         try {
-            XmlConvertValidator.beanToXmlVerify(object, encoding);
+            BeanConvertValidator.beanVerify(object, encoding);
         } catch (IllegalArgumentException e) {
             logger.error("bean -> xml, 字段校验异常!");
             throw e;
