@@ -19,6 +19,7 @@ public class ColumnRangePartitioner implements Partitioner {
 
     private static final Logger logger = LoggerFactory.getLogger(ColumnRangePartitioner.class);
 
+    @Override
     public Map<String, ExecutionContext> partition(int gridSize) {
 
         Long endLine = getFileLineCount();
@@ -27,7 +28,7 @@ public class ColumnRangePartitioner implements Partitioner {
             targetSize = 1L;
         }
         logger.info("分片总数: {}, 每片处理记录数: {}, 记录总数: {}", gridSize, targetSize, endLine - startLine + 1);
-        Map<String, ExecutionContext> result = new HashMap<String, ExecutionContext>();
+        Map<String, ExecutionContext> result = new HashMap<>(16);
         int number = 0;
         Long start = startLine;
         Long end = start + targetSize - 1;

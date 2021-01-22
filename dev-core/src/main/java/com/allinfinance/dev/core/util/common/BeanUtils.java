@@ -27,7 +27,7 @@ public class BeanUtils {
         Assert.notNull(source, "Source must not be null!");
         Assert.notNull(target, "Target must not be null!");
 
-        Map<String, String> maps = new HashMap<>();
+        Map<String, String> maps = new HashMap<>(16);
         try {
             getProperties(source, maps);
 
@@ -50,7 +50,9 @@ public class BeanUtils {
             String sourceFieldName = sourceField.getName();
             sourceField.setAccessible(true);
             Object sourceFieldValue = sourceField.get(source);
-            if (sourceFieldValue == null) continue;
+            if (sourceFieldValue == null) {
+                continue;
+            }
             if (sourceField.getType() == String.class) {
                 properties.put(sourceFieldName, (String) sourceFieldValue);
             } else {

@@ -127,7 +127,7 @@ public class DateUtils {
      * @throws Exception
      */
     public static Timestamp getDateFirst(String timeString) throws Exception {
-        if (timeString == null || timeString.equals("")) {
+        if (timeString == null || "".equals(timeString)) {
             return null;
         }
         if (timeString.length() > 10) {
@@ -145,13 +145,13 @@ public class DateUtils {
      * @throws Exception
      */
     public static Timestamp getDateLast(String timeString) throws Exception{
-        if (timeString == null || timeString.equals("")) {
+        if (timeString == null || "".equals(timeString)) {
             return null;
         }
         if (timeString.length() > 10) {
             return getTime(timeString, "yyyy-MM-dd HH:mm:ss");
         } else {
-            return getTime(timeString +" 23:59:59", "yyyy-MM-dd HH:mm:ss");
+            return getTime(timeString + " 23:59:59", "yyyy-MM-dd HH:mm:ss");
         }
     }
 
@@ -163,8 +163,9 @@ public class DateUtils {
     public static Timestamp getMonday(){
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (dayofweek == 0)
+        if (dayofweek == 0) {
             dayofweek = 7;
+        }
         calendar.add(Calendar.DATE, -dayofweek + 1);
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         String mystrdate = myFormat.format(calendar.getTime());
@@ -180,8 +181,9 @@ public class DateUtils {
     public static Timestamp getSunday(){
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (dayofweek == 0)
+        if (dayofweek == 0) {
             dayofweek = 7;
+        }
         calendar.add(Calendar.DATE, -dayofweek + 7);
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         String mystrdate = myFormat.format(calendar.getTime());
@@ -241,7 +243,7 @@ public class DateUtils {
      */
     public static Date parseToDate(String val) throws ParseException{
         Date date = null;
-        if (val != null && val.trim().length() != 0 && !val.trim().toLowerCase().equals("null")){
+        if (val != null && val.trim().length() != 0 && !"null".equals(val.trim().toLowerCase())) {
             val = val.trim();
             if (val.length() > 10) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -284,7 +286,7 @@ public class DateUtils {
         StringBuffer endStr = new StringBuffer().append(day_end_prevM).append(" 23:59:59");
         day_end_prevM = endStr.toString();  //上月最后一天
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>(16);
         map.put("prevMonthFD", day_first_prevM);
         map.put("prevMonthPD", day_end_prevM);
         return map;
@@ -556,7 +558,7 @@ public class DateUtils {
      * @return
      */
     public static final String toLongDateTmPartGBKString(Date aDate) {
-        return toFormatDateString(aDate, Long_DATE_TM_PART_GBK_FORMAT);
+        return toFormatDateString(aDate, LONG_DATE_TM_PART_GBK_FORMAT);
     }
 
     /**
@@ -1288,6 +1290,9 @@ public class DateUtils {
                     break;
                 case 4:
                     ret = aDate.after(dMinDate);
+                    break;
+                default:
+                    break;
             }
         } catch (ParseException e) {
         }
@@ -1425,7 +1430,7 @@ public class DateUtils {
     public static final String MAIL_DATE_DT_PART_FORMAT = "yyyyMMdd";
     public static final String MAIL_TIME_TM_PART_FORMAT = "HHmmss";
     public static final String LONG_DATE_TM_PART_FORMAT = "HH:mm:ss";
-    public static final String Long_DATE_TM_PART_GBK_FORMAT = "HH时mm分ss秒";
+    public static final String LONG_DATE_TM_PART_GBK_FORMAT = "HH时mm分ss秒";
     public static final String MAIL_DATA_DTM_PART_FORMAT = "MM月dd日HH:mm";
     public static final String MAIL_DATA_YDTM_PART_FORMAT = "yyyy年MM月dd日  HH:mm";
     public static final String POINT_DATA_DTM_PART_FORMAT = "yyyy.MM.dd";

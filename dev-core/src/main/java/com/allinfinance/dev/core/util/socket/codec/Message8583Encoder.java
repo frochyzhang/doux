@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 public class Message8583Encoder implements MessageEncoder {
     private Logger logger = LoggerFactory.getLogger(Message8583Encoder.class);
 
+    @Override
     public void encode(IoSession session, Object message,
                        ProtocolEncoderOutput out) throws Exception {
         logger.debug("编码前消息：content["

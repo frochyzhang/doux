@@ -7,91 +7,90 @@ import java.util.Random;
 
 /**
  * <p>DES加密类</p>
- *
  */
 public class MacUtil {
 	public static String ZPK = "46FE4CA7D38564DF1A86B962BF2F0291";
 	public static String ZAK = "A1D610A2D9E00B5D5446E6F43E293719";
-	
-	private static final int[][] s1 = 
-		{
-			{14,4, 13,1, 2, 15,11,8, 3, 10,6, 12,5, 9, 0, 7},
-			{0, 15,7, 4, 14,2, 13,1, 10,6, 12,11,9, 5, 3, 8},
-			{4, 1, 14,8, 13,6, 2, 11,15,12,9, 7, 3, 10,5, 0},
-			{15,12,8, 2, 4, 9, 1, 7, 5, 11,3, 14,10,0, 6, 13}
-		 };
 
-	private static final int[][] s2 = 
-		{
-			{15,1, 8, 14,6, 11,3, 4, 9, 7, 2, 13,12,0, 5, 10},
-			{3, 13,4, 7, 15,2, 8, 14,12,0, 1, 10,6, 9, 11,5},
-			{0, 14,7, 11,10,4, 13,1, 5, 8, 12,6, 9, 3, 2, 15},
-			{13,8, 10,1, 3, 15,4, 2, 11,6, 7, 12,0, 5, 14,9}
-		};
-	private static final int[][] s3 = 
-		{
-			{10,0, 9, 14,6, 3, 15,5, 1, 13,12,7, 11,4, 2, 8},
-		 	{13,7, 0, 9, 3, 4, 6, 10,2, 8, 5, 14,12,11,15,1},
-		    {13,6, 4, 9, 8, 15,3, 0, 11,1, 2, 12,5, 10,14,7},
-		    {1, 10,13,0, 6, 9, 8, 7, 4, 15,14,3, 11,5, 2, 12}
-		};
-	private static final int[][] s4 = 
-		{
-			{7, 13,14,3, 0, 6, 9, 10,1, 2, 8, 5, 11,12,4, 15},
-		    {13,8, 11,5, 6, 15,0, 3, 4, 7, 2, 12,1, 10,14,9},
-		    {10,6, 9, 0, 12,11,7, 13,15,1, 3, 14,5, 2, 8, 4},
-		    {3, 15,0, 6, 10,1, 13,8, 9, 4, 5, 11,12,7, 2, 14}
-		};
-	private static final int[][] s5 = 
-		{
-			{2, 12,4, 1, 7, 10,11,6, 8, 5, 3, 15,13,0, 14,9},
-		    {14,11,2, 12,4, 7, 13,1, 5, 0, 15,10,3, 9, 8, 6},
-		    {4, 2, 1, 11,10,13,7, 8, 15,9, 12,5, 6, 3, 0, 14},
-		    {11,8, 12,7, 1, 14,2, 13,6, 15,0, 9, 10,4, 5, 3}
-		};
+	private static final int[][] S_1 =
+			{
+					{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
+					{0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8},
+					{4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0},
+					{15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13}
+			};
 
-	private static final int[][] s6 = 
-		{
-			{12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11},
-		    {10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8},
-		    {9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6},
-		    {4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13}
-		};
-	private static final int[][] s7 =
-		{
-			{4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1},
-		    {13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6},
-		    {1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2},
-		    {6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12}
-		};
+	private static final int[][] S_2 =
+			{
+					{15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10},
+					{3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5},
+					{0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15},
+					{13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9}
+			};
+	private static final int[][] S_3 =
+			{
+					{10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8},
+					{13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1},
+					{13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7},
+					{1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12}
+			};
+	private static final int[][] S_4 =
+			{
+					{7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15},
+					{13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9},
+					{10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4},
+					{3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14}
+			};
+	private static final int[][] S_5 =
+			{
+					{2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9},
+					{14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6},
+					{4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14},
+					{11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3}
+			};
 
-	private static final int[][] s8 = 
-		{
-			{13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7},
-			{1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2},
-			{7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8},
-			{2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
-		};
+	private static final int[][] S_6 =
+			{
+					{12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11},
+					{10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8},
+					{9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6},
+					{4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13}
+			};
+	private static final int[][] S_7 =
+			{
+					{4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1},
+					{13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6},
+					{1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2},
+					{6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12}
+			};
 
-	private static final int[] ip = 
-		{58, 50, 42, 34, 26, 18, 10, 2,
-		60, 52, 44, 36, 28, 20, 12, 4,
-		62, 54, 46, 38, 30, 22, 14, 6,
-		64, 56, 48, 40, 32, 24, 16, 8,
-		57, 49, 41, 33, 25, 17, 9, 1,
-		59, 51, 43, 35, 27, 19, 11, 3,
-		61, 53, 45, 37, 29, 21, 13, 5,
-		63, 55, 47, 39, 31, 23, 15, 7};
+	private static final int[][] S_8 =
+			{
+					{13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7},
+					{1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2},
+					{7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8},
+					{2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
+			};
 
-	private static final int[] _ip = 
-		{40, 8, 48, 16, 56, 24, 64, 32,
-		39, 7, 47, 15, 55, 23, 63, 31,
-		38, 6, 46, 14, 54, 22, 62, 30,
-		37, 5, 45, 13, 53, 21, 61, 29,
-		36, 4, 44, 12, 52, 20, 60, 28,
-		35, 3, 43, 11, 51, 19, 59, 27,
-		34, 2, 42, 10, 50, 18, 58, 26,
-		33, 1, 41, 9, 49, 17, 57, 25};
+	private static final int[] IP =
+			{58, 50, 42, 34, 26, 18, 10, 2,
+					60, 52, 44, 36, 28, 20, 12, 4,
+					62, 54, 46, 38, 30, 22, 14, 6,
+					64, 56, 48, 40, 32, 24, 16, 8,
+					57, 49, 41, 33, 25, 17, 9, 1,
+					59, 51, 43, 35, 27, 19, 11, 3,
+					61, 53, 45, 37, 29, 21, 13, 5,
+					63, 55, 47, 39, 31, 23, 15, 7};
+
+	private static final int[] _ip =
+			{40, 8, 48, 16, 56, 24, 64, 32,
+					39, 7, 47, 15, 55, 23, 63, 31,
+					38, 6, 46, 14, 54, 22, 62, 30,
+					37, 5, 45, 13, 53, 21, 61, 29,
+					36, 4, 44, 12, 52, 20, 60, 28,
+					35, 3, 43, 11, 51, 19, 59, 27,
+					34, 2, 42, 10, 50, 18, 58, 26,
+					33, 1, 41, 9, 49, 17, 57, 25};
 
 	private static final int[] LS = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1}; 
 	private static int[][] subKey = new int[16][48];
@@ -186,13 +185,13 @@ public class MacUtil {
 	 * @param y	执行幂操作的指数
 	 * @return	幂操作的结果
 	 */
-	public static int getXY(int x,int y)
-	{
+	public static int getXY(int x,int y) {
 		int temp = x;
-		if(y == 0) x = 1;
-		for(int i=2; i<=y; i++)
-		{
-			x *= temp;  
+		if (y == 0) {
+			x = 1;
+		}
+		for (int i = 2; i <= y; i++) {
+			x *= temp;
 		}
 		return x;
 	}
@@ -203,19 +202,18 @@ public class MacUtil {
 	 * @param s 0,1组成的字符串
 	 * @return 转换后的16进制字符
 	 */
-	public static String binary2Hex(String s)
-	{
+	public static String binary2Hex(String s) {
 		int len = s.length();
 		int result = 0;
 		int k = 0;
-		if(len > 4)
+		if (len > 4) {
 			return null;
-		for(int i=len; i>0; i--)
-		{
-			result += Integer.parseInt(s.substring(i-1, i))*getXY(2,k);
+		}
+		for (int i = len; i > 0; i--) {
+			result += Integer.parseInt(s.substring(i - 1, i)) * getXY(2, k);
 			k++;
 		}
-		switch(result){
+		switch (result) {
 			case 0:
 			case 1:
 			case 2:
@@ -291,12 +289,12 @@ public class MacUtil {
 		String str = "";
 		int ii = 0;
 		int len = s.length();
-		if(len%4 != 0)
-		{
-			while(ii<4-len%4)
-			{
-				s = "0" + s;
+		if(len%4 != 0) {
+			StringBuilder sBuilder = new StringBuilder(s);
+			while (ii < 4 - len % 4) {
+				sBuilder.insert(0, "0");
 			}
+			s = sBuilder.toString();
 		}
 		for(int i=0; i<len/4; i++)
 		{
@@ -308,9 +306,8 @@ public class MacUtil {
 	public static int[] changeIP(int[] source)
 	{
 		int[] dest = new int[64];
-		for(int i=0; i<64; i++)
-		{
-			dest[i] = source[ip[i]-1];
+		for(int i=0; i<64; i++) {
+			dest[i] = source[IP[i] - 1];
 		}
 		return dest;
 	}
@@ -346,24 +343,20 @@ public class MacUtil {
 	} 
 
 
-	public static int[] press(int[] source)
-	{
+	public static int[] press(int[] source) {
 		int[] ret = new int[32];
 		int[][] temp = new int[8][6];
-		int[][][] s = {s1,s2,s3,s4,s5,s6,s7,s8};
+		int[][][] s = {S_1, S_2, S_3, S_4, S_5, S_6, S_7, S_8};
 		StringBuffer str = new StringBuffer();
-		for(int i=0; i<8; i++)
-		{
-			for(int j=0; j<6; j++)
-			{
-				temp[i][j] = source[i*6+j];
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 6; j++) {
+				temp[i][j] = source[i * 6 + j];
 			}
 		}
 
-		for(int i=0; i<8; i++)
-		{
-			int x = temp[i][0]*2 + temp[i][5];
-			int y = temp[i][1]*8 + temp[i][2]*4 + temp[i][3]*2 + temp[i][4];
+		for (int i = 0; i < 8; i++) {
+			int x = temp[i][0] * 2 + temp[i][5];
+			int y = temp[i][1] * 8 + temp[i][2] * 4 + temp[i][3] * 2 + temp[i][4];
 			int val = s[i][x][y];
 			String ch = int2Hex(val);
 			str.append(ch);
@@ -526,16 +519,14 @@ public class MacUtil {
 	 * @param type 加解密类型
 	 * @return 加加解密结果
 	 */
-	public static String DES_1(String source,String key,int type)
-	{
-		if(source.length() != 16 || key.length() != 16)
+	public static String DES_1(String source,String key,int type) {
+		if (source.length() != 16 || key.length() != 16) {
 			return null;
-		if(type==0)
-		{
+		}
+		if (type == 0) {
 			return encryption(source, key);
 		}
-		if(type==1)
-		{
+		if (type == 1) {
 			return discryption(source, key);
 		}
 
@@ -551,24 +542,22 @@ public class MacUtil {
 	 * @param type 加解密类型
 	 * @return 加解密结果
 	 */
-	public static String DES_3(String source,String key,int type)
-	{
-		if(key.length() != 32 || source.length() != 16)
+	public static String DES_3(String source,String key,int type) {
+		if (key.length() != 32 || source.length() != 16) {
 			return null;
+		}
 		String temp = null;
-		String K1 = key.substring(0, key.length()/2);
-		String K2 = key.substring(key.length()/2);
+		String K1 = key.substring(0, key.length() / 2);
+		String K2 = key.substring(key.length() / 2);
 
-		if(type==0)
-		{
+		if (type == 0) {
 			temp = encryption(source, K1);
 			temp = discryption(temp, K2);
-	
+
 			return encryption(temp, K1);
 		}
 
-		if(type==1)
-		{
+		if (type == 1) {
 			temp = discryption(source, K1);
 			temp = encryption(temp, K2);
 			return discryption(temp, K1);
@@ -635,10 +624,10 @@ public class MacUtil {
 		return dest;
 	}
 
-	public static void setKey(String source)
-	{
-		if(subKey.length > 0)
+	public static void setKey(String source) {
+		if (subKey.length > 0) {
 			subKey = new int[16][48];
+		}
 
 		int[] temp = string2Binary(source);
 		int[] left = new int[28];
@@ -646,18 +635,16 @@ public class MacUtil {
 		int[] temp1 = new int[56];
 		temp1 = keyPC_1(temp);
 
-		for(int i=0; i<28; i++)
-		{
+		for (int i = 0; i < 28; i++) {
 			left[i] = temp1[i];
-			right[i] = temp1[i+28];
+			right[i] = temp1[i + 28];
 		}
 
-		for(int i=0; i<16; i++)
-		{
+		for (int i = 0; i < 16; i++) {
 			left = keyLeftMove(left, LS[i]);
 			right = keyLeftMove(right, LS[i]);
-	
-			for(int j=0; j<28; j++)
+
+			for (int j = 0; j < 28; j++)
 			{
 				temp1[j] = left[j];
 				temp1[j+28] = right[j];
@@ -832,33 +819,29 @@ public class MacUtil {
 			return MAC(key,vector,EncodeUtil.hex(data.getBytes()));
 		}
 		
-		public static String MAC(String key,String vector,String data)
-		{
-			if(key.length() != 16)
-			{
+		public static String MAC(String key,String vector,String data) {
+			if (key.length() != 16) {
 				new Exception("key's length must be 16!").printStackTrace();
 				return null;
 			}
-			
-			if(vector == null || vector.length() != 16)
+
+			if (vector == null || vector.length() != 16) {
 				vector = "0000000000000000";
-			
+			}
+
 			StringBuffer sb = new StringBuffer(data);
-			int mod = data.length()%16;
-			if(mod != 0)
-			{
-				for(int i = 0;i < 16 - mod;i++)
-				{
+			int mod = data.length() % 16;
+			if (mod != 0) {
+				for (int i = 0; i < 16 - mod; i++) {
 					sb.append("0");
 				}
 			}
 			String operator = sb.toString();
 			//TODO
 			System.out.println("补位后的操作数为：" + operator);
-			int count = operator.length()/16;
-			String [] blocks = new String[count];
-			for(int i = 0;i < count;i++)
-			{
+			int count = operator.length() / 16;
+			String[] blocks = new String[count];
+			for (int i = 0; i < count; i++) {
 				blocks[i] = operator.substring(i*16, i*16 + 16);
 			}
 			//循环进行异或,DES加密

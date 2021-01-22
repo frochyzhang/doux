@@ -86,7 +86,7 @@ public abstract class AbstractIsoMsgFactory {
         if (pack == null || pack.size() == 0) {
             throw new IllegalArgumentException("配置为空，请检查IsoPackage是否为空");
         }
-        Map<String, String> returnMap = new HashMap<String, String>();
+        Map<String, String> returnMap = new HashMap<>(16);
         // 起判断的作用
         int offset = 0;
         // 深度拷贝

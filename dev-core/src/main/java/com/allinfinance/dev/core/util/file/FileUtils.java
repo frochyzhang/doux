@@ -51,10 +51,12 @@ public class FileUtils {
             return false;
         }finally{
             try {
-                if (null != in)
+                if (null != in) {
                     in.close();
-                if (null != zipOut)
+                }
+                if (null != zipOut) {
                     zipOut.close();
+                }
             } catch (IOException e) {
                 logger.error("关闭文件IO流出现异常!");
                 e.printStackTrace();
@@ -67,9 +69,9 @@ public class FileUtils {
         FileInputStream fileInputStream = null;
         try {
             File file = new File(filePath);
-            if (!file.exists())
+            if (!file.exists()) {
                 logger.error("待计算sha-256文件不存在:{}", filePath);
-            else {
+            } else {
                 fileInputStream = new FileInputStream(file);
                 sha256sum = DigestUtils.sha256Hex(fileInputStream);
             }
