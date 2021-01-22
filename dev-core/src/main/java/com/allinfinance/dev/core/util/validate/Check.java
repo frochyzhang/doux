@@ -1,4 +1,4 @@
-package com.allinfinance.dev.core.util.xml;
+package com.allinfinance.dev.core.util.validate;
 
 import java.lang.annotation.*;
 
