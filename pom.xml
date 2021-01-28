@@ -22,7 +22,7 @@
     <properties>
         <dev.version>1.1.0-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <springframework.boot.version>2.4.1</springframework.boot.version>
+        <springframework.boot.version>2.4.2</springframework.boot.version>
         <springframework.version>5.3.1</springframework.version>
         <batch.version>4.3.0</batch.version>
         <mina.version>2.0.19</mina.version>
