@@ -12,6 +12,6 @@ public class DubboSetupConfig {
     private static final Logger logger = LoggerFactory.getLogger(DubboSetupConfig.class);
 
     public DubboSetupConfig() {
-        logger.info("初始化Dubbo连接参数.");
+        logger.info("初始化Dubbo连接参数！");
     }
 }
