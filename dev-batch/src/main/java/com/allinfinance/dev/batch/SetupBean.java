@@ -19,7 +19,6 @@ public class SetupBean {
     private static final Logger logger = LoggerFactory.getLogger(SetupBean.class);
 
     public SetupBean() {
-
+        logger.info("初始化batch连接参数！");
     }
-
 }

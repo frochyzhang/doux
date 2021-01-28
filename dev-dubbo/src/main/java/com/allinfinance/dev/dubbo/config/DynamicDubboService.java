@@ -17,7 +17,7 @@ public class DynamicDubboService implements ApplicationContextAware {
     private String zkAddress;
 
     public <T> T getDubboService(String group, Class<T> clazz) throws Exception {
-        logger.info("获取CupspService的dubbo服务, group:" + group);
+        logger.info("获取动态dubbo服务, group = {}, interface = {}!", group, clazz);
         ReferenceBean<T> referenceBean = new ReferenceBean<>();
         referenceBean.setApplicationContext(applicationContext);
         referenceBean.setInterface(clazz);
