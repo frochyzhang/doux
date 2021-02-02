@@ -8,14 +8,19 @@
         <version>1.1.4-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>dev-redis-example - Redisson整合实例</name>
+    <artifactId>dev-redis-example</artifactId>
 
-    <artifactId>dev-socket-example</artifactId>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-socket</artifactId>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.15.0</version>
         </dependency>
     </dependencies>
-
 </project>
