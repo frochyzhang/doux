@@ -19,7 +19,7 @@ public class XStreamUtils {
     private static final Logger logger = LoggerFactory.getLogger(XStreamUtils.class);
 
     public static String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    private static String alias = "SERVICE";
+    private static String ALIAS = "SERVICE";
 
     public static XStream xsFriendly;
     public static XStream xs;
@@ -50,7 +50,7 @@ public class XStreamUtils {
             xs = xsFriendly;
         }
         xs.autodetectAnnotations(true);
-        xs.alias(alias, load);
+        xs.alias(ALIAS, load);
         Object o = xs.fromXML(xml);
         try {
             BeanConvertValidator.beanVerify(o, "UTF-8");
@@ -68,7 +68,7 @@ public class XStreamUtils {
             logger.error("bean -> xml, 字段校验异常!");
             throw e;
         }
-        xsFriendly.alias(alias, object.getClass());
+        xsFriendly.alias(ALIAS, object.getClass());
         xsFriendly.processAnnotations(object.getClass());
         return XML_HEAD + "\n" + xsFriendly.toXML(object);
     }
@@ -78,8 +78,8 @@ public class XStreamUtils {
      *
      * @param alias 根节点别名，默认值为SERVICE
      */
-    public static void setAlias(String alias) {
-        XStreamUtils.alias = alias;
+    public static void setALIAS(String alias) {
+        ALIAS = alias;
     }
 
     /**

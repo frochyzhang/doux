@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-RELEASE</version>
+    <version>1.1.2-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -20,7 +20,7 @@
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.1.0-RELEASE</dev.version>
+        <dev.version>1.1.2-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
         <springframework.version>5.3.1</springframework.version>
@@ -450,6 +450,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
 
