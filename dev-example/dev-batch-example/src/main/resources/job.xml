@@ -60,9 +60,6 @@
     </bean>
     <bean id="testStrDto" class="com.allinfinance.dev.batch.task.TestStrDto" scope="prototype"/>
 
-    <bean id="itemFilePartitioner" class="com.allinfinance.dev.batch.task.ItemFilePartitioner" scope="step">
-        <property name="filePath" value="#{jobParameters['filePath']}"/>
-    </bean>
     <bean id="readFileTestHandler"
           class="org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler" scope="step">
         <property name="taskExecutor" ref="taskExecutor"/>
