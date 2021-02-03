@@ -5,10 +5,10 @@
     <parent>
         <artifactId>dev-example</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.1.16-RELEASE</version>
+        <version>1.1.4-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>dev-batch-example 批量处理框架定时任务使用示例</name>
+
     <artifactId>dev-batch-example</artifactId>
 
     <properties>

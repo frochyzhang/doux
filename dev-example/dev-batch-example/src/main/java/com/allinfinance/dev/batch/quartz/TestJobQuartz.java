@@ -8,7 +8,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -73,8 +72,8 @@ public class TestJobQuartz implements Job {
 //
 //            logger.info("done...");
 
-//            iBasicBatchService.startJob("readFileJob", "sysOrgId=9900000,gridSize=10,startLine=1,filePath=Z:/zy/workspace/git/dev-latest/images/STMT_000064500000__E");
-            JobExecution je = iBasicBatchService.startNewBatch(readFileJob, jobParams);
+            iBasicBatchService.startJob("readFileJob", "sysOrgId=9900000,gridSize=10,startLine=1,filePath=Z:/zy/workspace/git/dev-latest/images/STMT_000064500000__E");
+//            JobExecution je = iBasicBatchService.startNewBatch(readFileJob, jobParams);
 ////            JobExecution je = iBasicBatchService.startNewBatch(testJob, jobParams);
 //            if (null != je && !je.getStatus().isUnsuccessful()) {
 //                logger.info("批量执行成功: {}", testJob.getName());
