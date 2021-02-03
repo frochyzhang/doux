@@ -1,27 +1,15 @@
 package com.allinfinance.dev.example.socket;
 
-import com.allinfinance.dev.core.util.http.client.HttpConnectionManager;
 import com.allinfinance.dev.socket.handler.AbstractMessageIOHandler;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
 @Component
 public class TestIOHandler extends AbstractMessageIOHandler {
-
-    @Bean(initMethod = "init")
-    public HttpConnectionManager httpConnectionManager() {
-        HttpConnectionManager httpConnectionManager = new HttpConnectionManager();
-        httpConnectionManager.setMaxPoolSize(50);
-        httpConnectionManager.setCharSet("UTF-8");
-        httpConnectionManager.setInitPoolSize(5);
-        httpConnectionManager.setSocketSoTimeOut(30000);
-        return httpConnectionManager;
-    }
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageIOHandler.class);
 
