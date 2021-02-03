@@ -18,15 +18,15 @@
       double_val, identifying
     </sql>
     <insert id="insert" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionParams">
-        insert into "batch_job_execution_params" (job_execution_id, type_cd, key_name,
-                                                  string_val, date_val, long_val,
-                                                  double_val, identifying)
+        insert into batch_job_execution_params (job_execution_id, type_cd, key_name,
+                                                string_val, date_val, long_val,
+                                                double_val, identifying)
         values (#{jobExecutionId,jdbcType=BIGINT}, #{typeCd,jdbcType=VARCHAR}, #{keyName,jdbcType=VARCHAR},
                 #{stringVal,jdbcType=VARCHAR}, #{dateVal,jdbcType=TIMESTAMP}, #{longVal,jdbcType=BIGINT},
                 #{doubleVal,jdbcType=DOUBLE}, #{identifying,jdbcType=CHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionParams">
-        insert into "batch_job_execution_params"
+        insert into batch_job_execution_params
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="jobExecutionId != null">
                 job_execution_id,
@@ -82,7 +82,7 @@
     </insert>
     <select id="selectByJobExecutionId" parameterType="java.lang.Long" resultType="java.util.Map">
         select key_name as paramName, string_val as paramValue
-        from "batch_job_execution_params"
+        from batch_job_execution_params
         where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
     </select>
 </mapper>

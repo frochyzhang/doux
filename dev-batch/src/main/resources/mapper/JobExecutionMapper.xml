@@ -15,31 +15,33 @@
     <result column="job_configuration_location" jdbcType="VARCHAR" property="jobConfigurationLocation" />
   </resultMap>
   <sql id="Base_Column_List">
-    job_execution_id, version, job_instance_id, create_time, start_time, end_time, "status", 
+    job_execution_id
+    , version, job_instance_id, create_time, start_time, end_time, status,
     exit_code, exit_message, last_updated, job_configuration_location
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from "batch_job_execution"
+    from batch_job_execution
     where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from "batch_job_execution"
+    delete
+    from batch_job_execution
     where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="job_execution_id" keyProperty="jobExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.JobExecution" useGeneratedKeys="true">
-    insert into "batch_job_execution" (version, job_instance_id, create_time, 
-      start_time, end_time, "status", 
-      exit_code, exit_message, last_updated, 
-      job_configuration_location)
-    values (#{version,jdbcType=BIGINT}, #{jobInstanceId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, 
-      #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{lastUpdated,jdbcType=TIMESTAMP}, 
-      #{jobConfigurationLocation,jdbcType=VARCHAR})
+    insert into batch_job_execution (version, job_instance_id, create_time,
+                                     start_time, end_time, "status",
+                                     exit_code, exit_message, last_updated,
+                                     job_configuration_location)
+    values (#{version,jdbcType=BIGINT}, #{jobInstanceId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+            #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},
+            #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{lastUpdated,jdbcType=TIMESTAMP},
+            #{jobConfigurationLocation,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="job_execution_id" keyProperty="jobExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.JobExecution" useGeneratedKeys="true">
-    insert into "batch_job_execution"
+    insert into batch_job_execution
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="version != null">
         version,
@@ -106,7 +108,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.JobExecution">
-    update "batch_job_execution"
+    update batch_job_execution
     <set>
       <if test="version != null">
         version = #{version,jdbcType=BIGINT},
@@ -142,17 +144,17 @@
     where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.JobExecution">
-    update "batch_job_execution"
-    set version = #{version,jdbcType=BIGINT},
-      job_instance_id = #{jobInstanceId,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      "status" = #{status,jdbcType=VARCHAR},
-      exit_code = #{exitCode,jdbcType=VARCHAR},
-      exit_message = #{exitMessage,jdbcType=VARCHAR},
-      last_updated = #{lastUpdated,jdbcType=TIMESTAMP},
-      job_configuration_location = #{jobConfigurationLocation,jdbcType=VARCHAR}
+    update batch_job_execution
+    set version                    = #{version,jdbcType=BIGINT},
+        job_instance_id            = #{jobInstanceId,jdbcType=BIGINT},
+        create_time                = #{createTime,jdbcType=TIMESTAMP},
+        start_time                 = #{startTime,jdbcType=TIMESTAMP},
+        end_time                   = #{endTime,jdbcType=TIMESTAMP},
+        "status"                   = #{status,jdbcType=VARCHAR},
+        exit_code                  = #{exitCode,jdbcType=VARCHAR},
+        exit_message               = #{exitMessage,jdbcType=VARCHAR},
+        last_updated               = #{lastUpdated,jdbcType=TIMESTAMP},
+        job_configuration_location = #{jobConfigurationLocation,jdbcType=VARCHAR}
     where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
   </update>
   <update id="deleteCompletedJobExecution">
