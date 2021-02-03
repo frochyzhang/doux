@@ -12,19 +12,20 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from "batch_step_execution_context"
+    from batch_step_execution_context
     where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from "batch_step_execution_context"
+    delete
+    from batch_step_execution_context
     where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="step_execution_id" keyProperty="stepExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.StepExecutionContext" useGeneratedKeys="true">
-    insert into "batch_step_execution_context" (short_context, serialized_context)
+    insert into batch_step_execution_context (short_context, serialized_context)
     values (#{shortContext,jdbcType=VARCHAR}, #{serializedContext,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="step_execution_id" keyProperty="stepExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.StepExecutionContext" useGeneratedKeys="true">
-    insert into "batch_step_execution_context"
+    insert into batch_step_execution_context
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="shortContext != null">
         short_context,
@@ -43,7 +44,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.StepExecutionContext">
-    update "batch_step_execution_context"
+    update batch_step_execution_context
     <set>
       <if test="shortContext != null">
         short_context = #{shortContext,jdbcType=VARCHAR},
@@ -55,9 +56,9 @@
     where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.StepExecutionContext">
-    update "batch_step_execution_context"
-    set short_context = #{shortContext,jdbcType=VARCHAR},
-      serialized_context = #{serializedContext,jdbcType=VARCHAR}
+    update batch_step_execution_context
+    set short_context      = #{shortContext,jdbcType=VARCHAR},
+        serialized_context = #{serializedContext,jdbcType=VARCHAR}
     where step_execution_id = #{stepExecutionId,jdbcType=BIGINT}
   </update>
 </mapper>
