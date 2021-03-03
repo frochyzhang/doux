@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.1.16-RELEASE</version>
+        <version>1.1.15-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>${project.artifactId} - MQ-RPC差异化统一平台</name>
@@ -19,25 +19,15 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rpc-dubbo</artifactId>
+            <artifactId>dev-dubbo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-mq-rabbit</artifactId>
+            <artifactId>dev-rabbitmq</artifactId>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.quartz-scheduler</groupId>
-                    <artifactId>quartz</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-autoconfigure</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

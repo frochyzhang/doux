@@ -27,16 +27,11 @@ public class SocketBeanLoader {
     @Bean(name = "socketBeans")
     public List<MinaSocketBean> loadSocketBeansFromFile() throws Exception {
         Configurations configurations = new Configurations();
-        String fileParentPath = SocketBeanLoader.class.getClassLoader().getResource(CommonConstants.FILE_PARENT_PATH).getPath();
+        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
         logger.info("加载配置文件路径:{}", fileParentPath);
 
         //文件名必须以【socket-】开头，以【.properties】结束
-        String[] configFiles = new File(fileParentPath).list((dir, name) -> {
-            if (name.startsWith(CommonConstants.FILE_PREFIX) && name.endsWith(CommonConstants.FILE_SUF_FIX)) {
-                return Boolean.TRUE;
-            }
-            return Boolean.FALSE;
-        });
+        String[] configFiles = new File(fileParentPath).list((dir, name) -> name.startsWith(CommonConstants.FILE_PREFIX) && name.endsWith(CommonConstants.FILE_SUF_FIX) ? Boolean.TRUE : Boolean.FALSE);
 
         //若未指定配置文件，则不返回默认配置信息，抛出异常，结束程序
         if (configFiles == null || configFiles.length == 0) {
@@ -48,7 +43,7 @@ public class SocketBeanLoader {
         List<MinaSocketBean> socketBeans = new ArrayList<>();
         try {
             for (String fileName : configFiles) {
-                PropertiesConfiguration properties = configurations.properties(fileName);
+                PropertiesConfiguration properties = configurations.properties(fileParentPath + fileName);
                 Map<SocketBeanLoaderEnum, String> propertyMap = SocketBeanLoaderEnum.getPropertyValue(properties);
                 MinaSocketBean minaSocketBean = new MinaSocketBean(propertyMap);
                 socketBeans.add(minaSocketBean);

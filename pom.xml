@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.5-RELEASE</version>
+    <version>1.1.15-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -16,11 +16,12 @@
         <module>dev-dubbo</module>
         <module>dev-dal</module>
         <module>dev-rabbitmq</module>
+        <module>dev-mq-rpc-portal</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.1.5-RELEASE</dev.version>
+        <dev.version>1.1.15-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
         <springframework.version>5.3.3</springframework.version>
@@ -30,8 +31,10 @@
         <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
         <commons.version>2.8.0</commons.version>
-        <logback.version>1.1.7</logback.version>
+        <logback.version>1.2.3</logback.version>
         <quartz.version>2.3.2</quartz.version>
+        <redisson.version>3.15.0</redisson.version>
+        <mybatis-generator.version>1.4.0</mybatis-generator.version>
     </properties>
 
     <dependencyManagement>
@@ -78,6 +81,11 @@
                 <version>${springframework.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
             <!--  spring framwork  -->
             <dependency>
@@ -166,6 +174,11 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>3.5.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis-generator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -452,6 +465,15 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>${mybatis-generator.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
 
             <plugin>

@@ -26,10 +26,10 @@ public class Test {
         System.out.println("sum time:" + sum);
     }
 
-    private class Task implements Runnable{
+    private class Task implements Runnable {
         private CyclicBarrier cyclicBarrier;
 
-        public Task(CyclicBarrier cyclicBarrier){
+        public Task(CyclicBarrier cyclicBarrier) {
             this.cyclicBarrier = cyclicBarrier;
         }
 

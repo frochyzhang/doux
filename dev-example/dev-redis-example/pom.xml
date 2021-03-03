@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-example</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.1.5-RELEASE</version>
+        <version>1.1.15-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>dev-redis-example - Redisson整合实例</name>
@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.15.0</version>
         </dependency>
     </dependencies>
 </project>
