@@ -38,7 +38,7 @@ public enum SocketBeanLoaderEnum {
     /* 请求处理类类名 */
     DEV_SOCKET_ENCODER("dev.socket.encoder", "com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder"),
     /* TIME_WAIT生效开关 */
-    DEV_SOCKET_SOLINGER("dev.socket.soLinger", "fase");
+    DEV_SOCKET_SOLINGER("dev.socket.soLinger", "false");
 
     private final String keyName;
     private final String defaultValue;

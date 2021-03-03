@@ -45,13 +45,13 @@ public class XStreamUtils {
         };
     }
 
-    public static Object xmlToBean(String xml, Class<?> load, boolean omitFlag) {
+    public static <T> T xmlToBean(String xml, Class<T> load, boolean omitFlag) {
         if (!omitFlag) {
             xs = xsFriendly;
         }
         xs.autodetectAnnotations(true);
         xs.alias(ALIAS, load);
-        Object o = xs.fromXML(xml);
+        T o = (T) xs.fromXML(xml);
         try {
             BeanConvertValidator.beanVerify(o, "UTF-8");
         } catch (IllegalArgumentException e) {

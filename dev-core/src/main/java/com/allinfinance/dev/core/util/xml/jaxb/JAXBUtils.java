@@ -20,7 +20,7 @@ public class JAXBUtils {
     private static final Logger logger = LoggerFactory.getLogger(JAXBUtils.class);
 
     //将xml解析成对象
-    public static <T> T xmlToBean(String xml, Class<?> load) throws JAXBException {
+    public static <T> T xmlToBean(String xml, Class<T> load) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(load);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         T t = (T) unmarshaller.unmarshal(new StringReader(xml));

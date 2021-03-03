@@ -1,6 +1,5 @@
 package com.allinfinance.dev.dal.mybatis;
 
-import com.allinfinance.dev.core.constant.CommonConstants;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -39,6 +38,8 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     private Environment env;
 
     private static final Logger logger = LoggerFactory.getLogger(MapperScannerRegistrar.class);
+
+    public static final String DB_PROPERTY_FILE = "/etc/db.properties";
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -108,7 +109,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 try {
                     logger.debug("未获取到对应环境参数，重新获取参数信息:{}", pro);
                     Configurations configurations = new Configurations();
-                    String fileName = this.getClass().getResource(CommonConstants.DB_PROPERTY_FILE).getPath();
+                    String fileName = this.getClass().getResource(DB_PROPERTY_FILE).getPath();
                     PropertiesConfiguration properties = configurations.properties(fileName);
                     value = properties.getString(propertyName);
                     if (null == value) {

@@ -1,10 +1,13 @@
 package com.allinfinance.dev.socket.handler;
 
+import com.allinfinance.dev.core.constant.CommonConstants;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author zhangyong
@@ -15,7 +18,9 @@ public class AbstractMessageIOHandler implements IoHandler {
 
     @Override
     public void sessionCreated(IoSession session) {
-        logger.info("接收连接已创建@" + session);
+        String clientIP = ((InetSocketAddress) (session.getRemoteAddress())).getAddress().getHostAddress();
+        session.setAttribute(CommonConstants.KEY_SESSION_CLIENT_IP, clientIP);
+        logger.info("接收连接已创建@{},clientIP: {}", session, clientIP);
     }
 
     @Override
