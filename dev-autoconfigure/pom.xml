@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dev-example</artifactId>
+        <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
         <version>1.1.16-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>dev-redis-example - Redisson整合实例</name>
-    <artifactId>dev-redis-example</artifactId>
+
+    <artifactId>dev-autoconfigure</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,8 +18,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
         </dependency>
     </dependencies>
 </project>

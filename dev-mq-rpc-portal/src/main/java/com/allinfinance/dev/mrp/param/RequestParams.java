@@ -5,21 +5,11 @@ public class RequestParams {
     public static final String MQ_SWITCH = "MQ";
     public static final String RPC_SWITCH = "RPC";
 
-    private String mrpSwitch;
     private String rpcInterface;
     private String rpcMethod;
 
     private String routingKey;
     private String exchangeName;
-
-
-    public String getMrpSwitch() {
-        return mrpSwitch;
-    }
-
-    public void setMrpSwitch(String mrpSwitch) {
-        this.mrpSwitch = mrpSwitch;
-    }
 
     public String getRpcInterface() {
         return rpcInterface;

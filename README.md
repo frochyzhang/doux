@@ -44,11 +44,17 @@ socket通信模块主要集成了[Spring-5.3.1](https://docs.spring.io/spring-fr
 SO_LINGER的作用：设置函数close()关闭TCP连接时的行为。缺省close()的行为是，如果有数据残留在socket发送缓冲区中则系统将继续发送这些数据给对方，等待被确认，然后返回。有两种解决方案：
 
 - 立即关闭连接，通过发送RST分组(而不是用正常的FIN|ACK|FIN|ACK四个分组)来关闭该连接。至于发送缓冲区中如果有未发送完的数据，则丢弃。主动关闭一方的TCP状态则跳过TIMEWAIT，直接进入CLOSED。
-- 的 将连接的关闭设置一个超时。如果socket发送缓冲区中仍残留数据，进程进入睡眠，内核进入定时状态去尽量去发送这些数据。在超时之前，如果所有数据都发送完且被对方确认，内核用正常的FIN|ACK|FIN|ACK四个分组来关闭该连接，close()成功返回。如果超时之时，数据仍然未能成功发送及被确认，用上述a方式来关闭此连接。close()返回EWOULDBLOCK。
+- 的
+  将连接的关闭设置一个超时。如果socket发送缓冲区中仍残留数据，进程进入睡眠，内核进入定时状态去尽量去发送这些数据。在超时之前，如果所有数据都发送完且被对方确认，内核用正常的FIN|ACK|FIN|ACK四个分组来关闭该连接，close()
+  成功返回。如果超时之时，数据仍然未能成功发送及被确认，用上述a方式来关闭此连接。close()返回EWOULDBLOCK。
 
 #### 1.4. 使用举例：
 
 详见[git仓库dev-0104分支dev-socket-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-socket-example)
+
+#### 1.5. 注意事项：
+
+为实现配置文件加载，需添加VM启动参数socket-config-path指定socket-*.properties文件所在路径。
 
 ### 2. 批量处理模块
 
