@@ -22,7 +22,7 @@ public class DubboExampleConsumerApplication {
 //    private ExampleInterface exampleInterface;
 
     @Autowired
-    private GenericMqRpcService<String, RequestParams> stringGenericMqRpcService;
+    private GenericMqRpcService stringGenericMqRpcService;
 
     public static void main(String[] args) {
         SpringApplication.run(DubboExampleConsumerApplication.class, args);
@@ -58,7 +58,7 @@ public class DubboExampleConsumerApplication {
         requestParams.setRpcMethod("hello");
         requestParams.setExchangeName("fanout-mq-exchange");
         requestParams.setRoutingKey("test-routing-key");
-        logger.info("consumer发送内容:{}", stringGenericMqRpcService.genericInvoke(requestParams, requestParams));
+        logger.info("调用返回结果:{}", stringGenericMqRpcService.<String>genericInvoke(requestParams.toString(), requestParams));
     }
 
 }
