@@ -17,14 +17,14 @@ import java.util.NoSuchElementException;
  */
 @Slf4j
 @Component
-public class GenericMqRpcService<T, K> {
+public class GenericMqRpcService {
 
     @Value("${dev.mrp.switch}")
     private String mrpSwitch;
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public GenericReponse<T> genericInvoke(K req, RequestParams params) {
+    public <T> GenericReponse<T> genericInvoke(Object req, RequestParams params) {
         GenericReponse<T> response = new GenericReponse<>(Boolean.TRUE);
         switch (mrpSwitch) {
             case RequestParams.MQ_SWITCH:

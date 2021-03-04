@@ -1,4 +1,4 @@
 server:
   port: 8081
 
-dev.mrp.switch: MQ
+dev.mrp.switch: RPC
