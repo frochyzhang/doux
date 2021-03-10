@@ -4,7 +4,7 @@ server:
 
 spring:
   redis:
-    database: 1
+    database: 0
     host: 10.250.20.81
     port: 6379
     password: allinfinance

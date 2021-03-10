@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 
 public class ColumnRangePartitioner implements Partitioner {
@@ -50,10 +51,10 @@ public class ColumnRangePartitioner implements Partitioner {
 
     private Long getFileLineCount() {
         long lineCount = 0L;
-        try {
-            lineCount = Files.lines(Paths.get(filePath)).count();
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            lineCount = lines.count();
         } catch (IOException e) {
-            logger.error("文件行数获取失败!",e);
+            logger.error("文件行数获取失败!", e);
         }
         return lineCount;
     }

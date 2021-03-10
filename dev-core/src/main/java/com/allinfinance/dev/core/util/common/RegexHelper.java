@@ -24,14 +24,12 @@ public class RegexHelper {
      * @return
      */
     public static final String getStrBetweenKeywords(String text,String keyword1,String keyword2){
-        Pattern p = Pattern.compile( new StringBuffer()
-                        .append("(").append(keyword1).append(")")
-                        .append("(.+)")
-                        .append("(").append(keyword2).append(")")
-                        .toString(),
+        Pattern p = Pattern.compile("(" + keyword1 + ")" +
+                        "(.+)" +
+                        "(" + keyword2 + ")",
                 Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(text);
-        while(m.find()){
+        while (m.find()) {
             return m.group(2);
         }
         return null;

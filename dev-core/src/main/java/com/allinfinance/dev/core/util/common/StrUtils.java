@@ -169,7 +169,7 @@ public class StrUtils {
      */
     public static boolean hasFilterSpecial(String str) {
 
-        if(str.equals(filterSpecial(str))){
+        if (filterSpecial(str).equals(str)) {
             return true;
         }
         return false;

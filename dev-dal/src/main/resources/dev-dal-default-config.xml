@@ -89,7 +89,8 @@
     </aop:config>
 
     <aop:config>
-        <aop:pointcut id="allManagerMethod" expression="execution(* com.allinfinance.dev.batch.dao.service.*.*(..))"/>
-        <aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" order="10"/>
+        <aop:pointcut id="allManagerMethod_batch"
+                      expression="execution(* com.allinfinance.dev.batch.dao.service.*.*(..))"/>
+        <aop:advisor pointcut-ref="allManagerMethod_batch" advice-ref="txAdvice" order="10"/>
     </aop:config>
 </beans>

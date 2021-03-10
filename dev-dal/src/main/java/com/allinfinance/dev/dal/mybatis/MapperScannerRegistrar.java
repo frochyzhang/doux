@@ -39,7 +39,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     private static final Logger logger = LoggerFactory.getLogger(MapperScannerRegistrar.class);
 
-    public static final String DB_PROPERTY_FILE = "/etc/db.properties";
+    public static final String DB_PROPERTY_FILE = "/etc/dev-db.properties";
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {

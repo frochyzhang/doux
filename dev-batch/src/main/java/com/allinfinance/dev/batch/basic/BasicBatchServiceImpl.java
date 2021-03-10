@@ -62,7 +62,7 @@ public class BasicBatchServiceImpl implements IBasicBatchService {
                 je = launcher.run(job, new JobParameters(parameters));
             }
         } catch (Exception e) {
-            logger.error("执行批量job发生异常：" + job.getName());
+            logger.error("执行批量job发生异常：{}", job.getName());
             logger.error("异常信息:", e);
         }
         return je;

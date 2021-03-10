@@ -13,10 +13,10 @@ public class RedisExampleApplication {
     }
 
     @Autowired
-    private RedisTemplate redisTemplate;
-
+    private RedisTemplate<String, String> redisTemplate;
     @Bean
     public void test() {
-
+//       redisTemplate.opsForValue().set("mt.host","127.0.0.1");
+        redisTemplate.opsForValue().get("mt.host");
     }
 }
