@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <rabbit:connection-factory id="connectionFactory"
+                               host="${dev.rabbitmq.host}"
+                               port="${dev.rabbitmq.port}"
+                               username="${dev.rabbitmq.username}"
+                               password="${dev.rabbitmq.password}"
+                               virtual-host="${dev.rabbitmq.virtualHost}"
+                               publisher-returns="true"
+                               confirm-type="CORRELATED"
+    />
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <rabbit:template id="customRabbitmTemplate" connection-factory="connectionFactory"
+                     message-converter="jsonMessageConverter"
+                     confirm-callback="confirmCallBackListener"
+                     return-callback="returnCallBackListener"
+                     mandatory="true"/>
+
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"/>
+
+</beans>

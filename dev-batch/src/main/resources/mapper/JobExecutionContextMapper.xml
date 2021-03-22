@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.batch.dao.mapper.JobExecutionContextMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.dao.model.JobExecutionContext">
+    <id column="job_execution_id" jdbcType="BIGINT" property="jobExecutionId" />
+    <result column="short_context" jdbcType="VARCHAR" property="shortContext" />
+    <result column="serialized_context" jdbcType="VARCHAR" property="serializedContext" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    job_execution_id, short_context, serialized_context
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from batch_job_execution_context
+    where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete
+    from batch_job_execution_context
+    where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="job_execution_id" keyProperty="jobExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionContext" useGeneratedKeys="true">
+    insert into batch_job_execution_context (short_context, serialized_context)
+    values (#{shortContext,jdbcType=VARCHAR}, #{serializedContext,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="job_execution_id" keyProperty="jobExecutionId" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionContext" useGeneratedKeys="true">
+    insert into batch_job_execution_context
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="shortContext != null">
+        short_context,
+      </if>
+      <if test="serializedContext != null">
+        serialized_context,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="shortContext != null">
+        #{shortContext,jdbcType=VARCHAR},
+      </if>
+      <if test="serializedContext != null">
+        #{serializedContext,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionContext">
+    update batch_job_execution_context
+    <set>
+      <if test="shortContext != null">
+        short_context = #{shortContext,jdbcType=VARCHAR},
+      </if>
+      <if test="serializedContext != null">
+        serialized_context = #{serializedContext,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.JobExecutionContext">
+    update batch_job_execution_context
+    set short_context      = #{shortContext,jdbcType=VARCHAR},
+        serialized_context = #{serializedContext,jdbcType=VARCHAR}
+    where job_execution_id = #{jobExecutionId,jdbcType=BIGINT}
+  </update>
+</mapper>

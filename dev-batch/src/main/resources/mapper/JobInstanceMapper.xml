@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.batch.dao.mapper.JobInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.dao.model.JobInstance">
+    <id column="job_instance_id" jdbcType="BIGINT" property="jobInstanceId" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_key" jdbcType="VARCHAR" property="jobKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    job_instance_id, version, job_name, job_key
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from batch_job_instance
+    where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete
+    from batch_job_instance
+    where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="job_instance_id" keyProperty="jobInstanceId" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance" useGeneratedKeys="true">
+    insert into batch_job_instance (version, job_name, job_key)
+    values (#{version,jdbcType=BIGINT}, #{jobName,jdbcType=VARCHAR}, #{jobKey,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="job_instance_id" keyProperty="jobInstanceId" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance" useGeneratedKeys="true">
+    insert into batch_job_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="version != null">
+        version,
+      </if>
+      <if test="jobName != null">
+        job_name,
+      </if>
+      <if test="jobKey != null">
+        job_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="version != null">
+        #{version,jdbcType=BIGINT},
+      </if>
+      <if test="jobName != null">
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobKey != null">
+        #{jobKey,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance">
+    update batch_job_instance
+    <set>
+      <if test="version != null">
+        version = #{version,jdbcType=BIGINT},
+      </if>
+      <if test="jobName != null">
+        job_name = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobKey != null">
+        job_key = #{jobKey,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.dao.model.JobInstance">
+    update batch_job_instance
+    set version  = #{version,jdbcType=BIGINT},
+        job_name = #{jobName,jdbcType=VARCHAR},
+        job_key  = #{jobKey,jdbcType=VARCHAR}
+    where job_instance_id = #{jobInstanceId,jdbcType=BIGINT}
+  </update>
+</mapper>

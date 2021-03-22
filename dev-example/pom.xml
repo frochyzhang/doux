@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dev-parent</artifactId>
+        <groupId>com.allinfinance.dev</groupId>
+        <version>1.1.16-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <name>dev-example 各模块使用示例</name>
+    <artifactId>dev-example</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dev-dubbo-example</module>
+        <module>dev-mq-rabbit-example</module>
+        <module>dev-socket-example</module>
+        <module>dev-redis-example</module>
+        <module>dev-batch-example</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+</project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dev-example</artifactId>
+        <groupId>com.allinfinance.dev</groupId>
+        <version>1.1.16-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <name>dev-batch-example 批量处理框架定时任务使用示例</name>
+    <artifactId>dev-batch-example</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-batch</artifactId>
+        </dependency>
+    </dependencies>
+</project>
