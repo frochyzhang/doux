@@ -16,28 +16,24 @@ public class KeepAliveMessageFactoryImpl implements KeepAliveMessageFactory {
     private static final Logger logger = LoggerFactory.getLogger(KeepAliveMessageFactoryImpl.class);
 
     private static final String HEARTBEAT_REQUEST = "heartBeatRequest";
-    private static final String HEARTBEAT_RESPONSE = "heartBeatResponse\r\n";
+    private static final String HEARTBEAT_RESPONSE = "heartBeatResponse";
 
     @Override
     public boolean isRequest(IoSession ioSession, Object o) {
-        if (o instanceof String) {
-            String msg = (String) o;
-            if (msg.contains(HEARTBEAT_REQUEST)) {
-                logger.info("心跳请求信息:{}", msg);
-                return Boolean.TRUE;
-            }
+        String msg = (String) o;
+        if (msg.contains(HEARTBEAT_REQUEST)) {
+            logger.info("心跳请求信息:{}", msg);
+            return Boolean.TRUE;
         }
         return false;
     }
 
     @Override
     public boolean isResponse(IoSession ioSession, Object o) {
-        if (o instanceof String) {
-            String msg = (String) o;
-            if (msg.contains(HEARTBEAT_RESPONSE)) {
-                logger.info("心跳响应信息:{}", msg);
-                return Boolean.TRUE;
-            }
+        String msg = (String) o;
+        if (msg.contains(HEARTBEAT_RESPONSE)) {
+            logger.info("心跳响应信息:{}", msg);
+            return Boolean.TRUE;
         }
         return false;
     }

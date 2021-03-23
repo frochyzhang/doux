@@ -26,6 +26,11 @@ public class MinaSocketBean {
     private String encoderClassName;
     private Boolean soLinger;
 
+    //长链接相关参数
+    private Integer beatTimeout;
+    private Integer beatInterval;
+    private Boolean keepAlive;
+
     public MinaSocketBean(Map<SocketBeanLoaderEnum, String> propertyValueMap) throws Exception {
         this.name = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKKET_APP_NAME);
         this.port = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_PORT));
@@ -41,6 +46,9 @@ public class MinaSocketBean {
         this.decoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DECODER);
         this.encoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENCODER);
         this.soLinger = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_SOLINGER));
+        this.beatTimeout = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_TIMEOUT));
+        this.beatInterval = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_INTERVAL));
+        this.keepAlive = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_KEEPALIVE));
         if (this.port == 0 || StringUtils.isBlank(this.handlerClassName)) {
             throw new Exception("运行端口及报文路径类全路径未指定!");
         }
@@ -158,6 +166,30 @@ public class MinaSocketBean {
         this.soLinger = soLinger;
     }
 
+    public Integer getBeatTimeout() {
+        return beatTimeout;
+    }
+
+    public void setBeatTimeout(Integer beatTimeout) {
+        this.beatTimeout = beatTimeout;
+    }
+
+    public Integer getBeatInterval() {
+        return beatInterval;
+    }
+
+    public void setBeatInterval(Integer beatInterval) {
+        this.beatInterval = beatInterval;
+    }
+
+    public Boolean getKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(Boolean keepAlive) {
+        this.keepAlive = keepAlive;
+    }
+
     @Override
     public String toString() {
         return "MinaSocketBean{" +
@@ -174,7 +206,10 @@ public class MinaSocketBean {
                 ", handlerClassName='" + handlerClassName + '\'' +
                 ", decoderClassName='" + decoderClassName + '\'' +
                 ", encoderClassName='" + encoderClassName + '\'' +
-                ", soLinger='" + soLinger + '\'' +
+                ", soLinger=" + soLinger +
+                ", beatTimeout='" + beatTimeout + '\'' +
+                ", beatInterval='" + beatInterval + '\'' +
+                ", keepAlive=" + keepAlive +
                 '}';
     }
 }
