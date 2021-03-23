@@ -38,7 +38,13 @@ public enum SocketBeanLoaderEnum {
     /* 请求处理类类名 */
     DEV_SOCKET_ENCODER("dev.socket.encoder", "com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder"),
     /* TIME_WAIT生效开关 */
-    DEV_SOCKET_SOLINGER("dev.socket.soLinger", "false");
+    DEV_SOCKET_SOLINGER("dev.socket.soLinger", "false"),
+    /* 长链接心跳超时时间 */
+    DEV_SOCKET_BEAT_TIMEOUT("dev.socket.beat.timeout", "30"),
+    /* 长链接心跳间隔时间 */
+    DEV_SOCKET_BEAT_INTERVAL("dev.socket.beat.interval", "60"),
+    /* 长链接开启开关 */
+    DEV_SOCKET_KEEPALIVE("dev.socket.keepAlive", "false");
 
     private final String keyName;
     private final String defaultValue;

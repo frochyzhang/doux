@@ -27,7 +27,7 @@ public class FileWriter implements ItemWriter<TestStrDto> {
             logger.info("插入数据为空!");
             return;
         }
-//        logger.info("插入数据数:" + list.size());
+        logger.info("插入数据数:" + list.size());
 
 //        for (TestStrDto testStrDto : list) {
 //            logger.info("{}",testStrDto);

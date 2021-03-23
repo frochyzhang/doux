@@ -3,6 +3,8 @@ package com.allinfinance.dev.socket.config;
 import com.allinfinance.dev.core.bean.MinaSocketBean;
 import com.allinfinance.dev.core.loader.SpringConfigTool;
 import com.allinfinance.dev.core.util.socket.codec.MessageCodecFactory;
+import com.allinfinance.dev.socket.conncheck.KeepAliveMessageFactoryImpl;
+import com.allinfinance.dev.socket.conncheck.KeepAliveRequestTimeoutHandlerImpl;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
@@ -10,6 +12,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.demux.MessageDecoder;
 import org.apache.mina.filter.codec.demux.MessageEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.filter.keepalive.KeepAliveFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
@@ -62,12 +65,23 @@ public class ShortSwitchServer {
                         .cast(SpringConfigTool.getBeanByClassName(minaSocketBean.getHandlerClassName())));
                 acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
                 acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
-                acceptor.setCloseOnDeactivation(true);
-
-                if (minaSocketBean.getSoLinger()) {
-                    logger.info("TIME_WAIT SO_LINGER = 0生效!");
-                    SocketSessionConfig sessionConfig = (SocketSessionConfig) acceptor.getSessionConfig();
-                    sessionConfig.setSoLinger(0);
+                // TODO: 2021/3/22 长链接处理逻辑
+                if (minaSocketBean.getKeepAlive()) {
+                    logger.info("开启服务端保持连接!");
+                    KeepAliveFilter keepAliveFilter = new KeepAliveFilter(new KeepAliveMessageFactoryImpl(),
+                            IdleStatus.BOTH_IDLE, new KeepAliveRequestTimeoutHandlerImpl());
+                    keepAliveFilter.setForwardEvent(true);
+                    keepAliveFilter.setRequestInterval(minaSocketBean.getBeatInterval());
+                    keepAliveFilter.setRequestTimeout(minaSocketBean.getBeatTimeout());
+                    acceptor.getFilterChain().addLast("heartbeat", keepAliveFilter);
+                } else {
+                    logger.info("关闭服务端保持连接!");
+                    acceptor.setCloseOnDeactivation(true);
+                    if (minaSocketBean.getSoLinger()) {
+                        logger.info("TIME_WAIT SO_LINGER = 0生效!");
+                        SocketSessionConfig sessionConfig = (SocketSessionConfig) acceptor.getSessionConfig();
+                        sessionConfig.setSoLinger(0);
+                    }
                 }
 
                 acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));

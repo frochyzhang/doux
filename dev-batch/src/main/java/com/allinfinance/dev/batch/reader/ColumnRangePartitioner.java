@@ -6,6 +6,7 @@ import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class ColumnRangePartitioner implements Partitioner {
 
     private Long startLine;
     private String filePath;
+    private String encoding;
 
     private static final Logger logger = LoggerFactory.getLogger(ColumnRangePartitioner.class);
 
@@ -39,7 +41,7 @@ public class ColumnRangePartitioner implements Partitioner {
             if (end >= endLine) {
                 end = endLine;
             }
-            value.putLong("minValue", start);
+            value.putLong("minValue", start - 1);
             value.putLong("maxValue", end);
             start += targetSize;
             end += targetSize;
@@ -51,7 +53,8 @@ public class ColumnRangePartitioner implements Partitioner {
 
     private Long getFileLineCount() {
         long lineCount = 0L;
-        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+        try {
+            Stream<String> lines = Files.lines(Paths.get(filePath), Charset.forName(encoding));
             lineCount = lines.count();
         } catch (IOException e) {
             logger.error("文件行数获取失败!", e);
@@ -73,5 +76,13 @@ public class ColumnRangePartitioner implements Partitioner {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 }
