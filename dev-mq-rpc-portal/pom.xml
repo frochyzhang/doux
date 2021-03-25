@@ -19,11 +19,11 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-dubbo</artifactId>
+            <artifactId>dev-rpc-dubbo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rabbitmq</artifactId>
+            <artifactId>dev-mq-rabbit</artifactId>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
