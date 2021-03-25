@@ -17,18 +17,6 @@ import org.slf4j.LoggerFactory;
 public class Message8583Encoder implements MessageEncoder {
     private Logger logger = LoggerFactory.getLogger(Message8583Encoder.class);
 
-
-    private Integer msgLengthSize;
-    private String msgEncode;
-
-    public Message8583Encoder() {
-    }
-
-    public Message8583Encoder(Integer msgLengthSize, String msgEncode) {
-        this.msgLengthSize = msgLengthSize;
-        this.msgEncode = msgEncode;
-    }
-
     @Override
     public void encode(IoSession session, Object message,
                        ProtocolEncoderOutput out) throws Exception {

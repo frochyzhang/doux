@@ -11,9 +11,9 @@
     </batch:job>
 
     <batch:job id="readFileJob" job-repository="jobRepository">
-<!--        <batch:step id="testBeforeStep" next="redFileStep.Master">-->
-<!--            <batch:tasklet ref="testJobTasklet"/>-->
-<!--        </batch:step>-->
+        <!--        <batch:step id="testBeforeStep" next="redFileStep.Master">-->
+        <!--            <batch:tasklet ref="testJobTasklet"/>-->
+        <!--        </batch:step>-->
         <batch:step id="redFileStep.Master">
             <batch:partition partitioner="itemFilePartitioner" handler="readFileTestHandler"/>
         </batch:step>

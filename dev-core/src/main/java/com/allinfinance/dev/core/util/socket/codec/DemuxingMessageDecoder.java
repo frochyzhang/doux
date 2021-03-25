@@ -42,7 +42,7 @@ public class DemuxingMessageDecoder implements MessageDecoder {
             in.get(temp, 0, this.getMsgLengthSize());
             int len = 0;
             try {
-                len = Integer.parseInt(new String(temp),16);
+                len = Integer.parseInt(new String(temp));
             } catch (NumberFormatException ex) {
                 // 长度头异常时会引发粘包问题，直接丢弃当前连接，等待新建连接
                 logger.debug("报文长度含有非数字内容，关闭连接:  " + temp);

@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rpc-dubbo</artifactId>
+            <artifactId>dev-dubbo</artifactId>
         </dependency>
     </dependencies>
 

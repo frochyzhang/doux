@@ -18,17 +18,6 @@ import org.slf4j.LoggerFactory;
 public class Message8583Decoder implements MessageDecoder {
     private Logger logger = LoggerFactory.getLogger(Message8583Decoder.class);
 
-    private Integer msgLengthSize;
-    private String msgEncode;
-
-    public Message8583Decoder() {
-    }
-
-    public Message8583Decoder(Integer msgLengthSize, String msgEncode) {
-        this.msgLengthSize = msgLengthSize;
-        this.msgEncode = msgEncode;
-    }
-
     @Override
     public MessageDecoderResult decodable(IoSession session, IoBuffer in) {
 

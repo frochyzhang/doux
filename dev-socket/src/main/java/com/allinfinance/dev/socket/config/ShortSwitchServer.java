@@ -65,7 +65,7 @@ public class ShortSwitchServer {
                         .cast(SpringConfigTool.getBeanByClassName(minaSocketBean.getHandlerClassName())));
                 acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
                 acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
-
+                // TODO: 2021/3/22 长链接处理逻辑
                 if (minaSocketBean.getKeepAlive()) {
                     logger.info("开启服务端保持连接!");
                     KeepAliveFilter keepAliveFilter = new KeepAliveFilter(new KeepAliveMessageFactoryImpl(),

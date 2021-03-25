@@ -13,14 +13,12 @@
         <module>dev-core</module>
         <module>dev-batch</module>
         <module>dev-example</module>
+        <module>dev-dubbo</module>
         <module>dev-dal</module>
-        <module>dev-mq</module>
-        <module>dev-mq/dev-mq-rabbit</module>
+        <module>dev-rabbitmq</module>
         <module>dev-mq-rpc-portal</module>
         <module>dev-autoconfigure</module>
-        <module>dev-rpc</module>
-        <module>dev-rpc/dev-rpc-dubbo</module>
-        <module>dev-rpc/dev-rpc-sofa</module>
+        <module>dev-hsp</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
@@ -28,7 +26,6 @@
         <dev.version>1.1.16-RELEASE</dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
-        <sofa.boot.version>3.6.0</sofa.boot.version>
         <springframework.version>5.3.3</springframework.version>
         <batch.version>4.3.0</batch.version>
         <mina.version>2.0.19</mina.version>
@@ -40,7 +37,6 @@
         <quartz.version>2.3.2</quartz.version>
         <redisson.version>3.15.0</redisson.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <nacos.version>1.4.1</nacos.version>
     </properties>
 
     <dependencyManagement>
@@ -62,12 +58,17 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-dubbo</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-dal</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-mq-rabbit</artifactId>
+                <artifactId>dev-rabbitmq</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
@@ -78,16 +79,6 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-autoconfigure</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-dubbo</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-sofa</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
@@ -102,13 +93,6 @@
                 <version>${springframework.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.alipay.sofa</groupId>
-                <artifactId>sofaboot-dependencies</artifactId>
-                <version>${sofa.boot.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -403,21 +387,6 @@
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
                 <version>${dubbo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-api</artifactId>
-                <version>${nacos.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-client</artifactId>
-                <version>${nacos.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-common</artifactId>
-                <version>${nacos.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
