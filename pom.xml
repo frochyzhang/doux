@@ -18,6 +18,7 @@
         <module>dev-rabbitmq</module>
         <module>dev-mq-rpc-portal</module>
         <module>dev-autoconfigure</module>
+        <module>dev-hsp</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 

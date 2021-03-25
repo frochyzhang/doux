@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+    <!--        &lt;!&ndash;<Encoding>UTF-8</Encoding>&ndash;&gt;-->
+    <!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+    <!--            <level>debug</level>-->
+    <!--        </filter>-->
+    <!--        <encoder>-->
+    <!--            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>-->
+    <!--            <charset>UTF-8</charset>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
+
+
+    <appender name="QPS-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.allinfinance" level="debug" additivity="false">
+        <appender-ref ref="QPS-CONSOLE"/>
+    </logger>
+
+    <logger name="java.sql" level="debug" additivity="false">
+        <appender-ref ref="QPS-CONSOLE"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="QPS-CONSOLE"/>
+    </root>
+
+</configuration>
