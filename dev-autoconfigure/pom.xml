@@ -8,7 +8,7 @@
         <version>1.1.16-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <name>${project.artifactId} 自动配置加载模块</name>
     <artifactId>dev-autoconfigure</artifactId>
 
     <properties>
