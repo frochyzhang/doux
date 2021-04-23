@@ -22,11 +22,13 @@
         <module>dev-rpc</module>
         <module>dev-rpc/dev-rpc-dubbo</module>
         <module>dev-rpc/dev-rpc-sofa</module>
+        <module>dev-nds</module>
     </modules>
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
         <dev.version>1.1.16-RELEASE</dev.version>
+        <nds.version>2.2.149854</nds.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
         <sofa.boot.version>3.6.0</sofa.boot.version>
@@ -90,6 +92,11 @@
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-rpc-sofa</artifactId>
                 <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nds</groupId>
+                <artifactId>nds-sdk</artifactId>
+                <version>${nds.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.mina</groupId>
@@ -505,6 +512,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance</groupId>
+            <artifactId>iso8583</artifactId>
+            <version>1.1.0-RELEASE</version>
         </dependency>
     </dependencies>
 
