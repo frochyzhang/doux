@@ -1,0 +1,23 @@
+dev:
+  dubbo:
+    application:
+      name: dev-hsp
+      version: 1.0.0
+      group: 0001
+    consumer:
+      check: false
+      retries: 0
+      timeout: 10000
+      group: 1001
+      version: 0.0.1
+    protocol:
+      name: dubbo
+      port: 31275
+    provider:
+      retries: 0
+      timeout: 10000
+    registry:
+      address: 127.0.0.1:2181
+      protocol: zookeeper
+      timeout: 10000
+

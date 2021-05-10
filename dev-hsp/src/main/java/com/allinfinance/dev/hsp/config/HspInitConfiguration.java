@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Primary;
 @Slf4j
 @Configuration
 @EnableCaching
-@MapperScanner(basePackages = {"${dev.hsp.mapper.basePackage}"}, sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScanner(basePackages = {"com.allinfinance.dev.hsp.mapper"}, sqlSessionFactoryRef = "sqlSessionFactory")
 @ImportResource(locations = {"classpath:hsp-rpc-context.xml"})
 public class HspInitConfiguration {
 

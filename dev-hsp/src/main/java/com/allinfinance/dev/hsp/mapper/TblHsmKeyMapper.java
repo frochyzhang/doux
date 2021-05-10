@@ -1,7 +1,6 @@
 package com.allinfinance.dev.hsp.mapper;
 
 import com.allinfinance.dev.hsp.model.TblHsmKey;
-import org.springframework.stereotype.Component;
 
 public interface TblHsmKeyMapper {
     int deleteByPrimaryKey(Integer keyId);

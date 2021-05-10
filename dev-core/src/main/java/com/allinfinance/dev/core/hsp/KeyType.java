@@ -1,4 +1,4 @@
-package com.allinfinance.dev.hsp.service;
+package com.allinfinance.dev.core.hsp;
 
 /**
  * 密钥类型

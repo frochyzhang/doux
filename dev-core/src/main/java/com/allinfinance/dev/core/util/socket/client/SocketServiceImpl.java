@@ -38,10 +38,10 @@ public class SocketServiceImpl implements ISocketService {
                 clientConnector.getFilterChain().addLast(
                         "8583MsgCodec",
                         new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
-            }else{
+            } else {
                 clientConnector.getFilterChain().addLast(
                         "diyMsgCodec",
-                        new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode), new DemuxingMessageEncoder(msgLengthSize,msgEncode))));
+                        new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode), new DemuxingMessageEncoder(msgLengthSize, msgEncode))));
             }
             clientConnector.setHandler(new ClientIoHandler(checkMac));
             clientConnector.getSessionConfig().setUseReadOperation(true);
@@ -80,7 +80,6 @@ public class SocketServiceImpl implements ISocketService {
         }
     }
 
-
     public static void main(String[] args) {
         try {
             SocketServiceImpl client = new SocketServiceImpl();
@@ -94,7 +93,7 @@ public class SocketServiceImpl implements ISocketService {
                     "    <REQUEST_TIME>20170612113133</REQUEST_TIME>\n" +
                     "    <RESERVED></RESERVED>\n" +
                     "</SMS>";
-            String response1 = client.clientRequest("127.0.0.1", 4493, "sms", 30, false, reqMess,6,"UTF-8");
+            String response1 = client.clientRequest("127.0.0.1", 4493, "sms", 30, false, reqMess, 6, "UTF-8");
             System.out.println("resultResp:" + response1);
         } finally {
             System.out.println("end");
