@@ -1,9 +1,9 @@
 package com.allinfinance.dev.hsp.command.impl;
 
-import com.allinfinance.dev.hsp.command.HsmCommand;
+import com.allinfinance.dev.core.hsp.EncryptAlgorithm;
+import com.allinfinance.dev.core.hsp.KeyType;
+import com.allinfinance.dev.core.hsp.RandomKey;
 import com.allinfinance.dev.hsp.exception.CodecException;
-import com.allinfinance.dev.hsp.service.KeyType;
-import com.allinfinance.dev.hsp.service.RandomKey;
 import com.allinfinance.dev.hsp.socket.HsmSocketTest;
 import com.allinfinance.dev.hsp.utils.CodecUtil;
 import com.allinfinance.dev.hsp.utils.LengthType;
@@ -21,7 +21,7 @@ import java.rmi.ConnectException;
  * @Created by ZhangYong
  */
 @Slf4j
-public class SJL05HsmCommandImpl implements HsmCommand {
+public class SJL05HsmCommandImpl implements EncryptAlgorithm.HsmCommand {
 
     /**
      * MAC的长度
@@ -82,7 +82,6 @@ public class SJL05HsmCommandImpl implements HsmCommand {
             byte wkLength = res.get();
             byte[] wk = new byte[wkLength];
             res.get(wk);
-            log.debug("加密机转换后的工作密钥[{}]", Hex.encodeHexString(wk));
             return wk;
         }
     }

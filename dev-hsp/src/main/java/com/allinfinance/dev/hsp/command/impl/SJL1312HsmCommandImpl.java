@@ -1,9 +1,7 @@
 package com.allinfinance.dev.hsp.command.impl;
 
-import com.allinfinance.dev.hsp.command.HsmCommand;
+import com.allinfinance.dev.core.hsp.RandomKey;
 import com.allinfinance.dev.hsp.exception.CodecException;
-import com.allinfinance.dev.hsp.service.KeyType;
-import com.allinfinance.dev.hsp.service.RandomKey;
 import com.allinfinance.dev.hsp.socket.HsmSocketTest;
 import com.allinfinance.dev.hsp.utils.CodecUtil;
 import com.allinfinance.dev.hsp.utils.LengthType;
@@ -13,7 +11,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Classname  com.allinfinance.dev.hsp.command.impl.SJL1312HsmCommandImpl
@@ -391,19 +388,6 @@ public class SJL1312HsmCommandImpl extends SJL05HsmCommandImpl {
 
     //    bd5a435ba64963bd
     public static void main(String[] args) throws Exception {
-        HsmCommand command = new SJL1312HsmCommandImpl();
-        byte[] zmkIndex = {0x00, 0x6F};
-        byte[] key = "1111111111111111".getBytes(StandardCharsets.UTF_8);
-        byte[] bytes = command.transformKey(KeyType.MAK, zmkIndex, key);
-        log.info("加密后的MAK");
 
-        byte[] mab = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38};
-        byte[] mac = command.genrateMAC(key, mab);
-
-        log.info("mac....");
-
-
-        boolean b = command.validateMAC(bytes, mab, "d37f33ec845efafd".getBytes());
-        log.info("validate mac...");
     }
 }

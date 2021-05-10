@@ -53,6 +53,7 @@ public class KeyCache {
             tblHsmKeyService.insert(hsmKey);
         } else {
             hsmKey.setKeyValue(keyValue);
+            tblHsmKeyService.updateByPrimaryKey(hsmKey);
         }
     }
 

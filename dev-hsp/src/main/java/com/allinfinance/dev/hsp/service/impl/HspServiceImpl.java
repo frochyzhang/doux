@@ -1,13 +1,14 @@
 package com.allinfinance.dev.hsp.service.impl;
 
+import com.allinfinance.dev.core.hsp.*;
 import com.allinfinance.dev.hsp.cache.KeyCache;
-import com.allinfinance.dev.hsp.command.HsmCommand;
-import com.allinfinance.dev.hsp.service.*;
+import com.allinfinance.dev.hsp.model.TblHsmKey;
+import com.allinfinance.dev.hsp.service.dal.TblHsmKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
@@ -27,19 +28,20 @@ import java.util.Arrays;
 public class HspServiceImpl implements HspService {
 
     @Autowired
-    private HsmCommand hsmCommand;
+    private EncryptAlgorithm.HsmCommand hsmCommand;
     @Autowired
     private KeyCache keyCache;
-
+    @Autowired
+    private TblHsmKeyService tblHsmKeyService;
     // CVV使用的参数
 //    @Value("#{env.splitSym}")
     private String splitSym;
-//    @Value("#{env.cvv2ServCode}")
+    //    @Value("#{env.cvv2ServCode}")
     private String cvv2ServCode;
-//    @Value("#{env.pinFormat}")
+    //    @Value("#{env.pinFormat}")
     private String pinFormat;
 
-//    @Value("#{env.asciiCode}")
+    //    @Value("#{env.asciiCode}")
     private String asciiCode;
 
     public boolean validateMAC(String keyIndex, byte[] mac, byte[] mab) {
@@ -47,8 +49,9 @@ public class HspServiceImpl implements HspService {
             // 根据密钥索引获得密钥
             String macKey = keyCache.get(keyIndex).getKeyValue();
             // 截取MAC的前4位
-            byte[] bcdMac = Hex.decodeHex(new String(mac).toCharArray());
-            return hsmCommand.validateMAC(Hex.decodeHex(macKey.toCharArray()), mab, bcdMac);
+//            byte[] bcdMac = Hex.decodeHex(new String(mac).toCharArray());
+            byte[] macHead = Arrays.copyOf(mac, 4);
+            return hsmCommand.validateMAC(Hex.decodeHex(macKey.toCharArray()), mab, macHead);
         } catch (DecoderException e) {
             log.warn("绝对不应出现的异常", e);
             return false;
@@ -374,9 +377,8 @@ public class HspServiceImpl implements HspService {
 
     public static void main(String[] args) throws ConnectException, Exception {
         ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("/service-context.xml");
-        HsmCommand command = ctx.getBean(HsmCommand.class);
+        EncryptAlgorithm.HsmCommand command = ctx.getBean(EncryptAlgorithm.HsmCommand.class);
         if (args.length < 2) {
-            System.out.println("输入参数格式有误：输入参数格式：<MAK|PIK> <明文密钥HEX字符串>");
             ctx.close();
             return;
         }
@@ -595,13 +597,17 @@ public class HspServiceImpl implements HspService {
     public RandomKey generateRandomKeyByAlgorithm(String keyIndex,
                                                   KeyType keyType, int keyLength, EncryptAlgorithm algorithm) {
         if (algorithm == EncryptAlgorithm.DES3) {
-            return generateRandomKey(keyIndex, keyType, keyLength);
+            RandomKey randomKey = generateRandomKey(keyIndex, keyType, keyLength);
+            registerKey(keyIndex, keyType, randomKey.wkUnderZMK);
+            return randomKey;
         } else if (algorithm == EncryptAlgorithm.SM4) {
             try {
                 // 根据密钥索引获得ZMK索引
                 String zmkIndex = keyCache.get(keyIndex).getZmkIndex();
                 // 生成随机密钥（ZMK加密）
-                return hsmCommand.generateRandomKeyBySM4(Hex.decodeHex(zmkIndex.toCharArray()), keyLength);
+                RandomKey randomKey = hsmCommand.generateRandomKeyBySM4(Hex.decodeHex(zmkIndex.toCharArray()), keyLength);
+                registerKeyByAlgorithm(keyIndex, keyType, randomKey.wkUnderZMK, algorithm);
+                return randomKey;
             } catch (DecoderException e) {
                 log.warn("绝对不应出现的异常，检查密钥索引的长度，应为两位数", e);
                 return null;
@@ -613,5 +619,27 @@ public class HspServiceImpl implements HspService {
         } else {
             throw new RuntimeException("不支持的加密算法：" + algorithm.toString());
         }
+    }
+
+    /**
+     * 根据请求上送的密钥索引及校验值，验证密钥重置交易是否有效。
+     *
+     * @param keyIndex
+     * @param kcvInRequest
+     * @return
+     */
+    @Override
+    public Boolean validateZmkKcvByIndex(String keyIndex, String kcvInRequest) {
+        TblHsmKey tblHsmKey = tblHsmKeyService.selectByKeyIndex(keyIndex);
+        assert tblHsmKey != null;
+        if (StringUtils.isEmpty(tblHsmKey.getZmkKcv())) {
+            log.info("该索引不校验zmk校验值!");
+            return Boolean.TRUE;
+        }
+        if (kcvInRequest.equals(tblHsmKey.getZmkKcv())) {
+            log.info("ZMK校验值校验通过, 允许重置密钥!");
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 }

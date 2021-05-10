@@ -1,13 +1,11 @@
 package com.allinfinance.dev.hsp.socket;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Hex;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 /**
  * Classname  com.allinfinance.dev.hsp.socket.HsmSocketTest

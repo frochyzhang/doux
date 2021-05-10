@@ -17,9 +17,9 @@
 		</commentGenerator>
 
 		<jdbcConnection driverClass="com.ibm.db2.jcc.DB2Driver"
-						connectionURL="jdbc:db2://10.250.21.182:50000/ycicdev1:currentSchema=DEV;"
-						userId="dbycic1"
-						password="dbycic1"/>
+						connectionURL="jdbc:db2://10.250.20.209:50000/iacsdb"
+						userId="iacs"
+						password="iacs"/>
 
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false"/>

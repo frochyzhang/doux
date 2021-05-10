@@ -1,4 +1,4 @@
-package com.allinfinance.dev.hsp.service;
+package com.allinfinance.dev.core.hsp;
 
 import java.io.Serializable;
 

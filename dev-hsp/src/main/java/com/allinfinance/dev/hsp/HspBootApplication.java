@@ -3,6 +3,8 @@ package com.allinfinance.dev.hsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ImportResource;
 
 /**
  * Classname  com.allinfinance.dev.hsp.HspBootApplication
@@ -12,22 +14,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Created by ZhangYong
  */
 @Slf4j
+@EnableCaching
 @SpringBootApplication(scanBasePackages = "com.allinfinance.dev")
+@ImportResource(locations = {"classpath:hsp-rpc-context.xml"})
 public class HspBootApplication {
 
     public static void main(String[] args) {
-//        new ClassPathXmlApplicationContext("classpath:dev-hsp-context.xml");
         SpringApplication.run(HspBootApplication.class, args);
         log.info("dev-hsp启动成功!");
-        //维持进程，不退出
-//        synchronized (HspBootApplication.class) {
-//            while (true) {
-//                try {
-//                    HspBootApplication.class.wait();
-//                } catch (InterruptedException e) {
-//                    log.error("QpsBizMain synchronized error:", e);
-//                }
-//            }
-//        }
     }
 }

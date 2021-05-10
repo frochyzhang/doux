@@ -13,6 +13,8 @@ public class TblHsmKey implements Serializable {
 
     private String zmkIndex;
 
+    private String zmkKcv;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getKeyId() {
@@ -53,5 +55,13 @@ public class TblHsmKey implements Serializable {
 
     public void setZmkIndex(String zmkIndex) {
         this.zmkIndex = zmkIndex;
+    }
+
+    public String getZmkKcv() {
+        return zmkKcv;
+    }
+
+    public void setZmkKcv(String zmkKcv) {
+        this.zmkKcv = zmkKcv;
     }
 }

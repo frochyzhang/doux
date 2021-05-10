@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
 
-    <dubbo:service ref="hspService" interface="com.allinfinance.dev.hsp.service.HspService"
+    <dubbo:service ref="hspService" interface="com.allinfinance.dev.core.hsp.HspService"
                    group="${dev.dubbo.consumer.group}" version="${dev.dubbo.consumer.version}"/>
 </beans>

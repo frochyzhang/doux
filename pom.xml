@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.16-RELEASE</version>
+    <version>1.2.0-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -27,7 +27,7 @@
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.1.16-RELEASE</dev.version>
+        <dev.version>1.2.0-RELEASE</dev.version>
         <nds.version>2.2.149854</nds.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
@@ -452,6 +452,11 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
