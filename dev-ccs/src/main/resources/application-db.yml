@@ -1,0 +1,13 @@
+jdbc:
+  driver: com.ibm.db2.jcc.DB2Driver
+  url: jdbc:db2://10.250.20.209:50000/iacsdb:currentSchema=IACS;
+  username: iacs
+  password: iacs
+  validationQuery: select 1 from sysibm.sysdummy1
+
+
+dev:
+  batch:
+    mapper:
+      aop:
+        expression: execution(* com.allinfinance.dev.dal.service.*.*(..))
