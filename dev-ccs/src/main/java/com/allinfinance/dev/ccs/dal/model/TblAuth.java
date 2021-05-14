@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblAuth implements Serializable {
-    private String authId;
+    private Integer authId;
 
     private String authName;
 
@@ -26,11 +26,11 @@ public class TblAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getAuthId() {
+    public Integer getAuthId() {
         return authId;
     }
 
-    public void setAuthId(String authId) {
+    public void setAuthId(Integer authId) {
         this.authId = authId;
     }
 

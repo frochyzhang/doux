@@ -3,11 +3,7 @@ package com.allinfinance.dev.ccs.dal.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TblRoleAuth implements Serializable {
-    private String roleId;
-
-    private String authId;
-
+public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
     private Date updateTime;
 
     private String updateBy;
@@ -19,22 +15,6 @@ public class TblRoleAuth implements Serializable {
     private String reservedField3;
 
     private static final long serialVersionUID = 1L;
-
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getAuthId() {
-        return authId;
-    }
-
-    public void setAuthId(String authId) {
-        this.authId = authId;
-    }
 
     public Date getUpdateTime() {
         return updateTime;

@@ -31,17 +31,17 @@
 
 
 
-			<table tableName="TBL_ROLE"
-				   domainObjectName="TblRole"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
+<!--			<table tableName="TBL_ROLE"-->
+<!--				   domainObjectName="TblRole"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
 			<table tableName="TBL_ROLE_AUTH"
 				   domainObjectName="TblRoleAuth"
 				   enableSelectByExample="false"
@@ -53,50 +53,50 @@
 				   enableUpdateByPrimaryKey="true"
 				   enableInsert="true">
 			</table>
-			<table tableName="TBL_USER"
-				   domainObjectName="TblUser"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
-			<table tableName="TBL_MENU"
-				   domainObjectName="TblMenu"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
-			<table tableName="TBL_MENU_AUTH"
-				   domainObjectName="TblMenuAuth"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
-			<table tableName="TBL_AUTH"
-				   domainObjectName="TblAuth"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
+<!--			<table tableName="TBL_USER"-->
+<!--				   domainObjectName="TblUser"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
+<!--			<table tableName="TBL_MENU"-->
+<!--				   domainObjectName="TblMenu"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
+<!--			<table tableName="TBL_MENU_AUTH"-->
+<!--				   domainObjectName="TblMenuAuth"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
+<!--			<table tableName="TBL_AUTH"-->
+<!--				   domainObjectName="TblAuth"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
 
 	</context>
 </generatorConfiguration>
