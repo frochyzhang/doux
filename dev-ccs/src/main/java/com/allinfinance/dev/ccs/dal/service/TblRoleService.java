@@ -2,8 +2,12 @@ package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @project: dev-parent
@@ -39,5 +43,12 @@ public class TblRoleService {
 
     public int updateByPrimaryKey(TblRole record){
         return tblRoleMapper.updateByPrimaryKey(record);
+    }
+
+
+    public PageInfo<TblRole> pageSelectRoles(int pageNo, int pageSize) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<TblRole> users = tblRoleMapper.pageSelectRoles();
+        return new PageInfo<TblRole>(users);
     }
 }

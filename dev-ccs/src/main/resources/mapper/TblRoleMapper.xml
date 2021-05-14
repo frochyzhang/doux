@@ -150,4 +150,10 @@
       reserved_field3 = #{reservedField3,jdbcType=VARCHAR}
     where role_id = #{roleId,jdbcType=VARCHAR}
   </update>
+  <!--  **********以下为自定义SQL***********-->
+  <select id="pageSelectRoles"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_ROLE
+  </select>
 </mapper>

@@ -280,4 +280,5 @@
       reserved_field3 = #{reservedField3,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=VARCHAR}
   </update>
+
 </mapper>
