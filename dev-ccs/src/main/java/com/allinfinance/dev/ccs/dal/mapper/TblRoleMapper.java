@@ -5,13 +5,13 @@ import com.allinfinance.dev.ccs.dal.model.TblRole;
 import java.util.List;
 
 public interface TblRoleMapper {
-    int deleteByPrimaryKey(String roleId);
+    int deleteByPrimaryKey(Integer roleId);
 
     int insert(TblRole record);
 
     int insertSelective(TblRole record);
 
-    TblRole selectByPrimaryKey(String roleId);
+    TblRole selectByPrimaryKey(Integer roleId);
 
     int updateByPrimaryKeySelective(TblRole record);
 
