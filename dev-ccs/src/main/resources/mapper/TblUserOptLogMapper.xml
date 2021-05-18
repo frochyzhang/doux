@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblUserOptLogMapper">
-    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto">
         <id column="OPERATION_ID" jdbcType="INTEGER" property="operationId"/>
         <result column="USER_ID" jdbcType="VARCHAR" property="userId"/>
         <result column="USER_IP" jdbcType="VARCHAR" property="userIp"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
         <result column="OPERATION_TYPE" jdbcType="VARCHAR" property="operationType"/>
         <result column="OPERATION_PATH" jdbcType="VARCHAR" property="operationPath"/>
         <result column="INTERVIEWT_TIME" jdbcType="TIMESTAMP" property="interviewtTime"/>
@@ -17,9 +18,9 @@
         <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3"/>
     </resultMap>
     <sql id="Base_Column_List">
-        OPERATION_ID, USER_ID, USER_IP, OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
-    TABLE_NAME, COLUMN_NAME, NEW_VALUE, OLD_VALUE, RESERVED_FIELD1, RESERVED_FIELD2, 
-    RESERVED_FIELD3
+        OPERATION_ID, lg.USER_ID, USER_IP,USER_NAME, OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
+    TABLE_NAME, COLUMN_NAME, NEW_VALUE, OLD_VALUE, lg.RESERVED_FIELD1, lg.RESERVED_FIELD2,
+    lg.RESERVED_FIELD3
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -27,17 +28,18 @@
         from TBL_USER_OPT_LOG
         where OPERATION_ID = #{operationId,jdbcType=INTEGER}
     </select>
-    <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam"
-            resultMap="BaseResultMap">
+    <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from TBL_USER_OPT_LOG where 1=1
+        from TBL_USER_OPT_LOG lg
+        LEFT JOIN TBL_USER  us  ON lg.user_id=us.user_id
+        where 1=1
         <if test="logReqParam!=null">
-            <if test="logReqParam.userId!=null and logReqParam.userId!='' ">
-                and USER_ID like '%${logReqParam.userId}%'
+            <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
+                and us.USER_NAME like '%${logReqParam.userName}%'
             </if>
             <if test="logReqParam.operationType!=null">
-                and role_Id = #{logReqParam.operationType}
+                and OPERATION_TYPE = #{logReqParam.operationType}
             </if>
             <if test="logReqParam.beginDate != null and logReqParam.beginDate!=''">
                 and INTERVIEWT_TIME <![CDATA[>=]]> #{logReqParam.beginDate}

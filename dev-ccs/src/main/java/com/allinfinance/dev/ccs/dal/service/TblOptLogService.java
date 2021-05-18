@@ -6,6 +6,7 @@ import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
+import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,12 @@ public class TblOptLogService {
     @Autowired
     private TblUserOptLogMapper tblUserOptLogMapper;
 
-    public PageInfo<TblUserOptLog> pageSelectOptLogs(LogReqParam logReqParam) {
+    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) {
         PageHelper.startPage(logReqParam.getCurrent(), logReqParam.getPageSize());
-        List<TblUserOptLog> optLogs = tblUserOptLogMapper.pageSelectOptLogs(logReqParam);
-        return new PageInfo<TblUserOptLog>(optLogs);
+        List<UserLogRespDto> optLogs = tblUserOptLogMapper.pageSelectOptLogs(logReqParam);
+        //将list转为对象数组
+        UserLogRespDto[] logs= new UserLogRespDto[optLogs.size()];
+        logs = optLogs.toArray(logs);
+        return new PageInfo<UserLogRespDto>(optLogs);
     }
 }
