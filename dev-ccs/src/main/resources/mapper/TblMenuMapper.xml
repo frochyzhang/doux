@@ -2,47 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    <id column="menu_id" jdbcType="VARCHAR" property="menuId" />
-    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
-    <result column="parent_mid" jdbcType="VARCHAR" property="parentMid" />
-    <result column="node_type" jdbcType="VARCHAR" property="nodeType" />
-    <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <result column="sort" jdbcType="VARCHAR" property="sort" />
-    <result column="page_url" jdbcType="VARCHAR" property="pageUrl" />
-    <result column="level" jdbcType="VARCHAR" property="level" />
-    <result column="path" jdbcType="VARCHAR" property="path" />
-    <result column="is_available" jdbcType="VARCHAR" property="isAvailable" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="reserved_field1" jdbcType="VARCHAR" property="reservedField1" />
-    <result column="reserved_field2" jdbcType="VARCHAR" property="reservedField2" />
-    <result column="reserved_field3" jdbcType="VARCHAR" property="reservedField3" />
+    <id column="MENU_ID" jdbcType="INTEGER" property="menuId" />
+    <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+    <result column="PARENT_MID" jdbcType="VARCHAR" property="parentMid" />
+    <result column="NODE_TYPE" jdbcType="VARCHAR" property="nodeType" />
+    <result column="ICON" jdbcType="VARCHAR" property="icon" />
+    <result column="SORT" jdbcType="VARCHAR" property="sort" />
+    <result column="PAGE_URL" jdbcType="VARCHAR" property="pageUrl" />
+    <result column="LEVEL" jdbcType="VARCHAR" property="level" />
+    <result column="PATH" jdbcType="VARCHAR" property="path" />
+    <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
+    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
+    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
-    menu_id, menu_name, parent_mid, node_type, icon, sort, page_url, level, path, is_available, 
-    create_time, create_by, update_time, update_by, reserved_field1, reserved_field2, 
-    reserved_field3
+    MENU_ID, MENU_NAME, PARENT_MID, NODE_TYPE, ICON, SORT, PAGE_URL, LEVEL, PATH, IS_AVAILABLE, 
+    CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
+    RESERVED_FIELD3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from TBL_MENU
-    where menu_id = #{menuId,jdbcType=VARCHAR}
+    where MENU_ID = #{menuId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from TBL_MENU
-    where menu_id = #{menuId,jdbcType=VARCHAR}
+    where MENU_ID = #{menuId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    insert into TBL_MENU (menu_id, menu_name, parent_mid, 
-      node_type, icon, sort, 
-      page_url, level, path, 
-      is_available, create_time, create_by, 
-      update_time, update_by, reserved_field1, 
-      reserved_field2, reserved_field3)
-    values (#{menuId,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{parentMid,jdbcType=VARCHAR}, 
+    insert into TBL_MENU (MENU_ID, MENU_NAME, PARENT_MID, 
+      NODE_TYPE, ICON, SORT, 
+      PAGE_URL, LEVEL, PATH, 
+      IS_AVAILABLE, CREATE_TIME, CREATE_BY, 
+      UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, 
+      RESERVED_FIELD2, RESERVED_FIELD3)
+    values (#{menuId,jdbcType=INTEGER}, #{menuName,jdbcType=VARCHAR}, #{parentMid,jdbcType=VARCHAR}, 
       #{nodeType,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{sort,jdbcType=VARCHAR}, 
       #{pageUrl,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
       #{isAvailable,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -53,60 +53,60 @@
     insert into TBL_MENU
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="menuId != null">
-        menu_id,
+        MENU_ID,
       </if>
       <if test="menuName != null">
-        menu_name,
+        MENU_NAME,
       </if>
       <if test="parentMid != null">
-        parent_mid,
+        PARENT_MID,
       </if>
       <if test="nodeType != null">
-        node_type,
+        NODE_TYPE,
       </if>
       <if test="icon != null">
-        icon,
+        ICON,
       </if>
       <if test="sort != null">
-        sort,
+        SORT,
       </if>
       <if test="pageUrl != null">
-        page_url,
+        PAGE_URL,
       </if>
       <if test="level != null">
-        level,
+        LEVEL,
       </if>
       <if test="path != null">
-        path,
+        PATH,
       </if>
       <if test="isAvailable != null">
-        is_available,
+        IS_AVAILABLE,
       </if>
       <if test="createTime != null">
-        create_time,
+        CREATE_TIME,
       </if>
       <if test="createBy != null">
-        create_by,
+        CREATE_BY,
       </if>
       <if test="updateTime != null">
-        update_time,
+        UPDATE_TIME,
       </if>
       <if test="updateBy != null">
-        update_by,
+        UPDATE_BY,
       </if>
       <if test="reservedField1 != null">
-        reserved_field1,
+        RESERVED_FIELD1,
       </if>
       <if test="reservedField2 != null">
-        reserved_field2,
+        RESERVED_FIELD2,
       </if>
       <if test="reservedField3 != null">
-        reserved_field3,
+        RESERVED_FIELD3,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="menuId != null">
-        #{menuId,jdbcType=VARCHAR},
+        #{menuId,jdbcType=INTEGER},
       </if>
       <if test="menuName != null">
         #{menuName,jdbcType=VARCHAR},
@@ -162,74 +162,74 @@
     update TBL_MENU
     <set>
       <if test="menuName != null">
-        menu_name = #{menuName,jdbcType=VARCHAR},
+        MENU_NAME = #{menuName,jdbcType=VARCHAR},
       </if>
       <if test="parentMid != null">
-        parent_mid = #{parentMid,jdbcType=VARCHAR},
+        PARENT_MID = #{parentMid,jdbcType=VARCHAR},
       </if>
       <if test="nodeType != null">
-        node_type = #{nodeType,jdbcType=VARCHAR},
+        NODE_TYPE = #{nodeType,jdbcType=VARCHAR},
       </if>
       <if test="icon != null">
-        icon = #{icon,jdbcType=VARCHAR},
+        ICON = #{icon,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
-        sort = #{sort,jdbcType=VARCHAR},
+        SORT = #{sort,jdbcType=VARCHAR},
       </if>
       <if test="pageUrl != null">
-        page_url = #{pageUrl,jdbcType=VARCHAR},
+        PAGE_URL = #{pageUrl,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-        level = #{level,jdbcType=VARCHAR},
+        LEVEL = #{level,jdbcType=VARCHAR},
       </if>
       <if test="path != null">
-        path = #{path,jdbcType=VARCHAR},
+        PATH = #{path,jdbcType=VARCHAR},
       </if>
       <if test="isAvailable != null">
-        is_available = #{isAvailable,jdbcType=VARCHAR},
+        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
       </if>
       <if test="reservedField1 != null">
-        reserved_field1 = #{reservedField1,jdbcType=VARCHAR},
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       </if>
       <if test="reservedField2 != null">
-        reserved_field2 = #{reservedField2,jdbcType=VARCHAR},
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       </if>
       <if test="reservedField3 != null">
-        reserved_field3 = #{reservedField3,jdbcType=VARCHAR},
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where menu_id = #{menuId,jdbcType=VARCHAR}
+    where MENU_ID = #{menuId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     update TBL_MENU
-    set menu_name = #{menuName,jdbcType=VARCHAR},
-      parent_mid = #{parentMid,jdbcType=VARCHAR},
-      node_type = #{nodeType,jdbcType=VARCHAR},
-      icon = #{icon,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=VARCHAR},
-      page_url = #{pageUrl,jdbcType=VARCHAR},
-      level = #{level,jdbcType=VARCHAR},
-      path = #{path,jdbcType=VARCHAR},
-      is_available = #{isAvailable,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      reserved_field1 = #{reservedField1,jdbcType=VARCHAR},
-      reserved_field2 = #{reservedField2,jdbcType=VARCHAR},
-      reserved_field3 = #{reservedField3,jdbcType=VARCHAR}
-    where menu_id = #{menuId,jdbcType=VARCHAR}
+    set MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      PARENT_MID = #{parentMid,jdbcType=VARCHAR},
+      NODE_TYPE = #{nodeType,jdbcType=VARCHAR},
+      ICON = #{icon,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR},
+      PAGE_URL = #{pageUrl,jdbcType=VARCHAR},
+      LEVEL = #{level,jdbcType=VARCHAR},
+      PATH = #{path,jdbcType=VARCHAR},
+      IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    where MENU_ID = #{menuId,jdbcType=INTEGER}
   </update>
 </mapper>

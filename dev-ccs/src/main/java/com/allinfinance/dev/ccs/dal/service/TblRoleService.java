@@ -21,7 +21,7 @@ public class TblRoleService {
     @Autowired
     private TblRoleMapper tblRoleMapper;
 
-    public int deleteByPrimaryKey(int roleId){
+    public int deleteByPrimaryKey(Integer roleId){
         return tblRoleMapper.deleteByPrimaryKey(roleId);
     }
 
@@ -33,7 +33,7 @@ public class TblRoleService {
         return tblRoleMapper.insertSelective(record);
     }
 
-    public TblRole selectByPrimaryKey(int roleId){
+    public TblRole selectByPrimaryKey(Integer roleId){
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 
