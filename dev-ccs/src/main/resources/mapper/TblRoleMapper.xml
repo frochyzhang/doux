@@ -161,7 +161,7 @@
         and ROLE_ID = ${roleReqParam.roleId}
       </if>
       <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
-        and ROLE_NAME = '${roleReqParam.roleName}'
+        and ROLE_NAME like  '%${roleReqParam.roleName}%'
       </if>
     </if>
   </select>
