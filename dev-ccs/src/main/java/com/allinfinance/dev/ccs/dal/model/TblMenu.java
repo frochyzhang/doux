@@ -1,9 +1,13 @@
 package com.allinfinance.dev.ccs.dal.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.util.Date;
 
 public class TblMenu implements Serializable {
+    @TableId(type = IdType.ASSIGN_ID)
     private Integer menuId;
 
     private String menuName;
