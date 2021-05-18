@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2021-05-14 10:52
  */
 @RestController
-@RequestMapping("/platform")
+@RequestMapping("/platform/auths")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -28,7 +28,7 @@ public class AuthController {
     private TblAuthService tblAuthService;
 
     //分页查询权限
-    @RequestMapping(path = "/auths",method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public Result selectUsers(AuthReqParam authReqParam){
         logger.info("AuthReqParam: {}",authReqParam);
         PageInfo<TblAuth> auths;
@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     //更新权限
-    @RequestMapping(path = "/auths/{authId}",method = RequestMethod.PUT)
+    @RequestMapping(path = "/{authId}",method = RequestMethod.PUT)
     public Result modifyUser(@RequestBody TblAuth tblAuth,@PathVariable("authId") int authId){
         logger.debug("接收到的请求参数: {},authId:{}",tblAuth,authId);
         tblAuth.setAuthId(authId);
@@ -64,7 +64,7 @@ public class AuthController {
     }
 
     //新增权限
-    @RequestMapping(path = "/auths",method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Result createAuth(@RequestBody TblAuth tblAuth){
         logger.debug("将新增的权限: {}",tblAuth);
         int result;
