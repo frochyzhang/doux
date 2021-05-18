@@ -29,9 +29,7 @@ public class AuthController {
 
     //分页查询权限
     @RequestMapping(path = "/auths",method = RequestMethod.GET)
-//    public Result selectUsers(@RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize){
     public Result selectUsers(AuthReqParam authReqParam){
-//        logger.info("接受到的参数:pageNo-{},pageSize-{}",pageNo,pageSize);
         logger.info("AuthReqParam: {}",authReqParam);
         PageInfo<TblAuth> auths;
         try {
