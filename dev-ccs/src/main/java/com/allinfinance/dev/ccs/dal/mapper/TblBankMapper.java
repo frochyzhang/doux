@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 
-import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
+import com.allinfinance.dev.ccs.dal.model.TblBank;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -12,6 +12,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author liuqi
  * @since 2021-05-14
  */
-public interface TblMenuAuthMapper extends BaseMapper<TblMenuAuth> {
+public interface TblBankMapper extends BaseMapper<TblBank> {
 
 }

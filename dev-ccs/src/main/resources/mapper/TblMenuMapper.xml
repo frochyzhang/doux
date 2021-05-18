@@ -25,8 +25,24 @@
     CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
     RESERVED_FIELD3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="pageSelectOptMenus" parameterType="com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam" resultMap="BaseResultMap">
     select 
+    <include refid="Base_Column_List" />
+    from TBL_MENU where 1=1
+    <if test="menusReqParam!=null">
+      <if test="menusReqParam.menuId!=null and menusReqParam.menuId!='' ">
+        and menu_id = #{menusReqParam.menuId}
+      </if>
+      <if test="menusReqParam.nodeType!=null">
+        and NODE_TYPE = #{menusReqParam.nodeType}
+      </if>
+      <if test="menusReqParam.menuName != null and menusReqParam.menuName!=''">
+        and MENU_NAME = #{menusReqParam.menuName}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=INTEGER}

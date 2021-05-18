@@ -1,17 +1,15 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
+import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
-public interface TblMenuMapper {
-    int deleteByPrimaryKey(Integer menuId);
+import java.util.List;
 
-    int insert(TblMenu record);
 
-    int insertSelective(TblMenu record);
+public interface TblMenuMapper extends BaseMapper<TblMenu> {
 
-    TblMenu selectByPrimaryKey(Integer menuId);
-
-    int updateByPrimaryKeySelective(TblMenu record);
-
-    int updateByPrimaryKey(TblMenu record);
+    List<MenusReqParam> pageSelectOptMenus(@Param("menusReqParam")MenusReqParam menusReqParam );
+    List<MenusReqParam> delMenuById(@Param("ids")String[] ids );
 }

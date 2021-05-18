@@ -19,20 +19,25 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("TBL_MENU_AUTH")
-public class TblMenuAuth implements Serializable {
+@TableName("TBL_BANK")
+public class TblBank implements Serializable {
 
     private static final long serialVersionUID=1L;
 
-    private String authId;
+    private String bankId;
 
-    private String menuId;
+    private String bankName;
 
+   // "1：不可用；0：可用"
     private String isAvailable;
 
     private LocalDateTime createTime;
 
     private String createBy;
+
+    private LocalDateTime updateTime;
+
+    private String updateBy;
 
     private String reservedField1;
 
