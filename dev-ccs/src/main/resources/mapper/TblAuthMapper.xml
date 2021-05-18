@@ -161,7 +161,7 @@
         and AUTH_ID = ${authReqParam.authId}
       </if>
       <if test="authReqParam.authName!=null and authReqParam.authName!='' ">
-        and AUTH_NAME = '${authReqParam.authName}'
+        and AUTH_NAME like '%${authReqParam.authName}%'
       </if>
     </if>
   </select>
