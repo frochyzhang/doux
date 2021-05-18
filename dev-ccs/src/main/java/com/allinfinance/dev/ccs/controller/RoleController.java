@@ -2,7 +2,10 @@ package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
+import com.allinfinance.dev.ccs.result.Result;
+import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2021-05-13 15:44
  */
 @RestController
-@RequestMapping("/platform")
+@RequestMapping("/platform/roles")
 public class RoleController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
@@ -25,34 +28,59 @@ public class RoleController {
     private TblRoleService tblRoleService;
 
     //分页查询角色
-    @RequestMapping(path = "/roles",method = RequestMethod.GET)
-    public PageInfo<TblRole> selectUsers(@RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize){
-        logger.info("接受到的参数:pageNo-{},pageSize-{}",pageNo,pageSize);
-        PageInfo<TblRole> users = tblRoleService.pageSelectRoles(pageNo,pageSize);
-        logger.info("查询到的角色列表: {}",users);
-        return users;
+    @RequestMapping(method = RequestMethod.GET)
+    public Result selectRoles(RoleReqParam roleReqParam){
+        logger.info("roleReqParam:-{}",roleReqParam);
+
+        PageInfo<TblRole> roles;
+        try {
+            roles = tblRoleService.pageSelectRoles(roleReqParam);
+        }catch (Exception e){
+            logger.error("查询角色列表异常",e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+
+        logger.debug("查询到的角色列表: {}",roles);
+        return Result.success(roles);
     }
 
     //更新角色
-    @RequestMapping(path = "/roles/{roleId}",method = RequestMethod.PUT)
-    public boolean modifyUser(@RequestBody TblRole tblRole,@PathVariable("roleId") int roleId){
-        logger.info("接收到的请求参数: {},authId:{}",tblRole,roleId);
+    @RequestMapping(path = "/{roleId}",method = RequestMethod.PUT)
+    public Result modifyRole(@RequestBody TblRole tblRole,@PathVariable("roleId") int roleId){
+        logger.info("接收到的请求参数: {},roleId:{}",tblRole,roleId);
         tblRole.setRoleId(roleId);
-
-        int result = tblRoleService.updateByPrimaryKey(tblRole);
-
-
+        int result;
+        try {
+            result = tblRoleService.updateByPrimaryKey(tblRole);
+        }catch (Exception e){
+            logger.error("更新角色信息发生异常",e);
+            return Result.failure();
+        }
         logger.info("result: {}",result);
-        return result == 1;
+        if (result == 1){
+            return Result.success();
+        }else {
+            return Result.failure();
+        }
     }
 
     //新增角色
-    @RequestMapping(path = "/roles",method = RequestMethod.POST)
-    public boolean createAuth(@RequestBody TblRole tblRole){
+    @RequestMapping(method = RequestMethod.POST)
+    public Result createRole(@RequestBody TblRole tblRole){
         logger.info("将新增的角色: {}",tblRole);
-        int result = tblRoleService.insertSelective(tblRole);
+        int result;
+        try {
+            result = tblRoleService.insertSelective(tblRole);
+        }catch (Exception e){
+            logger.error("新增角色发生异常",e);
+            return Result.failure();
+        }
         logger.info("新增结果: {}",result);
-        return result == 1;
+        if (result == 1){
+            return Result.success();
+        }else {
+            return Result.failure();
+        }
     }
 
 

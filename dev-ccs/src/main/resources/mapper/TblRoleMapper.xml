@@ -151,9 +151,18 @@
     where ROLE_ID = #{roleId,jdbcType=INTEGER}
   </update>
   <!--  **********以下为自定义SQL***********-->
-  <select id="pageSelectRoles"  resultMap="BaseResultMap">
+  <select id="pageSelectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
+          resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from TBL_ROLE
+    from TBL_ROLE where 1=1
+    <if test="roleReqParam!=null">
+      <if test="roleReqParam.roleId!=null and roleReqParam.roleId!=0">
+        and ROLE_ID = ${roleReqParam.roleId}
+      </if>
+      <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
+        and ROLE_NAME = '${roleReqParam.roleName}'
+      </if>
+    </if>
   </select>
 </mapper>
