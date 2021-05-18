@@ -1,0 +1,107 @@
+package com.allinfinance.dev.ccs.result;
+
+import java.io.Serializable;
+
+/**
+ * @author 张勇
+ * @description 统一返回封装
+ * @date 2020/5/17 02:12
+ */
+public class Result implements Serializable {
+
+    private Boolean success;
+    private Integer code;
+    private String message;
+    private Object data;
+    private Integer status;
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public void setResultCode(ResultCodeEnum resultCodeEnum) {
+        this.code = resultCodeEnum.code();
+        this.message = resultCodeEnum.message();
+    }
+
+    public static Result success() {
+        Result result = new Result();
+        result.setSuccess(Boolean.TRUE);
+        result.setResultCode(ResultCodeEnum.SUCCESS);
+        result.setStatus(0);
+        return result;
+    }
+
+    public static Result success(Object data) {
+        Result result = new Result();
+        result.setSuccess(Boolean.TRUE);
+        result.setResultCode(ResultCodeEnum.SUCCESS);
+        result.setData(data);
+        result.setStatus(0);
+        return result;
+    }
+
+    public static Result failure(ResultCodeEnum resultCodeEnum) {
+        Result result = new Result();
+        result.setSuccess(Boolean.FALSE);
+        result.setCode(resultCodeEnum.code());
+        result.setMessage(resultCodeEnum.message());
+        result.setStatus(-1);
+        return result;
+    }
+
+    public static Result failure() {
+        Result result = new Result();
+        result.setSuccess(Boolean.FALSE);
+        result.setCode(ResultCodeEnum.GENERIC_EXCEPTION.code());
+        result.setMessage(ResultCodeEnum.GENERIC_EXCEPTION.message());
+        result.setStatus(-1);
+        return result;
+    }
+
+    public static Result failure(String message, Integer code) {
+        Result result = new Result();
+        result.setSuccess(Boolean.FALSE);
+        result.setCode(code);
+        result.setStatus(-1);
+        result.setMessage(message);
+        return result;
+    }
+
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+}
