@@ -1,6 +1,8 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
+import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,5 +19,5 @@ public interface TblAuthMapper {
 
     int updateByPrimaryKey(TblAuth record);
 
-    List<TblAuth> pageSelectAuths();
+    List<TblAuth> pageSelectAuths(@Param("authReqParam") AuthReqParam authReqParam);
 }

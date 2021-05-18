@@ -3,6 +3,7 @@ package com.allinfinance.dev.ccs.dal.service;
 import com.allinfinance.dev.ccs.dal.mapper.TblAuthMapper;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,9 @@ public class TblAuthService {
         return tblAuthMapper.updateByPrimaryKey(record);
     }
 
-    public PageInfo<TblAuth> pageSelectAuths(int pageNo, int pageSize) {
-        PageHelper.startPage(pageNo, pageSize);
-        List<TblAuth> auths = tblAuthMapper.pageSelectAuths();
+    public PageInfo<TblAuth> pageSelectAuths(AuthReqParam authReqParam) {
+        PageHelper.startPage(authReqParam.getCurrent(),authReqParam.getPageSize());
+        List<TblAuth> auths = tblAuthMapper.pageSelectAuths(authReqParam);
         System.out.println("auths: "+auths);
         return new PageInfo<TblAuth>(auths);
     }

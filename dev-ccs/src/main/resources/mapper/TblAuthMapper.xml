@@ -151,9 +151,18 @@
     where AUTH_ID = #{authId,jdbcType=INTEGER}
   </update>
   <!--  **********以下为自定义SQL***********-->
-  <select id="pageSelectAuths"  resultMap="BaseResultMap">
+  <select id="pageSelectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam"
+          resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from TBL_AUTH
+    from TBL_AUTH where 1=1
+    <if test="authReqParam!=null">
+      <if test="authReqParam.authId!=null and authReqParam.authId!=0">
+        and AUTH_ID = ${authReqParam.authId}
+      </if>
+      <if test="authReqParam.authName!=null and authReqParam.authName!='' ">
+        and AUTH_NAME = '${authReqParam.authName}'
+      </if>
+    </if>
   </select>
 </mapper>
