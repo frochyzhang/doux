@@ -2,53 +2,72 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblUserMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblUser">
-    <id column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="user_pass" jdbcType="VARCHAR" property="userPass" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
-    <result column="org" jdbcType="VARCHAR" property="org" />
-    <result column="branch_id" jdbcType="VARCHAR" property="branchId" />
-    <result column="bank_id" jdbcType="VARCHAR" property="bankId" />
-    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
-    <result column="is_available" jdbcType="VARCHAR" property="isAvailable" />
-    <result column="init_pass" jdbcType="VARCHAR" property="initPass" />
-    <result column="error_num" jdbcType="INTEGER" property="errorNum" />
-    <result column="pass_status" jdbcType="VARCHAR" property="passStatus" />
-    <result column="last_pass_update_time" jdbcType="TIMESTAMP" property="lastPassUpdateTime" />
-    <result column="salt" jdbcType="VARCHAR" property="salt" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="reserved_field1" jdbcType="VARCHAR" property="reservedField1" />
-    <result column="reserved_field2" jdbcType="VARCHAR" property="reservedField2" />
-    <result column="reserved_field3" jdbcType="VARCHAR" property="reservedField3" />
+    <id column="USER_ID" jdbcType="INTEGER" property="userId" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="USER_PASS" jdbcType="VARCHAR" property="userPass" />
+    <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="ORG" jdbcType="VARCHAR" property="org" />
+    <result column="BRANCH_ID" jdbcType="VARCHAR" property="branchId" />
+    <result column="BANK_ID" jdbcType="VARCHAR" property="bankId" />
+    <result column="MERCHANT" jdbcType="VARCHAR" property="merchant" />
+    <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
+    <result column="INIT_PASS" jdbcType="VARCHAR" property="initPass" />
+    <result column="ERROR_NUM" jdbcType="INTEGER" property="errorNum" />
+    <result column="PASS_STATUS" jdbcType="VARCHAR" property="passStatus" />
+    <result column="LAST_PASS_UPDATE_TIME" jdbcType="TIMESTAMP" property="lastPassUpdateTime" />
+    <result column="SALT" jdbcType="VARCHAR" property="salt" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
+    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
+    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, user_name, user_pass, role_id, org, branch_id, bank_id, merchant, is_available, 
-    init_pass, error_num, pass_status, last_pass_update_time, salt, create_by, create_time, 
-    update_time, update_by, reserved_field1, reserved_field2, reserved_field3
+    USER_ID, USER_NAME, USER_PASS, ROLE_ID, ORG, BRANCH_ID, BANK_ID, MERCHANT, IS_AVAILABLE, 
+    INIT_PASS, ERROR_NUM, PASS_STATUS, LAST_PASS_UPDATE_TIME, SALT, CREATE_BY, CREATE_TIME, 
+    UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from TBL_USER
-    where user_id = #{userId,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from TBL_USER
-    where user_id = #{userId,jdbcType=VARCHAR}
-  </delete>
+  <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_USER where 1=1
+    <if test="userReqParam!=null">
+      <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
+        and user_Name like '%${userReqParam.userName}%'
+      </if>
+      <if test="userReqParam.roleId!=null">
+        and role_Id = #{userReqParam.roleId}
+      </if>
+      <if test="userReqParam.isAvailable!=null">
+        and IS_AVAILABLE = #{userReqParam.isAvailable}
+      </if>
+    </if>
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update TBL_USER
+    SET
+        IS_AVAILABLE = 0
+    WHERE
+        USER_ID = #{userId,jdbcType=INTEGER}
+  </update>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
-    insert into TBL_USER (user_id, user_name, user_pass, 
-      role_id, org, branch_id, 
-      bank_id, merchant, is_available, 
-      init_pass, error_num, pass_status, 
-      last_pass_update_time, salt, create_by, 
-      create_time, update_time, update_by, 
-      reserved_field1, reserved_field2, reserved_field3
+    insert into TBL_USER (USER_ID, USER_NAME, USER_PASS, 
+      ROLE_ID, ORG, BRANCH_ID, 
+      BANK_ID, MERCHANT, IS_AVAILABLE, 
+      INIT_PASS, ERROR_NUM, PASS_STATUS, 
+      LAST_PASS_UPDATE_TIME, SALT, CREATE_BY, 
+      CREATE_TIME, UPDATE_TIME, UPDATE_BY, 
+      RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
       )
-    values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR}, 
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR}, 
       #{roleId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{branchId,jdbcType=VARCHAR}, 
       #{bankId,jdbcType=VARCHAR}, #{merchant,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
       #{initPass,jdbcType=VARCHAR}, #{errorNum,jdbcType=INTEGER}, #{passStatus,jdbcType=VARCHAR}, 
@@ -61,72 +80,72 @@
     insert into TBL_USER
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        user_id,
+        USER_ID,
       </if>
       <if test="userName != null">
-        user_name,
+        USER_NAME,
       </if>
       <if test="userPass != null">
-        user_pass,
+        USER_PASS,
       </if>
       <if test="roleId != null">
-        role_id,
+        ROLE_ID,
       </if>
       <if test="org != null">
-        org,
+        ORG,
       </if>
       <if test="branchId != null">
-        branch_id,
+        BRANCH_ID,
       </if>
       <if test="bankId != null">
-        bank_id,
+        BANK_ID,
       </if>
       <if test="merchant != null">
-        merchant,
+        MERCHANT,
       </if>
       <if test="isAvailable != null">
-        is_available,
+        IS_AVAILABLE,
       </if>
       <if test="initPass != null">
-        init_pass,
+        INIT_PASS,
       </if>
       <if test="errorNum != null">
-        error_num,
+        ERROR_NUM,
       </if>
       <if test="passStatus != null">
-        pass_status,
+        PASS_STATUS,
       </if>
       <if test="lastPassUpdateTime != null">
-        last_pass_update_time,
+        LAST_PASS_UPDATE_TIME,
       </if>
       <if test="salt != null">
-        salt,
+        SALT,
       </if>
       <if test="createBy != null">
-        create_by,
+        CREATE_BY,
       </if>
       <if test="createTime != null">
-        create_time,
+        CREATE_TIME,
       </if>
       <if test="updateTime != null">
-        update_time,
+        UPDATE_TIME,
       </if>
       <if test="updateBy != null">
-        update_by,
+        UPDATE_BY,
       </if>
       <if test="reservedField1 != null">
-        reserved_field1,
+        RESERVED_FIELD1,
       </if>
       <if test="reservedField2 != null">
-        reserved_field2,
+        RESERVED_FIELD2,
       </if>
       <if test="reservedField3 != null">
-        reserved_field3,
+        RESERVED_FIELD3,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
@@ -193,92 +212,92 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
     update TBL_USER
     <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="userName != null and userName != ''">
+        USER_NAME = #{userName,jdbcType=VARCHAR},
       </if>
-      <if test="userPass != null">
-        user_pass = #{userPass,jdbcType=VARCHAR},
+      <if test="userPass != null and userPass != ''">
+        USER_PASS = #{userPass,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=VARCHAR},
+      <if test="roleId != null and roleId != ''">
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
       </if>
-      <if test="org != null">
-        org = #{org,jdbcType=VARCHAR},
+      <if test="org != null and org != ''">
+        ORG = #{org,jdbcType=VARCHAR},
       </if>
-      <if test="branchId != null">
-        branch_id = #{branchId,jdbcType=VARCHAR},
+      <if test="branchId != null and branchId != ''">
+        BRANCH_ID = #{branchId,jdbcType=VARCHAR},
       </if>
-      <if test="bankId != null">
-        bank_id = #{bankId,jdbcType=VARCHAR},
+      <if test="bankId != null and bankId != ''">
+        BANK_ID = #{bankId,jdbcType=VARCHAR},
       </if>
-      <if test="merchant != null">
-        merchant = #{merchant,jdbcType=VARCHAR},
+      <if test="merchant != null and merchant != ''">
+        MERCHANT = #{merchant,jdbcType=VARCHAR},
       </if>
-      <if test="isAvailable != null">
-        is_available = #{isAvailable,jdbcType=VARCHAR},
+      <if test="isAvailable != null and isAvailable != ''">
+        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       </if>
-      <if test="initPass != null">
-        init_pass = #{initPass,jdbcType=VARCHAR},
+      <if test="initPass != null and initPass != ''">
+        INIT_PASS = #{initPass,jdbcType=VARCHAR},
       </if>
-      <if test="errorNum != null">
-        error_num = #{errorNum,jdbcType=INTEGER},
+      <if test="errorNum != null and errorNum != ''">
+        ERROR_NUM = #{errorNum,jdbcType=INTEGER},
       </if>
-      <if test="passStatus != null">
-        pass_status = #{passStatus,jdbcType=VARCHAR},
+      <if test="passStatus != null and passStatus != ''">
+        PASS_STATUS = #{passStatus,jdbcType=VARCHAR},
       </if>
-      <if test="lastPassUpdateTime != null">
-        last_pass_update_time = #{lastPassUpdateTime,jdbcType=TIMESTAMP},
+      <if test="lastPassUpdateTime != lastPassUpdateTime ">
+        LAST_PASS_UPDATE_TIME = #{lastPassUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="salt != null">
-        salt = #{salt,jdbcType=VARCHAR},
+      <if test="salt != null and salt != ''">
+        SALT = #{salt,jdbcType=VARCHAR},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
+      <if test="createBy != null and createBy != ''">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updateBy != null and updateBy != ''">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="reservedField1 != null">
-        reserved_field1 = #{reservedField1,jdbcType=VARCHAR},
+      <if test="reservedField1 != null and reservedField1 != ''">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       </if>
-      <if test="reservedField2 != null">
-        reserved_field2 = #{reservedField2,jdbcType=VARCHAR},
+      <if test="reservedField2 != null and reservedField2 != ''">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       </if>
-      <if test="reservedField3 != null">
-        reserved_field3 = #{reservedField3,jdbcType=VARCHAR},
+      <if test="reservedField3 != null and reservedField3 != ''">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where user_id = #{userId,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
     update TBL_USER
-    set user_name = #{userName,jdbcType=VARCHAR},
-      user_pass = #{userPass,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=VARCHAR},
-      org = #{org,jdbcType=VARCHAR},
-      branch_id = #{branchId,jdbcType=VARCHAR},
-      bank_id = #{bankId,jdbcType=VARCHAR},
-      merchant = #{merchant,jdbcType=VARCHAR},
-      is_available = #{isAvailable,jdbcType=VARCHAR},
-      init_pass = #{initPass,jdbcType=VARCHAR},
-      error_num = #{errorNum,jdbcType=INTEGER},
-      pass_status = #{passStatus,jdbcType=VARCHAR},
-      last_pass_update_time = #{lastPassUpdateTime,jdbcType=TIMESTAMP},
-      salt = #{salt,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      reserved_field1 = #{reservedField1,jdbcType=VARCHAR},
-      reserved_field2 = #{reservedField2,jdbcType=VARCHAR},
-      reserved_field3 = #{reservedField3,jdbcType=VARCHAR}
-    where user_id = #{userId,jdbcType=VARCHAR}
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      USER_PASS = #{userPass,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      ORG = #{org,jdbcType=VARCHAR},
+      BRANCH_ID = #{branchId,jdbcType=VARCHAR},
+      BANK_ID = #{bankId,jdbcType=VARCHAR},
+      MERCHANT = #{merchant,jdbcType=VARCHAR},
+      IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      INIT_PASS = #{initPass,jdbcType=VARCHAR},
+      ERROR_NUM = #{errorNum,jdbcType=INTEGER},
+      PASS_STATUS = #{passStatus,jdbcType=VARCHAR},
+      LAST_PASS_UPDATE_TIME = #{lastPassUpdateTime,jdbcType=TIMESTAMP},
+      SALT = #{salt,jdbcType=VARCHAR},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=INTEGER}
   </update>
 
 </mapper>

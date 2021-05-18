@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblMenu implements Serializable {
-    private String menuId;
+    private Integer menuId;
 
     private String menuName;
 
@@ -40,11 +40,11 @@ public class TblMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getMenuId() {
+    public Integer getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(String menuId) {
+    public void setMenuId(Integer menuId) {
         this.menuId = menuId;
     }
 

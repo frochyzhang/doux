@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblUser implements Serializable {
-    private String userId;
+    private Integer userId;
 
     private String userName;
 
@@ -48,11 +48,11 @@ public class TblUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
 		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
-	<classPathEntry location="C:\Bins\repository\mvnRespo\com\ibm\db2\db2jcc\4.23.42\db2jcc-4.23.42.jar"/>
+	<classPathEntry location="C:\localresponsity\com\ibm\db2\db2jcc\3.65.131\db2jcc-3.65.131.jar"/>
 	<context id="smdsTables" targetRuntime="MyBatis3">
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 		<plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
@@ -42,17 +42,17 @@
 <!--				   enableUpdateByPrimaryKey="true"-->
 <!--				   enableInsert="true">-->
 <!--			</table>-->
-			<table tableName="TBL_ROLE_AUTH"
-				   domainObjectName="TblRoleAuth"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
+<!--			<table tableName="TBL_ROLE_AUTH"-->
+<!--				   domainObjectName="TblRoleAuth"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
 <!--			<table tableName="TBL_USER"-->
 <!--				   domainObjectName="TblUser"-->
 <!--				   enableSelectByExample="false"-->
@@ -86,17 +86,27 @@
 <!--				   enableUpdateByPrimaryKey="true"-->
 <!--				   enableInsert="true">-->
 <!--			</table>-->
-<!--			<table tableName="TBL_AUTH"-->
-<!--				   domainObjectName="TblAuth"-->
-<!--				   enableSelectByExample="false"-->
-<!--				   enableDeleteByExample="false"-->
-<!--				   enableCountByExample="false"-->
-<!--				   enableUpdateByExample="false"-->
-<!--				   enableDeleteByPrimaryKey="true"-->
-<!--				   enableSelectByPrimaryKey="true"-->
-<!--				   enableUpdateByPrimaryKey="true"-->
-<!--				   enableInsert="true">-->
-<!--			</table>-->
-
-	</context>
-</generatorConfiguration>
+			<table tableName="TBL_AUTH"
+				   domainObjectName="TblAuth"
+				   enableSelectByExample="false"
+				   enableDeleteByExample="false"
+				   enableCountByExample="false"
+				   enableUpdateByExample="false"
+				   enableDeleteByPrimaryKey="true"
+				   enableSelectByPrimaryKey="true"
+				   enableUpdateByPrimaryKey="true"
+				   enableInsert="true">
+			</table>
+<!--		<table tableName="TBL_USER_OPT_LOG"-->
+<!--						   domainObjectName="TblUserOptLog"-->
+<!--						   enableSelectByExample="false"-->
+<!--						   enableDeleteByExample="false"-->
+<!--						   enableCountByExample="false"-->
+<!--						   enableUpdateByExample="false"-->
+<!--						   enableDeleteByPrimaryKey="true"-->
+<!--						   enableSelectByPrimaryKey="true"-->
+<!--						   enableUpdateByPrimaryKey="true"-->
+<!--						   enableInsert="true">-->
+<!--	     </table>-->
+            </context>
+        </generatorConfiguration>

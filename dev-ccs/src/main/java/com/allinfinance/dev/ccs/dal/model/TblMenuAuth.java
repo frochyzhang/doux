@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblMenuAuth implements Serializable {
-    private String authId;
+    private Integer authId;
 
-    private String menuId;
+    private Integer menuId;
 
     private String isAvailable;
 
@@ -26,19 +26,19 @@ public class TblMenuAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getAuthId() {
+    public Integer getAuthId() {
         return authId;
     }
 
-    public void setAuthId(String authId) {
+    public void setAuthId(Integer authId) {
         this.authId = authId;
     }
 
-    public String getMenuId() {
+    public Integer getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(String menuId) {
+    public void setMenuId(Integer menuId) {
         this.menuId = menuId;
     }
 
