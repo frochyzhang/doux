@@ -15,10 +15,18 @@ import java.util.Date;
 public class LogReqParam extends TblUserOptLog {
     private Integer current;
     private Integer pageSize;
-
+    private String userName;
     private String beginDate;
-
     private String endDate;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
 
     public String getBeginDate() {
         return beginDate;

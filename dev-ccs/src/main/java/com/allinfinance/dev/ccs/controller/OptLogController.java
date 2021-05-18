@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
+import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
@@ -10,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,16 +40,18 @@ public class OptLogController {
     @ResponseBody
     public Result selectOptLogs(LogReqParam logReqParam) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        PageInfo<TblUserOptLog> optLogs;
+        if (logReqParam.getCurrent()==null&&logReqParam.getPageSize()==null){
+            logReqParam.setCurrent(1);
+            logReqParam.setPageSize(10);
+        }
+        PageInfo<UserLogRespDto> optLogs;
         try {
             optLogs = tblOptLogService.pageSelectOptLogs(logReqParam);
         } catch (Exception e) {
-            logger.error("查询用户列表异常!", e);
+            logger.error("查询用户操作日志列表异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         logger.info("查询到的用户列表: {}", optLogs);
         return Result.success(optLogs);
     }
-
-
 }
