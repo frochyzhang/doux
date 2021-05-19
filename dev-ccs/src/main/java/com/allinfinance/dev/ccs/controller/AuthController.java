@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
-import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblAuthService;
 import com.allinfinance.dev.ccs.result.Result;
@@ -28,7 +27,7 @@ public class AuthController {
     private TblAuthService tblAuthService;
 
     //分页查询权限
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public Result selectUsers(AuthReqParam authReqParam){
         logger.info("AuthReqParam: {}",authReqParam);
         PageInfo<TblAuth> auths;
@@ -44,7 +43,7 @@ public class AuthController {
     }
 
     //更新权限
-    @RequestMapping(path = "/{authId}",method = RequestMethod.PUT)
+    @PutMapping
     public Result modifyUser(@RequestBody TblAuth tblAuth,@PathVariable("authId") int authId){
         logger.debug("接收到的请求参数: {},authId:{}",tblAuth,authId);
         tblAuth.setAuthId(authId);
@@ -64,7 +63,7 @@ public class AuthController {
     }
 
     //新增权限
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public Result createAuth(@RequestBody TblAuth tblAuth){
         logger.debug("将新增的权限: {}",tblAuth);
         int result;
