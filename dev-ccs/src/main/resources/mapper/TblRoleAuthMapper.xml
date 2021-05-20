@@ -115,12 +115,6 @@
       and AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
   <!--  **********以下为自定义SQL***********-->
-  <select id="pageSelectRoleAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleAuthReqParam"
-          resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from TBL_ROLE_AUTH
-  </select>
   <select id="selectRoleAuths"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

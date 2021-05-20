@@ -34,7 +34,7 @@ public class TblRoleService {
         return tblRoleMapper.insertSelective(record);
     }
 
-    public TblRole selectByPrimaryKey(Integer roleId){
+    public TblRole selectByPrimaryKey(String roleId){
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 

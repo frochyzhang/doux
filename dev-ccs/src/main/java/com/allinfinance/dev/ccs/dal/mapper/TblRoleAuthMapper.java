@@ -18,5 +18,5 @@ public interface TblRoleAuthMapper {
 
     int updateByPrimaryKey(TblRoleAuth record);
 
-    List<TblRoleAuth> pageSelectRoleAuths(int pageNo, int pageSize);
+    List<TblRoleAuth> selectRoleAuths();
 }
