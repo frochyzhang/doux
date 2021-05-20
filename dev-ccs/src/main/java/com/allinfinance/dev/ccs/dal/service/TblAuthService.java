@@ -50,8 +50,10 @@ public class TblAuthService {
     public PageInfo<TblAuth> pageSelectAuths(AuthReqParam authReqParam) {
         PageHelper.startPage(authReqParam.getCurrent(),authReqParam.getPageSize());
         List<TblAuth> auths = tblAuthMapper.pageSelectAuths(authReqParam);
-        System.out.println("auths: "+auths);
         return new PageInfo<TblAuth>(auths);
     }
 
+    public List<TblAuth> selectAuths() {
+        return tblAuthMapper.selectAuths();
+    }
 }

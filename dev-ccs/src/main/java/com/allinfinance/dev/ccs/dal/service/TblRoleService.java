@@ -22,7 +22,7 @@ public class TblRoleService {
     @Autowired
     private TblRoleMapper tblRoleMapper;
 
-    public int deleteByPrimaryKey(Integer roleId){
+    public int deleteByPrimaryKey(String roleId){
         return tblRoleMapper.deleteByPrimaryKey(roleId);
     }
 

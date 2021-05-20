@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TblRole implements Serializable {
@@ -23,6 +24,8 @@ public class TblRole implements Serializable {
     private String reservedField2;
 
     private String reservedField3;
+
+    private ArrayList<String> auth;
 
     private static final long serialVersionUID = 1L;
 
@@ -104,5 +107,30 @@ public class TblRole implements Serializable {
 
     public void setReservedField3(String reservedField3) {
         this.reservedField3 = reservedField3;
+    }
+
+    public ArrayList<String> getAuth() {
+        return auth;
+    }
+
+    public void setAuth(ArrayList<String> auth) {
+        this.auth = auth;
+    }
+
+    @Override
+    public String toString() {
+        return "TblRole{" +
+                "roleId='" + roleId + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", createTime=" + createTime +
+                ", createBy='" + createBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", reservedField2='" + reservedField2 + '\'' +
+                ", reservedField3='" + reservedField3 + '\'' +
+                ", auth=" + auth +
+                '}';
     }
 }

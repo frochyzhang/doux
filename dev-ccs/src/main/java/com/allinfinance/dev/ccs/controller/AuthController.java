@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @project: dev-parent
  * @description: 权限管理
@@ -31,15 +33,22 @@ public class AuthController {
     public Result selectUsers(AuthReqParam authReqParam){
         logger.info("AuthReqParam: {}",authReqParam);
         PageInfo<TblAuth> auths;
+        List<TblAuth> authList;
         try {
-            auths = tblAuthService.pageSelectAuths(authReqParam);
+            if (authReqParam.getCurrent() == null || authReqParam.getPageSize() == null){
+                authList = tblAuthService.selectAuths();
+                logger.info("角色列表: {}",authList);
+                return Result.success(authList);
+            }else {
+                auths = tblAuthService.pageSelectAuths(authReqParam);
+                logger.info("分页的角色列表: {}",auths);
+                return Result.success(auths);
+            }
         }catch (Exception e){
             logger.error("查询权限列表异常",e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
 
-        logger.debug("查询到的权限列表: {}",auths);
-        return Result.success(auths);
     }
 
     //更新权限
