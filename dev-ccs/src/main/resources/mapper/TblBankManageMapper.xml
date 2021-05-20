@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    <id column="BANK_ID" jdbcType="INTEGER" property="bankId" />
+    <result column="ORG" jdbcType="VARCHAR" property="org" />
+    <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
+    <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
+    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
+    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    BANK_ID, ORG, BANK_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, 
+    RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TBL_BANK_MANAGE
+    where BANK_ID = #{bankId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TBL_BANK_MANAGE
+    where BANK_ID = #{bankId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME, 
+      IS_AVAILABLE, CREATE_TIME, CREATE_BY, 
+      UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, 
+      RESERVED_FIELD2, RESERVED_FIELD3)
+    values (#{bankId,jdbcType=INTEGER}, #{org,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
+      #{isAvailable,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, 
+      #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    insert into TBL_BANK_MANAGE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bankId != null">
+        BANK_ID,
+      </if>
+      <if test="org != null">
+        ORG,
+      </if>
+      <if test="bankName != null">
+        BANK_NAME,
+      </if>
+      <if test="isAvailable != null">
+        IS_AVAILABLE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1,
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2,
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bankId != null">
+        #{bankId,jdbcType=INTEGER},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        #{isAvailable,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    update TBL_BANK_MANAGE
+    <set>
+      <if test="org != null">
+        ORG = #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BANK_ID = #{bankId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    update TBL_BANK_MANAGE
+    set ORG = #{org,jdbcType=VARCHAR},
+      BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    where BANK_ID = #{bankId,jdbcType=INTEGER}
+  </update>
+  <!--  **********以下为自定义SQL***********-->
+  <select id="pageSelectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_BANK_MANAGE where 1=1
+    <if test="bankReqParam!=null">
+      <if test="bankReqParam.bankId!=null and bankReqParam.bankId!=0">
+        and bank_ID = ${bankReqParam.bankId}
+      </if>
+      <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
+        and bank_NAME like '%${bankReqParam.bankName}%'
+      </if>
+    </if>
+  </select>
+</mapper>
