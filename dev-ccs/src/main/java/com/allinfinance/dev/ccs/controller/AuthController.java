@@ -44,7 +44,7 @@ public class AuthController {
 
     //更新权限
     @PutMapping
-    public Result modifyUser(@RequestBody TblAuth tblAuth,@PathVariable("authId") int authId){
+    public Result modifyUser(@RequestBody TblAuth tblAuth,@PathVariable("authId") String authId){
         logger.debug("接收到的请求参数: {},authId:{}",tblAuth,authId);
         tblAuth.setAuthId(authId);
         int result;
