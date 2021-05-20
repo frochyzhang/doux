@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblAuthMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblAuth">
-    <id column="AUTH_ID" jdbcType="INTEGER" property="authId" />
+    <id column="AUTH_ID" jdbcType="VARCHAR" property="authId" />
     <result column="AUTH_NAME" jdbcType="VARCHAR" property="authName" />
     <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -17,22 +17,22 @@
     AUTH_ID, AUTH_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, 
     RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from TBL_AUTH
-    where AUTH_ID = #{authId,jdbcType=INTEGER}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from TBL_AUTH
-    where AUTH_ID = #{authId,jdbcType=INTEGER}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
     insert into TBL_AUTH (AUTH_ID, AUTH_NAME, IS_AVAILABLE, 
       CREATE_TIME, CREATE_BY, UPDATE_TIME, 
       UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
       RESERVED_FIELD3)
-    values (#{authId,jdbcType=INTEGER}, #{authName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
+    values (#{authId,jdbcType=VARCHAR}, #{authName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, 
       #{reservedField3,jdbcType=VARCHAR})
@@ -73,7 +73,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="authId != null">
-        #{authId,jdbcType=INTEGER},
+        #{authId,jdbcType=VARCHAR},
       </if>
       <if test="authName != null">
         #{authName,jdbcType=VARCHAR},
@@ -135,7 +135,7 @@
         RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where AUTH_ID = #{authId,jdbcType=INTEGER}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
     update TBL_AUTH
@@ -148,8 +148,9 @@
       RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-    where AUTH_ID = #{authId,jdbcType=INTEGER}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
+
   <!--  **********以下为自定义SQL***********-->
   <select id="pageSelectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam"
           resultMap="BaseResultMap">
