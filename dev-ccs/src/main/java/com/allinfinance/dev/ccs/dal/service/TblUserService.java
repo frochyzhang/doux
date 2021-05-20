@@ -37,4 +37,6 @@ public interface TblUserService {
     public int updateByPrimaryKey(TblUser record);
 
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
+
+    List<TblUser> SelectUsers(UserReqParam userReqParam);
 }

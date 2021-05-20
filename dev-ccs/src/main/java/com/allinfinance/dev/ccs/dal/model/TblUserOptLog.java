@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblUserOptLog implements Serializable {
-    private Integer operationId;
+    private String operationId;
 
     private String userId;
 
@@ -32,11 +32,11 @@ public class TblUserOptLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getOperationId() {
+    public String getOperationId() {
         return operationId;
     }
 
-    public void setOperationId(Integer operationId) {
+    public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
 

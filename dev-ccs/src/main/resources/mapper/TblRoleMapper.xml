@@ -21,20 +21,20 @@
     select 
     <include refid="Base_Column_List" />
     from TBL_ROLE
-    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from TBL_ROLE
-    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblRole">
-    insert into TBL_ROLE (ROLE_ID, ROLE_NAME, IS_AVAILABLE, 
-      CREATE_TIME, CREATE_BY, UPDATE_TIME, 
-      UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
+    insert into TBL_ROLE (ROLE_ID, ROLE_NAME, IS_AVAILABLE,
+      CREATE_TIME, CREATE_BY, UPDATE_TIME,
+      UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2,
       RESERVED_FIELD3)
-    values (#{roleId,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, 
+    values (#{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
       #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRole">
@@ -73,7 +73,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
+        #{roleId,jdbcType=INTEGER},
       </if>
       <if test="roleName != null">
         #{roleName,jdbcType=VARCHAR},
@@ -135,7 +135,7 @@
         RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRole">
     update TBL_ROLE
@@ -148,7 +148,7 @@
       RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=INTEGER}
   </update>
   <!--  **********以下为自定义SQL***********-->
   <select id="pageSelectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"

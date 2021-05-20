@@ -30,8 +30,13 @@ public class TblUserServiceImpl implements TblUserService {
     @Autowired
     private TblUserOptLogMapper tblUserOptLogMapper;
 
-    public int deleteByPrimaryKey(Integer userId) {
+    public int deleteByPrimaryKey(String userId) {
         return tblUserMapper.deleteByPrimaryKey(userId);
+    }
+
+    @Override
+    public int deleteByPrimaryKey(Integer userId) {
+        return 0;
     }
 
     public int deleteByPrimaryKey(UserReqParam userReqParam) {
@@ -43,10 +48,10 @@ public class TblUserServiceImpl implements TblUserService {
         optLog.setOperationPath(userReqParam.getReservedField1());
         optLog.setTableName("TBL_USER");
         optLog.setOperationType(OperTypeEnum.UPDATE.code());
-        int res = tblUserOptLogMapper.insert(optLog);
+        int res = tblUserOptLogMapper.insertSelective(optLog);
         assert res == 0;
         int i = 1;
-        for (Integer userId : userReqParam.getUserIds()) {
+        for (String userId : userReqParam.getUserIds()) {
             i = deleteByPrimaryKey(userId);
             //断言 如果存在更新失败，则抛出异常？？
             assert i == 0;
@@ -64,7 +69,12 @@ public class TblUserServiceImpl implements TblUserService {
         return tblUserMapper.insertSelective(record);
     }
 
+    @Override
     public TblUser selectByPrimaryKey(Integer userId) {
+        return null;
+    }
+
+    public TblUser selectByPrimaryKey(String userId) {
         return tblUserMapper.selectByPrimaryKey(userId);
     }
 
@@ -85,5 +95,10 @@ public class TblUserServiceImpl implements TblUserService {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
         List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);
         return new PageInfo<TblUser>(users);
+    }
+
+    @Override
+    public List<TblUser> SelectUsers(UserReqParam userReqParam) {
+       return tblUserMapper.selectByNameAndOrg();
     }
 }

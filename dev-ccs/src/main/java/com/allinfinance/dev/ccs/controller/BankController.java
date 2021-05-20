@@ -50,7 +50,7 @@ public class BankController {
 
     //更新银行
     @RequestMapping(path = "/{BankId}",method = RequestMethod.PUT)
-    public Result modifyUser(@RequestBody TblBankManage tblBank,@PathVariable("BankId") int BankId){
+    public Result modifyUser(@RequestBody TblBankManage tblBank,@PathVariable("BankId") String BankId){
         logger.debug("接收到的请求参数: {},BankId:{}",tblBank,BankId);
         tblBank.setBankId(BankId);
         int result;

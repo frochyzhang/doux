@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TblMenu implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
-    private Integer menuId;
+    private String menuId;
 
     private String menuName;
 
@@ -44,11 +44,11 @@ public class TblMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getMenuId() {
+    public String getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Integer menuId) {
+    public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
 

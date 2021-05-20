@@ -4,19 +4,19 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblUser implements Serializable {
-    private Integer userId;
+    private String userId;
 
     private String userName;
 
     private String userPass;
 
-    private Integer roleId;
+    private String roleId;
 
     private String org;
 
     private String branchId;
 
-    private Integer bankId;
+    private String bankId;
 
     private String merchant;
 
@@ -24,7 +24,7 @@ public class TblUser implements Serializable {
 
     private String initPass;
 
-    private Integer errorNum;
+    private String errorNum;
 
     private String passStatus;
 
@@ -48,11 +48,11 @@ public class TblUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -72,11 +72,11 @@ public class TblUser implements Serializable {
         this.userPass = userPass;
     }
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 
@@ -96,11 +96,11 @@ public class TblUser implements Serializable {
         this.branchId = branchId;
     }
 
-    public Integer getBankId() {
+    public String getBankId() {
         return bankId;
     }
 
-    public void setBankId(Integer bankId) {
+    public void setBankId(String bankId) {
         this.bankId = bankId;
     }
 
@@ -128,11 +128,11 @@ public class TblUser implements Serializable {
         this.initPass = initPass;
     }
 
-    public Integer getErrorNum() {
+    public String getErrorNum() {
         return errorNum;
     }
 
-    public void setErrorNum(Integer errorNum) {
+    public void setErrorNum(String errorNum) {
         this.errorNum = errorNum;
     }
 
