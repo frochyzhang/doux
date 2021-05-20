@@ -4,8 +4,7 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 import com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.service.TblPermissionInfoService;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,11 +16,12 @@ import org.springframework.stereotype.Service;
  * @since 2021-05-16
  */
 @Service
-public class TblPermissionInfoServiceImpl extends ServiceImpl<TblPermissionInfoMapper, TblPermissionInfo> implements TblPermissionInfoService {
+public class TblPermissionInfoServiceImpl implements TblPermissionInfoService {
+    @Autowired
     TblPermissionInfoMapper permissionInfoMapper;
     @Override
     public TblPermissionInfo getPromissionInfo(String requestUrl) {
-        TblPermissionInfo tblPermissionInfo=permissionInfoMapper.selectOne(Wrappers.<TblPermissionInfo>query().lambda().eq(TblPermissionInfo::getUrl, requestUrl));
+        TblPermissionInfo tblPermissionInfo=permissionInfoMapper.selectByRequestUrl( requestUrl);
         return tblPermissionInfo;
     }
 }

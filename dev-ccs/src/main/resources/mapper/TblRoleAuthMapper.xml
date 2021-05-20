@@ -20,6 +20,15 @@
     where ROLE_ID = #{roleId,jdbcType=VARCHAR}
       and AUTH_ID = #{authId,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectByRoleId" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_ROLE_AUTH
+    where
+       ROLE_ID = #{roleId,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey">
     delete from TBL_ROLE_AUTH
     where ROLE_ID = #{roleId,jdbcType=VARCHAR}

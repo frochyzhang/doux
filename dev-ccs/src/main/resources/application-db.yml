@@ -11,3 +11,8 @@ dev:
     mapper:
       aop:
         expression: execution(* com.allinfinance.dev.dal.service.*.*(..))
+
+
+# token过期时间  默认为1天
+token.expire_time: 1
+token.token_secret: f26e587c28064d0e855e72c0a6a0e618

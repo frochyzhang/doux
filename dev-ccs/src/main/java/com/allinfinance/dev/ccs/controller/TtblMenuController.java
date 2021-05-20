@@ -5,16 +5,19 @@ import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
+import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblMenuAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -26,13 +29,13 @@ import java.util.List;
  * @since 2021-05-14
  */
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/menus")
 public class TtblMenuController {
     private static final Logger logger = LoggerFactory.getLogger(TtblMenuController.class);
     @Autowired
     TblMenuService tblMenuService;
 
-    @RequestMapping(path = "queryMenus" ,method = RequestMethod.GET)
+    @GetMapping
     @ResponseBody
     public Result getMenusList(@RequestBody MenusReqParam menusReqParam){
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
@@ -47,7 +50,23 @@ public class TtblMenuController {
         return Result.success(optLogs);
     }
 
-    @RequestMapping(path = "addMenus" ,method = RequestMethod.PUT)
+    @GetMapping(value = "/getCurrMenus")
+    @ResponseBody
+    public Result getCurrMenus(HttpServletRequest request){
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        logger.info("获取菜单权限数据开始:userId-->{}", userId);
+        List<CurrentMenusDto> currentMenusDtos=null;
+        try {
+            currentMenusDtos = tblMenuService.getCurrMenus(userId);
+        } catch (Exception e) {
+            logger.error("查询用户列表异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        return Result.success(currentMenusDtos.toArray());
+    }
+
+    @PostMapping
     @ResponseBody
     public Result addMenu(@RequestBody TblMenu tblMenu){
         logger.info("菜单新增接口接收参数-->{}",tblMenu.toString());
@@ -59,7 +78,7 @@ public class TtblMenuController {
         }
         return Result.success();
     }
-    @RequestMapping(path = "updateMenus" ,method = RequestMethod.POST)
+    @PutMapping
     @ResponseBody
     public Result updateMenu(@RequestBody TblMenu tblMenu){
         logger.info("菜单更新接口接收参数-->{}",tblMenu.toString());
@@ -72,7 +91,7 @@ public class TtblMenuController {
         return Result.success();
     }
 
-    @RequestMapping(path = "delMenus/{menuId}" ,method = RequestMethod.DELETE)
+    @DeleteMapping
     @ResponseBody
     public Result delMenu(String[] menusId){
         logger.info("菜单删除接口接收参数-->{}",menusId.toString());

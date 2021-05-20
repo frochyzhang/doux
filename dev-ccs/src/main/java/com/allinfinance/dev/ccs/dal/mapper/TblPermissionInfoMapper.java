@@ -1,18 +1,20 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
-
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
-/**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author liuqi
- * @since 2021-05-16
- */
+public interface TblPermissionInfoMapper {
+    int deleteByPrimaryKey(String permissioncode);
 
-public interface TblPermissionInfoMapper extends BaseMapper<TblPermissionInfo> {
+    int insert(TblPermissionInfo record);
 
+    int insertSelective(TblPermissionInfo record);
+
+    TblPermissionInfo selectByPrimaryKey(String permissioncode);
+
+    int updateByPrimaryKeySelective(TblPermissionInfo record);
+
+    int updateByPrimaryKey(TblPermissionInfo record);
+
+    TblPermissionInfo selectByRequestUrl(@Param("url") String requestUrl);
 }

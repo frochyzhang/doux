@@ -2,7 +2,6 @@ package com.allinfinance.dev.ccs.dal.service;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -12,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author liuqi
  * @since 2021-05-16
  */
-public interface TblPermissionInfoService extends IService<TblPermissionInfo> {
+public interface TblPermissionInfoService {
    public TblPermissionInfo getPromissionInfo(String requestUrl);
 }

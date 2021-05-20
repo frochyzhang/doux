@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface TblUserService {
 
-    public int deleteByPrimaryKey(Integer userId) ;
+    public int deleteByPrimaryKey(String userId) ;
 
     public int deleteByPrimaryKey(UserReqParam userReqParam) ;
 
@@ -30,7 +30,7 @@ public interface TblUserService {
 
     public int insertSelective(TblUser record);
 
-    public TblUser selectByPrimaryKey(Integer userId) ;
+    public TblUser selectByPrimaryKey(String userId) ;
 
     public int updateByPrimaryKeySelective(TblUser record) ;
 
@@ -38,5 +38,6 @@ public interface TblUserService {
 
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
 
-    List<TblUser> SelectUsers(UserReqParam userReqParam);
+    public TblUser selectCurrentUser(String  userNasme) ;
+    public TblUser selectCurrentUser(String  userNasme,String org) ;
 }

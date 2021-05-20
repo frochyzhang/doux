@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+    <id column="PERMISSIONCODE" jdbcType="VARCHAR" property="permissioncode" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="ENABLE" jdbcType="VARCHAR" property="enable" />
+    <result column="FIELD1" jdbcType="VARCHAR" property="field1" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PERMISSIONCODE, URL, DESCRIPTION, ENABLE, FIELD1
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TBL_API_PERMISSION_INFO
+    where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+  </select>
+
+
+   <!-- 通过url 获取pai权限代码-->
+  <select id="selectByRequestUrl" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_API_PERMISSION_INFO
+    where URL = #{url,jdbcType=VARCHAR}
+  </select>
+  <!-- 通过url 获取pai权限代码-->
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TBL_API_PERMISSION_INFO
+    where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+    insert into TBL_API_PERMISSION_INFO (PERMISSIONCODE, URL, DESCRIPTION, 
+      ENABLE, FIELD1)
+    values (#{permissioncode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{enable,jdbcType=VARCHAR}, #{field1,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+    insert into TBL_API_PERMISSION_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="permissioncode != null">
+        PERMISSIONCODE,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+      <if test="description != null">
+        DESCRIPTION,
+      </if>
+      <if test="enable != null">
+        ENABLE,
+      </if>
+      <if test="field1 != null">
+        FIELD1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="permissioncode != null">
+        #{permissioncode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="enable != null">
+        #{enable,jdbcType=VARCHAR},
+      </if>
+      <if test="field1 != null">
+        #{field1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+    update TBL_API_PERMISSION_INFO
+    <set>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="enable != null">
+        ENABLE = #{enable,jdbcType=VARCHAR},
+      </if>
+      <if test="field1 != null">
+        FIELD1 = #{field1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+    update TBL_API_PERMISSION_INFO
+    set URL = #{url,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      ENABLE = #{enable,jdbcType=VARCHAR},
+      FIELD1 = #{field1,jdbcType=VARCHAR}
+    where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+  </update>
+</mapper>

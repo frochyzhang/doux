@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    <id column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <id column="MENU_ID" jdbcType="INTEGER" property="menuId" />
     <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
     <result column="PARENT_MID" jdbcType="VARCHAR" property="parentMid" />
     <result column="NODE_TYPE" jdbcType="VARCHAR" property="nodeType" />
@@ -21,12 +21,12 @@
     <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
-    MENU_ID, MENU_NAME, PARENT_MID, NODE_TYPE, ICON, SORT, PAGE_URL, LEVEL, PATH, IS_AVAILABLE,
-    CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2,
+    MENU_ID, MENU_NAME, PARENT_MID, NODE_TYPE, ICON, SORT, PAGE_URL, LEVEL, PATH, IS_AVAILABLE, 
+    CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
     RESERVED_FIELD3
   </sql>
   <select id="pageSelectOptMenus" parameterType="com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from TBL_MENU where 1=1
     <if test="menusReqParam!=null">
@@ -41,16 +41,56 @@
       </if>
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+
+  <!--  查询根节点-->
+  <select id="selectRootMenusPath"  resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from IACS.TBL_MENU t
+    WHERE  t.parent_mid is  null and t.LEVEL='0'
+    and t.MENU_ID in
+    <foreach collection="menuIds" item="menuId" index="index"
+             open="(" close=")" separator=",">
+      #{menuId}
+    </foreach>
+  </select>
+
+  <!--通过parentId查询下级目录-->
+  <select id="selectMenusPathByPMid"  resultMap="BaseResultMap">
+   select <include refid="Base_Column_List" /> from  (
+    SELECT <include refid="Base_Column_List" />
+    from IACS.TBL_MENU t
+    WHERE  t.parent_mid is not null and t.LEVEL=#{level,jdbcType=VARCHAR}
+    and t.MENU_ID in
+    <foreach collection="menuIds" item="menuId" index="index"
+             open="(" close=")" separator=",">
+      #{menuId}
+    </foreach>
+    ) tt WHERE tt.PARENT_MID=#{parentMid,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </delete>
+
+  <delete id="delMenuBatch" parameterType="java.lang.Integer">
+    delete from TBL_MENU
+    where MENU_ID in
+    <foreach collection="menuIds" item="menuId" index="index"
+             open="(" close=")" separator=",">
+      #{menuId}
+    </foreach>
+  </delete>
+
+
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     insert into TBL_MENU (MENU_ID, MENU_NAME, PARENT_MID, 
       NODE_TYPE, ICON, SORT, 
@@ -65,7 +105,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, 
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
+  <insert id="addMenu" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     insert into TBL_MENU
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="menuId != null">
@@ -174,7 +214,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
+  <update id="updateByConditions" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     update TBL_MENU
     <set>
       <if test="menuName != null">
@@ -228,7 +268,7 @@
     </set>
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
+  <update id="updateById" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     update TBL_MENU
     set MENU_NAME = #{menuName,jdbcType=VARCHAR},
       PARENT_MID = #{parentMid,jdbcType=VARCHAR},
