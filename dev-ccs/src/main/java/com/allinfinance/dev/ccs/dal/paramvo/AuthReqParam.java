@@ -7,32 +7,32 @@ package com.allinfinance.dev.ccs.dal.paramvo;
  * @create: 2021-05-18 11:19
  */
 public class AuthReqParam {
-    private int current;
-    private int pageSize;
-    private int authId;
+    private Integer current;
+    private Integer pageSize;
+    private String authId;
     private String authName;
 
-    public int getCurrent() {
+    public Integer getCurrent() {
         return current;
     }
 
-    public void setCurrent(int current) {
+    public void setCurrent(Integer current) {
         this.current = current;
     }
 
-    public int getPageSize() {
+    public Integer getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
-    public int getAuthId() {
+    public String getAuthId() {
         return authId;
     }
 
-    public void setAuthId(int authId) {
+    public void setAuthId(String authId) {
         this.authId = authId;
     }
 
@@ -49,7 +49,7 @@ public class AuthReqParam {
         return "AuthReqParam{" +
                 "current=" + current +
                 ", pageSize=" + pageSize +
-                ", authId=" + authId +
+                ", authId='" + authId + '\'' +
                 ", authName='" + authName + '\'' +
                 '}';
     }
