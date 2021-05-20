@@ -28,4 +28,12 @@ public class RoleReqParam extends TblRole {
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
+
+    @Override
+    public String toString() {
+        return "RoleReqParam{" +
+                "current=" + current +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 }

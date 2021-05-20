@@ -23,7 +23,7 @@ public class TblAuthService {
     @Autowired
     private TblAuthMapper tblAuthMapper;
 
-    public int deleteByPrimaryKey(int authId){
+    public int deleteByPrimaryKey(String authId){
         return tblAuthMapper.deleteByPrimaryKey(authId);
     }
 
@@ -35,7 +35,7 @@ public class TblAuthService {
         return tblAuthMapper.insertSelective(record);
     }
 
-    public TblAuth selectByPrimaryKey(int authId){
+    public TblAuth selectByPrimaryKey(String authId){
         return tblAuthMapper.selectByPrimaryKey(authId);
     }
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblRole implements Serializable {
-    private Integer roleId;
+    private String roleId;
 
     private String roleName;
 
@@ -26,11 +26,11 @@ public class TblRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 
