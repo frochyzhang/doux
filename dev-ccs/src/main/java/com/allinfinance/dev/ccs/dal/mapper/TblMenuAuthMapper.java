@@ -2,7 +2,10 @@ package com.allinfinance.dev.ccs.dal.mapper;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -12,6 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author liuqi
  * @since 2021-05-14
  */
-public interface TblMenuAuthMapper extends BaseMapper<TblMenuAuth> {
+public interface TblMenuAuthMapper  {
 
+    List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
 }

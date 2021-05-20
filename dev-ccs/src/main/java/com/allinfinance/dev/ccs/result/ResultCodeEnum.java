@@ -21,10 +21,13 @@ public enum ResultCodeEnum {
     USER_ACCOUNT_FORBIDDEN(2003, "账号已被禁用"),
     USER_NOT_EXIST(2004, "用户不存在"),
     USER_HAS_EXISTED(2005, "用户已存在"),
+    USER_CREDENTIALS_EXPIRED(2006,"账户已过期"),
+    USER_ACCOUNT_USE_BY_OTHERS(2007,"账号下线"),
     /* 通用错误返回 */
     GENERIC_EXCEPTION(4000, "通用错误返回"),
     NULL_POINT(4001, "空指针异常"),
     HTTP_CLIENT_ERROR(4002, "HTTP异常");
+
     private final Integer code;
     private final String message;
 

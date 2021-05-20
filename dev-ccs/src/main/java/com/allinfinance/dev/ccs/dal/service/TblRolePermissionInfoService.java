@@ -2,8 +2,6 @@ package com.allinfinance.dev.ccs.dal.service;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
-import com.baomidou.mybatisplus.extension.service.IService;
-
 import java.util.List;
 
 /**
@@ -14,6 +12,6 @@ import java.util.List;
  * @author liuqi
  * @since 2021-05-16
  */
-public interface TblRolePermissionInfoService extends IService<TblRolePermissionInfo> {
+public interface TblRolePermissionInfoService {
     public List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
 }

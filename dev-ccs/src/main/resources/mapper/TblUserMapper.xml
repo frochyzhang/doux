@@ -12,7 +12,7 @@
     <result column="MERCHANT" jdbcType="VARCHAR" property="merchant" />
     <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
     <result column="INIT_PASS" jdbcType="VARCHAR" property="initPass" />
-    <result column="ERROR_NUM" jdbcType="VARCHAR" property="errorNum" />
+    <result column="ERROR_NUM" jdbcType="INTEGER" property="errorNum" />
     <result column="PASS_STATUS" jdbcType="VARCHAR" property="passStatus" />
     <result column="LAST_PASS_UPDATE_TIME" jdbcType="TIMESTAMP" property="lastPassUpdateTime" />
     <result column="SALT" jdbcType="VARCHAR" property="salt" />
@@ -23,52 +23,88 @@
     <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
     <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
     <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
+    <result column="LAST_LOGIN_TIME" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="NOT_EXPIRED" jdbcType="VARCHAR" property="notExpired" />
+    <result column="ACCOUNT_NOT_LOCKED" jdbcType="VARCHAR" property="accountNotLocked" />
+    <result column="CREDENTIALS_NOT_EXPIRED" jdbcType="VARCHAR" property="credentialsNotExpired" />
+
   </resultMap>
   <sql id="Base_Column_List">
-    USER_ID, USER_NAME, USER_PASS, ROLE_ID, ORG, BRANCH_ID, BANK_ID, MERCHANT, IS_AVAILABLE,
-    INIT_PASS, ERROR_NUM, PASS_STATUS, LAST_PASS_UPDATE_TIME, SALT, CREATE_BY, CREATE_TIME,
-    UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
+    USER_ID, USER_NAME, USER_PASS, ROLE_ID, ORG, BRANCH_ID, BANK_ID, MERCHANT, IS_AVAILABLE, 
+    INIT_PASS, ERROR_NUM, PASS_STATUS, LAST_PASS_UPDATE_TIME, SALT, CREATE_BY, CREATE_TIME, 
+    UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3,LAST_LOGIN_TIME,NOT_EXPIRED,ACCOUNT_NOT_LOCKED,CREDENTIALS_NOT_EXPIRED
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TBL_USER
+    where USER_ID = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserNameAndBank" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_USER
-    where USER_ID = #{userId,jdbcType=VARCHAR}
+    where USER_NAME = #{userName,jdbcType=VARCHAR} and ORG = #{org,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_USER
+    where USER_NAME = #{userName,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_USER where 1=1
+    <if test="userReqParam!=null">
+      <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
+        and user_Name like '%${userReqParam.userName}%'
+      </if>
+      <if test="userReqParam.roleId!=null">
+        and role_Id = #{userReqParam.roleId}
+      </if>
+      <if test="userReqParam.org!=null">
+        and org = #{userReqParam.org}
+      </if>
+      <if test="userReqParam.isAvailable!=null">
+        and IS_AVAILABLE = #{userReqParam.isAvailable}
+      </if>
+    </if>
   </select>
   <update id="deleteByPrimaryKey" parameterType="java.lang.String">
     update TBL_USER
     SET
         IS_AVAILABLE = 0
     WHERE
-        USER_ID = #{userId,jdbcType=VARCHAR}
+        USER_ID = #{userId,jdbcType=INTEGER}
   </update>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
-    insert into TBL_USER (USER_ID, USER_NAME, USER_PASS,
-      ROLE_ID, ORG, BRANCH_ID,
-      BANK_ID, MERCHANT, IS_AVAILABLE,
-      INIT_PASS, ERROR_NUM, PASS_STATUS,
-      LAST_PASS_UPDATE_TIME, SALT, CREATE_BY,
-      CREATE_TIME, UPDATE_TIME, UPDATE_BY,
+    insert into TBL_USER (USER_ID, USER_NAME, USER_PASS, 
+      ROLE_ID, ORG, BRANCH_ID, 
+      BANK_ID, MERCHANT, IS_AVAILABLE, 
+      INIT_PASS, ERROR_NUM, PASS_STATUS, 
+      LAST_PASS_UPDATE_TIME, SALT, CREATE_BY, 
+      CREATE_TIME, UPDATE_TIME, UPDATE_BY, 
       RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
       )
-    values (sequence_id.nextval, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR},
-      #{roleId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{branchId,jdbcType=VARCHAR},
-      #{bankId,jdbcType=VARCHAR}, #{merchant,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
-      #{initPass,jdbcType=VARCHAR}, #{errorNum,jdbcType=VARCHAR}, #{passStatus,jdbcType=VARCHAR},
-      #{lastPassUpdateTime,jdbcType=TIMESTAMP}, #{salt,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR}, 
+      #{roleId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{branchId,jdbcType=VARCHAR}, 
+      #{bankId,jdbcType=VARCHAR}, #{merchant,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
+      #{initPass,jdbcType=VARCHAR}, #{errorNum,jdbcType=INTEGER}, #{passStatus,jdbcType=VARCHAR}, 
+      #{lastPassUpdateTime,jdbcType=TIMESTAMP}, #{salt,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
       #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
-    <selectKey keyProperty="userId" resultType="String" order="BEFORE" >
-      VALUES(
-      sequence_id.nextval
-      )
-    </selectKey>
     insert into TBL_USER
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
         USER_ID,
+      </if>
       <if test="userName != null">
         USER_NAME,
       </if>
@@ -131,7 +167,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{userId,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
@@ -160,7 +198,7 @@
         #{initPass,jdbcType=VARCHAR},
       </if>
       <if test="errorNum != null">
-        #{errorNum,jdbcType=VARCHAR},
+        #{errorNum,jdbcType=INTEGER},
       </if>
       <if test="passStatus != null">
         #{passStatus,jdbcType=VARCHAR},
@@ -225,7 +263,7 @@
         INIT_PASS = #{initPass,jdbcType=VARCHAR},
       </if>
       <if test="errorNum != null and errorNum != ''">
-        ERROR_NUM = #{errorNum,jdbcType=VARCHAR},
+        ERROR_NUM = #{errorNum,jdbcType=INTEGER},
       </if>
       <if test="passStatus != null and passStatus != ''">
         PASS_STATUS = #{passStatus,jdbcType=VARCHAR},
@@ -258,7 +296,7 @@
         RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where USER_ID = #{userId,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
     update TBL_USER
@@ -271,7 +309,7 @@
       MERCHANT = #{merchant,jdbcType=VARCHAR},
       IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       INIT_PASS = #{initPass,jdbcType=VARCHAR},
-      ERROR_NUM = #{errorNum,jdbcType=VARCHAR},
+      ERROR_NUM = #{errorNum,jdbcType=INTEGER},
       PASS_STATUS = #{passStatus,jdbcType=VARCHAR},
       LAST_PASS_UPDATE_TIME = #{lastPassUpdateTime,jdbcType=TIMESTAMP},
       SALT = #{salt,jdbcType=VARCHAR},
@@ -282,46 +320,7 @@
       RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-    where USER_ID = #{userId,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=INTEGER}
   </update>
-<!--以下为自定义SQL-->
-  <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from TBL_USER where 1=1
-    <if test="userReqParam!=null">
-      <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
-        and user_Name like '%${userReqParam.userName}%'
-      </if>
-      <if test="userReqParam.roleId!=null">
-        and role_Id = #{userReqParam.roleId}
-      </if>
-      <if test="userReqParam.org!=null">
-        and org = #{userReqParam.org}
-      </if>
-      <if test="userReqParam.isAvailable!=null">
-        and IS_AVAILABLE = #{userReqParam.isAvailable}
-      </if>
-    </if>
-  </select>
 
-  <select id="selectByNameAndOrg" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from TBL_USER where 1=1
-    <if test="userReqParam!=null">
-      <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
-        and user_Name like '%${userReqParam.userName}%'
-      </if>
-      <if test="userReqParam.roleId!=null">
-        and role_Id = #{userReqParam.roleId}
-      </if>
-      <if test="userReqParam.org!=null">
-        and org = #{userReqParam.org}
-      </if>
-      <if test="userReqParam.isAvailable!=null">
-        and IS_AVAILABLE = #{userReqParam.isAvailable}
-      </if>
-    </if>
-  </select>
 </mapper>

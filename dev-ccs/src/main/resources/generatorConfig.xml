@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
 		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
-	<classPathEntry location="C:\localresponsity\com\ibm\db2\db2jcc\3.65.131\db2jcc-3.65.131.jar"/>
+	<classPathEntry location="C:\apache-maven-3.2.5\mvnRespo\com\ibm\db2\db2jcc\4.23.42\db2jcc-4.23.42.jar"/>
 	<context id="smdsTables" targetRuntime="MyBatis3">
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 		<plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
@@ -26,8 +26,8 @@
 		</javaTypeResolver>
 
 		<javaModelGenerator targetPackage="com.allinfinance.dev.ccs.dal.model" targetProject="src/main/java"/>
-		<sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
-		<javaClientGenerator targetPackage="com.allinfinance.dev.ccs.dal.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
+<!--		<sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>-->
+<!--		<javaClientGenerator targetPackage="com.allinfinance.dev.ccs.dal.mapper" targetProject="src/main/java" type="XMLMAPPER"/>-->
 
 
 
@@ -108,8 +108,8 @@
 <!--						   enableUpdateByPrimaryKey="true"-->
 <!--						   enableInsert="true">-->
 <!--	     </table>-->
-		<table tableName="TBL_BANK_MANAGE"
-			   domainObjectName="TblBankManage"
+		<table tableName="TBL_USER"
+			   domainObjectName="TblUser"
 			   enableSelectByExample="false"
 			   enableDeleteByExample="false"
 			   enableCountByExample="false"
@@ -119,5 +119,16 @@
 			   enableUpdateByPrimaryKey="true"
 			   enableInsert="true">
 		</table>
+<!--		<table tableName="TBL_API_PERMISSION_INFO"-->
+<!--			   domainObjectName="TblPermissionInfo"-->
+<!--			   enableSelectByExample="false"-->
+<!--			   enableDeleteByExample="false"-->
+<!--			   enableCountByExample="false"-->
+<!--			   enableUpdateByExample="false"-->
+<!--			   enableDeleteByPrimaryKey="true"-->
+<!--			   enableSelectByPrimaryKey="true"-->
+<!--			   enableUpdateByPrimaryKey="true"-->
+<!--			   enableInsert="true">-->
+<!--		</table>-->
             </context>
         </generatorConfiguration>

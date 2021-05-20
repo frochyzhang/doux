@@ -1,18 +1,21 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
-
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-/**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author liuqi
- * @since 2021-05-16
- */
+import java.util.List;
 
-public interface TblRolePermissionInfoMapper extends BaseMapper<TblRolePermissionInfo> {
+public interface TblRolePermissionInfoMapper {
+    int deleteByPrimaryKey(String id);
 
+    int insert(TblRolePermissionInfo record);
+
+    int insertSelective(TblRolePermissionInfo record);
+
+    TblRolePermissionInfo selectByPrimaryKey(String id);
+
+    int updateByPrimaryKeySelective(TblRolePermissionInfo record);
+
+    int updateByPrimaryKey(TblRolePermissionInfo record);
+
+    List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
 }

@@ -2,10 +2,10 @@ package com.allinfinance.dev.ccs.dal.model;
 
 import java.io.Serializable;
 
-public class TblRoleAuthKey implements Serializable {
+public class TblMenuAuthKey implements Serializable {
     private String authId;
 
-    private String  roleId;
+    private String menuId;
 
     private static final long serialVersionUID = 1L;
 
@@ -17,11 +17,11 @@ public class TblRoleAuthKey implements Serializable {
         this.authId = authId;
     }
 
-    public String getRoleId() {
-        return roleId;
+    public String getMenuId() {
+        return menuId;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
     }
 }

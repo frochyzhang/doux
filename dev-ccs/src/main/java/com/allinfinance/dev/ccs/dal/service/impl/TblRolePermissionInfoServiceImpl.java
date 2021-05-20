@@ -4,8 +4,7 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +18,12 @@ import java.util.List;
  * @since 2021-05-16
  */
 @Service
-public class TblRolePermissionInfoServiceImpl extends ServiceImpl<TblRolePermissionInfoMapper, TblRolePermissionInfo> implements TblRolePermissionInfoService {
-
+public class TblRolePermissionInfoServiceImpl implements TblRolePermissionInfoService {
+    @Autowired
     TblRolePermissionInfoMapper rolePermissionInfoMapper;
     @Override
     public List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId) {
-        List<TblRolePermissionInfo> permissionInfos=rolePermissionInfoMapper.selectList(Wrappers.<TblRolePermissionInfo>lambdaQuery().eq(TblRolePermissionInfo::getRoleId, roleId));
+        List<TblRolePermissionInfo> permissionInfos=rolePermissionInfoMapper.getRolePermissionInfByRoleId(roleId);
         return permissionInfos;
     }
 }

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.dal.model;
 
+
 import java.io.Serializable;
 import java.util.Date;
 

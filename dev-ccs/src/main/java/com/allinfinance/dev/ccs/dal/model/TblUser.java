@@ -46,6 +46,14 @@ public class TblUser implements Serializable {
 
     private String reservedField3;
 
+    private Date lastLoginTime;
+
+    private String notExpired;
+
+    private String accountNotLocked;
+
+    private String credentialsNotExpired;
+
     private static final long serialVersionUID = 1L;
 
     public String getUserId() {
@@ -216,7 +224,35 @@ public class TblUser implements Serializable {
         this.reservedField3 = reservedField3;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    public Date getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Date lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public String getNotExpired() {
+        return notExpired;
+    }
+
+    public void setNotExpired(String notExpired) {
+        this.notExpired = notExpired;
+    }
+
+    public String getAccountNotLocked() {
+        return accountNotLocked;
+    }
+
+    public void setAccountNotLocked(String accountNotLocked) {
+        this.accountNotLocked = accountNotLocked;
+    }
+
+    public String getCredentialsNotExpired() {
+        return credentialsNotExpired;
+    }
+
+    public void setCredentialsNotExpired(String credentialsNotExpired) {
+        this.credentialsNotExpired = credentialsNotExpired;
     }
 }

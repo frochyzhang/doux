@@ -30,7 +30,7 @@ public class UserController {
 
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-    public Result selectUser(@PathVariable("userId") Integer userId) {
+    public Result selectUser(@PathVariable("userId")  String userId) {
         TblUser tblUser;
         try {
             tblUser = tblUserService.selectByPrimaryKey(userId);

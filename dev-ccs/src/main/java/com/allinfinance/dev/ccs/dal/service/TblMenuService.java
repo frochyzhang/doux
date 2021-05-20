@@ -2,8 +2,12 @@ package com.allinfinance.dev.ccs.dal.service;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
+import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
 import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,7 +22,11 @@ public interface TblMenuService {
 
     void delMenuByIds(String[] ids);
 
+    void deleteByPrimaryKey(String menuId);
+
     void addMenu(TblMenu tblMenu);
 
     void updateMenuById(TblMenu tblMenu);
+
+    List<CurrentMenusDto> getCurrMenus(String  userId);
 }
