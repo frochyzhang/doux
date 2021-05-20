@@ -12,13 +12,13 @@ import com.allinfinance.dev.ccs.dal.model.TblUser;
 public class UserReqParam extends TblUser {
     private Integer current;
     private Integer pageSize;
-    private Integer[] userIds;
+    private String[] userIds;
 
-    public Integer[] getUserIds() {
+    public String[] getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(Integer[] userIds) {
+    public void setUserIds(String[] userIds) {
         this.userIds = userIds;
     }
 

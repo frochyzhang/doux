@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TblBankManage implements Serializable {
-    private Integer bankId;
+    private String bankId;
 
     private String org;
 
@@ -28,11 +28,11 @@ public class TblBankManage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getBankId() {
+    public String getBankId() {
         return bankId;
     }
 
-    public void setBankId(Integer bankId) {
+    public void setBankId(String bankId) {
         this.bankId = bankId;
     }
 

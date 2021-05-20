@@ -8,17 +8,19 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface TblUserMapper {
-    int deleteByPrimaryKey(Integer userId);
+    int deleteByPrimaryKey(String userId);
 
     int insert(TblUser record);
 
     int insertSelective(TblUser record);
 
-    TblUser selectByPrimaryKey(Integer userId);
+    TblUser selectByPrimaryKey(String userId);
 
     int updateByPrimaryKeySelective(TblUser record);
 
     int updateByPrimaryKey(TblUser record);
 
     List<TblUser> pageSelectUsers(@Param("userReqParam") UserReqParam userReqParam);
+
+    List<TblUser> selectByNameAndOrg();
 }

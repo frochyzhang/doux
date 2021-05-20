@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    <id column="BANK_ID" jdbcType="INTEGER" property="bankId" />
+    <id column="BANK_ID" jdbcType="VARCHAR" property="bankId" />
     <result column="ORG" jdbcType="VARCHAR" property="org" />
     <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
     <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
@@ -15,27 +15,27 @@
     <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
-    BANK_ID, ORG, BANK_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, 
+    BANK_ID, ORG, BANK_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY,
     RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from TBL_BANK_MANAGE
-    where BANK_ID = #{bankId,jdbcType=INTEGER}
+    where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from TBL_BANK_MANAGE
-    where BANK_ID = #{bankId,jdbcType=INTEGER}
+    where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME, 
-      IS_AVAILABLE, CREATE_TIME, CREATE_BY, 
-      UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, 
+    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME,
+      IS_AVAILABLE, CREATE_TIME, CREATE_BY,
+      UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1,
       RESERVED_FIELD2, RESERVED_FIELD3)
-    values (#{bankId,jdbcType=INTEGER}, #{org,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
-      #{isAvailable,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, 
+    values (#{bankId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR},
+      #{isAvailable,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR},
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
@@ -77,7 +77,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="bankId != null">
-        #{bankId,jdbcType=INTEGER},
+        #{bankId,jdbcType=VARCHAR},
       </if>
       <if test="org != null">
         #{org,jdbcType=VARCHAR},
@@ -145,7 +145,7 @@
         RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       </if>
     </set>
-    where BANK_ID = #{bankId,jdbcType=INTEGER}
+    where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
     update TBL_BANK_MANAGE
@@ -159,7 +159,7 @@
       RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
       RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-    where BANK_ID = #{bankId,jdbcType=INTEGER}
+    where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </update>
   <!--  **********以下为自定义SQL***********-->
   <select id="pageSelectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"

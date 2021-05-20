@@ -150,7 +150,6 @@
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
-
   <!--  **********以下为自定义SQL***********-->
   <select id="pageSelectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam"
           resultMap="BaseResultMap">
