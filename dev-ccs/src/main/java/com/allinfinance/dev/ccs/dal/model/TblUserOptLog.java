@@ -14,7 +14,7 @@ public class TblUserOptLog implements Serializable {
 
     private String operationPath;
 
-    private String interviewtTime;
+    private Date interviewtTime;
 
     private String tableName;
 
@@ -72,11 +72,11 @@ public class TblUserOptLog implements Serializable {
         this.operationPath = operationPath;
     }
 
-    public String getInterviewtTime() {
+    public Date getInterviewtTime() {
         return interviewtTime;
     }
 
-    public void setInterviewtTime(String interviewtTime) {
+    public void setInterviewtTime(Date interviewtTime) {
         this.interviewtTime = interviewtTime;
     }
 

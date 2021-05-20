@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface TblRoleMapper {
 
     int updateByPrimaryKey(TblRole record);
 
-    List<TblRole> pageSelectRoles(RoleReqParam roleReqParam);
+    List<TblRole> pageSelectRoles(@Param("roleReqParam")RoleReqParam roleReqParam);
 }

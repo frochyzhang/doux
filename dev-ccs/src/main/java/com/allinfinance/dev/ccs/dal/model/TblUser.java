@@ -10,13 +10,13 @@ public class TblUser implements Serializable {
 
     private String userPass;
 
-    private String roleId;
+    private Integer roleId;
 
     private String org;
 
     private String branchId;
 
-    private String bankId;
+    private Integer bankId;
 
     private String merchant;
 
@@ -72,11 +72,11 @@ public class TblUser implements Serializable {
         this.userPass = userPass;
     }
 
-    public String getRoleId() {
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
 
@@ -96,11 +96,11 @@ public class TblUser implements Serializable {
         this.branchId = branchId;
     }
 
-    public String getBankId() {
+    public Integer getBankId() {
         return bankId;
     }
 
-    public void setBankId(String bankId) {
+    public void setBankId(Integer bankId) {
         this.bankId = bankId;
     }
 
@@ -214,5 +214,9 @@ public class TblUser implements Serializable {
 
     public void setReservedField3(String reservedField3) {
         this.reservedField3 = reservedField3;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

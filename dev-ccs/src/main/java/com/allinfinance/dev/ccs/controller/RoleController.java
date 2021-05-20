@@ -29,60 +29,62 @@ public class RoleController {
 
     //分页查询角色
     @RequestMapping(method = RequestMethod.GET)
-    public Result selectRoles(RoleReqParam roleReqParam){
-        logger.info("roleReqParam:-{}",roleReqParam);
-
+    public Result selectRoles(RoleReqParam roleReqParam) {
+        logger.info("roleReqParam:-{}", roleReqParam);
+        if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
+            roleReqParam.setCurrent(1);
+            roleReqParam.setPageSize(10);
+        }
         PageInfo<TblRole> roles;
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);
-        }catch (Exception e){
-            logger.error("查询角色列表异常",e);
+        } catch (Exception e) {
+            logger.error("查询角色列表异常", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
 
-        logger.debug("查询到的角色列表: {}",roles);
+        logger.debug("查询到的角色列表: {}", roles);
         return Result.success(roles);
     }
 
     //更新角色
-    @RequestMapping(path = "/{roleId}",method = RequestMethod.PUT)
-    public Result modifyRole(@RequestBody TblRole tblRole,@PathVariable("roleId") int roleId){
-        logger.info("接收到的请求参数: {},roleId:{}",tblRole,roleId);
+    @RequestMapping(path = "/{roleId}", method = RequestMethod.PUT)
+    public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") int roleId) {
+        logger.info("接收到的请求参数: {},roleId:{}", tblRole, roleId);
         tblRole.setRoleId(roleId);
         int result;
         try {
             result = tblRoleService.updateByPrimaryKey(tblRole);
-        }catch (Exception e){
-            logger.error("更新角色信息发生异常",e);
+        } catch (Exception e) {
+            logger.error("更新角色信息发生异常", e);
             return Result.failure();
         }
-        logger.info("result: {}",result);
-        if (result == 1){
+        logger.info("result: {}", result);
+        if (result == 1) {
             return Result.success();
-        }else {
+        } else {
             return Result.failure();
         }
     }
 
     //新增角色
     @RequestMapping(method = RequestMethod.POST)
-    public Result createRole(@RequestBody TblRole tblRole){
-        logger.info("将新增的角色: {}",tblRole);
+    public Result createRole(@RequestBody TblRole tblRole) {
+        logger.info("将新增的角色: {}", tblRole);
         int result;
         try {
             result = tblRoleService.insertSelective(tblRole);
-        }catch (Exception e){
-            logger.error("新增角色发生异常",e);
+        } catch (Exception e) {
+            logger.error("新增角色发生异常", e);
             return Result.failure();
         }
-        logger.info("新增结果: {}",result);
-        if (result == 1){
+        logger.info("新增结果: {}", result);
+        if (result == 1) {
             return Result.success();
-        }else {
+        } else {
             return Result.failure();
         }
     }
-
 
 
 }

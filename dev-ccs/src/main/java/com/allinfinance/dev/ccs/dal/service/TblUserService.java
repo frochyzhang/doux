@@ -19,52 +19,22 @@ import java.util.List;
  * @date ：2021/5/13 18:54
  * @description：用户持久层服务
  */
-@Service
-public class TblUserService {
 
-    @Autowired
-    private TblUserMapper tblUserMapper;
+public interface TblUserService {
 
-    public int deleteByPrimaryKey(Integer userId) {
-        return tblUserMapper.deleteByPrimaryKey(userId);
-    }
+    public int deleteByPrimaryKey(Integer userId) ;
 
-    public int deleteByPrimaryKey(Integer[] userIds) {
-        //逻辑删除，只是说将用户变为不可用
-        int i = 1;
-        for (Integer userId : userIds) {
-            i = deleteByPrimaryKey(userId);
-            //断言 阮国存在更新失败，则跑出异常？？
-            assert i == 0;
-        }
-        return i;
-    }
+    public int deleteByPrimaryKey(UserReqParam userReqParam) ;
 
-    public int insert(TblUser record) {
-        return tblUserMapper.insert(record);
-    }
+    public int insert(TblUser record);
 
-    public int insertSelective(TblUser record) {
-        //添加当前系统时间为新增用户的创建时间
-        record.setCreateTime(new Date());
-        return tblUserMapper.insertSelective(record);
-    }
+    public int insertSelective(TblUser record);
 
-    public TblUser selectByPrimaryKey(Integer userId) {
-        return tblUserMapper.selectByPrimaryKey(userId);
-    }
+    public TblUser selectByPrimaryKey(Integer userId) ;
 
-    public int updateByPrimaryKeySelective(TblUser record) {
-        return tblUserMapper.updateByPrimaryKeySelective(record);
-    }
+    public int updateByPrimaryKeySelective(TblUser record) ;
 
-    public int updateByPrimaryKey(TblUser record) {
-        return tblUserMapper.updateByPrimaryKey(record);
-    }
+    public int updateByPrimaryKey(TblUser record);
 
-    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
-        PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
-        List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);
-        return new PageInfo<TblUser>(users);
-    }
+    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
 }

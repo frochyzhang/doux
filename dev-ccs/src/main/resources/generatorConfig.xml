@@ -86,17 +86,17 @@
 <!--				   enableUpdateByPrimaryKey="true"-->
 <!--				   enableInsert="true">-->
 <!--			</table>-->
-			<table tableName="TBL_AUTH"
-				   domainObjectName="TblAuth"
-				   enableSelectByExample="false"
-				   enableDeleteByExample="false"
-				   enableCountByExample="false"
-				   enableUpdateByExample="false"
-				   enableDeleteByPrimaryKey="true"
-				   enableSelectByPrimaryKey="true"
-				   enableUpdateByPrimaryKey="true"
-				   enableInsert="true">
-			</table>
+<!--			<table tableName="TBL_AUTH"-->
+<!--				   domainObjectName="TblAuth"-->
+<!--				   enableSelectByExample="false"-->
+<!--				   enableDeleteByExample="false"-->
+<!--				   enableCountByExample="false"-->
+<!--				   enableUpdateByExample="false"-->
+<!--				   enableDeleteByPrimaryKey="true"-->
+<!--				   enableSelectByPrimaryKey="true"-->
+<!--				   enableUpdateByPrimaryKey="true"-->
+<!--				   enableInsert="true">-->
+<!--			</table>-->
 <!--		<table tableName="TBL_USER_OPT_LOG"-->
 <!--						   domainObjectName="TblUserOptLog"-->
 <!--						   enableSelectByExample="false"-->
@@ -108,5 +108,16 @@
 <!--						   enableUpdateByPrimaryKey="true"-->
 <!--						   enableInsert="true">-->
 <!--	     </table>-->
+		<table tableName="TBL_BANK_MANAGE"
+			   domainObjectName="TblBankManage"
+			   enableSelectByExample="false"
+			   enableDeleteByExample="false"
+			   enableCountByExample="false"
+			   enableUpdateByExample="false"
+			   enableDeleteByPrimaryKey="true"
+			   enableSelectByPrimaryKey="true"
+			   enableUpdateByPrimaryKey="true"
+			   enableInsert="true">
+		</table>
             </context>
         </generatorConfiguration>
