@@ -20,4 +20,6 @@ public interface TblAuthMapper {
     int updateByPrimaryKey(TblAuth record);
 
     List<TblAuth> pageSelectAuths(@Param("authReqParam") AuthReqParam authReqParam);
+
+    List<TblAuth> selectAuths();
 }

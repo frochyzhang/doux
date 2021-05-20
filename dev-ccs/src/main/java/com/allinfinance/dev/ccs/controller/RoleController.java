@@ -1,10 +1,8 @@
 package com.allinfinance.dev.ccs.controller;
 
-import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
-import com.allinfinance.dev.ccs.dal.paramvo.RoleRespParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.result.Result;
@@ -12,7 +10,6 @@ import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
