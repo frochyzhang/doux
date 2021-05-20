@@ -2,15 +2,23 @@ package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleRespParam;
+import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @project: dev-parent
@@ -27,6 +35,9 @@ public class RoleController {
     @Autowired
     private TblRoleService tblRoleService;
 
+    @Autowired
+    private TblRoleAuthService tblRoleAuthService;
+
     //分页查询角色
     @RequestMapping(method = RequestMethod.GET)
     public Result selectRoles(RoleReqParam roleReqParam) {
@@ -38,6 +49,22 @@ public class RoleController {
         PageInfo<TblRole> roles;
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);
+            logger.info("角色列表: {}",roles);
+
+            //获取角色和权限映射
+            List<TblRoleAuth> roleAuths = tblRoleAuthService.selectRoleAuths();
+            logger.info("角色权限映射: {}",roleAuths);
+            HashMap<String, ArrayList<String>> roleAuthMapping = new HashMap<>();
+            for (TblRoleAuth tblRoleAuth : roleAuths){
+                ArrayList<String> auths = roleAuthMapping.computeIfAbsent(tblRoleAuth.getRoleId(), k -> new ArrayList<>());
+                auths.add(tblRoleAuth.getAuthId());
+            }
+            logger.info("roleAuthMapping: {}",roleAuthMapping);
+
+            List<TblRole> roleList = roles.getList();
+            for (TblRole tblRole: roleList){
+                tblRole.setAuth(roleAuthMapping.get(tblRole.getRoleId()));
+            }
         } catch (Exception e) {
             logger.error("查询角色列表异常", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -49,7 +76,7 @@ public class RoleController {
 
     //更新角色
     @RequestMapping(path = "/{roleId}", method = RequestMethod.PUT)
-    public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") int roleId) {
+    public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") String roleId) {
         logger.info("接收到的请求参数: {},roleId:{}", tblRole, roleId);
         tblRole.setRoleId(roleId);
         int result;
