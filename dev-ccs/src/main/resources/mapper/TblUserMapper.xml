@@ -46,6 +46,9 @@
       <if test="userReqParam.roleId!=null">
         and role_Id = #{userReqParam.roleId}
       </if>
+      <if test="userReqParam.org!=null">
+        and org = #{userReqParam.org}
+      </if>
       <if test="userReqParam.isAvailable!=null">
         and IS_AVAILABLE = #{userReqParam.isAvailable}
       </if>

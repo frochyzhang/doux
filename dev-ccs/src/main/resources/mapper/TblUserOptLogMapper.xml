@@ -55,12 +55,12 @@
         where OPERATION_ID = #{operationId,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-        insert into TBL_USER_OPT_LOG (OPERATION_ID, USER_ID, USER_IP,
+        insert into TBL_USER_OPT_LOG (USER_ID, USER_IP,
                                       OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
                                       TABLE_NAME, COLUMN_NAME, NEW_VALUE,
                                       OLD_VALUE, RESERVED_FIELD1, RESERVED_FIELD2,
                                       RESERVED_FIELD3)
-        values (#{operationId,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
+        values ( #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
                 #{operationType,jdbcType=VARCHAR}, #{operationPath,jdbcType=VARCHAR},
                 #{interviewtTime,jdbcType=TIMESTAMP},
                 #{tableName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{newValue,jdbcType=VARCHAR},

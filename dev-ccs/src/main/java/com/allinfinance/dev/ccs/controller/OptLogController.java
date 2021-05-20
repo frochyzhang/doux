@@ -40,7 +40,7 @@ public class OptLogController {
     @ResponseBody
     public Result selectOptLogs(LogReqParam logReqParam) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        if (logReqParam.getCurrent()==null&&logReqParam.getPageSize()==null){
+        if (logReqParam.getCurrent()==null || logReqParam.getPageSize()==null){
             logReqParam.setCurrent(1);
             logReqParam.setPageSize(10);
         }

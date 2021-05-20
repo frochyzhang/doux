@@ -1,17 +1,16 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
-import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 
 /**
- * @project: dev-parent
- * @description: 角色请求参数
- * @author: Lum Wang
- * @create: 2021-05-18 14:29
+ * @author ：Lucas Li
+ * @project :dev-parent
+ * @date ：2021/5/19 13:49
+ * @description：
  */
-public class RoleReqParam extends TblRole {
+public class BankReqParam extends TblBankManage {
     private Integer current;
     private Integer pageSize;
-
 
     public Integer getCurrent() {
         return current;

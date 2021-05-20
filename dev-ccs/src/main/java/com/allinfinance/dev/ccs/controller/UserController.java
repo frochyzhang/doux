@@ -6,13 +6,12 @@ import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
  * @version: :1.0
  */
 @RestController
-@RequestMapping("/platform")
+@RequestMapping("/platform/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -30,7 +29,7 @@ public class UserController {
     private TblUserService tblUserService;
 
     //Id查询用户
-    @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     public Result selectUser(@PathVariable("userId") Integer userId) {
         TblUser tblUser;
         try {
@@ -39,7 +38,7 @@ public class UserController {
             logger.error("ID查询用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("更新用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
+        logger.info("查询用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
         return Result.success(tblUser);
     }
 
@@ -49,7 +48,7 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public Result selectUsers(UserReqParam userReqParam) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
         PageInfo<TblUser> users = null;
@@ -59,7 +58,7 @@ public class UserController {
             logger.error("查询用户列表异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("更新用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
+        logger.info("查询用户列表执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
         return Result.success(users);
     }
 
@@ -69,9 +68,11 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Result addUser(@RequestBody UserReqParam userReqParam) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
+        //设置初始密码
+        userReqParam.setInitPass(userReqParam.getUserPass());
         int result = 0;
         try {
             result = tblUserService.insertSelective(userReqParam);
@@ -89,7 +90,7 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(path = "/users", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     public Result updateUserInfo(@RequestBody UserReqParam userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         int result = 0;
@@ -109,12 +110,15 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(path = "/users", method = RequestMethod.DELETE)
-    public Result delUser(@RequestBody UserReqParam userReqParam) {
-        logger.info("接收到的删除用户Id: {}", StringUtils.join(userReqParam.getUserIds(), ","));
+    @RequestMapping(method = RequestMethod.DELETE)
+    public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        logger.info("请求的uri: {}", requestURI);
+        //暂时存放进于预留域传到service
+        userReqParam.setReservedField1(requestURI);
         int result = 0;
         try {
-            result = tblUserService.deleteByPrimaryKey(userReqParam.getUserIds());
+            result = tblUserService.deleteByPrimaryKey(userReqParam);
         } catch (Exception e) {
             logger.error("删除用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);

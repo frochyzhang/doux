@@ -21,18 +21,7 @@ import java.util.List;
  * @date ：2021/5/13 18:54
  * @description：用户持久层服务
  */
-@Service
-public class TblOptLogService {
 
-    @Autowired
-    private TblUserOptLogMapper tblUserOptLogMapper;
-
-    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) {
-        PageHelper.startPage(logReqParam.getCurrent(), logReqParam.getPageSize());
-        List<UserLogRespDto> optLogs = tblUserOptLogMapper.pageSelectOptLogs(logReqParam);
-        //将list转为对象数组
-        UserLogRespDto[] logs= new UserLogRespDto[optLogs.size()];
-        logs = optLogs.toArray(logs);
-        return new PageInfo<UserLogRespDto>(optLogs);
-    }
+public interface TblOptLogService {
+    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) ;
 }
