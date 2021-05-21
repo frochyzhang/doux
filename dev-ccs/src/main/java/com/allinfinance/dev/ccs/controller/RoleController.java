@@ -60,7 +60,7 @@ public class RoleController {
 
             List<TblRole> roleList = roles.getList();
             for (TblRole tblRole: roleList){
-                //tblRole.setAuth(roleAuthMapping.get(tblRole.getRoleId()));
+                tblRole.setAuth(roleAuthMapping.get(tblRole.getRoleId()));
             }
         } catch (Exception e) {
             logger.error("查询角色列表异常", e);
