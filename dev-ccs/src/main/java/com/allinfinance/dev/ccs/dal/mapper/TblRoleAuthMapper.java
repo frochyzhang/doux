@@ -22,4 +22,6 @@ public interface TblRoleAuthMapper  {
     List<TblRoleAuth> pageSelectRoleAuths(int pageNo, int pageSize);
 
     List<TblRoleAuth> selectByRoleId(TblRoleAuthKey tblRoleAuthKey);
+
+    List<TblRoleAuth> selectRoleAuths();
 }
