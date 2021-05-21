@@ -1,7 +1,10 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
+import com.allinfinance.dev.ccs.dal.model.TblMenu;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import com.allinfinance.dev.ccs.dal.respdto.AuthMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblAuthService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
@@ -11,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -37,11 +42,27 @@ public class AuthController {
         try {
             if (authReqParam.getCurrent() == null || authReqParam.getPageSize() == null){
                 authList = tblAuthService.selectAuths();
-                logger.info("角色列表: {}",authList);
+                logger.info("权限列表: {}",authList);
                 return Result.success(authList);
             }else {
                 auths = tblAuthService.pageSelectAuths(authReqParam);
-                logger.info("分页的角色列表: {}",auths);
+                logger.info("分页的权限列表: {}",auths);
+                List<TblAuth> tblAuths = auths.getList();
+                logger.info("tblAuths: {}",tblAuths);
+                //获取所有的权限,菜单项映射
+                List<TblMenuAuth> tblMenuAuths = tblAuthService.selectMenuAuths();
+                logger.info("tblMenuAuths: {}",tblMenuAuths);
+
+                HashMap<String, ArrayList<String>> authMenuMapping = new HashMap<>();
+                for (TblMenuAuth tblMenuAuth : tblMenuAuths){
+                    ArrayList<String> menus = authMenuMapping.computeIfAbsent(tblMenuAuth.getAuthId(), k -> new ArrayList<>());
+                    menus.add(tblMenuAuth.getMenuId());
+                }
+                logger.info("roleMenuMapping: {}",authMenuMapping);
+                for (TblAuth tblAuth : tblAuths){
+                    tblAuth.setMenus(authMenuMapping.get(tblAuth.getAuthId()));
+                }
+
                 return Result.success(auths);
             }
         }catch (Exception e){
@@ -50,6 +71,7 @@ public class AuthController {
         }
 
     }
+
 
     //更新权限
     @PutMapping
@@ -89,5 +111,50 @@ public class AuthController {
             return Result.failure();
         }
     }
+
+    @RequestMapping(path = "/menus",method = RequestMethod.GET)
+    public Result getAuthMenus(){
+        ArrayList<AuthMenusDto> authMenus;
+        try {
+            //获取所有的菜单项
+            List<TblMenu> tblMenus = tblAuthService.selectMenus();
+            logger.info("tblMenus: {}",tblMenus);
+            //获取权限菜单树
+            authMenus = generateAuthMenuTree(tblMenus);
+
+
+        }catch (Exception e){
+            logger.error("获取权限列表树异常",e);
+            return Result.failure();
+        }
+        return Result.success(authMenus);
+    }
+
+    private ArrayList<AuthMenusDto> generateAuthMenuTree(List<TblMenu> tblMenus) {
+        ArrayList<AuthMenusDto> authMenuTree = new ArrayList<>();
+        for (TblMenu tblMenu : tblMenus){
+            if (tblMenu.getParentMid() == null){
+                AuthMenusDto authMenusDto = generateSubAuthMenuTree(tblMenu,tblMenus);
+                authMenuTree.add(authMenusDto);
+            }
+        }
+        return authMenuTree;
+    }
+
+    private AuthMenusDto generateSubAuthMenuTree(TblMenu tblMenu,List<TblMenu> tblMenus) {
+        AuthMenusDto authMenusDto = new AuthMenusDto();
+        authMenusDto.setMenuId(tblMenu.getMenuId());
+        authMenusDto.setMenuName(tblMenu.getMenuName());
+        authMenusDto.setParentId(tblMenu.getParentMid());
+        ArrayList<AuthMenusDto> subAuthMenuTree = new ArrayList<>();
+        authMenusDto.setChildren(subAuthMenuTree);
+        for (TblMenu menu:tblMenus){
+            if (menu.getParentMid() != null && menu.getParentMid().equals(tblMenu.getMenuId())){
+                subAuthMenuTree.add(generateSubAuthMenuTree(menu,tblMenus));
+            }
+        }
+        return authMenusDto;
+    }
+
 
 }
