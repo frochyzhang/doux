@@ -4,23 +4,23 @@ package com.allinfinance.dev.nds.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.allinfinance.dev.nds.resp.NDSResponse;
-import com.nds.nudetect.*;
 import com.nds.nudetect.Date;
 import com.nds.nudetect.UUID;
+import com.nds.nudetect.*;
 import com.nds.nudetect.threeds1.ProcessResultRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shadow.com.nds.nudetect.javax.servlet.http.HttpServletRequest;
-import shadow.com.nds.nudetect.javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.Error;
 import java.net.URLEncoder;
-import java.util.*;
 import java.util.Base64;
+import java.util.*;
 
 /**
  * Classname  com.allinfinance.dev.nds.controller.NDSClientController
@@ -35,6 +35,7 @@ public class NDSClientController {
 
     @Value(("${com.nds.nudetectEndPoint}"))
     private String nudetectEndPoint;
+    @Value("${com.nds}")
     private static Map inputParams;
 
     @GetMapping("/3DSClient")
