@@ -18,4 +18,6 @@ import java.util.List;
 public interface TblMenuAuthMapper  {
 
     List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
+
+    List<TblMenuAuth> selectMenuAuths();
 }

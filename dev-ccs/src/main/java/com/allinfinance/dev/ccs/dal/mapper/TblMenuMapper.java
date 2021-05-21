@@ -23,4 +23,6 @@ public interface TblMenuMapper {
     void deleteByPrimaryKey(@Param("menuId") String menuId);
 
     TblUser getCurrentUserInfo(@Param("userName")String userName, @Param("org")String bank);
+
+    List<TblMenu> selectMenus();
 }

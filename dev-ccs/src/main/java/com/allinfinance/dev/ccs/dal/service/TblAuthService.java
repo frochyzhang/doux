@@ -1,7 +1,11 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblAuthMapper;
+import com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper;
+import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
+import com.allinfinance.dev.ccs.dal.model.TblMenu;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.github.pagehelper.PageHelper;
@@ -22,6 +26,12 @@ public class TblAuthService {
 
     @Autowired
     private TblAuthMapper tblAuthMapper;
+
+    @Autowired
+    private TblMenuAuthMapper tblMenuAuthMapper;
+
+    @Autowired
+    private TblMenuMapper tblMenuMapper;
 
     public int deleteByPrimaryKey(String authId){
         return tblAuthMapper.deleteByPrimaryKey(authId);
@@ -55,5 +65,13 @@ public class TblAuthService {
 
     public List<TblAuth> selectAuths() {
         return tblAuthMapper.selectAuths();
+    }
+
+    public List<TblMenuAuth> selectMenuAuths(){
+        return tblMenuAuthMapper.selectMenuAuths();
+    }
+
+    public List<TblMenu> selectMenus() {
+        return tblMenuMapper.selectMenus();
     }
 }
