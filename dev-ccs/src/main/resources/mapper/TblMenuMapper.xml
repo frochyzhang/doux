@@ -288,4 +288,11 @@
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </update>
+
+  <!--  *****************************************-->
+  <select id="selectMenus"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_MENU
+  </select>
 </mapper>

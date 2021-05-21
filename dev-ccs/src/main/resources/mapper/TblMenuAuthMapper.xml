@@ -162,4 +162,10 @@
       and MENU_ID = #{menuId,jdbcType=VARCHAR}
   </update>
 
+<!--  *****************************************-->
+  <select id="selectMenuAuths"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_MENU_AUTH
+  </select>
 </mapper>
