@@ -2,7 +2,7 @@ package com.allinfinance.dev.core.util.convert.simple8583.util.encrypt;
 
 import com.allinfinance.dev.core.util.convert.simple8583.util.EncodeUtil;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 /**
@@ -659,42 +659,24 @@ public class MacUtil {
 	 * @param asc 转换目标
 	 * @return 转换结果
 	 */
-	public static String ASC_2_HEX(String asc)
-	{
+	public static String ASC_2_HEX(String asc) {
 		StringBuffer hex = new StringBuffer();
-		try 
-		{
-			byte[] bs = asc.toUpperCase().getBytes("UTF-8");
-			for(byte b : bs)
-			{
-				hex.append(Integer.toHexString(new Byte(b).intValue()));
-			}
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			e.printStackTrace();
+		byte[] bs = asc.toUpperCase().getBytes(StandardCharsets.UTF_8);
+		for (byte b : bs) {
+			hex.append(Integer.toHexString(b));
 		}
 		return hex.toString();
 	}
 
-	public static String HEX_2_ASC(String hex)
-	{
+	public static String HEX_2_ASC(String hex) {
 		String asc = null;
 		int len = hex.length();
-		byte[] bs = new byte[len/2];
-		for(int i=0; i<len/2; i++)
-		{
-			bs[i] = Byte.parseByte(hex.substring(i*2, i*2+2), 16);
+		byte[] bs = new byte[len / 2];
+		for (int i = 0; i < len / 2; i++) {
+			bs[i] = Byte.parseByte(hex.substring(i * 2, i * 2 + 2), 16);
 		}
-		try 
-		{
-			asc = new String(bs,"UTF-8");
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			e.printStackTrace();
-		}
-		
+		asc = new String(bs, StandardCharsets.UTF_8);
+
 		return asc;
 	}
 

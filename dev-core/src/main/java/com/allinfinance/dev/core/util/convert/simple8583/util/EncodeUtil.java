@@ -26,7 +26,8 @@ public class EncodeUtil {
             int value=0;
             for(int j=0;j<4;j++){
                 if(temp.charAt(j)=='1'){
-                    value+=Math.pow(2, 3 - j);//计算值
+                    //计算值
+                    value += Math.pow(2, 3 - j);
                 }
             }
             accum.append(HEX[value]);

@@ -53,8 +53,7 @@ public class ColumnRangePartitioner implements Partitioner {
 
     private Long getFileLineCount() {
         long lineCount = 0L;
-        try {
-            Stream<String> lines = Files.lines(Paths.get(filePath), Charset.forName(encoding));
+        try (Stream<String> lines = Files.lines(Paths.get(filePath), Charset.forName(encoding))) {
             lineCount = lines.count();
         } catch (IOException e) {
             logger.error("文件行数获取失败!", e);

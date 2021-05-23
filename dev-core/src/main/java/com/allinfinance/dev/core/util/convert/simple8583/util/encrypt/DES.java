@@ -1,6 +1,7 @@
 package com.allinfinance.dev.core.util.convert.simple8583.util.encrypt;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
@@ -687,13 +688,9 @@ public class DES {
 
     protected static String ASC_2_HEX(String asc) {
         StringBuffer hex = new StringBuffer();
-        try {
-            byte[] bs = asc.toUpperCase().getBytes("UTF-8");
-            for (byte b : bs) {
-                hex.append(Integer.toHexString(new Byte(b).intValue()));
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        byte[] bs = asc.toUpperCase().getBytes(StandardCharsets.UTF_8);
+        for (byte b : bs) {
+            hex.append(Integer.toHexString(b));
         }
         return hex.toString();
     }
@@ -824,12 +821,18 @@ public class DES {
             left = ASC_2_HEX(key.substring(0, 8));
             right = ASC_2_HEX(key.substring(8, 16));
         }
-        // 加密
-        data = DES_1(data, left, 0);
-        // 解密
-        data = DES_1(data, right, 1);
-        // 加密
-        data = DES_1(data, left, 0);
+        try {
+            // 加密
+            data = DES_1(data, left, 0);
+            // 解密
+            assert data != null;
+            data = DES_1(data, right, 1);
+            // 加密
+            assert data != null;
+            data = DES_1(data, left, 0);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         return data;
     }
 
