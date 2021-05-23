@@ -19,23 +19,28 @@ public class HsmSocketTest {
     private static final String host = "10.250.5.150";
     private static Integer count = 0;
 
-    public byte[] request(byte[] request) throws IOException {
+    public byte[] request(byte[] request) {
         count++;
-        Socket socket = new Socket(host, 6666);
-        InputStream inputStream = socket.getInputStream();
-        OutputStream outputStream = socket.getOutputStream();
+        try (Socket socket = new Socket(host, 6666);
+             InputStream inputStream = socket.getInputStream();
+             OutputStream outputStream = socket.getOutputStream()) {
 
-        outputStream.write(request);
-        outputStream.flush();
 
-        byte[] resp = new byte[1024];
-        inputStream.read(resp);
+            outputStream.write(request);
+            outputStream.flush();
 
-        outputStream.close();
-        inputStream.close();
-        socket.close();
-        log.debug("调用加密机次数:{}", count);
-        return resp;
+            byte[] resp = new byte[1024];
+            inputStream.read(resp);
+
+            outputStream.close();
+            inputStream.close();
+            socket.close();
+            log.debug("调用加密机次数:{}", count);
+            return resp;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
 
     }
 }

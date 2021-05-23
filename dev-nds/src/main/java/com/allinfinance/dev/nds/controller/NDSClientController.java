@@ -309,26 +309,23 @@ public class NDSClientController {
     }
 
     public static String getRequestBodyFromMap(Map<String, String[]> bodyMap) {
-        String bodyPart = "";
-        Iterator<Map.Entry<String, String[]>> iterator = bodyMap.entrySet().iterator();
+        StringBuilder bodyPart = new StringBuilder();
 
-        while (iterator.hasNext()) {
-            Map.Entry<String, String[]> param = iterator.next();
+        for (Map.Entry<String, String[]> param : bodyMap.entrySet()) {
             if (bodyPart.length() != 0) {
-                bodyPart = bodyPart + "&";
+                bodyPart.append("&");
             }
 
             if (!"sessionData".equals(param.getKey())) {
                 try {
-                    bodyPart = bodyPart + param.getKey() + "=" + URLEncoder.encode(((String[]) param.getValue())[0], "UTF-8");
+                    bodyPart.append(param.getKey()).append("=").append(URLEncoder.encode(((String[]) param.getValue())[0], "UTF-8"));
                 } catch (UnsupportedEncodingException var5) {
                     log.warn("不支持的编码格式!", var5);
-                    bodyPart = bodyPart;
                 }
             }
         }
 
-        log.debug("bodyPart:{}", bodyPart);
-        return bodyPart;
+        log.debug("bodyPart:{}", bodyPart.toString());
+        return bodyPart.toString();
     }
 }

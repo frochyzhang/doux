@@ -29,7 +29,7 @@ public class RegexHelper {
                         "(" + keyword2 + ")",
                 Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(text);
-        while (m.find()) {
+        if (m.find()) {
             return m.group(2);
         }
         return null;

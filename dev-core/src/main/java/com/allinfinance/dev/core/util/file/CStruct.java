@@ -77,6 +77,7 @@ public class CStruct<T> {
                             out = StringUtils.leftPad(out, annoChar.value(), "0");
                         }
                     } else {
+                        assert value != null;
                         out = value.toString();
                     }
                     byte[] bytes = out.getBytes(charset);
