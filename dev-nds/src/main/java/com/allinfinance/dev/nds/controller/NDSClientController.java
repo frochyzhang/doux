@@ -303,7 +303,6 @@ public class NDSClientController {
         log.debug("requestBody:{}", requestBodyFromMap);
 
         HttpResponse httpResponse = ndsClient.send3DSRequest(requestBodyFromMap, tp);
-//        response.setContentLength(httpResponse.getType());
         log.debug("responseBody:{}", httpResponse.getBody());
         return NDSResponse.ok(httpResponse.getBody());
     }
