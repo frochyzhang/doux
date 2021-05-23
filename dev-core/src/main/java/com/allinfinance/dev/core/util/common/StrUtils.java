@@ -207,7 +207,7 @@ public class StrUtils {
         while (count < pwd_len) {
             // 生成随机数，取绝对值，防止生成负数，
 
-            i = Math.abs(r.nextInt(maxNum)); // 生成的数最大为36-1
+            i = Math.abs(r.nextInt(maxNum));
 
             if (i >= 0 && i < str.length) {
                 pwd.append(str[i]);
