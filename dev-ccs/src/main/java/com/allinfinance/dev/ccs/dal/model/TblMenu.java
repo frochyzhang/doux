@@ -181,4 +181,27 @@ public class TblMenu implements Serializable {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
+
+    @Override
+    public String toString() {
+        return "TblMenu{" +
+                "menuId='" + menuId + '\'' +
+                ", menuName='" + menuName + '\'' +
+                ", parentMid='" + parentMid + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                ", icon='" + icon + '\'' +
+                ", sort='" + sort + '\'' +
+                ", pageUrl='" + pageUrl + '\'' +
+                ", level='" + level + '\'' +
+                ", path='" + path + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", createTime=" + createTime +
+                ", createBy='" + createBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", reservedField2='" + reservedField2 + '\'' +
+                ", reservedField3='" + reservedField3 + '\'' +
+                '}';
+    }
 }
