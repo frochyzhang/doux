@@ -74,7 +74,7 @@ public class RoleController {
     //更新角色
     @RequestMapping(path = "/{roleId}", method = RequestMethod.PUT)
     public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") String roleId) {
-        logger.info("接收到的请求参数: {},roleId:{}", tblRole, roleId);
+        logger.info("接收到的请求参数: tblRole:{}", tblRole);
         tblRole.setRoleId(roleId);
         int result;
         try {
@@ -98,6 +98,16 @@ public class RoleController {
         int result;
         try {
             result = tblRoleService.insertSelective(tblRole);
+            ArrayList<String> auths = tblRole.getAuth();
+            logger.info("Auths: {}",auths);
+            if (auths != null && auths.size() > 0){
+                for(String auth:auths){
+                    TblRoleAuth record = new TblRoleAuth();
+                    record.setRoleId(tblRole.getRoleId());
+                    record.setAuthId(auth);
+                    tblRoleAuthService.insertSelective(record);
+                }
+            }
         } catch (Exception e) {
             logger.error("新增角色发生异常", e);
             return Result.failure();
