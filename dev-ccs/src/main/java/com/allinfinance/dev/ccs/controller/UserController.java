@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
@@ -30,7 +31,7 @@ public class UserController {
 
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-    public Result selectUser(@PathVariable("userId")  String userId) {
+    public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
             tblUser = tblUserService.selectByPrimaryKey(userId);
@@ -69,10 +70,21 @@ public class UserController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST)
-    public Result addUser(@RequestBody UserReqParam userReqParam) {
+    public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
         //设置初始密码
         userReqParam.setInitPass(userReqParam.getUserPass());
+        //对密码进行加密,加密方法待定
+        //userReqParam.setUserPass();
+//        String token = request.getHeader("token");
+//        String username = JwtUtil.getUsername(token);
+//        logger.info("获取当前系统用户信息:userName-->{}", username);
+//        TblUser sysCurrentUser = tblUserService.selectCurrentUser(username);
+        //系统用户重名检查
+        List<TblUser> tblUser = tblUserService.selectByNameAndOrg(userReqParam);
+        if (tblUser.size() != 0) {
+            return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
+        }
         int result = 0;
         try {
             result = tblUserService.insertSelective(userReqParam);

@@ -27,13 +27,13 @@ import java.util.List;
  * @since 2021-05-14
  */
 @RestController
-@RequestMapping("/api/menus")
+@RequestMapping("/platform/menus")
 public class TtblMenuController {
     private static final Logger logger = LoggerFactory.getLogger(TtblMenuController.class);
     @Autowired
     TblMenuService tblMenuService;
 
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Result getMenusList(@RequestBody MenusReqParam menusReqParam) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());

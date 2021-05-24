@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper;
+import com.allinfinance.dev.ccs.dal.model.TblBank;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 import com.github.pagehelper.PageHelper;
@@ -8,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,7 @@ public class TblBankService {
     }
 
     public int insertSelective(TblBankManage record) {
+        record.setCreateTime(new Date());
         return tblBankManageMapper.insertSelective(record);
     }
 
@@ -49,5 +52,9 @@ public class TblBankService {
         PageHelper.startPage(bankReqParam.getCurrent(), bankReqParam.getPageSize());
         List<TblBankManage> banks = tblBankManageMapper.pageSelectBanks(bankReqParam);
         return new PageInfo<TblBankManage>(banks);
+    }
+
+    public List<TblBankManage> selectByBankName(BankReqParam bankReqParam) {
+        return tblBankManageMapper.selectBanks(bankReqParam);
     }
 }

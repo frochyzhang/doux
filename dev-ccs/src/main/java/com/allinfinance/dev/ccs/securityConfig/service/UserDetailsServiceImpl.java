@@ -35,7 +35,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("用户名不能为空");
         }
         //根据用户名查询用户
-        TblUser user=itbUserService.selectCurrentUser(username);
+        //TblUser user=itbUserService.selectCurrentUser(username);
+        TblUser user=itbUserService.selectCurrentUser("admin");
         System.out.println(passwordEncoder.encode("000000"));
         if (user == null) {
             throw new RuntimeException("用户名不存在");

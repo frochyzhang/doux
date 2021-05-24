@@ -1,17 +1,14 @@
 package com.allinfinance.dev.ccs.dal.service;
 
-import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
-import com.allinfinance.dev.ccs.dal.model.TblRole;
+
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Date;
+import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
+
 
 /**
  * @author ：Lucas Li
@@ -38,6 +35,7 @@ public interface TblUserService {
 
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
 
-    public TblUser selectCurrentUser(String  userNasme) ;
-    public TblUser selectCurrentUser(String  userNasme,String org) ;
+    public TblUser selectCurrentUser(String  userName) ;
+
+    public List<TblUser> selectByNameAndOrg(UserReqParam userReqParam) ;
 }

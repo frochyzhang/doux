@@ -1,9 +1,12 @@
 package com.allinfinance.dev.ccs.controller;
 
 
+import com.allinfinance.dev.ccs.dal.model.TblBank;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 
+import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblBankService;
 
 import com.allinfinance.dev.ccs.result.Result;
@@ -13,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @Bankor ：Lucas Li
@@ -68,23 +74,44 @@ public class BankController {
         }
     }
 
-    //新增银行
-    @RequestMapping(method = RequestMethod.POST)
-    public Result createBank(@RequestBody TblBankManage tblBank){
-        logger.info("将新增的银行: {}",tblBank);
-        int result;
+
+    /**
+     * 更新银行信息
+     * @param bankReqParam
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT)
+    public Result updateUserInfo(@RequestBody BankReqParam bankReqParam) {
+        logger.info("接收到的更新银行信息: {}", bankReqParam);
+        int result = 0;
         try {
-            result = tblBankService.insertSelective(tblBank);
-        }catch (Exception e){
-            logger.error("新增银行发生异常",e);
-            return Result.failure();
+            result = tblBankService.updateByPrimaryKeySelective(bankReqParam);
+        } catch (Exception e) {
+            logger.error("更新银行异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("新增结果: {}",result);
-        if (result == 1){
-            return Result.success();
-        }else {
-            return Result.failure();
+        logger.info("更新银行执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
+        return Result.success(result);
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST)
+    public Result addBank(@RequestBody BankReqParam bankReqParam, HttpServletRequest request) {
+        logger.info("接收到的新增银行信息: {}", bankReqParam);
+        //系统银行重名检查
+        List<TblBankManage> tblBanks = tblBankService.selectByBankName(bankReqParam);
+        if (tblBanks.size() != 0) {
+            return Result.failure("该银行已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
+        int result = 0;
+        try {
+            result = tblBankService.insertSelective(bankReqParam);
+        } catch (Exception e) {
+            logger.error("新增银行异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        logger.info("新增银行执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
+        return Result.success(result);
     }
 
 }
