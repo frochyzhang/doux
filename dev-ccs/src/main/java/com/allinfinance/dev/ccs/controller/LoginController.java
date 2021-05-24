@@ -31,19 +31,19 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2021-05-14
  */
 @RestController
-@RequestMapping("/api/")
+//@RequestMapping("/api/")
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     TblUserService userService;
 //    @Autowired
-//    UserDetailsService detailsService;
+    UserDetailsService detailsService;
 
-    @RequestMapping(path = "login/account" ,method = RequestMethod.POST)
+    @RequestMapping(path = "login/account1" ,method = RequestMethod.POST)
     @ResponseBody
     public Result loginAccount(@RequestBody LoginParam loginParam){
         logger.info("接受到的参数:userName-->{},userPass-->{}", loginParam.getUserName(), loginParam.getUserPass());
-        //UserDetails userDetails = detailsService.loadUserByUsername(loginParam.getUserName());
+        UserDetails userDetails = detailsService.loadUserByUsername(loginParam.getUserName());
 
         return Result.success();
     }

@@ -23,4 +23,6 @@ public interface TblUserMapper  {
     int updateByPrimaryKey(TblUser record);
 
     List<TblUser> pageSelectUsers(@Param("userReqParam") UserReqParam userReqParam);
+
+    List<TblUser> selectByNameAndOrg(@Param("userReqParam") UserReqParam userReqParam);
 }

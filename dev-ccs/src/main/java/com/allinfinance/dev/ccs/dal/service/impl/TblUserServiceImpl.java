@@ -34,11 +34,11 @@ public class TblUserServiceImpl implements TblUserService {
         return tblUserMapper.deleteByPrimaryKey(userId);
     }
 
-    @Override
     public int deleteByPrimaryKey(Integer userId) {
         return 0;
     }
 
+    @Override
     public int deleteByPrimaryKey(UserReqParam userReqParam) {
         //逻辑删除，只是说将用户变为不可用
         TblUserOptLog optLog = new TblUserOptLog();
@@ -59,17 +59,20 @@ public class TblUserServiceImpl implements TblUserService {
         return i;
     }
 
+    @Override
     public int insert(TblUser record) {
         return tblUserMapper.insert(record);
     }
 
+    @Override
     public int insertSelective(TblUser record) {
         //添加当前系统时间为新增用户的创建时间
         record.setCreateTime(new Date());
         return tblUserMapper.insertSelective(record);
     }
 
-    @Override
+
+
     public TblUser selectByPrimaryKey(Integer userId) {
         return null;
     }
@@ -98,7 +101,14 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
     @Override
-    public List<TblUser> SelectUsers(UserReqParam userReqParam) {
-       return tblUserMapper.selectByNameAndOrg();
+    public TblUser selectCurrentUser(String userNasme) {
+        return tblUserMapper.selectByUserName(userNasme);
+    }
+
+
+
+    @Override
+    public List<TblUser> selectByNameAndOrg(UserReqParam userReqParam) {
+       return tblUserMapper.selectByNameAndOrg(userReqParam);
     }
 }

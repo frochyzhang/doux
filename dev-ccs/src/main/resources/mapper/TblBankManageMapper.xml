@@ -29,6 +29,11 @@
     where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    <selectKey resultType="java.lang.String" keyProperty="bankId" order="BEFORE" >
+      SELECT
+      sequence_id.nextval
+      FROM sysibm.sysdummy1
+    </selectKey>
     insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME,
       IS_AVAILABLE, CREATE_TIME, CREATE_BY,
       UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1,
@@ -39,6 +44,11 @@
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
+    <selectKey resultType="java.lang.String" keyProperty="bankId" order="BEFORE" >
+      SELECT
+      sequence_id.nextval
+      FROM sysibm.sysdummy1
+    </selectKey>
     insert into TBL_BANK_MANAGE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="bankId != null">
@@ -168,11 +178,23 @@
     <include refid="Base_Column_List" />
     from TBL_BANK_MANAGE where 1=1
     <if test="bankReqParam!=null">
-      <if test="bankReqParam.bankId!=null and bankReqParam.bankId!=0">
-        and bank_ID = ${bankReqParam.bankId}
+      <if test="bankReqParam.org!=null and bankReqParam.org!=0">
+        and org like '%${bankReqParam.org}%'
       </if>
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
         and bank_NAME like '%${bankReqParam.bankName}%'
+      </if>
+    </if>
+  </select>
+
+  <select id="selectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM TBL_BANK_MANAGE WHERE 1=1
+    <if test="bankReqParam!=null">
+      <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
+        and BANK_NAME = #{bankReqParam.bankName,jdbcType=VARCHAR}
       </if>
     </if>
   </select>

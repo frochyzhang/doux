@@ -22,4 +22,6 @@ public interface TblBankManageMapper {
     int updateByPrimaryKey(TblBankManage record);
 
     List<TblBankManage> pageSelectBanks(@Param("bankReqParam") BankReqParam bankReqParam);
+
+    List<TblBankManage> selectBanks(@Param("bankReqParam")BankReqParam bankReqParam);
 }

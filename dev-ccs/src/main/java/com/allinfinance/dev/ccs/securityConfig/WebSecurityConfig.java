@@ -90,14 +90,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }).
                 //登入
                 and().formLogin().
-                    loginProcessingUrl("/api/login/account").
+                    loginProcessingUrl("/login/account").
                     passwordParameter("userPass").
                     usernameParameter("userName").
                     permitAll().//允许所有用户
                     successHandler(authenticationSuccessHandler).//登录成功处理逻辑
                     failureHandler(authenticationFailureHandler).//登录失败处理逻辑
                 and().logout().
-                logoutUrl("/api/login/logout").
+                logoutUrl("/login/logout").
                 permitAll().//允许所有用户
                 logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
                 deleteCookies("JSESSIONID").//登出之后删除cookie

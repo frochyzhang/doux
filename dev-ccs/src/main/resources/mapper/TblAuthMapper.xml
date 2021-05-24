@@ -11,7 +11,7 @@
     <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
     <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
     <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
-    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
+    <result column="RESERVEDselectAuths_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
     AUTH_ID, AUTH_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, 
@@ -164,5 +164,11 @@
         and AUTH_NAME like '%${authReqParam.authName}%'
       </if>
     </if>
+  </select>
+
+  <select id="selectAuths" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_AUTH
   </select>
 </mapper>
