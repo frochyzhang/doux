@@ -52,7 +52,6 @@ public class AuthController {
                 //获取所有的权限,菜单项映射
                 List<TblMenuAuth> tblMenuAuths = tblAuthService.selectMenuAuths();
                 logger.info("tblMenuAuths: {}",tblMenuAuths);
-
                 HashMap<String, ArrayList<String>> authMenuMapping = new HashMap<>();
                 for (TblMenuAuth tblMenuAuth : tblMenuAuths){
                     ArrayList<String> menus = authMenuMapping.computeIfAbsent(tblMenuAuth.getAuthId(), k -> new ArrayList<>());
@@ -135,6 +134,7 @@ public class AuthController {
         for (TblMenu tblMenu : tblMenus){
             if (tblMenu.getParentMid() == null){
                 AuthMenusDto authMenusDto = generateSubAuthMenuTree(tblMenu,tblMenus);
+                authMenusDto.setParentId("");
                 authMenuTree.add(authMenusDto);
             }
         }

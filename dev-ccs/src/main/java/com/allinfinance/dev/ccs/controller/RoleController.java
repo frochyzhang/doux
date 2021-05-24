@@ -72,7 +72,7 @@ public class RoleController {
     }
 
     //更新角色
-    @RequestMapping(path = "/{roleId}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{roleId}", method = RequestMethod.POST)
     public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") String roleId) {
         logger.info("接收到的请求参数: tblRole:{}", tblRole);
         tblRole.setRoleId(roleId);
@@ -92,7 +92,7 @@ public class RoleController {
     }
 
     //新增角色
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public Result createRole(@RequestBody TblRole tblRole) {
         logger.info("将新增的角色: {}", tblRole);
         int result;
