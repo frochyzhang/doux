@@ -35,8 +35,8 @@ public class TtblMenuController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Result getMenusList(@RequestBody MenusReqParam menusReqParam) {
-        logger.info("接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
+    public Result getMenusList(MenusReqParam menusReqParam) {
+        logger.info("菜单查询开始，接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
         PageInfo<MenusReqParam> optLogs;
         try {
             optLogs = tblMenuService.pageSelectOptMenus(menusReqParam);
@@ -44,7 +44,7 @@ public class TtblMenuController {
             logger.error("查询用户列表异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("查询到的用户列表: {}", optLogs);
+        logger.info("查询到的菜单列表: {}", optLogs);
         return Result.success(optLogs);
     }
 
@@ -53,14 +53,16 @@ public class TtblMenuController {
     public Result getCurrMenus(HttpServletRequest request) {
         String token = request.getHeader("token");
         String userId = JwtUtil.getUserId(token);
+        String username = JwtUtil.getUsername(token);
         logger.info("获取菜单权限数据开始:userId-->{}", userId);
         List<CurrentMenusDto> currentMenusDtos;
         try {
             currentMenusDtos = tblMenuService.getCurrMenus(userId);
         } catch (Exception e) {
-            logger.error("查询用户列表异常!", e);
+            logger.error("查询当前用户菜单权限异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
+        logger.info("查询当前用户菜单权限结束，当前用户名：{}",username);
         return Result.success(currentMenusDtos.toArray());
     }
 
@@ -80,7 +82,7 @@ public class TtblMenuController {
     @PutMapping
     @ResponseBody
     public Result updateMenu(@RequestBody TblMenu tblMenu) {
-        logger.info("菜单更新接口接收参数-->{}", tblMenu.toString());
+        logger.info("菜单更新接口开始，接收参数-->{}", tblMenu.toString());
         try {
             tblMenuService.updateMenuById(tblMenu);
         } catch (RuntimeException e) {
