@@ -36,18 +36,6 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     TblUserService userService;
-//    @Autowired
-//    UserDetailsService detailsService;
-
-    @RequestMapping(path = "login/account" ,method = RequestMethod.POST)
-    @ResponseBody
-    public Result loginAccount(@RequestBody LoginParam loginParam){
-        logger.info("接受到的参数:userName-->{},userPass-->{}", loginParam.getUserName(), loginParam.getUserPass());
-        //UserDetails userDetails = detailsService.loadUserByUsername(loginParam.getUserName());
-
-        return Result.success();
-    }
-
     @RequestMapping(path = "login/reLogin" ,method = RequestMethod.POST)
     @ResponseBody
     public Result getMenusList(@RequestBody SecondCheckPassVo checkPassVo){
