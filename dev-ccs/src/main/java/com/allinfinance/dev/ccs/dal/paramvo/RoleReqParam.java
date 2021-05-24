@@ -11,6 +11,8 @@ import com.allinfinance.dev.ccs.dal.model.TblRole;
 public class RoleReqParam extends TblRole {
     private Integer current;
     private Integer pageSize;
+    private String roleId;
+    private String roleName;
 
 
     public Integer getCurrent() {
@@ -30,10 +32,32 @@ public class RoleReqParam extends TblRole {
     }
 
     @Override
+    public String getRoleId() {
+        return roleId;
+    }
+
+    @Override
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    @Override
+    public String getRoleName() {
+        return roleName;
+    }
+
+    @Override
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    @Override
     public String toString() {
         return "RoleReqParam{" +
                 "current=" + current +
                 ", pageSize=" + pageSize +
+                ", roleId='" + roleId + '\'' +
+                ", roleName='" + roleName + '\'' +
                 '}';
     }
 }
