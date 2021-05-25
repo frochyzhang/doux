@@ -92,10 +92,11 @@ public class TtblMenuController {
         return Result.success();
     }
 
-    @DeleteMapping
+    @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    public Result delMenu(String[] menusId) {
-        logger.info("菜单删除接口接收参数-->{}", Arrays.toString(menusId));
+    public Result delMenu(@RequestBody MenusReqParam menusReqParam) {
+        String[] menusId = menusReqParam.getMenusId();
+        logger.info("菜单删除接口接收参数-->{}", (menusId));
         try {
             tblMenuService.delMenuByIds(menusId);
         } catch (RuntimeException e) {

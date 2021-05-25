@@ -12,6 +12,15 @@ import com.allinfinance.dev.ccs.dal.model.TblMenu;
 public class MenusReqParam extends TblMenu {
     private Integer current;
     private Integer pageSize;
+    private String[] menusId;
+
+    public String[] getMenusId() {
+        return menusId;
+    }
+
+    public void setMenusId(String[] menusId) {
+        this.menusId = menusId;
+    }
 
     public Integer getCurrent() {
         return current;
