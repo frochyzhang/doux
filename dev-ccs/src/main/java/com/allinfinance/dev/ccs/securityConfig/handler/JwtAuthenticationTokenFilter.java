@@ -1,9 +1,15 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
+import com.allinfinance.dev.ccs.exception.TokenExpiredExeption;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +24,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -33,6 +42,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String token = request.getHeader("token");
         if(StringUtils.hasLength(token)) {
             String username = JwtUtil.getUsername(token);
+            String userId = JwtUtil.getUserId(token);
             log.info("用户名为：{}", username);
             if(StringUtils.hasLength(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
@@ -43,6 +53,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     log.info("authenticated user:{}", username);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+            }
+        }else{
+            Jws<Claims> claimsJws = JwtUtil.psrserAuthenticteToken(token);
+            boolean jwtExpired = JwtUtil.isJwtExpired(claimsJws);
+            if(!jwtExpired){
+                JwtUtil.setJwtExpired(claimsJws);
+            }else{
+                throw  new TokenExpiredExeption("token过期");
             }
         }
         chain.doFilter(request, response);

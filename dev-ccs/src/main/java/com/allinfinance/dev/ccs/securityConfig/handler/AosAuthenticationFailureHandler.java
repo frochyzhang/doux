@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
 import com.alibaba.druid.support.json.JSONUtils;
+import com.allinfinance.dev.ccs.exception.TokenExpiredExeption;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +27,7 @@ public class AosAuthenticationFailureHandler implements AuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         //返回json数据
-        Result result = new Result();
+        Result result = null;
         if (e instanceof BadCredentialsException) {
             //密码错误
             result = Result.failure(ResultCodeEnum.USER_LOGIN_ERROR);
@@ -39,6 +40,9 @@ public class AosAuthenticationFailureHandler implements AuthenticationFailureHan
         }  else if (e instanceof InternalAuthenticationServiceException) {
             //用户不存在
             result = Result.failure(ResultCodeEnum.USER_NOT_EXIST);
+        } else if (e instanceof TokenExpiredExeption) {
+            //用户不存在
+            result = Result.failure(ResultCodeEnum.USER_ACCOUNT_USE_BY_OTHERS);
         }else{
             //其他错误
             result = Result.failure(ResultCodeEnum.SYSTEM_ERROR);

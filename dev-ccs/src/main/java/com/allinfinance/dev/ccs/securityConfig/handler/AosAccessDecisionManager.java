@@ -30,7 +30,7 @@ public class AosAccessDecisionManager implements AccessDecisionManager {
                 if (authority.getAuthority().equals(needRole)) {
                     return;
                 }
-            }
+             }
         }
         throw new AccessDeniedException("权限不足!");
     }

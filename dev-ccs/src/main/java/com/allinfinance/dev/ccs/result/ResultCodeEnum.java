@@ -22,7 +22,7 @@ public enum ResultCodeEnum {
     USER_NOT_EXIST(2004, "用户不存在"),
     USER_HAS_EXISTED(2005, "用户已存在"),
     USER_CREDENTIALS_EXPIRED(2006,"账户已过期"),
-    USER_ACCOUNT_USE_BY_OTHERS(2007,"账号下线"),
+    USER_ACCOUNT_USE_BY_OTHERS(2007,"登录已过期，请重新登录！"),
     /* 通用错误返回 */
     GENERIC_EXCEPTION(4000, "通用错误返回"),
     NULL_POINT(4001, "空指针异常"),

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -35,11 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //匿名用户访问无权限资源时的异常
     @Autowired
     AosAuthenticationEntryPoint authenticationEntryPoint;
- 
-    //会话失效(账号被挤下线)处理逻辑
-    @Autowired
-    AosSessionInformationExpiredStrategy sessionInformationExpiredStrategy;
- 
+
     //登出成功处理逻辑
     @Autowired
     AosLogoutSuccessHandler logoutSuccessHandler;
@@ -83,8 +80,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-                        o.setAccessDecisionManager(accessDecisionManager);//决策管理器
                         o.setSecurityMetadataSource(securityMetadataSource);//安全元数据源
+                        o.setAccessDecisionManager(accessDecisionManager);//决策管理器
                         return o;
                     }
                 }).
@@ -105,10 +102,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 and().exceptionHandling().
                     accessDeniedHandler(accessDeniedHandler).//权限拒绝处理逻辑
                     authenticationEntryPoint(authenticationEntryPoint).//匿名用户访问无权限资源时的异常处理
-                //会话管理
-                and().sessionManagement().
-                    maximumSessions(10).//同一账号同时登录最大用户数
-                    expiredSessionStrategy(sessionInformationExpiredStrategy);//会话失效(账号被挤下线)处理逻辑
+                //关闭session
+                and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
         http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
