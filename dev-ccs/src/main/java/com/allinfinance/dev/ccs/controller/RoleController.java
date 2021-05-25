@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,12 +72,14 @@ public class RoleController {
     }
 
     //更新角色
-    @RequestMapping(path = "/{roleId}", method = RequestMethod.POST)
-    public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") String roleId) {
-        logger.info("接收到的请求参数: tblRole:{}", tblRole);
-        tblRole.setRoleId(roleId);
+    @RequestMapping(method = RequestMethod.POST)
+    public Result modifyRole(@RequestBody TblRole tblRole) {
+        logger.info("更新角色,接收到的请求参数: tblRole:{}", tblRole);
         int result;
         try {
+            //删除角色和权限映射
+            tblRoleAuthService.deleteByRoleId(tblRole.getRoleId());
+            createRoleAuthMapping(tblRole);
             result = tblRoleService.updateByPrimaryKey(tblRole);
         } catch (Exception e) {
             logger.error("更新角色信息发生异常", e);
@@ -92,6 +93,19 @@ public class RoleController {
         }
     }
 
+    private void createRoleAuthMapping(TblRole tblRole) {
+        ArrayList<String> auths = tblRole.getAuth();
+        logger.info("Auths: {}",auths);
+        if (auths != null && auths.size() > 0){
+            for(String auth:auths){
+                TblRoleAuth record = new TblRoleAuth();
+                record.setRoleId(tblRole.getRoleId());
+                record.setAuthId(auth);
+                tblRoleAuthService.insertSelective(record);
+            }
+        }
+    }
+
     //新增角色
     @RequestMapping(method = RequestMethod.PUT)
     public Result createRole(@RequestBody TblRole tblRole) {
@@ -99,16 +113,7 @@ public class RoleController {
         int result;
         try {
             result = tblRoleService.insertSelective(tblRole);
-            ArrayList<String> auths = tblRole.getAuth();
-            logger.info("Auths: {}",auths);
-            if (auths != null && auths.size() > 0){
-                for(String auth:auths){
-                    TblRoleAuth record = new TblRoleAuth();
-                    record.setRoleId(tblRole.getRoleId());
-                    record.setAuthId(auth);
-                    tblRoleAuthService.insertSelective(record);
-                }
-            }
+            createRoleAuthMapping(tblRole);
         } catch (Exception e) {
             logger.error("新增角色发生异常", e);
             return Result.failure();
