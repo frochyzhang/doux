@@ -130,4 +130,10 @@
     from TBL_ROLE_AUTH
   </select>
 
+  <delete id="deleteByRoleId" >
+    delete from TBL_ROLE_AUTH
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </delete>
+
+
 </mapper>
