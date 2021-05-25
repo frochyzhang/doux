@@ -37,11 +37,11 @@
         and NODE_TYPE = #{menusReqParam.nodeType}
       </if>
       <if test="menusReqParam.menuName != null and menusReqParam.menuName!=''">
-        and MENU_NAME = #{menusReqParam.menuName}
+        and MENU_NAME like '%${menusReqParam.menuName}%'
       </if>
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_MENU
@@ -76,12 +76,12 @@
 
 
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </delete>
 
-  <delete id="delMenuBatch" parameterType="java.lang.Integer">
+  <delete id="delMenuBatch" parameterType="java.lang.String">
     delete from TBL_MENU
     where MENU_ID in
     <foreach collection="menuIds" item="menuId" index="index"
