@@ -24,4 +24,6 @@ public interface TblRoleAuthMapper  {
     List<TblRoleAuth> selectByRoleId(TblRoleAuthKey tblRoleAuthKey);
 
     List<TblRoleAuth> selectRoleAuths();
+
+    int deleteByRoleId(String roleId);
 }
