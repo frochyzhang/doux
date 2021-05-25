@@ -1,5 +1,7 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
+import java.util.Arrays;
+
 /**
  * @project: dev-parent
  * @description: 权限查询请求参数
@@ -11,6 +13,8 @@ public class AuthReqParam {
     private Integer pageSize;
     private String authId;
     private String authName;
+    private String[] authIds;
+
 
     public Integer getCurrent() {
         return current;
@@ -44,6 +48,14 @@ public class AuthReqParam {
         this.authName = authName;
     }
 
+    public String[] getAuthIds() {
+        return authIds;
+    }
+
+    public void setAuthIds(String[] authIds) {
+        this.authIds = authIds;
+    }
+
     @Override
     public String toString() {
         return "AuthReqParam{" +
@@ -51,6 +63,7 @@ public class AuthReqParam {
                 ", pageSize=" + pageSize +
                 ", authId='" + authId + '\'' +
                 ", authName='" + authName + '\'' +
+                ", authIds=" + Arrays.toString(authIds) +
                 '}';
     }
 }
