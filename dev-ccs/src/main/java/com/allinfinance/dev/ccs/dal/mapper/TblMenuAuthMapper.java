@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.dal.mapper;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
@@ -20,4 +21,8 @@ public interface TblMenuAuthMapper  {
     List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
 
     List<TblMenuAuth> selectMenuAuths();
+
+    int deleteMenuAuths(String authId);
+
+    int insertSelective(TblMenuAuth record);
 }

@@ -74,4 +74,12 @@ public class TblAuthService {
     public List<TblMenu> selectMenus() {
         return tblMenuMapper.selectMenus();
     }
+
+    public int deleteMenuAuths(String authId) {
+        return tblMenuAuthMapper.deleteMenuAuths(authId);
+    }
+
+    public int insertMenuAuth(TblMenuAuth record) {
+        return tblMenuAuthMapper.insertSelective(record);
+    }
 }

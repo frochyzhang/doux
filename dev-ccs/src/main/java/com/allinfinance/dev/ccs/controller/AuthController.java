@@ -3,7 +3,9 @@ package com.allinfinance.dev.ccs.controller;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.AuthMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblAuthService;
 import com.allinfinance.dev.ccs.result.Result;
@@ -35,7 +37,7 @@ public class AuthController {
 
     //分页查询权限
     @GetMapping
-    public Result selectUsers(AuthReqParam authReqParam){
+    public Result selectAuths(AuthReqParam authReqParam){
         logger.info("AuthReqParam: {}",authReqParam);
         PageInfo<TblAuth> auths;
         List<TblAuth> authList;
@@ -73,12 +75,22 @@ public class AuthController {
 
 
     //更新权限
-    @PutMapping
-    public Result modifyUser(@RequestBody TblAuth tblAuth,@PathVariable("authId") String authId){
-        logger.debug("接收到的请求参数: {},authId:{}",tblAuth,authId);
-        tblAuth.setAuthId(authId);
+    @PostMapping
+    public Result modifyAuth(@RequestBody TblAuth tblAuth){
+        logger.debug("权限更新接收到的请求参数: tblAuth-{}",tblAuth);
         int result;
         try {
+            //更新权限和菜单项映射
+            tblAuthService.deleteMenuAuths(tblAuth.getAuthId());
+            ArrayList<String> menus = tblAuth.getMenus();
+            if (menus != null && menus.size() > 0){
+                for(String menu:menus){
+                    TblMenuAuth record = new TblMenuAuth();
+                    record.setAuthId(tblAuth.getAuthId());
+                    record.setMenuId(menu);
+                    tblAuthService.insertMenuAuth(record);
+                }
+            }
             result = tblAuthService.updateByPrimaryKey(tblAuth);
         }catch (Exception e){
             logger.error("更新权限发生异常",e);
@@ -93,11 +105,24 @@ public class AuthController {
     }
 
     //新增权限
-    @PostMapping
+    @PutMapping
     public Result createAuth(@RequestBody TblAuth tblAuth){
-        logger.debug("将新增的权限: {}",tblAuth);
+        logger.info("-------------------新增权限---------------------------");
+        logger.info("将新增的权限: {}",tblAuth);
         int result;
         try {
+            ArrayList<String> menus = tblAuth.getMenus();
+            logger.info("menus:  {}",menus);
+            if (menus != null && menus.size() > 0){
+                for(String menu:menus){
+                    logger.info("开始插入权限和菜单映射");
+                    TblMenuAuth record = new TblMenuAuth();
+                    record.setAuthId(tblAuth.getAuthId());
+                    record.setMenuId(menu);
+                    int i = tblAuthService.insertMenuAuth(record);
+                    logger.info("新增权限菜单结果: {}",i);
+                }
+            }
             result = tblAuthService.insertSelective(tblAuth);
         }catch (Exception e){
             logger.error("新增权限发生异常",e);
@@ -154,6 +179,35 @@ public class AuthController {
             }
         }
         return authMenusDto;
+    }
+
+    //删除一个或多个权限
+    @RequestMapping(method = RequestMethod.DELETE)
+    public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
+        logger.info("authReqParam: {}",authReqParam);
+        String[] authIds = authReqParam.getAuthIds();
+        logger.info("待删除的权限-authIds: {}", authIds);
+        int result = 0;
+        try {
+            if (authIds != null && authIds.length > 0){
+                for (String authId:authIds){
+                    //删除权限和菜单项映射
+                    tblAuthService.deleteMenuAuths(authId);
+                    //删除权限
+                    result = tblAuthService.deleteByPrimaryKey(authId);
+                    logger.info("result={}",result);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("删除权限发生异常", e);
+            return Result.failure();
+        }
+
+        if (result == 1) {
+            return Result.success();
+        } else {
+            return Result.failure();
+        }
     }
 
 

@@ -168,4 +168,9 @@
     <include refid="Base_Column_List" />
     from TBL_MENU_AUTH
   </select>
+
+  <delete id="deleteMenuAuths" >
+    delete from TBL_MENU_AUTH
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </delete>
 </mapper>
