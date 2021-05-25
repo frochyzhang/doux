@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class RoleController {
     }
 
     //更新角色
-    @RequestMapping(path = "/{roleId}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{roleId}", method = RequestMethod.POST)
     public Result modifyRole(@RequestBody TblRole tblRole, @PathVariable("roleId") String roleId) {
         logger.info("接收到的请求参数: tblRole:{}", tblRole);
         tblRole.setRoleId(roleId);
@@ -92,7 +93,7 @@ public class RoleController {
     }
 
     //新增角色
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public Result createRole(@RequestBody TblRole tblRole) {
         logger.info("将新增的角色: {}", tblRole);
         int result;
@@ -113,6 +114,39 @@ public class RoleController {
             return Result.failure();
         }
         logger.info("新增结果: {}", result);
+        if (result == 1) {
+            return Result.success();
+        } else {
+            return Result.failure();
+        }
+    }
+
+
+
+    //删除一个或多个角色
+    @RequestMapping(method = RequestMethod.DELETE)
+    public Result deleteRoles(@RequestBody RoleReqParam roleReqParam) {
+        logger.info("**************************************");
+        logger.info("roleReqParam: {}",roleReqParam);
+        String[] roleIds = roleReqParam.getRoleIds();
+        logger.info("待删除的角色-roleIds: {}", roleIds);
+        int result = 0;
+        try {
+            if (roleIds != null && roleIds.length > 0){
+                for (String roleId:roleIds){
+                    //删除角色和权限映射
+                    int i = tblRoleAuthService.deleteByRoleId(roleId);
+                    //删除角色
+                    result = tblRoleService.deleteByPrimaryKey(roleId);
+                    logger.info("i={}",i);
+                    logger.info("result={}",result);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("删除角色发生异常", e);
+            return Result.failure();
+        }
+        
         if (result == 1) {
             return Result.success();
         } else {

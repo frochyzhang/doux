@@ -48,4 +48,8 @@ public class TblRoleAuthService {
     public List<TblRoleAuth> selectRoleAuths(){
         return tblRoleAuthMapper.selectRoleAuths();
     }
+
+    public int deleteByRoleId(String roleId) {
+        return tblRoleAuthMapper.deleteByRoleId(roleId);
+    }
 }
