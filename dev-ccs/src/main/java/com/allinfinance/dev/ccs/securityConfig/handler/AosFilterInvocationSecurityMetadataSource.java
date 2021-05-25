@@ -28,7 +28,7 @@ public class AosFilterInvocationSecurityMetadataSource implements FilterInvocati
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
 
         //查询具体某个接口的权限
-        if(requestUrl.contains("?")){
+          if(requestUrl.contains("?")){
             String[] urlparam = requestUrl.split("\\?");
             requestUrl=urlparam[0];
         }

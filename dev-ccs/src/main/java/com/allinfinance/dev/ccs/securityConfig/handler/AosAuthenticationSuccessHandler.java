@@ -43,7 +43,7 @@ public class AosAuthenticationSuccessHandler implements AuthenticationSuccessHan
         seccessReapDto.setQRcode("");
         seccessReapDto.setPassStatus(tbluser.getPassStatus());
         seccessReapDto.setUserName(tbluser.getUserName());
-        seccessReapDto.setToken(JwtUtil.sign(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId()));
+        seccessReapDto.setToken(JwtUtil.sign(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId(),tbluser.getOrg()));
         Result result = Result.success(seccessReapDto);
         ObjectMapper objectMapper = new ObjectMapper();
         httpServletResponse.setContentType("text/json;charset=utf-8");
