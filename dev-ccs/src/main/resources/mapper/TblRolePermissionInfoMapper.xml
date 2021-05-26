@@ -22,6 +22,12 @@
     from TBL_ROLE_PERMISSION_INFO
     where ROLE_ID = #{roleId,jdbcType=VARCHAR}
   </select>
+<select id="getRoleIdByPermissionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    ROLE_ID
+    from TBL_ROLE_PERMISSION_INFO
+    where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR} group by ROLE_ID
+  </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

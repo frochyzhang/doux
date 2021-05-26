@@ -26,4 +26,9 @@ public class TblRolePermissionInfoServiceImpl implements TblRolePermissionInfoSe
         List<TblRolePermissionInfo> permissionInfos=rolePermissionInfoMapper.getRolePermissionInfByRoleId(roleId);
         return permissionInfos;
     }
+
+    @Override
+    public List<TblRolePermissionInfo> getRoleIdByPermissionCode(String permissionCode) {
+        return rolePermissionInfoMapper.getRoleIdByPermissionCode(permissionCode);
+    }
 }

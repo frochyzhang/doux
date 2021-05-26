@@ -75,7 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests().
-                //antMatchers("/api/login/account").hasAnyAuthority().
+                antMatchers("/api/login/account","login/reLogin").permitAll().
                 //antMatchers("/**").fullyAuthenticated().
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
@@ -97,7 +97,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 logoutUrl("/login/logout").
                 permitAll().//允许所有用户
                 logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
-                deleteCookies("JSESSIONID").//登出之后删除cookie
                 //异常处理(权限拒绝、登录失效等)
                 and().exceptionHandling().
                     accessDeniedHandler(accessDeniedHandler).//权限拒绝处理逻辑

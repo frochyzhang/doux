@@ -44,12 +44,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if (user != null) {
             //获取该用户所拥有的权限
-            List<TblRolePermissionInfo> role_permissionInfos=itblRolePermissionService.getRolePermissionInfByRoleId(user.getRoleId());
+           // List<TblRolePermissionInfo> role_permissionInfos=itblRolePermissionService.getRolePermissionInfByRoleId(user.getRoleId());
                 // 声明用户授权
-            role_permissionInfos.forEach(permissions -> {
-                    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permissions.getPermissioncode());
-                    grantedAuthorities.add(grantedAuthority);
-                });
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_"+user.getRoleId());
+            grantedAuthorities.add(grantedAuthority);
+//            role_permissionInfos.forEach(permissions -> {
+//                    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permissions.getPermissioncode());
+//                    grantedAuthorities.add(grantedAuthority);
+//                });
         }
             return new User(user.getUserName(), user.getUserPass(), user.getIsAvailable().equals("1")?true:false, user.getNotExpired().equals("1")?true:false,
                 user.getCredentialsNotExpired().equals("1")?true:false, user.getAccountNotLocked().equals("1")?true:false, grantedAuthorities);

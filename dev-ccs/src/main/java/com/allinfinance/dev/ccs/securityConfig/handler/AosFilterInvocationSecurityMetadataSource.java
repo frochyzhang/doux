@@ -2,7 +2,9 @@ package com.allinfinance.dev.ccs.securityConfig.handler;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.service.TblPermissionInfoService;
+import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -10,7 +12,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @Author: liuqi
@@ -21,7 +25,8 @@ import java.util.Collection;
 public class AosFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     @Autowired
     private TblPermissionInfoService tblPermissionService;
-
+    @Autowired
+    private TblRolePermissionInfoService itblRolePermissionService;
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         //获取请求地址
@@ -37,8 +42,13 @@ public class AosFilterInvocationSecurityMetadataSource implements FilterInvocati
             //请求路径没有配置权限，表明该请求接口可以任意访问
             return null;
         }
-        String[] attributes = new String[]{permission.getPermissioncode()};
-        return SecurityConfig.createList(attributes);
+        List<TblRolePermissionInfo> roleIdByPermissionCode = itblRolePermissionService.getRoleIdByPermissionCode(permission.getPermissioncode());
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        roleIdByPermissionCode.forEach((item)->{
+            arrayList.add("ROLE_"+item.getRoleId());
+        });
+        return SecurityConfig.createList(arrayList.toArray(new String[arrayList.size()]));
     }
 
     @Override
