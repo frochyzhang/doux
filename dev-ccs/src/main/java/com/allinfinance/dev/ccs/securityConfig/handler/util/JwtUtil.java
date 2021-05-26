@@ -47,9 +47,6 @@ public class JwtUtil {
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             Date expiresAt = jwt.getExpiresAt();
-            if(new Date().after(expiresAt)){
-                throw  new TokenExpiredExeption("token过期");
-            }
             return true;
         } catch (Exception exception) {
             return false;
@@ -135,7 +132,6 @@ public class JwtUtil {
                     .withClaim("userId", userId)
                     .withClaim("roleId", role)
                     .withClaim("org", org)
-                    .withClaim("createTime",new Date())
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
