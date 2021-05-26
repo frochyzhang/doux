@@ -54,14 +54,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-//        }else{
-//            Jws<Claims> claimsJws = JwtUtil.psrserAuthenticteToken(token);
-//            boolean jwtExpired = JwtUtil.isJwtExpired(claimsJws);
-//            if(!jwtExpired){
-//                JwtUtil.setJwtExpired(claimsJws);
-//            }else{
-//                throw  new TokenExpiredExeption("token过期");
-//            }
+        }else{
+            Jws<Claims> claimsJws = JwtUtil.psrserAuthenticteToken(token);
+            boolean jwtExpired = JwtUtil.isJwtExpired(claimsJws);
+            if(!jwtExpired){
+                JwtUtil.setJwtExpired(claimsJws);
+            }else{
+                throw  new TokenExpiredExeption("token过期");
+            }
        }
         chain.doFilter(request, response);
     }

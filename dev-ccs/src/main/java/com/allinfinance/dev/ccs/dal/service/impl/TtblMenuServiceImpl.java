@@ -85,7 +85,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     menuIds.add(authMenu.getMenuId());
                 });
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
-               return  getmenus(tblMenus,menuIds,tblUser.getUserName());
+               return  getmenus(tblMenus,menuIds,tblUser);
             }
         }
         return null;
@@ -95,14 +95,14 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
 
 
-    public List<CurrentMenusDto> getmenus( List<TblMenu> tblMenus,ArrayList<String> menuIds, String userName ){
+    public List<CurrentMenusDto> getmenus( List<TblMenu> tblMenus,ArrayList<String> menuIds, TblUser tblUser ){
         ArrayList<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
         for (TblMenu menu : tblMenus) {
            CurrentMenusDto menusDto = new CurrentMenusDto();
            menusDto.setName(menu.getMenuName());
            menusDto.setIcon(menu.getIcon());
            menusDto.setPath(menu.getPath());
-           menusDto.setAuthority(new String[]{userName});
+           menusDto.setAuthority(new String[]{tblUser.getRoleId()});
             List<TblMenu> tblMenuList = tblMenuMapper.selectMenusPathByPMid("1", menuIds,String.valueOf(menu.getMenuId()));
             ArrayList<CurrentMenusDto> currentMenusDtos1 = new ArrayList<>();
             for (TblMenu menu1 : tblMenuList) {
@@ -111,7 +111,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 menusDto1.setIcon(menu1.getIcon());
                 menusDto1.setPath(menu1.getPath());
                 menusDto1.setComponent(menu1.getPageUrl());
-                menusDto1.setAuthority(new String[]{userName});
+                menusDto1.setAuthority(new String[]{tblUser.getRoleId()});
                 currentMenusDtos1.add(menusDto1);
                 List<TblMenu> tblMenuList2 = tblMenuMapper.selectMenusPathByPMid("2",menuIds,String.valueOf(menu.getMenuId()));
                 ArrayList<CurrentMenusDto> currentMenusDtos2 = new ArrayList<>();
@@ -122,7 +122,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                         menusDto2.setIcon(menu2.getIcon());
                         menusDto2.setPath(menu2.getPath());
                         menusDto2.setComponent(menu2.getPageUrl());
-                        menusDto2.setAuthority(new String[]{userName});
+                        menusDto2.setAuthority(new String[]{tblUser.getRoleId()});
                         currentMenusDtos2.add(menusDto2);
                     }
                 }
@@ -133,4 +133,5 @@ public class TtblMenuServiceImpl implements TblMenuService {
         }
        return  currentMenusDtos;
     }
+
 }

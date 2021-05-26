@@ -49,10 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //实现权限拦截
     @Autowired
     AosFilterInvocationSecurityMetadataSource securityMetadataSource;
- 
+  @Autowired
+  AosLogoutHandler aosLogoutHandler;
+
     @Autowired
     private AosAbstractSecurityInterceptor securityInterceptor;
- 
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
@@ -96,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     successHandler(authenticationSuccessHandler).//登录成功处理逻辑
                     failureHandler(authenticationFailureHandler).//登录失败处理逻辑
                 and().logout().
-                logoutUrl("/login/logout").
+                logoutUrl("/login/logout").addLogoutHandler(aosLogoutHandler).
                 permitAll().//允许所有用户
                 logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
                 //异常处理(权限拒绝、登录失效等)

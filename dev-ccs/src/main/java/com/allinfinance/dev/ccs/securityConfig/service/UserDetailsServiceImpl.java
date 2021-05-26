@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.securityConfig.service;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
@@ -37,9 +38,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //根据用户名查询用户
         TblUser user=itbUserService.selectCurrentUser(username);
         //TblUser user=itbUserService.selectCurrentUser("admin");
-        System.out.println(passwordEncoder.encode("000000"));
+       // System.out.println(passwordEncoder.encode("000000"));
         if (user == null) {
             throw new RuntimeException("用户名不存在");
+        }
+        if(AosContent.ACCOUNT_DELETE.equals(user.getIsAvailable())){
+            throw new RuntimeException("账户已被删除！");
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if (user != null) {

@@ -1,0 +1,26 @@
+package com.allinfinance.dev.ccs.securityConfig.handler;
+
+import com.allinfinance.dev.ccs.dal.respdto.LogoutSeccessReapDto;
+import com.allinfinance.dev.ccs.result.Result;
+import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+@Component
+public class AosLogoutHandler implements LogoutHandler {
+    @Override
+    public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+        String token = httpServletRequest.getHeader("token");
+        //User details = (User) authentication.getDetails();
+        //生成一个新的token  防止 通过其他方式伪造访问
+        JwtUtil.sign(JwtUtil.getUsername(token), JwtUtil.getRole(token), JwtUtil.getUserId(token), JwtUtil.getOrg(token));
+
+    }
+}
