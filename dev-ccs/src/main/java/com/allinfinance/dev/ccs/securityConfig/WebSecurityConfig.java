@@ -74,14 +74,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
+        http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
+        http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests().
-                antMatchers("/api/login/account","login/reLogin").permitAll().
+                antMatchers("/login/account","/login/reLogin").permitAll().
                 //antMatchers("/**").fullyAuthenticated().
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-                        o.setSecurityMetadataSource(securityMetadataSource);//安全元数据源
                         o.setAccessDecisionManager(accessDecisionManager);//决策管理器
+                        o.setSecurityMetadataSource(securityMetadataSource);//安全元数据源
                         return o;
                     }
                 }).
@@ -100,11 +102,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //异常处理(权限拒绝、登录失效等)
                 and().exceptionHandling().
                     accessDeniedHandler(accessDeniedHandler).//权限拒绝处理逻辑
-                    authenticationEntryPoint(authenticationEntryPoint).//匿名用户访问无权限资源时的异常处理
+                    authenticationEntryPoint(authenticationEntryPoint);//匿名用户访问无权限资源时的异常处理
                 //关闭session
-                and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
-        http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+               // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }
 }
