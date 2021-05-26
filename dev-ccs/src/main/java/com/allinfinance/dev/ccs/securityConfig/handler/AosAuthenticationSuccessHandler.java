@@ -39,7 +39,7 @@ public class AosAuthenticationSuccessHandler implements AuthenticationSuccessHan
         tbUserService.updateByPrimaryKey(tbluser);
          //返回json数据
         LoginSeccessReapDto seccessReapDto = new LoginSeccessReapDto();
-        seccessReapDto.setCurrentAuthority(new String[]{tbluser.getUserName()});
+        seccessReapDto.setCurrentAuthority(new String[]{tbluser.getRoleId()});
         seccessReapDto.setQRcode("");
         seccessReapDto.setPassStatus(tbluser.getPassStatus());
         seccessReapDto.setUserName(tbluser.getUserName());

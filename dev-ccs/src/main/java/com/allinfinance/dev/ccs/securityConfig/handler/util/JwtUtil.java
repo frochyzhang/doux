@@ -132,6 +132,7 @@ public class JwtUtil {
                     .withClaim("userId", userId)
                     .withClaim("roleId", role)
                     .withClaim("org", org)
+                    .withIssuedAt(new Date())
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {

@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
 import com.alibaba.druid.support.json.JSONUtils;
+import com.allinfinance.dev.ccs.dal.respdto.LogoutSeccessReapDto;
 import com.allinfinance.dev.ccs.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,9 @@ import java.io.IOException;
 public class AosLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        Result result = Result.success();
+        LogoutSeccessReapDto seccessReapDto = new LogoutSeccessReapDto();
+        seccessReapDto.setToken(null);
+        Result result = Result.success(seccessReapDto);
         ObjectMapper objectMapper = new ObjectMapper();
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(objectMapper.writeValueAsString(result));
