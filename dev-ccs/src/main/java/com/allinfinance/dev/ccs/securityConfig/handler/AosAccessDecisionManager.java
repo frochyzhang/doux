@@ -20,12 +20,12 @@ public class AosAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
         Iterator<ConfigAttribute> iterator = collection.iterator();
-        while (iterator.hasNext()) {
+             while (iterator.hasNext()) {
             ConfigAttribute ca = iterator.next();
             //当前请求需要的权限
             String needRole = ca.getAttribute();
             //当前用户所具有的权限
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            Collection<? extends GrantedAuthority> authorities     = authentication.getAuthorities();
             for (GrantedAuthority authority : authorities) {
                 if (authority.getAuthority().equals(needRole)) {
                     return;
