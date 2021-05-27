@@ -6,12 +6,14 @@ import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,8 +40,14 @@ public class OptLogController {
      */
     @RequestMapping(path = "/opts", method = RequestMethod.GET)
     @ResponseBody
-    public Result selectOptLogs(LogReqParam logReqParam) {
-        logger.info("接受到的参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
+    public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
+        logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
+        String token = request.getHeader("token");
+        String org = JwtUtil.getOrg(token);
+        logger.info("获取当前操作用户的机构号:org-->{}", org);
+        if (org != null && org.length() != 0) {
+            logReqParam.setOrg(org);
+        }
         if (logReqParam.getCurrent()==null || logReqParam.getPageSize()==null){
             logReqParam.setCurrent(1);
             logReqParam.setPageSize(10);

@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +38,7 @@ public class UserController {
     private  BCryptPasswordEncoder passwordEncoder;
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
+    @ResponseBody
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
@@ -58,8 +58,15 @@ public class UserController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET)
-    public Result selectUsers(UserReqParam userReqParam) {
+    @ResponseBody
+    public Result selectUsers(UserReqParam userReqParam,HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
+        String token = request.getHeader("token");
+        String org = JwtUtil.getOrg(token);
+        logger.info("获取当前操作用户的机构号:org-->{}", org);
+        if (org != null && org.length() != 0) {
+            userReqParam.setOrg(org);
+        }
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
@@ -78,17 +85,23 @@ public class UserController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
         //设置初始密码
-        String encodePass = passwordEncoder.encode(userReqParam.getUserPass());
-        userReqParam.setInitPass(encodePass);
-        //对密码进行加密,加密方法待定
-        //userReqParam.setUserPass();
-//        String token = request.getHeader("token");
-//        String username = JwtUtil.getUsername(token);
-//        logger.info("获取当前系统用户信息:userName-->{}", username);
-//        TblUser sysCurrentUser = tblUserService.selectCurrentUser(username);
+        userReqParam.setInitPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        // 对密码进行加密
+        userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        String token = request.getHeader("token");
+        String userName = JwtUtil.getUsername(token);
+        logger.info("获取当前系统用户姓名:userName-->{}", userName);
+        try {
+            // TblUser sysCurrentUser = tblUserService.selectCurrentUser(userName);
+            // logger.info("获取当前系统用户信息:sysCurrentUser-->{}", sysCurrentUser);
+            userReqParam.setCreateBy(userName);
+        } catch (Exception e) {
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
         //系统用户重名检查
         TblUser tblUser = tblUserService.selectByNameAndOrg(userReqParam);
         if (tblUser!=null) {
@@ -112,8 +125,12 @@ public class UserController {
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
+    @ResponseBody
     public Result updateUserInfo(@RequestBody UserReqParam userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
+        if (userReqParam.getUserPass()!=null&&(!userReqParam.getUserPass().equals(""))){
+            userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        }
         int result = 0;
         try {
             String encode = passwordEncoder.encode(userReqParam.getUserPass());
@@ -134,6 +151,7 @@ public class UserController {
      * @return
      */
     @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         logger.info("请求的uri: {}", requestURI);
