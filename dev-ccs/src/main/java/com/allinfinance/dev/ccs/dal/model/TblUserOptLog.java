@@ -24,6 +24,8 @@ public class TblUserOptLog implements Serializable {
 
     private String oldValue;
 
+    private String org;
+
     private String reservedField1;
 
     private String reservedField2;
@@ -38,6 +40,14 @@ public class TblUserOptLog implements Serializable {
 
     public void setOperationId(String operationId) {
         this.operationId = operationId;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 
     public String getUserId() {

@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @Author: liuqi
- * @Description:
+ * @Description:  UserDetailsServiceImpl
  * @Date Create in 2021/5/15 14:36
  */
 public class UserDetailsServiceImpl implements UserDetailsService {
