@@ -13,6 +13,7 @@ import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationSuccessH
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
+import org.apache.commons.codec.net.BCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -99,7 +101,7 @@ public class LoginController {
           return Result.success(qrCodeResDto);
          }
         String secret=currentUser.getReservedField2();
-        String issuer=currentUser.getReservedField2();
+        String issuer=currentUser.getReservedField3();
         String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName,secret ,issuer);
         String encodePath="";
         String qrcodePath=this.desePath + File.separator + userName;
@@ -108,7 +110,7 @@ public class LoginController {
             //ClassPathResource classPathResource = new ClassPathResource("logo.png");
             //String path = classPathResource.getPath();
             encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
-            ServletOutputStream outputStream = response.getOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 //            response.setHeader("Content-type","image/jpg");
             File file = new File(qrcodePath+File.separator+encodePath);
             FileInputStream inputStream = new FileInputStream(file);
@@ -117,7 +119,7 @@ public class LoginController {
             while ((len=inputStream.read(bit))!=-1){
                 outputStream.write(bit,0,len);
             }
-             stringImg = "data:image/gif;base64,"+ Base64.getEncoder().encodeToString(bit);
+             stringImg = "data:image/gif;base64,"+ Base64.getEncoder().encodeToString(outputStream.toByteArray());
             inputStream.close();
             outputStream.flush();
             outputStream.close();

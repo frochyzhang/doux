@@ -24,5 +24,5 @@ public interface TblUserMapper  {
 
     List<TblUser> pageSelectUsers(@Param("userReqParam") UserReqParam userReqParam);
 
-    List<TblUser> selectByNameAndOrg(@Param("userReqParam") UserReqParam userReqParam);
+    TblUser selectByNameAndOrg(@Param("userReqParam") UserReqParam userReqParam);
 }

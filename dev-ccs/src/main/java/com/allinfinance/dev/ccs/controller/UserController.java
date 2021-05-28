@@ -90,8 +90,8 @@ public class UserController {
 //        logger.info("获取当前系统用户信息:userName-->{}", username);
 //        TblUser sysCurrentUser = tblUserService.selectCurrentUser(username);
         //系统用户重名检查
-        List<TblUser> tblUser = tblUserService.selectByNameAndOrg(userReqParam);
-        if (tblUser.size() != 0) {
+        TblUser tblUser = tblUserService.selectByNameAndOrg(userReqParam);
+        if (tblUser!=null) {
             return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
         int result = 0;

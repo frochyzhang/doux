@@ -108,7 +108,7 @@ public class TblUserServiceImpl implements TblUserService {
 
 
     @Override
-    public List<TblUser> selectByNameAndOrg(UserReqParam userReqParam) {
+    public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
        return tblUserMapper.selectByNameAndOrg(userReqParam);
     }
 }

@@ -5,11 +5,28 @@ import java.io.Serializable;
 public class LoginSeccessReapDto  implements Serializable {
     private String [] currentAuthority;
     private String  QRcode;
-
     private String  userId;
     private String  userName;
+    private String  org;
     private String  passStatus;
+    private String  isFirstLogin;
     private String  token;
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
+
+    public String getIsFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setIsFirstLogin(String isFirstLogin) {
+        this.isFirstLogin = isFirstLogin;
+    }
 
     public String[] getCurrentAuthority() {
         return currentAuthority;
