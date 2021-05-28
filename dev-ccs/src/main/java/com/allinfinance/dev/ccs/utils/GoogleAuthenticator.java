@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class GoogleAuthenticator {
 
-    public static final int DEFAULT_TIME_STEP_SECONDS = 30;
+    private static final int DEFAULT_TIME_STEP_SECONDS = 30;
     private static int NUM_DIGITS_OUTPUT = 6;
 
     private static final String blockOfZeros;
@@ -59,13 +59,13 @@ public class GoogleAuthenticator {
         return sb.toString();
     }
 
-    public static boolean validateCurrentNumber(String base32Secret, int authNumber, long windowMillis)
+    public static boolean validateCurrentNumber(String base32Secret, int authNumber, int windowMillis)
             throws GeneralSecurityException {
         return validateCurrentNumber(base32Secret, authNumber, windowMillis, System.currentTimeMillis(),
                 DEFAULT_TIME_STEP_SECONDS);
     }
 
-    public static boolean validateCurrentNumber(String base32Secret, int authNumber, long windowMillis, long timeMillis,
+    public static boolean validateCurrentNumber(String base32Secret, int authNumber, int windowMillis, long timeMillis,
                                                 int timeStepSeconds) throws GeneralSecurityException {
         long from = timeMillis;
         long to = timeMillis;
