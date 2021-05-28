@@ -1,17 +1,24 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.github.pagehelper.PageInfo;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,7 +35,8 @@ public class UserController {
 
     @Autowired
     private TblUserService tblUserService;
-
+    @Autowired
+    private  BCryptPasswordEncoder passwordEncoder;
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     public Result selectUser(@PathVariable("userId") String userId) {
@@ -73,7 +81,8 @@ public class UserController {
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
         //设置初始密码
-        userReqParam.setInitPass(userReqParam.getUserPass());
+        String encodePass = passwordEncoder.encode(userReqParam.getUserPass());
+        userReqParam.setInitPass(encodePass);
         //对密码进行加密,加密方法待定
         //userReqParam.setUserPass();
 //        String token = request.getHeader("token");
@@ -107,6 +116,8 @@ public class UserController {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         int result = 0;
         try {
+            String encode = passwordEncoder.encode(userReqParam.getUserPass());
+            userReqParam.setUserPass(encode);
             result = tblUserService.updateByPrimaryKeySelective(userReqParam);
         } catch (Exception e) {
             logger.error("更新用户异常!", e);
@@ -138,4 +149,23 @@ public class UserController {
         logger.info("删除用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
         return Result.success(result);
     }
+
+    @RequestMapping(path = "updateNewPass",method = RequestMethod.POST)
+    @ResponseBody
+    public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam,HttpServletRequest request){
+        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String userId = JwtUtil.getUserId(token);
+        String username = JwtUtil.getUsername(token);
+        TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
+        tblUser.setUserPass(passwordEncoder.encode(passwordParam.getNewPassword()));
+        tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
+        tblUser.setLastPassUpdateTime(new Date());
+        tblUser.setUpdateBy(username);
+        try{tblUserService.updateByPrimaryKey(tblUser);}catch (RuntimeException e){
+            logger.error("更新密码异常异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+      return Result.success();
+    }
+
 }

@@ -23,8 +23,9 @@ public enum ResultCodeEnum {
     USER_HAS_EXISTED(2005, "用户已存在"),
     USER_CREDENTIALS_EXPIRED(2006,"账户已过期"),
     USER_ACCOUNT_USE_BY_OTHERS(2007,"登录已过期，请重新登录！"),
+    USER_ACCOUNT_ODEERROR(2008,"验证密码错误！"),
     /* 通用错误返回 */
-    GENERIC_EXCEPTION(4000, "通用错误返回"),
+    GENERIC_EXCEPTION(4000, "系统内部错误！"),
     NULL_POINT(4001, "空指针异常"),
     HTTP_CLIENT_ERROR(4002, "HTTP异常");
 
