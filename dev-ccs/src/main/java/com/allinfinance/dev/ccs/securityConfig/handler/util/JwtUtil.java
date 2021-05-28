@@ -132,7 +132,7 @@ public class JwtUtil {
                     .withClaim("userId", userId)
                     .withClaim("roleId", role)
                     .withClaim("org", org)
-                    .withIssuedAt(new Date())
+                    .withClaim("creatDate",System.currentTimeMillis())
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
@@ -168,7 +168,7 @@ public class JwtUtil {
     public  long getExpireTime() {
         return EXPIRE_TIME;
     }
-    @Value("${token.expire_time}")
+    @Value("${token.expire_time:86400}")
     public  void setExpireTime(long expireTime) {
         expireTime= expireTime==0?1:expireTime;
         EXPIRE_TIME = expireTime  * 1000;
