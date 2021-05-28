@@ -20,8 +20,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.security.GeneralSecurityException;
 import java.util.Date;
 
@@ -51,7 +54,8 @@ public class LoginController {
             return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
         }
         try {
-            boolean validate = GoogleAuthenticator.validateCurrentNumber(this.secret, Integer.valueOf(checkPassVo.getCheckCode()), -1);
+            Integer value = Integer.valueOf(checkPassVo.getCheckCode());
+            boolean validate = GoogleAuthenticator.validateCurrentNumber(this.secret, value, -1);
             if(!validate){
                 return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
             }
@@ -80,7 +84,7 @@ public class LoginController {
 
     @RequestMapping(path = "getQRCodeUrl" ,method = RequestMethod.GET)
     @ResponseBody
-    public Result getQRCodeUrl(HttpServletRequest request){
+    public Result getQRCodeUrl(HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
@@ -89,10 +93,13 @@ public class LoginController {
         if(AosContent.IS_BIND.equals(currentUser.getReservedField1())){
             return Result.success(new QrCodeResDto());
          }
-        String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userId, this.secret, this.issuer);
+        String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName, this.secret, this.issuer);
         String encodePath="";
         String qrcodePath=this.desePath + File.separator + userName + org;
         try {
+            File file = new File(qrcodePath);
+            ServletOutputStream outputStream = response.getOutputStream();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
             ClassPathResource classPathResource = new ClassPathResource("logo.png");
             String path = classPathResource.getPath();
             encodePath = QRCodeUtils.encode(cuiwy, path, qrcodePath, true);
