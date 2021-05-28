@@ -37,5 +37,5 @@ public interface TblUserService {
 
     public TblUser selectCurrentUser(String  userName) ;
 
-    public List<TblUser> selectByNameAndOrg(UserReqParam userReqParam) ;
+    public TblUser selectByNameAndOrg(UserReqParam userReqParam) ;
 }

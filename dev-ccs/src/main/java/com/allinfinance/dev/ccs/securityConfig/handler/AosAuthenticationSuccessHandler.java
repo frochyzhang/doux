@@ -61,6 +61,8 @@ public class AosAuthenticationSuccessHandler implements AuthenticationSuccessHan
         seccessReapDto.setCurrentAuthority(new String[]{tbluser.getRoleId()});
         seccessReapDto.setPassStatus(tbluser.getPassStatus());
         seccessReapDto.setUserName(tbluser.getUserName());
+        seccessReapDto.setOrg(tbluser.getOrg());
+        seccessReapDto.setIsFirstLogin(tbluser.getReservedField1());
         seccessReapDto.setToken(JwtUtil.sign(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId(),tbluser.getOrg()));
         Result result = Result.success(seccessReapDto);
         ObjectMapper objectMapper = new ObjectMapper();
