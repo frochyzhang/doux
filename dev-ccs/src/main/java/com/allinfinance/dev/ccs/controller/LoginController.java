@@ -4,6 +4,7 @@ package com.allinfinance.dev.ccs.controller;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
+import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
@@ -24,8 +25,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -54,8 +57,9 @@ public class LoginController {
             return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
         }
         try {
+            String secret=currentUser.getReservedField2();
             Integer value = Integer.valueOf(checkPassVo.getCheckCode());
-            boolean validate = GoogleAuthenticator.validateCurrentNumber(this.secret, value, -1);
+            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, value, -1);
             if(!validate){
                 return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
             }
@@ -89,47 +93,48 @@ public class LoginController {
         String userName = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
         String org = JwtUtil.getOrg(token);
+        QrCodeResDto qrCodeResDto = new QrCodeResDto();
         TblUser currentUser = userService.selectByPrimaryKey(userId);
         if(AosContent.IS_BIND.equals(currentUser.getReservedField1())){
-            return Result.success(new QrCodeResDto());
+          return Result.success(qrCodeResDto);
          }
-        String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName, this.secret, this.issuer);
+        String secret=currentUser.getReservedField2();
+        String issuer=currentUser.getReservedField2();
+        String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName,secret ,issuer);
         String encodePath="";
-        String qrcodePath=this.desePath + File.separator + userName + org;
+        String qrcodePath=this.desePath + File.separator + userName;
+        String stringImg="";
         try {
-            File file = new File(qrcodePath);
+            //ClassPathResource classPathResource = new ClassPathResource("logo.png");
+            //String path = classPathResource.getPath();
+            encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
             ServletOutputStream outputStream = response.getOutputStream();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ClassPathResource classPathResource = new ClassPathResource("logo.png");
-            String path = classPathResource.getPath();
-            encodePath = QRCodeUtils.encode(cuiwy, path, qrcodePath, true);
+//            response.setHeader("Content-type","image/jpg");
+            File file = new File(qrcodePath+File.separator+encodePath);
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] bit=new byte[1024];
+            int len=0;
+            while ((len=inputStream.read(bit))!=-1){
+                outputStream.write(bit,0,len);
+            }
+             stringImg = "data:image/gif;base64,"+ Base64.getEncoder().encodeToString(bit);
+            inputStream.close();
+            outputStream.flush();
+            outputStream.close();
+
         } catch (Exception e) {
             logger.error("生成二维码异常",e);
         }
-        QrCodeResDto qrCodeResDto = new QrCodeResDto();
-        qrCodeResDto.setQrCode(qrcodePath+ File.separator+encodePath);
+        qrCodeResDto.setQrCode(stringImg);
         return Result.success(qrCodeResDto);
     }
 
 
 
     public static String desePath;
-
-    public static String secret;
-
-    public static String issuer;
-
     @Value("${qrCode.path:/home/aos/qrcode/}")
     public  void setDesePath(String desePath) {
         this.desePath = desePath;
-    }
-    @Value("${qrCode.secret:2wsx3edc4rfv5tgb2wsx3edc4rfv5tgb}")
-    public  void setSecret(String secret) {
-        this.secret = secret;
-    }
-    @Value("${qrCode.issuer:allinfinance}")
-    public  void setIssuer(String issuer) {
-        this.issuer = issuer;
     }
 }
 
