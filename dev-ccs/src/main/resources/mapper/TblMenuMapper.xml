@@ -51,7 +51,7 @@
   <!--  查询根节点-->
   <select id="selectRootMenusPath"  resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
-    from IACS.TBL_MENU t
+    from TBL_MENU t
     WHERE  t.parent_mid is  null and t.LEVEL='0'
     and t.MENU_ID in
     <foreach collection="menuIds" item="menuId" index="index"
@@ -64,7 +64,7 @@
   <select id="selectMenusPathByPMid"  resultMap="BaseResultMap">
    select <include refid="Base_Column_List" /> from  (
     SELECT <include refid="Base_Column_List" />
-    from IACS.TBL_MENU t
+    from TBL_MENU t
     WHERE  t.parent_mid is not null and t.LEVEL=#{level,jdbcType=VARCHAR}
     and t.MENU_ID in
     <foreach collection="menuIds" item="menuId" index="index"
