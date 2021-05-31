@@ -47,6 +47,10 @@ public class JwtUtil {
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             Date expiresAt = jwt.getExpiresAt();
+            Date date = new Date();
+            if(date.after(expiresAt)){
+                throw  new TokenExpiredExeption("token过期");
+            }
             return true;
         } catch (Exception exception) {
             return false;
