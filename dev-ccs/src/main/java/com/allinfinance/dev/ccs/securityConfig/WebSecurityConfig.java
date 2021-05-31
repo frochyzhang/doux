@@ -75,8 +75,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
-        http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
-        http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests().
                 antMatchers("/login/account","/login/reLogin").permitAll().
                 //antMatchers("/**").fullyAuthenticated().
@@ -106,6 +104,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     authenticationEntryPoint(authenticationEntryPoint);//匿名用户访问无权限资源时的异常处理
                 //关闭session
                // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
+        http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 }
