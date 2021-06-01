@@ -1,6 +1,5 @@
 package com.allinfinance.dev.ccs.controller;
 
-import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -46,7 +43,12 @@ public class OptLogController {
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
-            logReqParam.setOrg(org);
+            //当当前的用户是超级管理员时显示所有列表
+            if (org.equals("000000000000")) {
+                logReqParam.setOrg(null);
+            } else {
+                logReqParam.setOrg(org);
+            }
         }
         if (logReqParam.getCurrent()==null || logReqParam.getPageSize()==null){
             logReqParam.setCurrent(1);

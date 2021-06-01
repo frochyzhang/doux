@@ -1,15 +1,18 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
+import com.allinfinance.dev.ccs.dal.service.TblBankService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.github.pagehelper.PageInfo;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -34,8 +36,12 @@ public class UserController {
 
     @Autowired
     private TblUserService tblUserService;
+
     @Autowired
-    private  BCryptPasswordEncoder passwordEncoder;
+    private TblBankService tblBankService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
@@ -59,13 +65,18 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Result selectUsers(UserReqParam userReqParam,HttpServletRequest request) {
+    public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
         String token = request.getHeader("token");
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
-            userReqParam.setOrg(org);
+            //当当前的用户是超级管理员时显示所有列表
+            if (org.equals("000000000000")) {
+                userReqParam.setOrg(null);
+            } else {
+                userReqParam.setOrg(org);
+            }
         }
         PageInfo<TblUser> users = null;
         try {
@@ -92,19 +103,23 @@ public class UserController {
         userReqParam.setInitPass(passwordEncoder.encode(userReqParam.getUserPass()));
         // 对密码进行加密
         userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        //配置用户口令
+        BankReqParam bankReqParam=new BankReqParam();
+        bankReqParam.setOrg(userReqParam.getOrg());
+        TblBankManage tblBankManage = tblBankService.selectByBankInfo(bankReqParam);
+        userReqParam.setReservedField2(tblBankManage.getBankNameEn());
         String token = request.getHeader("token");
         String userName = JwtUtil.getUsername(token);
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
-        try {
-            // TblUser sysCurrentUser = tblUserService.selectCurrentUser(userName);
-            // logger.info("获取当前系统用户信息:sysCurrentUser-->{}", sysCurrentUser);
-            userReqParam.setCreateBy(userName);
-        } catch (Exception e) {
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-        }
+        //设置首次用户登录时显示绑定二维码
+        userReqParam.setReservedField1("0");
+        //设置用户的密钥
+        userReqParam.setReservedField2(GoogleAuthenticator.generateBase32Secret());
+        userReqParam.setCreateBy(userName);
+
         //系统用户重名检查
         TblUser tblUser = tblUserService.selectByNameAndOrg(userReqParam);
-        if (tblUser!=null) {
+        if (tblUser != null) {
             return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
         int result = 0;
@@ -128,7 +143,7 @@ public class UserController {
     @ResponseBody
     public Result updateUserInfo(@RequestBody UserReqParam userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
-        if (userReqParam.getUserPass()!=null&&(!userReqParam.getUserPass().equals(""))){
+        if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
             userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         }
         int result = 0;
@@ -168,9 +183,9 @@ public class UserController {
         return Result.success(result);
     }
 
-    @RequestMapping(path = "updateNewPass",method = RequestMethod.POST)
+    @RequestMapping(path = "updateNewPass", method = RequestMethod.POST)
     @ResponseBody
-    public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam,HttpServletRequest request){
+    public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         String username = JwtUtil.getUsername(token);
@@ -179,11 +194,13 @@ public class UserController {
         tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
         tblUser.setLastPassUpdateTime(new Date());
         tblUser.setUpdateBy(username);
-        try{tblUserService.updateByPrimaryKey(tblUser);}catch (RuntimeException e){
+        try {
+            tblUserService.updateByPrimaryKey(tblUser);
+        } catch (RuntimeException e) {
             logger.error("更新密码异常异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-      return Result.success();
+        return Result.success();
     }
 
 }

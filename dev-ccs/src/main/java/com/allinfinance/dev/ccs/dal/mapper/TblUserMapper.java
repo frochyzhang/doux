@@ -14,9 +14,9 @@ public interface TblUserMapper  {
     int insertSelective(TblUser record);
 
     TblUser selectByPrimaryKey(String userId);
-    TblUser selectByUserNameAndBank(String  userName,String org);
+    TblUser selectByUserNameAndBank(String userName, String org);
 
-    TblUser selectByUserName(String  userName);
+    TblUser selectByUserName(String userName);
 
     int updateByPrimaryKeySelective(TblUser record);
 

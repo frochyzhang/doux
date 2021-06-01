@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.securityConfig.service;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
@@ -13,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;

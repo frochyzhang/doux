@@ -10,6 +10,8 @@ public class TblBankManage implements Serializable {
 
     private String bankName;
 
+    private String bankNameEn;
+
     private String isAvailable;
 
     private Date createTime;
@@ -27,6 +29,14 @@ public class TblBankManage implements Serializable {
     private String reservedField3;
 
     private static final long serialVersionUID = 1L;
+
+    public String getBankNameEn() {
+        return bankNameEn;
+    }
+
+    public void setBankNameEn(String bankNameEn) {
+        this.bankNameEn = bankNameEn;
+    }
 
     public String getBankId() {
         return bankId;

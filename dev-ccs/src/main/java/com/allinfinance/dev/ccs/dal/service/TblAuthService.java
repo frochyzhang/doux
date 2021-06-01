@@ -6,7 +6,6 @@ import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
-import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
