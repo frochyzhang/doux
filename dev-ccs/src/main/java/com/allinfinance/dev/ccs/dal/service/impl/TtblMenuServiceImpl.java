@@ -88,7 +88,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                return  getmenus(tblMenus,menuIds,tblUser);
             }
         }
-        return null;
+        return new ArrayList<CurrentMenusDto>();
     }
 
 

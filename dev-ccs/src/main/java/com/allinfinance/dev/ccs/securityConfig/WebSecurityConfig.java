@@ -6,6 +6,8 @@ import com.allinfinance.dev.ccs.securityConfig.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -68,6 +73,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AosAuthenticationPrivider aosAuthenticationPrivider() {
+        AosAuthenticationPrivider aosAuthenticationPrivider = new AosAuthenticationPrivider();
+        aosAuthenticationPrivider.setPasswordEncoder(passwordEncoder());
+        aosAuthenticationPrivider.setUserDetailsService(userDetailsService());
+        return aosAuthenticationPrivider;
+    }
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        ProviderManager providerManager = new ProviderManager(Arrays.asList(aosAuthenticationPrivider()));
+        return providerManager;
+    }
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService());
@@ -106,7 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //关闭session
         // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
-        http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 }
