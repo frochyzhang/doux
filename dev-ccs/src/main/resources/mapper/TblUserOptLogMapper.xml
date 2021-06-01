@@ -13,13 +13,14 @@
         <result column="COLUMN_NAME" jdbcType="VARCHAR" property="columnName"/>
         <result column="NEW_VALUE" jdbcType="VARCHAR" property="newValue"/>
         <result column="OLD_VALUE" jdbcType="VARCHAR" property="oldValue"/>
+        <result column="org" jdbcType="VARCHAR" property="org"/>
         <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1"/>
         <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2"/>
         <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3"/>
     </resultMap>
     <sql id="Base_Column_List">
         OPERATION_ID, lg.USER_ID, USER_IP,USER_NAME, OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
-    TABLE_NAME, COLUMN_NAME, NEW_VALUE, OLD_VALUE, lg.RESERVED_FIELD1, lg.RESERVED_FIELD2,
+    TABLE_NAME, COLUMN_NAME, NEW_VALUE, OLD_VALUE,lg.org, lg.RESERVED_FIELD1, lg.RESERVED_FIELD2,
     lg.RESERVED_FIELD3
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -37,6 +38,9 @@
         <if test="logReqParam!=null">
             <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
                 and us.USER_NAME like '%${logReqParam.userName}%'
+            </if>
+            <if test="logReqParam.org!=null">
+                and us.org = #{logReqParam.org}
             </if>
             <if test="logReqParam.operationType!=null">
                 and OPERATION_TYPE = #{logReqParam.operationType}
@@ -64,7 +68,7 @@
                 #{operationType,jdbcType=VARCHAR}, #{operationPath,jdbcType=VARCHAR},
                 #{interviewtTime,jdbcType=TIMESTAMP},
                 #{tableName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{newValue,jdbcType=VARCHAR},
-                #{oldValue,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
+                #{oldValue,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
                 #{reservedField3,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
@@ -99,6 +103,9 @@
             </if>
             <if test="oldValue != null">
                 OLD_VALUE,
+            </if>
+            <if test="org != null">
+                org,
             </if>
             <if test="reservedField1 != null">
                 RESERVED_FIELD1,
@@ -141,6 +148,9 @@
             <if test="oldValue != null">
                 #{oldValue,jdbcType=VARCHAR},
             </if>
+            <if test="org != null">
+                #{org,jdbcType=VARCHAR},
+            </if>
             <if test="reservedField1 != null">
                 #{reservedField1,jdbcType=VARCHAR},
             </if>
@@ -182,6 +192,9 @@
             <if test="oldValue != null">
                 OLD_VALUE = #{oldValue,jdbcType=VARCHAR},
             </if>
+            <if test="org != null">
+                org = #{oldValue,jdbcType=VARCHAR},
+            </if>
             <if test="reservedField1 != null">
                 RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
             </if>
@@ -205,6 +218,7 @@
             COLUMN_NAME     = #{columnName,jdbcType=VARCHAR},
             NEW_VALUE       = #{newValue,jdbcType=VARCHAR},
             OLD_VALUE       = #{oldValue,jdbcType=VARCHAR},
+            org             = #{org,jdbcType=VARCHAR},
             RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
             RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
             RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}

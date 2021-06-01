@@ -5,9 +5,6 @@ import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 
 /**

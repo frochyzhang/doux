@@ -25,7 +25,19 @@ public class TblRole implements Serializable {
 
     private String reservedField3;
 
+    private String weight;
+
+    private String org;
+
     private ArrayList<String> auth;
+
+    public ArrayList<String> getAuth() {
+        return auth;
+    }
+
+    public void setAuth(ArrayList<String> auth) {
+        this.auth = auth;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -109,28 +121,19 @@ public class TblRole implements Serializable {
         this.reservedField3 = reservedField3;
     }
 
-    public ArrayList<String> getAuth() {
-        return auth;
+    public String getWeight() {
+        return weight;
     }
 
-    public void setAuth(ArrayList<String> auth) {
-        this.auth = auth;
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
-    @Override
-    public String toString() {
-        return "TblRole{" +
-                "roleId='" + roleId + '\'' +
-                ", roleName='" + roleName + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", auth=" + auth +
-                '}';
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 }

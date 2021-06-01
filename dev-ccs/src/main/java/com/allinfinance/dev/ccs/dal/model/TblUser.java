@@ -14,12 +14,6 @@ public class TblUser implements Serializable {
 
     private String org;
 
-    private String branchId;
-
-    private String bankId;
-
-    private String merchant;
-
     private String isAvailable;
 
     private String initPass;
@@ -30,7 +24,7 @@ public class TblUser implements Serializable {
 
     private Date lastPassUpdateTime;
 
-    private String salt;
+    private String reservedField4;
 
     private String createBy;
 
@@ -45,6 +39,12 @@ public class TblUser implements Serializable {
     private String reservedField2;
 
     private String reservedField3;
+
+    private String reservedField5;
+
+    private String reservedField6;
+
+    private String reservedField7;
 
     private Date lastLoginTime;
 
@@ -96,30 +96,6 @@ public class TblUser implements Serializable {
         this.org = org;
     }
 
-    public String getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
-    }
-
-    public String getBankId() {
-        return bankId;
-    }
-
-    public void setBankId(String bankId) {
-        this.bankId = bankId;
-    }
-
-    public String getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(String merchant) {
-        this.merchant = merchant;
-    }
-
     public String getIsAvailable() {
         return isAvailable;
     }
@@ -160,12 +136,12 @@ public class TblUser implements Serializable {
         this.lastPassUpdateTime = lastPassUpdateTime;
     }
 
-    public String getSalt() {
-        return salt;
+    public String getReservedField4() {
+        return reservedField4;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
+    public void setReservedField4(String reservedField4) {
+        this.reservedField4 = reservedField4;
     }
 
     public String getCreateBy() {
@@ -222,6 +198,30 @@ public class TblUser implements Serializable {
 
     public void setReservedField3(String reservedField3) {
         this.reservedField3 = reservedField3;
+    }
+
+    public String getReservedField5() {
+        return reservedField5;
+    }
+
+    public void setReservedField5(String reservedField5) {
+        this.reservedField5 = reservedField5;
+    }
+
+    public String getReservedField6() {
+        return reservedField6;
+    }
+
+    public void setReservedField6(String reservedField6) {
+        this.reservedField6 = reservedField6;
+    }
+
+    public String getReservedField7() {
+        return reservedField7;
+    }
+
+    public void setReservedField7(String reservedField7) {
+        this.reservedField7 = reservedField7;
     }
 
     public Date getLastLoginTime() {

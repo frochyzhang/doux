@@ -95,7 +95,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
 
 
-    public List<CurrentMenusDto> getmenus( List<TblMenu> tblMenus,ArrayList<String> menuIds, TblUser tblUser ){
+    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenus, ArrayList<String> menuIds, TblUser tblUser ){
         ArrayList<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
         for (TblMenu menu : tblMenus) {
            CurrentMenusDto menusDto = new CurrentMenusDto();

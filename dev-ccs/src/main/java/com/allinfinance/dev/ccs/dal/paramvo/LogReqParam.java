@@ -1,10 +1,6 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 /**
  * @author ：Lucas Li

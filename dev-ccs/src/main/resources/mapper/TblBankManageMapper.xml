@@ -5,6 +5,7 @@
     <id column="BANK_ID" jdbcType="VARCHAR" property="bankId" />
     <result column="ORG" jdbcType="VARCHAR" property="org" />
     <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
+    <result column="BANK_NAME_EN" jdbcType="VARCHAR" property="bankNameEn" />
     <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
@@ -15,7 +16,7 @@
     <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
   </resultMap>
   <sql id="Base_Column_List">
-    BANK_ID, ORG, BANK_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY,
+    BANK_ID, ORG, BANK_NAME, BANK_NAME_EN,IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY,
     RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -34,11 +35,11 @@
       sequence_id.nextval
       FROM sysibm.sysdummy1
     </selectKey>
-    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME,
+    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME,BANK_NAME_EN,
       IS_AVAILABLE, CREATE_TIME, CREATE_BY,
       UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1,
       RESERVED_FIELD2, RESERVED_FIELD3)
-    values (#{bankId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR},
+    values (#{bankId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR},#{bankNameEn,jdbcType=VARCHAR},
       #{isAvailable,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR},
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
@@ -59,6 +60,9 @@
       </if>
       <if test="bankName != null">
         BANK_NAME,
+      </if>
+      <if test="bankNameEn != null">
+        BANK_NAME_EN,
       </if>
       <if test="isAvailable != null">
         IS_AVAILABLE,
@@ -95,6 +99,9 @@
       <if test="bankName != null">
         #{bankName,jdbcType=VARCHAR},
       </if>
+      <if test="bankNameEn != null">
+        #{bankNameEn,jdbcType=VARCHAR},
+      </if>
       <if test="isAvailable != null">
         #{isAvailable,jdbcType=VARCHAR},
       </if>
@@ -130,6 +137,9 @@
       <if test="bankName != null">
         BANK_NAME = #{bankName,jdbcType=VARCHAR},
       </if>
+      <if test="bankNameEn != null">
+        BANK_NAME_EN = #{bankNameEn,jdbcType=VARCHAR},
+      </if>
       <if test="isAvailable != null">
         IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       </if>
@@ -161,6 +171,7 @@
     update TBL_BANK_MANAGE
     set ORG = #{org,jdbcType=VARCHAR},
       BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      BANK_NAME_EN = #{bankNameEn,jdbcType=VARCHAR},
       IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       CREATE_BY = #{createBy,jdbcType=VARCHAR},
@@ -179,7 +190,7 @@
     from TBL_BANK_MANAGE where 1=1
     <if test="bankReqParam!=null">
       <if test="bankReqParam.org!=null and bankReqParam.org!=0">
-        and org like '%${bankReqParam.org}%'
+        and org like '%${quandou.org}%'
       </if>
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
         and bank_NAME like '%${bankReqParam.bankName}%'
