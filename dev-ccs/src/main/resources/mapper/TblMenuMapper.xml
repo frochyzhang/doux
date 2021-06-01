@@ -8,6 +8,7 @@
     <result column="NODE_TYPE" jdbcType="VARCHAR" property="nodeType" />
     <result column="ICON" jdbcType="VARCHAR" property="icon" />
     <result column="SORT" jdbcType="VARCHAR" property="sort" />
+    <result column="ORG" jdbcType="VARCHAR" property="org" />
     <result column="PAGE_URL" jdbcType="VARCHAR" property="pageUrl" />
     <result column="LEVEL" jdbcType="VARCHAR" property="level" />
     <result column="PATH" jdbcType="VARCHAR" property="path" />
@@ -23,7 +24,7 @@
   <sql id="Base_Column_List">
     MENU_ID, MENU_NAME, PARENT_MID, NODE_TYPE, ICON, SORT, PAGE_URL, LEVEL, PATH, IS_AVAILABLE, 
     CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
-    RESERVED_FIELD3
+    RESERVED_FIELD3,ORG
   </sql>
   <select id="pageSelectOptMenus" parameterType="com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam" resultMap="BaseResultMap">
     select 

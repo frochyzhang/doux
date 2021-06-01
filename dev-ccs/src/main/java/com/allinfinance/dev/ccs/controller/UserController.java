@@ -13,6 +13,8 @@ import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,8 +191,15 @@ public class UserController {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         String username = JwtUtil.getUsername(token);
+        String newPassword = passwordParam.getNewPassword();
+        if(StringUtils.isBlank(newPassword)){
+            logger.error("新密码不能为空!");
+            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
+        }
+        byte[] dePass = Base64.decodeBase64(newPassword);
+
         TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
-        tblUser.setUserPass(passwordEncoder.encode(passwordParam.getNewPassword()));
+        tblUser.setUserPass(passwordEncoder.encode(dePass.toString()));
         tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
         tblUser.setLastPassUpdateTime(new Date());
         tblUser.setUpdateBy(username);

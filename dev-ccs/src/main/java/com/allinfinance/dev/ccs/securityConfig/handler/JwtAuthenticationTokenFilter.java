@@ -43,10 +43,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if(StringUtils.hasLength(token)) {
             String username = JwtUtil.getUsername(token);
             String userId = JwtUtil.getUserId(token);
-            log.info("用户名为：{}", username);
-            if(StringUtils.hasLength(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if(JwtUtil.verify(token)) {
+            if (JwtUtil.verify(token)) {
+                log.info("用户名为：{}", username);
+                if (StringUtils.hasLength(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
