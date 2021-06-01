@@ -21,5 +21,5 @@ public interface TblUserOptLogMapper {
 
     int updateByPrimaryKey(TblUserOptLog record);
 
-    List<UserLogRespDto> pageSelectOptLogs(@Param("logReqParam")LogReqParam logReqParam);
+    List<UserLogRespDto> pageSelectOptLogs(@Param("logReqParam") LogReqParam logReqParam);
 }

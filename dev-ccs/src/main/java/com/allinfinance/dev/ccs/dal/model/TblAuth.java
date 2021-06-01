@@ -25,9 +25,19 @@ public class TblAuth implements Serializable {
 
     private String reservedField3;
 
+    private String org;
+
     private ArrayList<String> menus;
 
     private static final long serialVersionUID = 1L;
+
+    public ArrayList<String> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(ArrayList<String> menus) {
+        this.menus = menus;
+    }
 
     public String getAuthId() {
         return authId;
@@ -109,28 +119,11 @@ public class TblAuth implements Serializable {
         this.reservedField3 = reservedField3;
     }
 
-    public ArrayList<String> getMenus() {
-        return menus;
+    public String getOrg() {
+        return org;
     }
 
-    public void setMenus(ArrayList<String> menus) {
-        this.menus = menus;
-    }
-
-    @Override
-    public String toString() {
-        return "TblAuth{" +
-                "authId='" + authId + '\'' +
-                ", authName='" + authName + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", menus=" + menus +
-                '}';
+    public void setOrg(String org) {
+        this.org = org;
     }
 }

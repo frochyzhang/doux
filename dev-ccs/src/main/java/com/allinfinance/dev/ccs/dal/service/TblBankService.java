@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper;
-import com.allinfinance.dev.ccs.dal.model.TblBank;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 import com.github.pagehelper.PageHelper;
@@ -54,7 +53,7 @@ public class TblBankService {
         return new PageInfo<TblBankManage>(banks);
     }
 
-    public List<TblBankManage> selectByBankName(BankReqParam bankReqParam) {
-        return tblBankManageMapper.selectBanks(bankReqParam);
+    public TblBankManage selectByBankInfo(BankReqParam bankReqParam) {
+        return tblBankManageMapper.selectBank(bankReqParam);
     }
 }

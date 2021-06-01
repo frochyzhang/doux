@@ -1,5 +1,7 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
+import com.allinfinance.dev.ccs.dal.model.TblAuth;
+
 import java.util.Arrays;
 
 /**
@@ -8,11 +10,9 @@ import java.util.Arrays;
  * @author: Lum Wang
  * @create: 2021-05-18 11:19
  */
-public class AuthReqParam {
+public class AuthReqParam extends TblAuth {
     private Integer current;
     private Integer pageSize;
-    private String authId;
-    private String authName;
     private String[] authIds;
 
 
@@ -32,21 +32,6 @@ public class AuthReqParam {
         this.pageSize = pageSize;
     }
 
-    public String getAuthId() {
-        return authId;
-    }
-
-    public void setAuthId(String authId) {
-        this.authId = authId;
-    }
-
-    public String getAuthName() {
-        return authName;
-    }
-
-    public void setAuthName(String authName) {
-        this.authName = authName;
-    }
 
     public String[] getAuthIds() {
         return authIds;
@@ -61,8 +46,6 @@ public class AuthReqParam {
         return "AuthReqParam{" +
                 "current=" + current +
                 ", pageSize=" + pageSize +
-                ", authId='" + authId + '\'' +
-                ", authName='" + authName + '\'' +
                 ", authIds=" + Arrays.toString(authIds) +
                 '}';
     }

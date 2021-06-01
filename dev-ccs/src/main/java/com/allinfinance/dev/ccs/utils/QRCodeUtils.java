@@ -236,8 +236,8 @@ public class QRCodeUtils {
 
     public static void main(String[] args) throws Exception {
         String cuiwy = GoogleAuthenticator.generateOtpAuthUrl("cuiwy", "2wsx3edc4rfv5tgb2wsx3edc4rfv5tgb", "allinfinance");
-        String logoPath = "/Users/zhangyong/workspace/allinfinance/frame/dev-latest/dev-example/dev-socket-example/src/main/resources/img.png";
-        String destPath = "/Users/zhangyong/workspace/allinfinance/frame/dev-latest/dev-example/dev-socket-example/src/main/resources/";
+        String logoPath = "C:/project/dev/dev-ccs/src/main/java/com/allinfinance/dev/ccs/resources/img.png";
+        String destPath = "C:/project/dev/dev-ccs/src/main/java/com/allinfinance/dev/ccs/resources/";
         System.out.println(QRCodeUtils.encode(cuiwy, logoPath, destPath, true));
     }
 }

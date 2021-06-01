@@ -1,12 +1,10 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-
-
 import java.io.Serializable;
 import java.util.Date;
 
 public class TblMenu implements Serializable {
-    private String  menuId;
+    private String menuId;
 
     private String menuName;
 
@@ -39,6 +37,8 @@ public class TblMenu implements Serializable {
     private String reservedField2;
 
     private String reservedField3;
+
+    private String org;
 
     private static final long serialVersionUID = 1L;
 
@@ -178,30 +178,11 @@ public class TblMenu implements Serializable {
         this.reservedField3 = reservedField3;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    public String getOrg() {
+        return org;
     }
 
-    @Override
-    public String toString() {
-        return "TblMenu{" +
-                "menuId='" + menuId + '\'' +
-                ", menuName='" + menuName + '\'' +
-                ", parentMid='" + parentMid + '\'' +
-                ", nodeType='" + nodeType + '\'' +
-                ", icon='" + icon + '\'' +
-                ", sort='" + sort + '\'' +
-                ", pageUrl='" + pageUrl + '\'' +
-                ", level='" + level + '\'' +
-                ", path='" + path + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                '}';
+    public void setOrg(String org) {
+        this.org = org;
     }
 }

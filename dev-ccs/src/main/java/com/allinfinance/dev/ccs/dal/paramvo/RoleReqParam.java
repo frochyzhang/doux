@@ -2,7 +2,6 @@ package com.allinfinance.dev.ccs.dal.paramvo;
 
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
