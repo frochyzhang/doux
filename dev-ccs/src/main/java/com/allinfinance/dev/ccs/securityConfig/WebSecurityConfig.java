@@ -8,19 +8,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Configuration
@@ -37,10 +34,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //权限拒绝处理逻辑
     @Autowired
     AosAccessDeniedHandler accessDeniedHandler;
-
-    //匿名用户访问无权限资源时的异常
-    @Autowired
-    AosAuthenticationEntryPoint authenticationEntryPoint;
 
     //登出成功处理逻辑
     @Autowired
@@ -121,8 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
                 //异常处理(权限拒绝、登录失效等)
                         and().exceptionHandling().
-                accessDeniedHandler(accessDeniedHandler).//权限拒绝处理逻辑
-                authenticationEntryPoint(authenticationEntryPoint);//匿名用户访问无权限资源时的异常处理
+                accessDeniedHandler(accessDeniedHandler);//权限拒绝处理逻辑
         //关闭session
         // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);

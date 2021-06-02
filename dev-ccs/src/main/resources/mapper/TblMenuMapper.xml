@@ -52,7 +52,7 @@
   <!--  查询任何节点的上级节点-->
 <!--  <select id="selectRootMenusPath"  resultMap="BaseResultMap">-->
 <!--    SELECT <include refid="Base_Column_List" />-->
-<!--    from IACS.TBL_MENU t-->
+<!--    from  TBL_MENU t-->
 <!--    WHERE  t.parent_mid is  null and t.LEVEL='0'-->
 <!--    and t.MENU_ID in-->
 <!--    <foreach collection="menuIds" item="menuId" index="index"-->
@@ -63,23 +63,18 @@
 
   <select id="selectRootMenusPath"  resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
-    from TBL_MENU t
-    where
-    t.MENU_ID
-    in (
-    SELECT distinct PARENT_MID
-    from TBL_MENU a  where  a.MENU_ID in
+    from  TBL_MENU a  where  a.MENU_ID in
     <foreach collection="menuIds" item="menuId" index="index"
              open="(" close=")" separator=",">
       #{menuId}
     </foreach>
-    )
+
   </select>
   <!--通过parentId查询下级目录-->
   <select id="selectMenusPathByPMid"  resultMap="BaseResultMap">
    select <include refid="Base_Column_List" /> from  (
     SELECT <include refid="Base_Column_List" />
-    from TBL_MENU t
+    from  TBL_MENU t
     WHERE  t.parent_mid is not null and t.LEVEL=#{level,jdbcType=VARCHAR}
     and t.MENU_ID in
     <foreach collection="menuIds" item="menuId" index="index"

@@ -7,6 +7,8 @@ import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -35,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String org = request.getParameter("org");
         if (username == null || "".equals(username)) {
-            throw new RuntimeException("用户名不能为空");
+            throw new InternalAuthenticationServiceException("用户名不能为空");
         }
         if(StringUtils.isBlank(org)){
             throw new RuntimeException("机构号不能为空");
@@ -46,10 +48,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         reqParam.setUserName(username);
         TblUser user=itbUserService.selectByNameAndOrg(reqParam);
         if (user == null) {
-            throw new RuntimeException("用户名不存在");
+            throw new InternalAuthenticationServiceException("用户名不存在");
         }
         if(AosContent.ACCOUNT_DELETE.equals(user.getIsAvailable())){
-            throw new RuntimeException("账户已被删除！");
+            throw new DisabledException("账户已被删除！");
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if (user != null) {

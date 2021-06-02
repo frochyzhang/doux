@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.respdto;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class CurrentMenusDto implements Serializable {
@@ -57,5 +58,17 @@ public class CurrentMenusDto implements Serializable {
 
    public void setChildren(List<CurrentMenusDto> children) {
       this.children = children;
+   }
+
+   @Override
+   public String toString() {
+      return "CurrentMenusDto{" +
+              "path='" + path + '\'' +
+              ", name='" + name + '\'' +
+              ", icon='" + icon + '\'' +
+              ", component='" + component + '\'' +
+              ", authority=" + Arrays.toString(authority) +
+              ", children=" + children +
+              '}';
    }
 }
