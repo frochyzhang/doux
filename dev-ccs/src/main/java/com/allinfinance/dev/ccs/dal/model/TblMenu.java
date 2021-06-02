@@ -1,7 +1,9 @@
 package com.allinfinance.dev.ccs.dal.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TblMenu implements Serializable {
     private String menuId;
@@ -39,6 +41,15 @@ public class TblMenu implements Serializable {
     private String reservedField3;
 
     private String org;
+    private List<TblMenu> childMenus=new ArrayList<>();
+
+    public List<TblMenu> getChildMenus() {
+        return childMenus;
+    }
+
+    public void setChildMenus(List<TblMenu> childMenus) {
+        this.childMenus = childMenus;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -184,5 +195,30 @@ public class TblMenu implements Serializable {
 
     public void setOrg(String org) {
         this.org = org;
+    }
+
+    @Override
+    public String toString() {
+        return "TblMenu{" +
+                "menuId='" + menuId + '\'' +
+                ", menuName='" + menuName + '\'' +
+                ", parentMid='" + parentMid + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                ", icon='" + icon + '\'' +
+                ", sort='" + sort + '\'' +
+                ", pageUrl='" + pageUrl + '\'' +
+                ", level='" + level + '\'' +
+                ", path='" + path + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", createTime=" + createTime +
+                ", createBy='" + createBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", reservedField2='" + reservedField2 + '\'' +
+                ", reservedField3='" + reservedField3 + '\'' +
+                ", org='" + org + '\'' +
+                ", childMenus=" + childMenus +
+                '}';
     }
 }

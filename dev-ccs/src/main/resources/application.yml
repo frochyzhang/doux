@@ -1,3 +1,9 @@
 spring:
   profiles:
     active: db,web
+
+# token过期时间  默认为86400s
+token.expire_time: 600
+token.token_secret: f26e587c28064d0e855e72c0a6a0e618
+
+qrCode.path: C:\home\aos\qrcode

@@ -41,8 +41,10 @@ public class JwtUtil {
      * @return 是否正确
      */
     public static boolean verify(String token) {
+
+        Algorithm algorithm = null;
         try {
-            Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
+            algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm)
                     .build();
             DecodedJWT jwt = verifier.verify(token);
@@ -52,9 +54,11 @@ public class JwtUtil {
                 throw  new TokenExpiredExeption("token过期");
             }
             return true;
-        } catch (Exception exception) {
+        } catch (Exception e) {
             return false;
         }
+
+
     }
 
     /**
@@ -136,7 +140,7 @@ public class JwtUtil {
                     .withClaim("userId", userId)
                     .withClaim("roleId", role)
                     .withClaim("org", org)
-                    .withClaim("creatDate",System.currentTimeMillis())
+                    .withIssuedAt(new Date())
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
