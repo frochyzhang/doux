@@ -190,7 +190,7 @@
     from TBL_BANK_MANAGE where 1=1
     <if test="bankReqParam!=null">
       <if test="bankReqParam.org!=null and bankReqParam.org!=0">
-        and org like '%${quandou.org}%'
+        and org like '%${bankReqParam.org}%'
       </if>
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
         and bank_NAME like '%${bankReqParam.bankName}%'
@@ -198,7 +198,7 @@
     </if>
   </select>
 
-  <select id="selectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
+  <select id="selectBank" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
           resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -13,9 +13,17 @@ import java.util.Arrays;
 public class RoleReqParam extends TblRole {
     private Integer current;
     private Integer pageSize;
-    private String roleId;
+    private String userId;
     private String roleName;
     private String[] roleIds;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String[] getRoleIds() {
         return roleIds;
@@ -41,15 +49,6 @@ public class RoleReqParam extends TblRole {
         this.pageSize = pageSize;
     }
 
-    @Override
-    public String getRoleId() {
-        return roleId;
-    }
-
-    @Override
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
 
     @Override
     public String getRoleName() {
@@ -66,7 +65,6 @@ public class RoleReqParam extends TblRole {
         return "RoleReqParam{" +
                 "current=" + current +
                 ", pageSize=" + pageSize +
-                ", roleId='" + roleId + '\'' +
                 ", roleName='" + roleName + '\'' +
                 ", roleIds=" + Arrays.toString(roleIds) +
                 '}';

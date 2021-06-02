@@ -27,8 +27,6 @@ public class TblUserServiceImpl implements TblUserService {
     @Autowired
     private TblUserMapper tblUserMapper;
 
-    @Autowired
-    private TblUserOptLogMapper tblUserOptLogMapper;
 
     public int deleteByPrimaryKey(String userId) {
         return tblUserMapper.deleteByPrimaryKey(userId);
@@ -83,10 +81,6 @@ public class TblUserServiceImpl implements TblUserService {
 
     public int updateByPrimaryKeySelective(TblUser record) {
         record.setUpdateTime(new Date());
-        //获取当前操作员(待定)....
-        //根据Id获取原用户信息比较后更新
-
-
         return tblUserMapper.updateByPrimaryKeySelective(record);
     }
 

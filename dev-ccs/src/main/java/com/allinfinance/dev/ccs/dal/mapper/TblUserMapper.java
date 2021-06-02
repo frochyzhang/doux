@@ -18,7 +18,7 @@ public interface TblUserMapper  {
 
     TblUser selectByUserName(String userName);
 
-    int updateByPrimaryKeySelective(TblUser record);
+    int updateByPrimaryKeySelective(@Param("record")TblUser record);
 
     int updateByPrimaryKey(TblUser record);
 

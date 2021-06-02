@@ -58,20 +58,26 @@
 
   <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from TBL_USER where 1=1
+    USER_ID, USER_NAME, USER_PASS, ur.ROLE_ID, ur.ORG, ur.IS_AVAILABLE, INIT_PASS, ERROR_NUM, PASS_STATUS,
+    LAST_PASS_UPDATE_TIME, RESERVED_FIELD4, ur.CREATE_BY, ur.CREATE_TIME, ur.UPDATE_TIME, ur.UPDATE_BY, ur.RESERVED_FIELD1,
+    ur.RESERVED_FIELD2, ur.RESERVED_FIELD3, RESERVED_FIELD5, RESERVED_FIELD6, RESERVED_FIELD7,
+    LAST_LOGIN_TIME, NOT_EXPIRED, ACCOUNT_NOT_LOCKED, CREDENTIALS_NOT_EXPIRED
+    from TBL_USER  ur
+    left join TBL_ROLE ro on ur.ROLE_ID=ro.ROLE_ID
+    where 1=1
+    AND (CAST(ro.WEIGHT AS bigint) &lt; (SELECT CAST(re.WEIGHT AS bigint) FROM tbl_role re, tbl_user ur WHERE re.role_id = ur.role_id AND user_id=#{userReqParam.userId}))
     <if test="userReqParam!=null">
       <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
         and user_Name like '%${userReqParam.userName}%'
       </if>
       <if test="userReqParam.roleId!=null">
-        and role_Id = #{userReqParam.roleId}
+        and ur.role_Id = #{userReqParam.roleId}
       </if>
       <if test="userReqParam.org!=null">
-        and org = #{userReqParam.org}
+        and ur.org = #{userReqParam.org}
       </if>
       <if test="userReqParam.isAvailable!=null">
-        and IS_AVAILABLE = #{userReqParam.isAvailable}
+        and ur.IS_AVAILABLE = #{userReqParam.isAvailable}
       </if>
     </if>
   </select>
@@ -272,22 +278,22 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
     update TBL_USER
     <set>
-      <if test="record.userId != null">
+      <if test="record.userId != null and record.userId != ''">
         USER_ID = #{record.userId,jdbcType=VARCHAR},
       </if>
-      <if test="record.userName != null">
+      <if test="record.userName != null and record.userName != ''">
         USER_NAME = #{record.userName,jdbcType=VARCHAR},
       </if>
-      <if test="record.userPass != null">
+      <if test="record.userPass != null and record.userPass != ''">
         USER_PASS = #{record.userPass,jdbcType=VARCHAR},
       </if>
-      <if test="record.roleId != null">
+      <if test="record.roleId != null and record.roleId != ''">
         ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
       </if>
-      <if test="record.org != null">
+      <if test="record.org != null and record.org != ''">
         ORG = #{record.org,jdbcType=VARCHAR},
       </if>
-      <if test="record.isAvailable != null">
+      <if test="record.isAvailable != null and record.isAvailable != ''">
         IS_AVAILABLE = #{record.isAvailable,jdbcType=VARCHAR},
       </if>
       <if test="record.initPass != null">
@@ -317,7 +323,7 @@
       <if test="record.updateBy != null">
         UPDATE_BY = #{record.updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="record.reservedField1 != null">
+      <if test="record.reservedField1 != null ">
         RESERVED_FIELD1 = #{record.reservedField1,jdbcType=VARCHAR},
       </if>
       <if test="record.reservedField2 != null">
@@ -348,7 +354,7 @@
         CREDENTIALS_NOT_EXPIRED = #{record.credentialsNotExpired,jdbcType=VARCHAR},
       </if>
     </set>
-    where USER_ID = #{userId,jdbcType=INTEGER}
+    where USER_ID = #{record.userId,jdbcType=VARCHAR}
   </update>
   <update id="updateByExample" parameterType="map">
     update TBL_USER
