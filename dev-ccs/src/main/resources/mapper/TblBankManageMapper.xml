@@ -207,6 +207,12 @@
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
         and BANK_NAME = #{bankReqParam.bankName,jdbcType=VARCHAR}
       </if>
+      <if test="bankReqParam.org!=null and bankReqParam.org!='' ">
+        and org = #{bankReqParam.org,jdbcType=VARCHAR}
+      </if>
+      <if test="bankReqParam.isAvailable!=null and bankReqParam.isAvailable!='' ">
+        and is_Available = #{bankReqParam.isAvailable,jdbcType=VARCHAR}
+      </if>
     </if>
   </select>
 </mapper>

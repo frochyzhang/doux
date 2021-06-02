@@ -46,8 +46,9 @@ public class BankController {
             }
         }
         if (bankReqParam.getCurrent() == null || bankReqParam.getPageSize() == null) {
-            bankReqParam.setCurrent(1);
-            bankReqParam.setPageSize(10);
+            // 如果请求中没有传页码和大小就调用查询所有的银行的方法
+            List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
+            return Result.success(tblBankManages);
         }
         PageInfo<TblBankManage> banks;
         try {
@@ -65,7 +66,7 @@ public class BankController {
     @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
     @ResponseBody
     public Result modifyUser(@RequestBody BankReqParam tblBank, @PathVariable("BankId") String BankId) {
-        logger.debug("接收到的请求参数: {},BankId:{}", tblBank, BankId);
+        logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, BankId);
         tblBank.setBankId(BankId);
         int result;
         try {
@@ -110,8 +111,8 @@ public class BankController {
     public Result addBank(@RequestBody BankReqParam bankReqParam, HttpServletRequest request) {
         logger.info("接收到的新增银行信息: {}", bankReqParam);
         //系统银行重名检查
-        TblBankManage tblBank = tblBankService.selectByBankInfo(bankReqParam);
-        if (tblBank != null) {
+        List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
+        if (tblBankManages.size() != 0) {
             return Result.failure("该银行已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
         int result = 0;

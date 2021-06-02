@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -113,8 +114,8 @@ public class UserController {
         //配置用户口令
         BankReqParam bankReqParam = new BankReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
-        TblBankManage tblBankManage = tblBankService.selectByBankInfo(bankReqParam);
-        userReqParam.setReservedField2(tblBankManage.getBankNameEn());
+        List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
+        userReqParam.setReservedField2(tblBankManages.get(0).getBankNameEn());
         String token = request.getHeader("token");
         String userName = JwtUtil.getUsername(token);
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
@@ -150,15 +151,11 @@ public class UserController {
     @ResponseBody
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
+        //当接收到的密码字段不为空时启用加密
         if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
             userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         }
         int result = 0;
-        //当接收到的密码字段不为空时启用加密
-        if (userReqParam.getUserPass() != null && !userReqParam.getUserPass().equals("")) {
-            String encode = passwordEncoder.encode(userReqParam.getUserPass());
-            userReqParam.setUserPass(encode);
-        }
         try {
             result = tblUserService.updateByPrimaryKeySelective(userReqParam);
         } catch (Exception e) {
