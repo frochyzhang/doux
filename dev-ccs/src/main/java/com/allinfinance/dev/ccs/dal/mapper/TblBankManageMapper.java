@@ -21,5 +21,5 @@ public interface TblBankManageMapper {
 
     List<TblBankManage> pageSelectBanks(@Param("bankReqParam") BankReqParam bankReqParam);
 
-    TblBankManage selectBank(@Param("bankReqParam") BankReqParam bankReqParam);
+    List<TblBankManage> selectBank(@Param("bankReqParam") BankReqParam bankReqParam);
 }

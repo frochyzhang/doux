@@ -53,7 +53,7 @@ public class TblBankService {
         return new PageInfo<TblBankManage>(banks);
     }
 
-    public TblBankManage selectByBankInfo(BankReqParam bankReqParam) {
+    public List<TblBankManage> selectByBankInfo(BankReqParam bankReqParam) {
         return tblBankManageMapper.selectBank(bankReqParam);
     }
 }
