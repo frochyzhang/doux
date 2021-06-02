@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.dal.service;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
@@ -51,5 +52,10 @@ public class TblRoleService {
         PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
         List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
         return new PageInfo<TblRole>(users);
+    }
+
+    public int invalidateRole(String roleId) {
+        String isAvailable = AosContent.IS_AVAILABLE_FALSE;
+        return tblRoleMapper.invalidateRole(roleId, isAvailable);
     }
 }

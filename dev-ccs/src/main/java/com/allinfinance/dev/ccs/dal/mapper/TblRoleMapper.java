@@ -20,4 +20,6 @@ public interface TblRoleMapper {
     int updateByPrimaryKey(TblRole record);
 
     List<TblRole> pageSelectRoles(@Param("roleReqParam") RoleReqParam roleReqParam);
+
+    int invalidateRole(@Param("roleId") String roleId,@Param("isAvailable") String isAvailable);
 }

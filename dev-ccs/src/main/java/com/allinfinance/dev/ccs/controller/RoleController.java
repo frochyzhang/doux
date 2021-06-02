@@ -139,11 +139,12 @@ public class RoleController {
         try {
             if (roleIds != null && roleIds.length > 0){
                 for (String roleId:roleIds){
-                    //删除角色和权限映射
-                    int i = tblRoleAuthService.deleteByRoleId(roleId);
+//                    //删除角色和权限映射
+//                    int i = tblRoleAuthService.deleteByRoleId(roleId);
                     //删除角色
-                    result = tblRoleService.deleteByPrimaryKey(roleId);
-                    logger.info("i={}",i);
+//                    result = tblRoleService.deleteByPrimaryKey(roleId);
+                    //使角色无效
+                    result = tblRoleService.invalidateRole(roleId);
                     logger.info("result={}",result);
                 }
             }

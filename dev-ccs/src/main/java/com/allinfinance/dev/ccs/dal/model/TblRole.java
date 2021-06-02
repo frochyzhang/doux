@@ -136,4 +136,23 @@ public class TblRole implements Serializable {
     public void setOrg(String org) {
         this.org = org;
     }
+
+    @Override
+    public String toString() {
+        return "TblRole{" +
+                "roleId='" + roleId + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", createTime=" + createTime +
+                ", createBy='" + createBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", reservedField2='" + reservedField2 + '\'' +
+                ", reservedField3='" + reservedField3 + '\'' +
+                ", weight='" + weight + '\'' +
+                ", org='" + org + '\'' +
+                ", auth=" + auth +
+                '}';
+    }
 }

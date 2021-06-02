@@ -17,6 +17,9 @@ public  class AosContent {
     public static final String FIRST_PASS="0";
     public static final String NOT_FIRST_PASS="1";
 
+    public static final String IS_AVAILABLE_TRUE="1";//有效
+    public static final String IS_AVAILABLE_FALSE="0";//无效
+
 
 
 
