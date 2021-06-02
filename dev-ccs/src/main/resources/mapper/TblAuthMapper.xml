@@ -169,13 +169,16 @@
     from TBL_AUTH where 1=1
     <if test="authReqParam!=null">
       <if test="authReqParam.org!=null and authReqParam.org!=''">
-        and ORG = ${authReqParam.org}
+        and ORG = #{authReqParam.org}
       </if>
       <if test="authReqParam.authId!=null and authReqParam.authId!=0">
-        and AUTH_ID = ${authReqParam.authId}
+        and AUTH_ID = #{authReqParam.authId}
       </if>
       <if test="authReqParam.authName!=null and authReqParam.authName!='' ">
         and AUTH_NAME like '%${authReqParam.authName}%'
+      </if>
+      <if test="authReqParam.isAvailable!=null and authReqParam.isAvailable!='' ">
+        and IS_AVAILABLE  =  #{authReqParam.isAvailable}
       </if>
     </if>
   </select>
@@ -185,4 +188,10 @@
     <include refid="Base_Column_List" />
     from TBL_AUTH
   </select>
+
+  <update id="invalidateAuth" parameterType="java.lang.String">
+    update TBL_AUTH
+    set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
 </mapper>

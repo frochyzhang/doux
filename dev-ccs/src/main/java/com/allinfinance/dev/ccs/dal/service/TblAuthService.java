@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.dal.service;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
@@ -80,5 +81,10 @@ public class TblAuthService {
 
     public int insertMenuAuth(TblMenuAuth record) {
         return tblMenuAuthMapper.insertSelective(record);
+    }
+
+    public int invalidateAuth(String authId) {
+        String isAvailable = AosContent.IS_AVAILABLE_FALSE;
+        return tblAuthMapper.invalidateAuth(authId,isAvailable);
     }
 }

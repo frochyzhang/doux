@@ -190,9 +190,11 @@ public class AuthController {
             if (authIds != null && authIds.length > 0){
                 for (String authId:authIds){
                     //删除权限和菜单项映射
-                    tblAuthService.deleteMenuAuths(authId);
+//                    tblAuthService.deleteMenuAuths(authId);
                     //删除权限
-                    result = tblAuthService.deleteByPrimaryKey(authId);
+//                    result = tblAuthService.deleteByPrimaryKey(authId);
+                    //使权限无效
+                    result = tblAuthService.invalidateAuth(authId);
                     logger.info("result={}",result);
                 }
             }
