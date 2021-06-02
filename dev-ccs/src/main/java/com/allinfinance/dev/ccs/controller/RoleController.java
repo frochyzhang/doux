@@ -7,12 +7,14 @@ import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +39,12 @@ public class RoleController {
 
     //分页查询角色
     @RequestMapping(method = RequestMethod.GET)
-    public Result selectRoles(RoleReqParam roleReqParam) {
+    public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
         logger.info("roleReqParam:-{}", roleReqParam);
+        // 获取当前用户的id
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        roleReqParam.setUserId(userId);
         if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
             roleReqParam.setCurrent(1);
             roleReqParam.setPageSize(10);

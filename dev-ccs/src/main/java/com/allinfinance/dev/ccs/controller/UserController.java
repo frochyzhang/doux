@@ -71,6 +71,9 @@ public class UserController {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
         String token = request.getHeader("token");
         String org = JwtUtil.getOrg(token);
+        //获取当前登录的用户id
+        String userId = JwtUtil.getUserId(token);
+        userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
             //当当前的用户是超级管理员时显示所有列表
@@ -80,6 +83,8 @@ public class UserController {
                 userReqParam.setOrg(org);
             }
         }
+        //剔除不可用的用户
+        userReqParam.setIsAvailable("1");
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
@@ -106,7 +111,7 @@ public class UserController {
         // 对密码进行加密
         userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         //配置用户口令
-        BankReqParam bankReqParam=new BankReqParam();
+        BankReqParam bankReqParam = new BankReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
         TblBankManage tblBankManage = tblBankService.selectByBankInfo(bankReqParam);
         userReqParam.setReservedField2(tblBankManage.getBankNameEn());
@@ -143,15 +148,18 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public Result updateUserInfo(@RequestBody UserReqParam userReqParam) {
+    public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
             userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         }
         int result = 0;
-        try {
+        //当接收到的密码字段不为空时启用加密
+        if (userReqParam.getUserPass() != null && !userReqParam.getUserPass().equals("")) {
             String encode = passwordEncoder.encode(userReqParam.getUserPass());
             userReqParam.setUserPass(encode);
+        }
+        try {
             result = tblUserService.updateByPrimaryKeySelective(userReqParam);
         } catch (Exception e) {
             logger.error("更新用户异常!", e);
