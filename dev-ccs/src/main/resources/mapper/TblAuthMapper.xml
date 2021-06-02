@@ -194,4 +194,5 @@
     set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR}
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
+
 </mapper>
