@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
@@ -42,7 +43,7 @@ public class RoleController {
     public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
         logger.info("roleReqParam:-{}", roleReqParam);
         // 获取当前用户的id
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         roleReqParam.setUserId(userId);
         if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {

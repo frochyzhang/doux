@@ -39,6 +39,10 @@ public class TblRoleService {
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 
+    public TblRole selectByRoleId(String roleId){
+        return tblRoleMapper.selectByRoleId(roleId);
+    }
+
     public int updateByPrimaryKeySelective(TblRole record){
         return tblRoleMapper.updateByPrimaryKeySelective(record);
     }

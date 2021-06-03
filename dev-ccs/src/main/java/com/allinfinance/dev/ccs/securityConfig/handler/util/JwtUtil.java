@@ -24,16 +24,21 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     /**
-     * 过期时间一天，单位毫秒
+     * 过期时间，单位毫秒
      */
 
     private static long EXPIRE_TIME;
+    /**
+     * 过期时间，单位毫秒,用做token备用
+     */
+    private static long REFRESH_EXPIRE_TIME;
     /**
      * token私钥
      */
 
     private static String TOKEN_SECRET;
 
+    private static long EXPIRE_END_TIME;
     /**
      * 校验token是否正确
      *
@@ -116,6 +121,33 @@ public class JwtUtil {
     }
 
     /**
+     * 签发access  token
+     * @param userName
+     * @param userId
+     * @param role
+     * @param org
+     * @return
+     */
+    public static String sign(String userName,String userId, String role,String org) {
+        //过期时间
+        Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+        setExpireEndTime(date.getTime());
+        return sign(userName,userId,role,org,date);
+    }
+
+
+    /**
+     * 签发refresh token
+     * @param userName
+     * @param userId
+     * @param role
+     * @param org
+     * @return
+     */
+    public static String signRefresh(String userName,String userId, String role,String org) {
+        return sign(userName,userId,role,org,new Date(System.currentTimeMillis() + EXPIRE_TIME));
+    }
+    /**
      * 生成用户登录后的身份签名
      *
      * @param userName 用户名
@@ -123,10 +155,9 @@ public class JwtUtil {
      * @param role 用户角色
      * @return 加密的token
      */
-    public static String sign(String userName,String userId, String role,String org) {
+    public static String sign(String userName,String userId, String role,String org,Date date) {
         try {
-//            过期时间
-            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+//
 //            私钥及加密算法
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
 //            设置头部信息
@@ -173,20 +204,36 @@ public class JwtUtil {
         return defaultJws;
     }
 
-    public  long getExpireTime() {
+    public static long getExpireTime() {
         return EXPIRE_TIME;
     }
-    @Value("${token.expire_time:86400}")
+    @Value("${token.expire_time:7}")
     public  void setExpireTime(long expireTime) {
         expireTime= expireTime==0?1:expireTime;
-        EXPIRE_TIME = expireTime  * 1000;
+        EXPIRE_TIME = expireTime  *60*60*24* 1000;
     }
 
-    public  String getTokenSecret() {
+    public static String getTokenSecret() {
         return TOKEN_SECRET;
     }
     @Value("${token.token_secret:f26e587c28064d0e855e72c0a6a0e618}")
     public  void setTokenSecret(String tokenSecret) {
         TOKEN_SECRET = tokenSecret;
+    }
+    public static long getRefreshExpireTime() {
+        return REFRESH_EXPIRE_TIME;
+    }
+
+    @Value("${token.refresh_expire_time:30}")
+    public static void setRefreshExpireTime(long refreshExpireTime) {
+        REFRESH_EXPIRE_TIME = refreshExpireTime;
+    }
+
+    public static long getExpireEndTime() {
+        return EXPIRE_END_TIME;
+    }
+
+    public static void setExpireEndTime(long expireEndTime) {
+        EXPIRE_END_TIME = expireEndTime;
     }
 }
