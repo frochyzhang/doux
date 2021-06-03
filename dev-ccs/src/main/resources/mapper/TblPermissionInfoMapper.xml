@@ -103,4 +103,10 @@
       FIELD1 = #{field1,jdbcType=VARCHAR}
     where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectPermissionInfos" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_API_PERMISSION_INFO
+  </select>
 </mapper>

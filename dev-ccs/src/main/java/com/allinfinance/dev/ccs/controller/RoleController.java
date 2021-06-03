@@ -1,7 +1,9 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
@@ -87,16 +89,17 @@ public class RoleController {
             tblRoleAuthService.deleteByRoleId(tblRole.getRoleId());
             createRoleAuthMapping(tblRole);
             result = tblRoleService.updateByPrimaryKeySelective(tblRole);
+            logger.info("result: {}", result);
+            if (result == 1) {
+                return Result.success();
+            } else {
+                return Result.failure();
+            }
         } catch (Exception e) {
             logger.error("更新角色信息发生异常", e);
             return Result.failure();
         }
-        logger.info("result: {}", result);
-        if (result == 1) {
-            return Result.success();
-        } else {
-            return Result.failure();
-        }
+
     }
 
     private void createRoleAuthMapping(TblRole tblRole) {
@@ -118,6 +121,19 @@ public class RoleController {
         logger.info("将新增的角色: {}", tblRole);
         int result;
         try {
+            //查询API_PERMISSION
+            List<TblPermissionInfo> permissionInfos  = tblRoleService.selectPermissionInfos();
+            logger.info("查询到的所有permission code: {}",permissionInfos);
+            //插入AUTH_PERMISSION_CODE
+            for (TblPermissionInfo tblPermissionInfo: permissionInfos){
+                TblRolePermissionInfo rolePermissionInfo = new TblRolePermissionInfo();
+                rolePermissionInfo.setRoleId(tblRole.getRoleId());
+                rolePermissionInfo.setPermissioncode(tblPermissionInfo.getPermissioncode());
+                int permissionCode = tblRoleService.insertRolePermissionInfoSelective(rolePermissionInfo);
+                logger.info("插入权限代码结构: {}",permissionCode);
+                logger.info("插入后: rolePermissionInfo--{}",rolePermissionInfo);
+            }
+            //插入权限表
             result = tblRoleService.insertSelective(tblRole);
             createRoleAuthMapping(tblRole);
         } catch (Exception e) {
