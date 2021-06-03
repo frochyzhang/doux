@@ -9,7 +9,7 @@ public enum ResultCodeEnum {
     /*成功状态码*/
     SUCCESS(0, "成功"),
     SYSTEM_ERROR(400, "系统繁忙，请稍后重试"),
-    Unauthorized(401, "未授权"),
+    Unauthorized(401, "未授权，请联系管理员！"),
     /*参数错误: 1001-1999 */
     PARAM_IS_INVALID(1001, "参数无效"),
     PARAM_IS_BLANK(1002, "参数为空"),

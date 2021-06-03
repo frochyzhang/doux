@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
@@ -41,10 +42,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         if(StringUtils.isNotBlank(token)) {
             String username = JwtUtil.getUsername(token);
-            String userId = JwtUtil.getUserId(token);
             if (JwtUtil.verify(token)) {
                 log.info("用户名为：{}", username);
                 if (StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {

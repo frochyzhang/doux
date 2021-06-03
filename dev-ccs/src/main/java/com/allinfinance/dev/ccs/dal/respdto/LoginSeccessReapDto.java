@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.respdto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class LoginSeccessReapDto  implements Serializable {
     private String [] currentAuthority;
@@ -11,6 +12,24 @@ public class LoginSeccessReapDto  implements Serializable {
     private String  passStatus;
     private String  isFirstLogin;
     private String  token;
+    private String  refreshToken;
+    private long expirTime;
+
+    public long getExpirTime() {
+        return expirTime;
+    }
+
+    public void setExpirTime(long expirTime) {
+        this.expirTime = expirTime;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
     public String getOrg() {
         return org;

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
@@ -39,7 +40,7 @@ public class OptLogController {
     @ResponseBody
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {

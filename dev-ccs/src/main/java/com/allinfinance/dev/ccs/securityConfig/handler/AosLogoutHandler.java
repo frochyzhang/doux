@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.respdto.LogoutSeccessReapDto;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
@@ -17,7 +18,7 @@ import java.io.IOException;
 public class AosLogoutHandler implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
-        String token = httpServletRequest.getHeader("token");
+        String token = httpServletRequest.getHeader( AosContent.AOS_TOKEN);
         //User details = (User) authentication.getDetails();
         //生成一个新的token  防止 通过其他方式伪造访问
         JwtUtil.sign(JwtUtil.getUsername(token), JwtUtil.getRole(token), JwtUtil.getUserId(token), JwtUtil.getOrg(token));
