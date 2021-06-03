@@ -111,7 +111,7 @@ public class AuthController {
         try {
             //插入权限
             result = tblAuthService.insertSelective(tblAuth);
-            logger.info("result: {}",result);
+            logger.info("插入权限result: {}",result);
 
             //插入权限和菜单映射
             ArrayList<String> menus = tblAuth.getMenus();
