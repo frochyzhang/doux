@@ -75,4 +75,8 @@ public class TblRoleService {
     public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
         return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
     }
+
+    public int deleteRolePermissionInfoByRoleId(String roleId) {
+        return tblRolePermissionInfoMapper.deleteRolePermissionInfoByRoleId(roleId);
+    }
 }

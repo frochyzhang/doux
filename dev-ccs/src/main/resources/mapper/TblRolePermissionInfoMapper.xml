@@ -88,4 +88,9 @@
       PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
+
+  <delete id="deleteRolePermissionInfoByRoleId" parameterType="java.lang.String">
+    delete from TBL_ROLE_PERMISSION_INFO
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </delete>
 </mapper>
