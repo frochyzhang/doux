@@ -54,7 +54,7 @@ public class TblAuthService {
     }
 
     public int updateByPrimaryKey(TblAuth record){
-        return tblAuthMapper.updateByPrimaryKey(record);
+        return tblAuthMapper.updateByPrimaryKeySelective(record);
     }
 
     public PageInfo<TblAuth> pageSelectAuths(AuthReqParam authReqParam) {

@@ -76,7 +76,7 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (org != null && org.length() != 0) {
+        if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
             //当当前的用户是超级管理员时显示所有列表
             if (org.equals("000000000000")) {
                 userReqParam.setOrg(null);
@@ -121,10 +121,13 @@ public class UserController {
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
         //设置首次用户登录时显示绑定二维码
         userReqParam.setReservedField1("0");
-        //设置用户的密钥
+        //查询bankmanage表设置用户的Issuer
+        TblBankManage tblBankManage = tblBankService.selectBankInfoByOrg(userReqParam.getOrg());
+        userReqParam.setReservedField3(tblBankManage.getBankNameEn());
         userReqParam.setReservedField2(GoogleAuthenticator.generateBase32Secret());
-        userReqParam.setCreateBy(userName);
+        //设置用户的Issuer
 
+        userReqParam.setCreateBy(userName);
         //系统用户重名检查
         TblUser tblUser = tblUserService.selectByNameAndOrg(userReqParam);
         if (tblUser != null) {
