@@ -32,7 +32,7 @@ public class AosAuthenticationFailureHandler implements AuthenticationFailureHan
             //密码错误
             result = Result.failure(ResultCodeEnum.USER_LOGIN_ERROR);
         } else if (e instanceof CredentialsExpiredException) {
-            //密码过期
+            //未授权
             result = Result.failure(ResultCodeEnum.USER_CREDENTIALS_EXPIRED);
         } else if (e instanceof DisabledException) {
             //账号不可用

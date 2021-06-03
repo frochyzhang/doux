@@ -70,7 +70,7 @@ public class UserController {
     @ResponseBody
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         //获取当前登录的用户id
         String userId = JwtUtil.getUserId(token);
@@ -116,7 +116,7 @@ public class UserController {
         bankReqParam.setOrg(userReqParam.getOrg());
         List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
         userReqParam.setReservedField2(tblBankManages.get(0).getBankNameEn());
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
         //设置首次用户登录时显示绑定二维码
@@ -205,9 +205,13 @@ public class UserController {
             return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
         }
         byte[] dePass = Base64.decodeBase64(newPassword);
-
+        String password= org.apache.commons.codec.binary.StringUtils.newStringUtf8(dePass);
+        if(password.contains("#")){
+            String[] vars = password.split("\\#");
+            password=vars[0];
+        }
         TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
-        tblUser.setUserPass(passwordEncoder.encode(dePass.toString()));
+        tblUser.setUserPass(passwordEncoder.encode(password));
         tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
         tblUser.setLastPassUpdateTime(new Date());
         tblUser.setUpdateBy(username);

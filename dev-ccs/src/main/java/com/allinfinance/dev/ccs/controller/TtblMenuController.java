@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.controller;
 
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,7 +52,7 @@ public class TtblMenuController {
     @GetMapping(value = "/getCurrMenus")
     @ResponseBody
     public Result getCurrMenus(HttpServletRequest request) {
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         String username = JwtUtil.getUsername(token);
         logger.info("获取菜单权限数据开始:userId-->{}", userId);
@@ -67,9 +69,13 @@ public class TtblMenuController {
 
     @PostMapping
     @ResponseBody
-    public Result addMenu(@RequestBody TblMenu tblMenu) {
+    public Result addMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
         logger.info("菜单新增接口接收参数-->{}", tblMenu.toString());
         try {
+            String token = request.getHeader( AosContent.AOS_TOKEN);
+            String username = JwtUtil.getUsername(token);
+            tblMenu.setCreateTime(new Date());
+            tblMenu.setCreateBy(username);
             tblMenuService.addMenu(tblMenu);
         } catch (RuntimeException e) {
             logger.error("新增菜单异常!", e);
@@ -80,9 +86,13 @@ public class TtblMenuController {
 
     @PutMapping
     @ResponseBody
-    public Result updateMenu(@RequestBody TblMenu tblMenu) {
+    public Result updateMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
         logger.info("菜单更新接口开始，接收参数-->{}", tblMenu.toString());
         try {
+            String token = request.getHeader( AosContent.AOS_TOKEN);
+            String username = JwtUtil.getUsername(token);
+            tblMenu.setUpdateTime(new Date());
+            tblMenu.setUpdateBy(username);
             tblMenuService.updateMenuById(tblMenu);
         } catch (RuntimeException e) {
             logger.error("更新菜单异常!", e);

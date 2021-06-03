@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.controller;
 
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
@@ -37,7 +38,7 @@ public class BankController {
     @ResponseBody
     public Result selectBanks(BankReqParam bankReqParam, HttpServletRequest request) {
         logger.info("BankReqParam: {}", bankReqParam);
-        String token = request.getHeader("token");
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0 ) {
