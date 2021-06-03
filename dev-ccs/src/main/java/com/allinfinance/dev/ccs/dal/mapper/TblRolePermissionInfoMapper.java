@@ -20,4 +20,6 @@ public interface TblRolePermissionInfoMapper {
     List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
 
     List<TblRolePermissionInfo> getRoleIdByPermissionCode(String permissionCode);
+
+    int deleteRolePermissionInfoByRoleId(String roleId);
 }

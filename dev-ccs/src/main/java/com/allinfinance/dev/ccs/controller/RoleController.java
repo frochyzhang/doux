@@ -165,6 +165,8 @@ public class RoleController {
 //                    int i = tblRoleAuthService.deleteByRoleId(roleId);
                     //删除角色
 //                    result = tblRoleService.deleteByPrimaryKey(roleId);
+                    //删除PERMISSION CODE
+                    int delResult = tblRoleService.deleteRolePermissionInfoByRoleId(roleId);
                     //使角色无效
                     result = tblRoleService.invalidateRole(roleId);
                     logger.info("result={}",result);
