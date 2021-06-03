@@ -34,4 +34,13 @@ public class TblRolePermissionInfo implements Serializable {
     public void setPermissioncode(String permissioncode) {
         this.permissioncode = permissioncode;
     }
+
+    @Override
+    public String toString() {
+        return "TblRolePermissionInfo{" +
+                "id='" + id + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", permissioncode='" + permissioncode + '\'' +
+                '}';
+    }
 }
