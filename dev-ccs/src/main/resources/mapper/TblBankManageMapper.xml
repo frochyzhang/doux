@@ -215,4 +215,12 @@
       </if>
     </if>
   </select>
+
+  <select id="selectBankByOrg" parameterType="java.lang.String"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM TBL_BANK_MANAGE
+    WHERE org = #{org,jdbcType=VARCHAR}
+  </select>
 </mapper>
