@@ -56,4 +56,8 @@ public class TblBankService {
     public List<TblBankManage> selectByBankInfo(BankReqParam bankReqParam) {
         return tblBankManageMapper.selectBank(bankReqParam);
     }
+
+    public TblBankManage selectBankInfoByOrg(String org) {
+       return tblBankManageMapper.selectBankByOrg(org);
+    }
 }
