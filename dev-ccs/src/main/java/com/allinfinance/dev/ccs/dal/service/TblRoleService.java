@@ -1,8 +1,12 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
+import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
+import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -22,6 +26,11 @@ public class TblRoleService {
 
     @Autowired
     private TblRoleMapper tblRoleMapper;
+
+    @Autowired
+    private TblPermissionInfoMapper tblPermissionInfoMapper;
+
+    private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
 
     public int deleteByPrimaryKey(String roleId){
         return tblRoleMapper.deleteByPrimaryKey(roleId);
@@ -57,5 +66,13 @@ public class TblRoleService {
     public int invalidateRole(String roleId) {
         String isAvailable = AosContent.IS_AVAILABLE_FALSE;
         return tblRoleMapper.invalidateRole(roleId, isAvailable);
+    }
+
+    public List<TblPermissionInfo> selectPermissionInfos() {
+        return tblPermissionInfoMapper.selectPermissionInfos();
+    }
+
+    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
+        return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
     }
 }

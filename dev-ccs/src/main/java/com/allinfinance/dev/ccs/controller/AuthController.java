@@ -199,6 +199,7 @@ public class AuthController {
 //                    tblAuthService.deleteMenuAuths(authId);
                     //删除权限
 //                    result = tblAuthService.deleteByPrimaryKey(authId);
+                    //删除角色许可代码
                     //使权限无效
                     result = tblAuthService.invalidateAuth(authId);
                     logger.info("result={}",result);

@@ -3,6 +3,8 @@ package com.allinfinance.dev.ccs.dal.mapper;
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface TblPermissionInfoMapper {
     int deleteByPrimaryKey(String permissioncode);
 
@@ -17,4 +19,6 @@ public interface TblPermissionInfoMapper {
     int updateByPrimaryKey(TblPermissionInfo record);
 
     TblPermissionInfo selectByRequestUrl(@Param("url") String requestUrl);
+
+    List<TblPermissionInfo> selectPermissionInfos();
 }

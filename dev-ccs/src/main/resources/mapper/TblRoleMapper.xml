@@ -200,6 +200,9 @@
       <if test="roleReqParam.org != null and roleReqParam.org != '' ">
         and ORG  =  #{roleReqParam.org}
       </if>
+      <if test="roleReqParam.weight != null and roleReqParam.org != 0 ">
+        and WEIGHT  =  #{roleReqParam.weight}
+      </if>
     </if>
   </select>
 
