@@ -75,7 +75,8 @@ public class AuthController {
     //更新权限
     @PostMapping
     public Result modifyAuth(@RequestBody TblAuth tblAuth){
-        logger.debug("权限更新接收到的请求参数: tblAuth-{}",tblAuth);
+        logger.info("-----------------更新权限-------------------");
+        logger.info("权限更新接收到的请求参数: tblAuth-{}",tblAuth);
         int result;
         try {
             //更新权限和菜单项映射

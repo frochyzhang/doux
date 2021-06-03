@@ -39,6 +39,11 @@
       #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    <selectKey resultType="java.lang.String" keyProperty="authId" order="BEFORE" >
+      SELECT
+      sequence_id.nextval
+      FROM sysibm.sysdummy1
+    </selectKey>
     insert into TBL_AUTH
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="authId != null">
@@ -118,7 +123,7 @@
         AUTH_NAME = #{authName,jdbcType=VARCHAR},
       </if>
       <if test="org != null">
-        AUTH_NAME = #{org,jdbcType=VARCHAR},
+        ORG = #{org,jdbcType=VARCHAR},
       </if>
       <if test="isAvailable != null">
         IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
