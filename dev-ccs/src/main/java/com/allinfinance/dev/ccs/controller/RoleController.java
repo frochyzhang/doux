@@ -86,7 +86,7 @@ public class RoleController {
             //删除角色和权限映射
             tblRoleAuthService.deleteByRoleId(tblRole.getRoleId());
             createRoleAuthMapping(tblRole);
-            result = tblRoleService.updateByPrimaryKey(tblRole);
+            result = tblRoleService.updateByPrimaryKeySelective(tblRole);
         } catch (Exception e) {
             logger.error("更新角色信息发生异常", e);
             return Result.failure();
