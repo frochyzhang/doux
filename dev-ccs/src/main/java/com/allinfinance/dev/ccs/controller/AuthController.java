@@ -89,7 +89,7 @@ public class AuthController {
                     tblAuthService.insertMenuAuth(record);
                 }
             }
-            result = tblAuthService.updateByPrimaryKey(tblAuth);
+            result = tblAuthService.updateByPrimaryKeySelective(tblAuth);
         }catch (Exception e){
             logger.error("更新权限发生异常",e);
             return Result.failure();
