@@ -109,6 +109,11 @@ public class AuthController {
         logger.info("将新增的权限: {}",tblAuth);
         int result;
         try {
+            //插入权限
+            result = tblAuthService.insertSelective(tblAuth);
+            logger.info("result: {}",result);
+
+            //插入权限和菜单映射
             ArrayList<String> menus = tblAuth.getMenus();
             logger.info("menus:  {}",menus);
             if (menus != null && menus.size() > 0){
@@ -121,7 +126,7 @@ public class AuthController {
                     logger.info("新增权限菜单结果: {}",i);
                 }
             }
-            result = tblAuthService.insertSelective(tblAuth);
+
         }catch (Exception e){
             logger.error("新增权限发生异常",e);
             return Result.failure();
