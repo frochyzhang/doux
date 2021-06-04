@@ -54,4 +54,15 @@ public class TblPermissionInfo implements Serializable {
     public void setField1(String field1) {
         this.field1 = field1;
     }
+
+    @Override
+    public String toString() {
+        return "TblPermissionInfo{" +
+                "permissioncode='" + permissioncode + '\'' +
+                ", url='" + url + '\'' +
+                ", description='" + description + '\'' +
+                ", enable='" + enable + '\'' +
+                ", field1='" + field1 + '\'' +
+                '}';
+    }
 }

@@ -124,21 +124,23 @@ public class RoleController {
         try {
             //插入权限表
             result = tblRoleService.insertSelective(tblRole);
-//            //查询API_PERMISSION
-//            List<TblPermissionInfo> permissionInfos  = tblRoleService.selectPermissionInfos();
-//            logger.info("查询到的所有permission code: {}",permissionInfos);
-//            //插入AUTH_PERMISSION_CODE
-//            for (TblPermissionInfo tblPermissionInfo: permissionInfos){
-//                TblRolePermissionInfo rolePermissionInfo = new TblRolePermissionInfo();
-//                rolePermissionInfo.setRoleId(tblRole.getRoleId());
-//                rolePermissionInfo.setPermissioncode(tblPermissionInfo.getPermissioncode());
-//                logger.info("插入权限代码前 rolePermissionInfo: {}",rolePermissionInfo);
-//                int permissionCode = tblRoleService.insertRolePermissionInfoSelective(rolePermissionInfo);
-//                logger.info("插入权限代码结果: {}",permissionCode);
-//                logger.info("插入后: rolePermissionInfo--{}",rolePermissionInfo);
-//            }
-
+            logger.info("插入权限后: tblRole--{}",tblRole);
+            //插入角色权限映射
             createRoleAuthMapping(tblRole);
+            //查询API_PERMISSION
+            List<TblPermissionInfo> permissionInfos  = tblRoleService.selectPermissionInfos();
+            logger.info("查询到的所有permission code: {}",permissionInfos);
+            //插入AUTH_PERMISSION_CODE
+            for (TblPermissionInfo tblPermissionInfo: permissionInfos){
+                TblRolePermissionInfo rolePermissionInfo = new TblRolePermissionInfo();
+                rolePermissionInfo.setRoleId(tblRole.getRoleId());
+                rolePermissionInfo.setPermissioncode(tblPermissionInfo.getPermissioncode());
+                logger.info("插入权限代码前 rolePermissionInfo: {}",rolePermissionInfo);
+                int permissionCode = tblRoleService.insertRolePermissionInfoSelective(rolePermissionInfo);
+                logger.info("插入权限代码结果: {}",permissionCode);
+                logger.info("插入后: rolePermissionInfo--{}",rolePermissionInfo);
+            }
+
         } catch (Exception e) {
             logger.error("新增角色发生异常", e);
             return Result.failure();
@@ -168,9 +170,9 @@ public class RoleController {
 //                    int i = tblRoleAuthService.deleteByRoleId(roleId);
                     //删除角色
 //                    result = tblRoleService.deleteByPrimaryKey(roleId);
-                    //删除PERMISSION CODE
-//                    int delResult = tblRoleService.deleteRolePermissionInfoByRoleId(roleId);
-//                    logger.info("删除权限代码结果: {}",delResult);
+//                    删除PERMISSION CODE
+                    int delResult = tblRoleService.deleteRolePermissionInfoByRoleId(roleId);
+                    logger.info("删除权限代码结果: {}",delResult);
                     //使角色无效
                     result = tblRoleService.invalidateRole(roleId);
                     logger.info("result={}",result);
