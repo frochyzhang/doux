@@ -100,14 +100,14 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
                 logger.info("获取数据库菜单：{}",tblMenus.toString());
                 List<TblMenu> tblMenusData = menusData(null, tblMenus);
-                logger.info("格式化后的层级菜单：{}",tblMenusData.toString());
-                List<CurrentMenusDto> getmenus = getmenus(tblMenus, tblUser);
+                List<CurrentMenusDto> getmenus = getmenus(tblMenusData, tblUser);
                 List<CurrentMenusDto> currentMenusDtos=new ArrayList<>();
                 getmenus.forEach((menusDto)->{
                     if(menusDto.getChildren().size()>0){
                         currentMenusDtos.add(menusDto);
                     }
                 });
+                logger.info("格式化后的层级菜单：{}",currentMenusDtos.toString());
                 return  currentMenusDtos;
             }
         }
