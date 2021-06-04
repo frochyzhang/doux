@@ -30,6 +30,7 @@ public class TblRoleService {
     @Autowired
     private TblPermissionInfoMapper tblPermissionInfoMapper;
 
+    @Autowired
     private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
 
     public int deleteByPrimaryKey(String roleId){
