@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private TblRoleService roleService;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws RuntimeException{
 //        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 //        String org = request.getParameter("org");
         if (username == null || "".equals(username)) {
@@ -52,7 +52,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             //登录的时候  如果用户对应的角色被删除，给出异常
             if(tblRole!=null){
                if(StringUtils.equals(AosContent.IS_AVAILABLE_FALSE,tblRole.getIsAvailable())){
-                 throw new  DisabledException("权限不足");
+                 throw new  DisabledException("账户配置的角色已失效！");
                };
             }
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_"+user.getRoleId());
