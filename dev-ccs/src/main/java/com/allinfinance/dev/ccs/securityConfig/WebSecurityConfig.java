@@ -50,9 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AosLogoutHandler aosLogoutHandler;
 
-    @Autowired
-    private AosAbstractSecurityInterceptor securityInterceptor;
-
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
@@ -90,9 +87,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests().
-                antMatchers("/login/account", "/login/reLogin","/getOrgList").permitAll().
-                //antMatchers("/**").fullyAuthenticated().
-                        withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                antMatchers("/getPublicKey","/login/account", "/login/reLogin").permitAll().
+                anyRequest().hasAnyAuthority().
+                withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
                         o.setAccessDecisionManager(accessDecisionManager);//决策管理器
@@ -117,7 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 accessDeniedHandler(accessDeniedHandler);//权限拒绝处理逻辑
         //关闭session
         // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
+        //http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
         http.addFilterAt(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
