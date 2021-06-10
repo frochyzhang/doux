@@ -72,7 +72,7 @@ public enum LengthType {
         }
     };
 
-    private LengthType() {
+    LengthType() {
     }
 
     public abstract int getValueLengthByType(byte[] var1) throws IllegalArgumentException, CodecException;

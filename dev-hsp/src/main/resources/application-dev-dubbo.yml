@@ -17,7 +17,7 @@ dev:
       retries: 0
       timeout: 10000
     registry:
-      address: 127.0.0.1:2181
-      protocol: zookeeper
+      address: 10.250.20.81:8848
+      protocol: nacos
       timeout: 10000
 

@@ -23,6 +23,7 @@ public class TblOptLogServiceImpl implements TblOptLogService {
     @Autowired
     private TblUserOptLogMapper tblUserOptLogMapper;
 
+    @Override
     public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) {
         PageHelper.startPage(logReqParam.getCurrent(), logReqParam.getPageSize());
         List<UserLogRespDto> optLogs = tblUserOptLogMapper.pageSelectOptLogs(logReqParam);

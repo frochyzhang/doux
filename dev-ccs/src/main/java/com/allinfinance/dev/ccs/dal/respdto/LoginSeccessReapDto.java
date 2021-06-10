@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.dal.respdto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class LoginSeccessReapDto  implements Serializable {
     private String [] currentAuthority;

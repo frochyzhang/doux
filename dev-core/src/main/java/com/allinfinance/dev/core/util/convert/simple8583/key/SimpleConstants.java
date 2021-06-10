@@ -17,6 +17,6 @@ public interface SimpleConstants {
     public static String ENCODING = "GBK";
 
     //TODO 暂时写死mac密钥，因为不用做mac处理，后续可完善
-    public static String macKey = "helloSimple8583";
+    public static String MAC_KEY = "helloSimple8583";
 
 }

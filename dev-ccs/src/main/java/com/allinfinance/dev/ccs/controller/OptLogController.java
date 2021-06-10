@@ -11,7 +11,10 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,7 +48,7 @@ public class OptLogController {
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
             //当当前的用户是超级管理员时显示所有列表
-            if (org.equals("000000000000")) {
+            if ("000000000000".equals(org)) {
                 logReqParam.setOrg(null);
             } else {
                 logReqParam.setOrg(org);

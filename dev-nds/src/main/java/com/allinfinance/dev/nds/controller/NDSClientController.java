@@ -133,9 +133,9 @@ public class NDSClientController {
                     tp.addData(messageInfo);
                     SDKInfo sdkInfo = new SDKInfo();
                     sdkInfo.setSdkInterface(ACSInterface.HTML_UI);
-                    List<ACSUITemplate> acsUITemplateList = new ArrayList();
-                    acsUITemplateList.add(ACSUITemplate.HTML_OTHER);
-                    sdkInfo.setSdkUiType(acsUITemplateList);
+                    List<ACSUITemplate> acsuiTemplates = new ArrayList<>();
+                    acsuiTemplates.add(ACSUITemplate.HTML_OTHER);
+                    sdkInfo.setSdkUiType(acsuiTemplates);
                     sdkInfo.setSdkMaxTimeout("60");
                     tp.addData(sdkInfo);
                     TransactionInfo transactionInfo = new TransactionInfo();
@@ -223,9 +223,9 @@ public class NDSClientController {
                             tp.addData(messageInfo);
                             SDKInfo sdkInfo = new SDKInfo();
                             sdkInfo.setSdkInterface(ACSInterface.HTML_UI);
-                            List<ACSUITemplate> acsUITemplateList = new ArrayList();
-                            acsUITemplateList.add(ACSUITemplate.HTML_OTHER);
-                            sdkInfo.setSdkUiType(acsUITemplateList);
+                            List<ACSUITemplate> acsuiTemplates = new ArrayList<>();
+                            acsuiTemplates.add(ACSUITemplate.HTML_OTHER);
+                            sdkInfo.setSdkUiType(acsuiTemplates);
                             sdkInfo.setSdkMaxTimeout("60");
                             tp.addData(sdkInfo);
                             TransactionInfo transactionInfo = new TransactionInfo();

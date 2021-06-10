@@ -177,9 +177,9 @@ public class SftpUtils {
         try {
             // 打开SFTP通道
             session = connect(host, port, username, password);
-            if (session == null) {
-                flag = false;
-            }
+//            if (session == null) {
+//                flag = false;
+//            }
             // 打开SFTP通道
             channel = (ChannelSftp) session.openChannel("sftp");
             channel.connect();
@@ -236,9 +236,10 @@ public class SftpUtils {
         try {
             // 获得SESSION
             session = connect(host, port, username, password);
-            if (session == null) {
-                flag = false;
-            }
+//            if (session == null) {
+//                flag = false;
+//            }
+            assert session != null;
             channel = (ChannelSftp) session.openChannel("sftp");
             // 打开SFTP通道
             channel.connect();

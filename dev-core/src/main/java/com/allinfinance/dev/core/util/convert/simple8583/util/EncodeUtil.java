@@ -20,14 +20,14 @@ public class EncodeUtil {
         if(binaryStr.length()%8!=0){
             throw new IllegalArgumentException("传入的参数长度必须是8的倍数");
         }
-        StringBuffer accum = new StringBuffer();
+        StringBuilder accum = new StringBuilder();
         for(int i=0;i<binaryStr.length();i+=4){
             String temp = binaryStr.substring(i,i+4);
             int value=0;
             for(int j=0;j<4;j++){
                 if(temp.charAt(j)=='1'){
                     //计算值
-                    value += Math.pow(2, 3 - j);
+                    value += Math.pow(2, (double) 3 - j);
                 }
             }
             accum.append(HEX[value]);

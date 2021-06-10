@@ -18,9 +18,9 @@ public class AbstractMessageIOHandler implements IoHandler {
 
     @Override
     public void sessionCreated(IoSession session) {
-        String clientIP = ((InetSocketAddress) (session.getRemoteAddress())).getAddress().getHostAddress();
-        session.setAttribute(CommonConstants.KEY_SESSION_CLIENT_IP, clientIP);
-        logger.info("接收连接已创建@{},clientIP: {}", session, clientIP);
+        String clientIp = ((InetSocketAddress) (session.getRemoteAddress())).getAddress().getHostAddress();
+        session.setAttribute(CommonConstants.KEY_SESSION_CLIENT_IP, clientIp);
+        logger.info("接收连接已创建@{},clientIp: {}", session, clientIp);
     }
 
     @Override

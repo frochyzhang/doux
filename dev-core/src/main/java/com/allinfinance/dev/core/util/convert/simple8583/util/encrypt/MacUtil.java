@@ -3,6 +3,8 @@ package com.allinfinance.dev.core.util.convert.simple8583.util.encrypt;
 import com.allinfinance.dev.core.util.convert.simple8583.util.EncodeUtil;
 
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -82,7 +84,7 @@ public class MacUtil {
 					61, 53, 45, 37, 29, 21, 13, 5,
 					63, 55, 47, 39, 31, 23, 15, 7};
 
-	private static final int[] _ip =
+	private static final int[] _IP =
 			{40, 8, 48, 16, 56, 24, 64, 32,
 					39, 7, 47, 15, 55, 23, 63, 31,
 					38, 6, 46, 14, 54, 22, 62, 30,
@@ -92,24 +94,24 @@ public class MacUtil {
 					34, 2, 42, 10, 50, 18, 58, 26,
 					33, 1, 41, 9, 49, 17, 57, 25};
 
-	private static final int[] LS = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1}; 
+	private static final int[] LS = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 	private static int[][] subKey = new int[16][48];
-	private static int HEX = 0;
+	private static final int HEX = 0;
 
-	private static int ASC = 1;
-	
-	
+	private static final int ASC = 1;
+
+
 	/**
 	 * 将16进制字符转换成对应的int类型值:如字符'A'被转换后为10;'B'将被转换为11
+	 *
 	 * @param ch 需要被转换的目标字符
-	 * @return	转换后的int类型值
 	 * @throws Exception 如果传入字符为非16进制字符，将会报'getIntByChar was wrong'自定义异常
+	 * @return 转换后的int类型值
 	 */
-	public static int getIntByChar(char ch) throws Exception
-	{
+	public static int getIntByChar(char ch) throws Exception {
 		char t = Character.toUpperCase(ch);
-		int i = 0;
-		switch(t){
+		int i;
+		switch (t) {
 			case '0':
 			case '1':
 			case '2':
@@ -284,23 +286,21 @@ public class MacUtil {
 	 * @param s 0,1组成的字符串
 	 * @return	十六进制字符串
 	 */
-	public static String binary2ASC(String s)
-	{
-		String str = "";
+	public static String binary2ASC(String s) {
+		StringBuilder str = new StringBuilder();
 		int ii = 0;
 		int len = s.length();
-		if(len%4 != 0) {
+		if (len % 4 != 0) {
 			StringBuilder sBuilder = new StringBuilder(s);
 			while (ii < 4 - len % 4) {
 				sBuilder.insert(0, "0");
 			}
 			s = sBuilder.toString();
 		}
-		for(int i=0; i<len/4; i++)
-		{
-			str += binary2Hex(s.substring(i*4, i*4+4));
+		for (int i = 0; i < len / 4; i++) {
+			str.append(binary2Hex(s.substring(i * 4, i * 4 + 4)));
 		}
-		return str;
+		return str.toString();
 	}
 
 	public static int[] changeIP(int[] source)
@@ -316,9 +316,8 @@ public class MacUtil {
 	public static int[] changeInverseIP(int[] source)
 	{
 		int[] dest = new int[64];
-		for(int i=0; i<64; i++)
-		{
-			dest[i] = source[_ip[i]-1];
+		for(int i = 0; i < 64; i++) {
+			dest[i] = source[_IP[i]-1];
 		}
 		return dest;
 	}
@@ -344,14 +343,12 @@ public class MacUtil {
 
 
 	public static int[] press(int[] source) {
-		int[] ret = new int[32];
+		int[] ret;
 		int[][] temp = new int[8][6];
 		int[][][] s = {S_1, S_2, S_3, S_4, S_5, S_6, S_7, S_8};
-		StringBuffer str = new StringBuffer();
+		StringBuilder str = new StringBuilder();
 		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 6; j++) {
-				temp[i][j] = source[i * 6 + j];
-			}
+			System.arraycopy(source, i * 6, temp[i], 0, 6);
 		}
 
 		for (int i = 0; i < 8; i++) {
@@ -390,10 +387,9 @@ public class MacUtil {
 		return dest;
 	}
 
-	public static int[] f(int[] R,int[] K)
-	{
-		int[] dest = new int[32];
-		int[] temp = new int[48]; 
+	public static int[] f(int[] R, int[] K) {
+		int[] dest;
+		int[] temp;
 		int[] expendR = expend(R);
 
 		temp = diffOr(expendR, K);
@@ -641,13 +637,12 @@ public class MacUtil {
 		}
 
 		for (int i = 0; i < 16; i++) {
-			left = keyLeftMove(left, LS[i]);
-			right = keyLeftMove(right, LS[i]);
+			keyLeftMove(left, LS[i]);
+			keyLeftMove(right, LS[i]);
 
-			for (int j = 0; j < 28; j++)
-			{
+			for (int j = 0; j < 28; j++) {
 				temp1[j] = left[j];
-				temp1[j+28] = right[j];
+				temp1[j + 28] = right[j];
 			}
 			subKey[i] = keyPC_2(temp1);
 		}
@@ -660,7 +655,7 @@ public class MacUtil {
 	 * @return 转换结果
 	 */
 	public static String ASC_2_HEX(String asc) {
-		StringBuffer hex = new StringBuffer();
+		StringBuilder hex = new StringBuilder();
 		byte[] bs = asc.toUpperCase().getBytes(StandardCharsets.UTF_8);
 		for (byte b : bs) {
 			hex.append(Integer.toHexString(b));
@@ -687,12 +682,10 @@ public class MacUtil {
 	}
 
 
-	public static String intArr2Str(int[] arr)
-	{
-		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<arr.length; i++)
-		{
-			sb.append(arr[i]);
+	public static String intArr2Str(int[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (int j : arr) {
+			sb.append(j);
 		}
 
 		return sb.toString();
@@ -701,20 +694,22 @@ public class MacUtil {
 	public static String divData(String data,String key,int type){
 		String left = null;
 		String right = null;
-		if(type == HEX)
-		{
+		if (type == HEX) {
 			left = key.substring(0, 16);
-			right = key.substring(16,32);
+			right = key.substring(16, 32);
 		}
 
-		if(type == ASC)
-		{
+		if (type == ASC) {
 			left = ASC_2_HEX(key.substring(0, 8));
-			right = ASC_2_HEX(key.substring(8,16));
+			right = ASC_2_HEX(key.substring(8, 16));
 		}
 
+		assert data != null;
+		assert left != null;
 		data = DES_1(data, left, 0);
+		assert data != null;
 		data = DES_1(data, right, 1);
+		assert data != null;
 		data = DES_1(data, left, 0);
 
 		return data;
@@ -731,16 +726,13 @@ public class MacUtil {
 		return binary2ASC(intArr2Str(data));
 	}
 	
-	public static String getDPK(String issuerFlag,String appNo,String mpk)
-	{
-		StringBuffer issuerMPK = new StringBuffer();
+	public static String getDPK(String issuerFlag, String appNo, String mpk) {
+		StringBuilder issuerMPK = new StringBuilder();
 		issuerMPK.append(divData(issuerFlag, mpk, 0));
 		issuerMPK.append(divData(reverse(issuerFlag), mpk, 0));
-		StringBuffer dpk = new StringBuffer();
-		dpk.append(divData(appNo, issuerMPK.toString(), 0));
-		dpk.append(divData(reverse(appNo), issuerMPK.toString(), 0));
-		
-		return dpk.toString();
+
+		return divData(appNo, issuerMPK.toString(), 0) +
+				divData(reverse(appNo), issuerMPK.toString(), 0);
 	}
 		
 	public static String xOrString(String pan,String pin)
@@ -827,9 +819,10 @@ public class MacUtil {
 				blocks[i] = operator.substring(i*16, i*16 + 16);
 			}
 			//循环进行异或,DES加密
-			for(int i = 0;i < count;i++)
-			{
-				String xor = xOrString(vector,blocks[i]);
+			for(int i = 0; i < count; i++) {
+				assert vector != null;
+				String xor = xOrString(vector, blocks[i]);
+				assert xor != null;
 				vector = DES_1(xor,key,0);
 			}
 			return vector;
@@ -842,36 +835,35 @@ public class MacUtil {
 		 * @param data	生成mac的原始数据的16进制表示
 		 * @return	最终生成mac的字符串
 		 */
-		public static String Mac_919(String key,String vector,String data)
-		{
-			if(key.length() != 32)
-			{
+		public static String Mac_919(String key, String vector, String data) {
+			if (key.length() != 32) {
 				new Exception("key of ansix9.19 must be 32").printStackTrace();
 				return null;
 			}
-			
+
 			String left = key.substring(0, 16);
 			String right = key.substring(16);
-			
-			String mac = MAC(left,null,data);
-			String result1 = DES_1(mac,right,1);
-			String result2 = DES_1(result1,left,0);
-			
-			String ret = result2.substring(0,8);
-			return ret;
+
+			String mac = MAC(left, null, data);
+			assert mac != null;
+			String result1 = DES_1(mac, right, 1);
+			assert result1 != null;
+			String result2 = DES_1(result1, left, 0);
+
+			assert result2 != null;
+			return result2.substring(0, 8);
 		}
-		
-		public static String createRandom(int length)
-		{
-			StringBuffer sb = new StringBuffer("");
-			Random random = new Random();
-			for(int i = 0;i < length;i++)
-			{
-				int abs = Math.abs(random.nextInt()%10);
-				sb.append("" + abs);
-			}
-			return sb.toString();
+
+	public static String createRandom(int length) throws NoSuchAlgorithmException {
+		StringBuilder sb = new StringBuilder("");
+		Random random = SecureRandom.getInstanceStrong();
+		;
+		for (int i = 0; i < length; i++) {
+			int abs = Math.abs(random.nextInt() % 10);
+			sb.append(abs);
 		}
+		return sb.toString();
+	}
 	
 	public static void main(String [] args)
 	{

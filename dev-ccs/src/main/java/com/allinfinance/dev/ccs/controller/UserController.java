@@ -76,9 +76,9 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
+        if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
             //当当前的用户是超级管理员时显示所有列表
-            if (org.equals("000000000000")) {
+            if ("000000000000".equals(org)) {
                 userReqParam.setOrg(null);
             } else {
                 userReqParam.setOrg(org);
@@ -155,7 +155,7 @@ public class UserController {
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时启用加密
-        if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
+        if (userReqParam.getUserPass() != null && (!"".equals(userReqParam.getUserPass()))) {
             userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         }
         int result = 0;

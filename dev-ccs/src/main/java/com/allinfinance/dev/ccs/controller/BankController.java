@@ -4,9 +4,7 @@ package com.allinfinance.dev.ccs.controller;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
-import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblBankService;
-
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
@@ -42,7 +40,7 @@ public class BankController {
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0 ) {
-            if ((!org.equals("000000000000"))&& bankReqParam.getOrg()==null) {
+            if ((!"000000000000".equals(org)) && bankReqParam.getOrg() == null) {
                 bankReqParam.setOrg(org);
             }
         }

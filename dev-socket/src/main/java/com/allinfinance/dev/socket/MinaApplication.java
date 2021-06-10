@@ -2,7 +2,6 @@ package com.allinfinance.dev.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +31,7 @@ public class MinaApplication {
     }
 
     private void run(String... args) {
-        Class<?> primarySource = new ArrayList<Class<?>>(primarySources).get(0);
+        Class<?> primarySource = new ArrayList<>(primarySources).get(0);
 
         synchronized (primarySource) {
             while (true) {
@@ -40,6 +39,8 @@ public class MinaApplication {
                     primarySource.wait();
                 } catch (InterruptedException e) {
                     logger.error("{} synchronized error:", primarySource.getName(), e);
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
         }

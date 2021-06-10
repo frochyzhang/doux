@@ -53,6 +53,7 @@ public class RiskScoreController {
             var40.printStackTrace();
         }
 
+        assert ndClient != null;
         ndClient.setAPIBaseUrl(this.ndEndPoint);
         EnvironmentData ed = new EnvironmentData();
         ed.setRemoteIp(remoteIp);
@@ -69,6 +70,7 @@ public class RiskScoreController {
             var39.printStackTrace();
         }
 
+        assert tp != null;
         tp.setPlacementString("Purchase");
         tp.setPlacementPage(1);
         AccountInfoData accountInfo = new AccountInfoData();

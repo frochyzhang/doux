@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.controller;
 
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
@@ -15,7 +15,10 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

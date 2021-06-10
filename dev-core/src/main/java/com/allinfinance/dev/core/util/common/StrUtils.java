@@ -2,6 +2,7 @@ package com.allinfinance.dev.core.util.common;
 
 import com.allinfinance.dev.core.constant.CommonConstants;
 
+import javax.validation.constraints.NotNull;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
@@ -156,10 +157,7 @@ public class StrUtils {
      * @throws Exception
      * @author jared
      */
-    public static String filterSpecial(String str) {
-        if (str == null) {
-            return null;
-        }
+    public static String filterSpecial(@NotNull(message = "filterSpecial方法参数不能为null") String str) {
         String res = str.replaceAll("<[^>]*>", "");
         res = res.replaceAll("<", "");
         res = res.replaceAll(">", "");
@@ -178,7 +176,7 @@ public class StrUtils {
      */
     public static boolean hasFilterSpecial(String str) {
         try {
-            if (filterSpecial(str).equals(str)) {
+            if (str != null && filterSpecial(str).equals(str)) {
                 return true;
             }
         } catch (NullPointerException e) {
