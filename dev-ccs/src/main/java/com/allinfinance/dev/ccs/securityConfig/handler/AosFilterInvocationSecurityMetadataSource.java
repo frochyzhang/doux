@@ -5,6 +5,7 @@ import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.service.TblPermissionInfoService;
 import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -32,6 +33,9 @@ public class AosFilterInvocationSecurityMetadataSource implements FilterInvocati
         //获取请求地址
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
 
+         if(StringUtils.equals("/getPublicKey",requestUrl)){
+             return null;
+         }
         //查询具体某个接口的权限
           if(requestUrl.contains("?")){
             String[] urlparam = requestUrl.split("\\?");

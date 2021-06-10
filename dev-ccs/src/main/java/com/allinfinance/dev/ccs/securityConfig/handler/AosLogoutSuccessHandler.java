@@ -22,9 +22,7 @@ import java.io.IOException;
 public class AosLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        LogoutSeccessReapDto seccessReapDto = new LogoutSeccessReapDto();
-        seccessReapDto.setToken(null);
-        Result result = Result.success(seccessReapDto);
+        Result result = Result.success();
         ObjectMapper objectMapper = new ObjectMapper();
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(objectMapper.writeValueAsString(result));

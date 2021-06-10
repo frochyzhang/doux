@@ -7,10 +7,13 @@ import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.access.intercept.RunAsUserToken;
+import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.jaas.JaasAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,8 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private TblRoleService roleService;
     @Override
     public UserDetails loadUserByUsername(String username) throws RuntimeException{
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//        String org = request.getParameter("org");
         if (username == null || "".equals(username)) {
             throw new InternalAuthenticationServiceException("用户名不能为空");
         }

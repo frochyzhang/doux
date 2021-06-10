@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.controller;
 
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.content.RSAKeyProperties;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
@@ -24,7 +25,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -58,6 +61,10 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     TblUserService userService;
+
+    @Autowired
+    @Qualifier(value = "rsaKeyProperties")
+    private RSAKeyProperties rsaProperties;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -123,8 +130,6 @@ public class LoginController {
         String qrcodePath=this.desePath + File.separator + userName;
         String stringImg="";
         try {
-            //ClassPathResource classPathResource = new ClassPathResource("logo.png");
-            //String path = classPathResource.getPath();
             encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 //            response.setHeader("Content-type","image/jpg");
@@ -157,6 +162,12 @@ public class LoginController {
             return Result.success(currentUser);
         }
         return Result.failure(ResultCodeEnum.OLD_USER_PASS_ERROR);
+    }
+
+    @RequestMapping(path = "getPublicKey" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Result getPublicKey(HttpServletRequest request){
+        return Result.success(rsaProperties.getPublicKey().getEncoded());
     }
 
         private static String desePath;

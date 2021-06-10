@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -190,12 +191,26 @@ public class JwtUtil {
 
 
     /**
-     * 判断jw是否过期
-     * @param jws
+     * 判断token是否过期
+     * @param
      * @return
      */
-    public static  boolean isJwtExpired (Jws<Claims> jws){
-        return  jws.getBody().getExpiration().before(new Date());
+    public static  boolean isJwtExpired (String token){
+        return  JWT.decode(token).getExpiresAt().before(new Date());
+    }
+
+    /**
+     * 判断是否马上过期
+     * @param token
+     * @return
+     */
+    public static  boolean isWillExpired (String token){
+        Date expires = JWT.decode(token).getExpiresAt();
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(expires);
+        calendar.add(Calendar.HOUR,-1);
+        Date calendarTime = calendar.getTime();
+        return calendarTime.before(new Date());
     }
 
     public static DefaultJws  setJwtExpired (Jws<Claims> jws){
@@ -210,7 +225,7 @@ public class JwtUtil {
     @Value("${token.expire_time:7}")
     public  void setExpireTime(long expireTime) {
         expireTime= expireTime==0?1:expireTime;
-        EXPIRE_TIME = expireTime  *60*60*24* 1000;
+        EXPIRE_TIME = expireTime  *60*60* 1000;
     }
 
     public static String getTokenSecret() {
