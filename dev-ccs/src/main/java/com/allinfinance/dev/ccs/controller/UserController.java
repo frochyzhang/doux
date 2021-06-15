@@ -193,35 +193,4 @@ public class UserController {
         return Result.success(result);
     }
 
-    @RequestMapping(path = "updateNewPass", method = RequestMethod.POST)
-    @ResponseBody
-    public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userId = JwtUtil.getUserId(token);
-        String username = JwtUtil.getUsername(token);
-        String newPassword = passwordParam.getNewPassword();
-        if(StringUtils.isBlank(newPassword)){
-            logger.error("新密码不能为空!");
-            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
-        }
-        byte[] dePass = Base64.decodeBase64(newPassword);
-        String password= org.apache.commons.codec.binary.StringUtils.newStringUtf8(dePass);
-        if(password.contains("#")){
-            String[] vars = password.split("\\#");
-            password=vars[0];
-        }
-        TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
-        tblUser.setUserPass(passwordEncoder.encode(password));
-        tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
-        tblUser.setLastPassUpdateTime(new Date());
-        tblUser.setUpdateBy(username);
-        try {
-            tblUserService.updateByPrimaryKey(tblUser);
-        } catch (RuntimeException e) {
-            logger.error("更新密码异常异常!", e);
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-        }
-        return Result.success();
-    }
-
 }

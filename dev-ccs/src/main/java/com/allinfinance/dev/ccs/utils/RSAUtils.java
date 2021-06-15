@@ -3,10 +3,10 @@ package com.allinfinance.dev.ccs.utils;
 import com.allinfinance.dev.ccs.content.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +21,7 @@ import java.util.Base64;
  * RSA非对称加密工具类
  * Created
  */
+@Component
 public class RSAUtils {
 
     /**
@@ -32,16 +33,16 @@ public class RSAUtils {
      * 密钥长度
      */
     private static final int DEFAULT_KEY_SIZE = 2048;
-    /**
-     * RSA最大加密明文大小
-     */
-    private static final int MAX_ENCRYPT_BLOCK = 117;
 
-    /**
-    /**
-     * RSA最大解密密文大小
-     */
-    private static final int MAX_DECRYPT_BLOCK = 128;
+
+    private static RSAKeyProperties rsaProperties;
+
+    @Autowired
+    @Qualifier(value = "rsaKeyProperties")
+    public  void setRsaProperties(RSAKeyProperties rsaProperties) {
+        RSAUtils.rsaProperties = rsaProperties;
+    }
+
     /**
      * 从文件中读取公钥
      * @param filename 公钥保存路径
@@ -79,51 +80,34 @@ public class RSAUtils {
     }
 
 
-//    /**
-//     * RSA加密
-//     *
-//     * @param data      待加密数据
-//     * @param publicKey 公钥
-//     * @return java.lang.String
-//     * @author zhouxinlei
-//     * @date 2019-09-12 15:27:07
-//     */
-//    public static String encrypt(String data, PublicKey publicKey) throws Exception {
-//        Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
-//        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-//        int inputLen = data.getBytes().length;
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        int offset = 0;
-//        byte[] cache;
-//        int i = 0;
-//        // 对数据分段加密
-//        while (inputLen - offset > 0) {
-//            if (inputLen - offset > MAX_ENCRYPT_BLOCK) {
-//                cache = cipher.doFinal(data.getBytes(), offset, MAX_ENCRYPT_BLOCK);
-//            } else {
-//                cache = cipher.doFinal(data.getBytes(), offset, inputLen - offset);
-//            }
-//            out.write(cache, 0, cache.length);
-//            i++;
-//            offset = i * MAX_ENCRYPT_BLOCK;
-//        }
-//        byte[] encryptedData = out.toByteArray();
-//        out.close();
-//        // 获取加密内容使用base64进行编码,并以UTF-8为标准转化成字符串
-//        // 加密后的字符串
-//        return new String(Base64Utils.encode(encryptedData));
-//    }
+    /**
+     * RSA加密
+     *
+     * @param data      待加密数据
+     * @return java.lang.String
+     * @author liuqi
+     * @date 2021-06-11 15:27:07
+     */
+    public static String encrypt(String data) throws Exception {
+        PublicKey publicKey = rsaProperties.getPublicKey();
+        Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        byte[] bytes = cipher.doFinal(data.getBytes());
+        // 获取加密内容使用base64进行编码,并以UTF-8为标准转化成字符串
+        // 加密后的字符串
+        return new String(Base64Utils.encode(bytes));
+    }
 
     /**
      * RSA解密
      *
      * @param data       待解密数据
-     * @param privateKey 私钥
      * @return java.lang.String
-     * @author zhouxinlei
-     * @date 2019-09-12 15:27:29
+     * @author liuqi
+     * @date 2021-06-11 15:27:29
      */
-    public static String decrypt(String data, PrivateKey privateKey) throws Exception {
+    public static String decrypt(String data) throws Exception {
+        PrivateKey privateKey = rsaProperties.getPrivateKey();
         KeyFactory factory = KeyFactory.getInstance(ENCRYPT_ALGORITHM);
         Cipher cipher = Cipher.getInstance(factory.getAlgorithm());
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -187,9 +171,6 @@ public class RSAUtils {
         }
         Files.write(file.toPath(), bytes);
     }
-    @Autowired
-    @Qualifier(value = "rsaKeyProperties")
-    private RSAKeyProperties rsaProperties;
 
     public static void main(String[] args) {
         String mm="UHXbGbHo82xFzBp+EN+vcFl+x7371VvE9fbdpGh+e4xu1dFfJV7vLu4pXn64NfkY9oR56RC/jtUSqoYnUvK8F6ua052282pAaFMGjtzFoQUNKyV/W3OwtleaUNno5SciuhJR1wJEm6gStdT9qEgGiaf5wxjnO4gN9RZ3SvYJHpPE6fvtFWrXdWCJf2OPTVeLEoFbvITVJRVDlenedl9Icb43QEf5VkeeVeK/AeefsmUqFx+38G6zLO2UqswhvFcT23op+1Rj4htvHa0bQdWyVab+5v7rulVWt1ZW54YnsmagoutlOT3yUF1uRGnjrmWpNPJHZvCFeodykqcfpCIcnw==";

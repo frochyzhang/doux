@@ -151,26 +151,13 @@ public class LoginController {
         qrCodeResDto.setQrCode(stringImg);
         return Result.success(qrCodeResDto);
     }
-    @RequestMapping(path = "chekPass" ,method = RequestMethod.POST)
-    @ResponseBody
-    public Result checkOldPass(@RequestBody UpdatePasswordParam passwordParam,HttpServletRequest request){
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userId = JwtUtil.getUserId(token);
-        TblUser currentUser = userService.selectByPrimaryKey(userId);
-        String userPass = currentUser.getUserPass();
-        if(passwordEncoder.matches(passwordParam.getNewPassword(),userPass)){
-            return Result.success(currentUser);
-        }
-        return Result.failure(ResultCodeEnum.OLD_USER_PASS_ERROR);
-    }
-
     @RequestMapping(path = "getPublicKey" ,method = RequestMethod.POST)
     @ResponseBody
     public Result getPublicKey(HttpServletRequest request){
         return Result.success(rsaProperties.getPublicKey().getEncoded());
     }
 
-        private static String desePath;
+    private static String desePath;
     @Value("${qrCode.path:/home/aos/qrcode/}")
     public  void setDesePath(String desePath) {
         this.desePath = desePath;
