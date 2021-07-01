@@ -183,13 +183,13 @@
     where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </update>
   <!--  **********以下为自定义SQL***********-->
-  <select id="pageSelectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
+  <select id="pageSelectBanks" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam"
           resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_BANK_MANAGE where 1=1
     <if test="bankReqParam!=null">
-      <if test="bankReqParam.org!=null and bankReqParam.org!=0">
+      <if test="bankReqParam.org!=null and bankReqParam.org!=''">
         and org like '%${bankReqParam.org}%'
       </if>
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
@@ -198,7 +198,7 @@
     </if>
   </select>
 
-  <select id="selectBank" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankReqParam"
+  <select id="selectBank" parameterType="com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam"
           resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

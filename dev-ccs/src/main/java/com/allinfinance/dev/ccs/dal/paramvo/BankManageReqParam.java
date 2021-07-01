@@ -8,7 +8,7 @@ import com.allinfinance.dev.ccs.dal.model.TblBankManage;
  * @date ：2021/5/19 13:49
  * @description：
  */
-public class BankReqParam extends TblBankManage {
+public class BankManageReqParam extends TblBankManage {
     private Integer current;
     private Integer pageSize;
 

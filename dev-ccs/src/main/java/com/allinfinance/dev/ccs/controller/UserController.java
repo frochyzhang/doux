@@ -3,18 +3,15 @@ package com.allinfinance.dev.ccs.controller;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
-import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
+import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
-import com.allinfinance.dev.ccs.dal.service.TblBankService;
+import com.allinfinance.dev.ccs.dal.service.TblBankManageService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 
 
@@ -41,7 +37,7 @@ public class UserController {
     private TblUserService tblUserService;
 
     @Autowired
-    private TblBankService tblBankService;
+    private TblBankManageService tblBankService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -112,7 +108,7 @@ public class UserController {
         // 对密码进行加密
         userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         //配置用户口令
-        BankReqParam bankReqParam = new BankReqParam();
+        BankManageReqParam bankReqParam = new BankManageReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
         List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
         userReqParam.setReservedField2(tblBankManages.get(0).getBankNameEn());

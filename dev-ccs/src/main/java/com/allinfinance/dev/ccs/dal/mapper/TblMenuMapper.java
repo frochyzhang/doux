@@ -24,5 +24,5 @@ public interface TblMenuMapper {
 
     TblUser getCurrentUserInfo(@Param("userName") String userName, @Param("org") String bank);
 
-    List<TblMenu> selectMenus();
+    List<TblMenu> selectMenus(@Param("authId") String authId);
 }

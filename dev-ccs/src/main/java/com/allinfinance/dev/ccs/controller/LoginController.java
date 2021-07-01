@@ -3,49 +3,32 @@ package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.content.RSAKeyProperties;
-import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
-import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
-import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
-import com.allinfinance.dev.ccs.dal.respdto.OrgResultDto;
 import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
-import com.allinfinance.dev.ccs.dal.service.TblBankService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationSuccessHandler;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
-import com.github.pagehelper.PageInfo;
-import org.apache.commons.codec.net.BCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>

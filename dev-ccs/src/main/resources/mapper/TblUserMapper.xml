@@ -6,6 +6,7 @@
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="USER_PASS" jdbcType="VARCHAR" property="userPass" />
     <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="MOBILE_NO" jdbcType="VARCHAR" property="mobileNo" />
     <result column="ORG" jdbcType="VARCHAR" property="org" />
     <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
     <result column="INIT_PASS" jdbcType="VARCHAR" property="initPass" />
@@ -30,7 +31,7 @@
 
   </resultMap>
   <sql id="Base_Column_List">
-    USER_ID, USER_NAME, USER_PASS, ROLE_ID, ORG, IS_AVAILABLE, INIT_PASS, ERROR_NUM,
+    USER_ID, USER_NAME, USER_PASS, ROLE_ID, MOBILE_NO,ORG, IS_AVAILABLE, INIT_PASS, ERROR_NUM,
     PASS_STATUS, LAST_PASS_UPDATE_TIME, RESERVED_FIELD4, CREATE_BY, CREATE_TIME, UPDATE_TIME,
     UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3, RESERVED_FIELD5, RESERVED_FIELD6,
     RESERVED_FIELD7, LAST_LOGIN_TIME, NOT_EXPIRED, ACCOUNT_NOT_LOCKED, CREDENTIALS_NOT_EXPIRED
@@ -58,7 +59,7 @@
 
   <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam" resultMap="BaseResultMap">
     select
-    USER_ID, USER_NAME, USER_PASS, ur.ROLE_ID, ur.ORG, ur.IS_AVAILABLE, INIT_PASS, ERROR_NUM, PASS_STATUS,
+    USER_ID, USER_NAME, USER_PASS, ur.ROLE_ID, MOBILE_NO ,ur.ORG, ur.IS_AVAILABLE, INIT_PASS, ERROR_NUM, PASS_STATUS,
     LAST_PASS_UPDATE_TIME, RESERVED_FIELD4, ur.CREATE_BY, ur.CREATE_TIME, ur.UPDATE_TIME, ur.UPDATE_BY, ur.RESERVED_FIELD1,
     ur.RESERVED_FIELD2, ur.RESERVED_FIELD3, RESERVED_FIELD5, RESERVED_FIELD6, RESERVED_FIELD7,
     LAST_LOGIN_TIME, NOT_EXPIRED, ACCOUNT_NOT_LOCKED, CREDENTIALS_NOT_EXPIRED
@@ -94,7 +95,7 @@
   </update>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
     insert into TBL_USER (USER_ID, USER_NAME, USER_PASS,
-                          ROLE_ID, ORG, IS_AVAILABLE,
+                          ROLE_ID,MOBILE_NO, ORG, IS_AVAILABLE,
                           INIT_PASS, ERROR_NUM, PASS_STATUS,
                           LAST_PASS_UPDATE_TIME, RESERVED_FIELD4, CREATE_BY,
                           CREATE_TIME, UPDATE_TIME, UPDATE_BY,
@@ -104,7 +105,7 @@
                           CREDENTIALS_NOT_EXPIRED
     )
     values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR},
-            #{roleId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
+            #{roleId,jdbcType=VARCHAR}, #{mobileNo,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
             #{initPass,jdbcType=VARCHAR}, #{errorNum,jdbcType=VARCHAR}, #{passStatus,jdbcType=VARCHAR},
             #{lastPassUpdateTime,jdbcType=TIMESTAMP}, #{reservedField4,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},
             #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
@@ -132,6 +133,9 @@
       </if>
       <if test="roleId != null">
         ROLE_ID,
+      </if>
+      <if test="mobileNo != null">
+        MOBILE_NO,
       </if>
       <if test="org != null">
         ORG,
@@ -209,6 +213,9 @@
       </if>
       <if test="roleId != null">
         #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileNo != null">
+        #{mobileNo,jdbcType=VARCHAR},
       </if>
       <if test="org != null">
         #{org,jdbcType=VARCHAR},
@@ -290,6 +297,9 @@
       <if test="record.roleId != null and record.roleId != ''">
         ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
       </if>
+      <if test="record.mobileNo != null and record.mobileNo != ''">
+        ROLE_ID = #{record.mobileNo,jdbcType=VARCHAR},
+      </if>
       <if test="record.org != null and record.org != ''">
         ORG = #{record.org,jdbcType=VARCHAR},
       </if>
@@ -362,6 +372,7 @@
     USER_NAME = #{record.userName,jdbcType=VARCHAR},
     USER_PASS = #{record.userPass,jdbcType=VARCHAR},
     ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+    MOBILE_NO = #{record.mobileNo,jdbcType=VARCHAR},
     ORG = #{record.org,jdbcType=VARCHAR},
     IS_AVAILABLE = #{record.isAvailable,jdbcType=VARCHAR},
     INIT_PASS = #{record.initPass,jdbcType=VARCHAR},
@@ -389,6 +400,7 @@
     set USER_NAME = #{userName,jdbcType=VARCHAR},
         USER_PASS = #{userPass,jdbcType=VARCHAR},
         ROLE_ID = #{roleId,jdbcType=VARCHAR},
+        MOBILE_NO = #{mobileNo,jdbcType=VARCHAR},
         ORG = #{org,jdbcType=VARCHAR},
         IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
         INIT_PASS = #{initPass,jdbcType=VARCHAR},

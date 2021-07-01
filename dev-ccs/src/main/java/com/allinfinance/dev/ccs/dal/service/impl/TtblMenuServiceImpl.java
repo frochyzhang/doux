@@ -84,8 +84,10 @@ public class TtblMenuServiceImpl implements TblMenuService {
             //通过当前用户的角色查询权限
             TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
             tblRoleAuthKey.setRoleId(tblUser.getRoleId());
+            // 获取的role和Auth的关联表
             List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
             if (tblRoleAuths.size() > 0) {
+                // 获取的角色的权限列表
                 ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
                 tblRoleAuths.forEach(roleAuth -> {
                     authIds.add(roleAuth.getAuthId());
@@ -93,7 +95,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
                 // 通过权限id查询菜单
                 List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
-                ArrayList<String> menuIds = new ArrayList<>(tblRoleAuths.size());
+                ArrayList<String> menuIds = new ArrayList<>();
                 tblMenuAuths.forEach((authMenu)->{
                     menuIds.add(authMenu.getMenuId());
                 });

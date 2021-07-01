@@ -9,6 +9,7 @@ import com.allinfinance.dev.ccs.dal.service.TblAuthService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,11 +142,11 @@ public class AuthController {
     }
 
     @RequestMapping(path = "/menus",method = RequestMethod.GET)
-    public Result getAuthMenus(){
+    public Result getAuthMenus(@Param("authId") String authId){
         ArrayList<AuthMenusDto> authMenus;
         try {
             //获取所有的菜单项
-            List<TblMenu> tblMenus = tblAuthService.selectMenus();
+            List<TblMenu> tblMenus = tblAuthService.selectMenus(authId);
             logger.info("tblMenus: {}",tblMenus);
             //获取权限菜单树
             authMenus = generateAuthMenuTree(tblMenus);
@@ -172,8 +173,10 @@ public class AuthController {
 
     private AuthMenusDto generateSubAuthMenuTree(TblMenu tblMenu,List<TblMenu> tblMenus) {
         AuthMenusDto authMenusDto = new AuthMenusDto();
-        authMenusDto.setMenuId(tblMenu.getMenuId());
-        authMenusDto.setMenuName(tblMenu.getMenuName());
+        authMenusDto.setKey(tblMenu.getMenuId());
+        authMenusDto.setValue(tblMenu.getMenuId());
+        authMenusDto.setIsUse(tblMenu.getReservedField1());
+        authMenusDto.setTitle(tblMenu.getMenuName());
         authMenusDto.setParentId(tblMenu.getParentMid());
         ArrayList<AuthMenusDto> subAuthMenuTree = new ArrayList<>();
         authMenusDto.setChildren(subAuthMenuTree);

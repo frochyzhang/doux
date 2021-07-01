@@ -2,7 +2,7 @@ package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
-import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
+import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
  * @description：
  */
 @Service
-public class TblBankService {
+public class TblBankManageService {
     @Autowired
     private TblBankManageMapper tblBankManageMapper;
 
@@ -47,13 +47,13 @@ public class TblBankService {
         return tblBankManageMapper.updateByPrimaryKey(record);
     }
 
-    public PageInfo<TblBankManage> pageSelectBanks(BankReqParam bankReqParam) {
+    public PageInfo<TblBankManage> pageSelectBanks(BankManageReqParam bankReqParam) {
         PageHelper.startPage(bankReqParam.getCurrent(), bankReqParam.getPageSize());
         List<TblBankManage> banks = tblBankManageMapper.pageSelectBanks(bankReqParam);
         return new PageInfo<TblBankManage>(banks);
     }
 
-    public List<TblBankManage> selectByBankInfo(BankReqParam bankReqParam) {
+    public List<TblBankManage> selectByBankInfo(BankManageReqParam bankReqParam) {
         return tblBankManageMapper.selectBank(bankReqParam);
     }
 
