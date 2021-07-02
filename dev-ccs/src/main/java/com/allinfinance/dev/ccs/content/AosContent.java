@@ -1,8 +1,8 @@
 package com.allinfinance.dev.ccs.content;
 
 public  class AosContent {
-    public static  final String  LEVEL_0="0";//很目录
-    public static  final String  LEVEL_1="1";//一集菜单
+    public static  final String  LEVEL_0="0";//根目录
+    public static  final String  LEVEL_1="1";//一级菜单
     public static  final String  LEVEL_2="2";//二级菜单
 
     // 此状态为权限控制框架需要，业务无需更改
@@ -24,7 +24,6 @@ public  class AosContent {
     public static final String IS_AVAILABLE_TRUE="Y";//有效
     public static final String IS_AVAILABLE_FALSE="N";//无效
 
-
-
+    public static final String MENU_ID_ROOT="001";//根节点初始化值
 
 }

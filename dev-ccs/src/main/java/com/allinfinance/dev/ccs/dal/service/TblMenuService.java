@@ -28,4 +28,8 @@ public interface TblMenuService {
     void updateMenuById(TblMenu tblMenu);
 
     List<CurrentMenusDto> getCurrMenus(String  userId);
+
+    String selectMaxMenuIdByRoot(TblMenu tblMenu);
+
+    String selectMaxMenuId(TblMenu tblMenu);
 }

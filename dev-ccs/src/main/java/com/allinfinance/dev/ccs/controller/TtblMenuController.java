@@ -71,11 +71,40 @@ public class TtblMenuController {
     @ResponseBody
     public Result addMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
         logger.info("菜单新增接口接收参数-->{}", tblMenu.toString());
+        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String username = JwtUtil.getUsername(token);
+        tblMenu.setCreateTime(new Date());
+        tblMenu.setCreateBy(username);
         try {
-            String token = request.getHeader( AosContent.AOS_TOKEN);
-            String username = JwtUtil.getUsername(token);
-            tblMenu.setCreateTime(new Date());
-            tblMenu.setCreateBy(username);
+            if (tblMenu.getParentMid() == null ){
+                String maxMenuId = tblMenuService.selectMaxMenuIdByRoot(tblMenu);
+                if (maxMenuId == null){
+                    tblMenu.setMenuId(AosContent.MENU_ID_ROOT);
+                }else {
+                    char temp[] = maxMenuId.toCharArray();//获取位数
+                    int num = temp.length;
+                    int menuId = Integer.valueOf(maxMenuId);
+                    menuId++;
+                    String nextMenuId = String.format("%0" + num + "d",menuId);
+                    tblMenu.setMenuId(nextMenuId);
+                }
+            }else {
+                String maxMenuId = tblMenuService.selectMaxMenuId(tblMenu);
+                if (maxMenuId == null){
+                    String nextMenuId = tblMenu.getParentMid() + "01";
+                    tblMenu.setMenuId(nextMenuId);
+                }else {
+                    String order = maxMenuId.replaceAll(tblMenu.getParentMid(),"");
+                    int orderNum = Integer.valueOf(order);
+                    orderNum++;
+                    char temp[] = order.toCharArray();//获取位数
+                    int num = temp.length;
+                    String nextOrderNum =  String.format("%0" + num + "d",orderNum);
+                    logger.error("nextOrderNum:{}",nextOrderNum);
+                    String nextMenuId = tblMenu.getParentMid() + nextOrderNum;
+                    tblMenu.setMenuId(nextMenuId);
+                }
+            }
             tblMenuService.addMenu(tblMenu);
         } catch (RuntimeException e) {
             logger.error("新增菜单异常!", e);

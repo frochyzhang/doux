@@ -25,4 +25,8 @@ public interface TblMenuMapper {
     TblUser getCurrentUserInfo(@Param("userName") String userName, @Param("org") String bank);
 
     List<TblMenu> selectMenus(@Param("authId") String authId);
+
+    String selectMaxMenuIdByRoot(TblMenu tblMenu);
+
+    String selectMaxMenuId(TblMenu tblMenu);
 }

@@ -321,22 +321,56 @@
   </update>
   <update id="updateById" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
     update TBL_MENU
-    set MENU_NAME = #{menuName,jdbcType=VARCHAR},
-      PARENT_MID = #{parentMid,jdbcType=VARCHAR},
-      NODE_TYPE = #{nodeType,jdbcType=VARCHAR},
-      ICON = #{icon,jdbcType=VARCHAR},
-      SORT = #{sort,jdbcType=VARCHAR},
-      PAGE_URL = #{pageUrl,jdbcType=VARCHAR},
-      LEVEL = #{level,jdbcType=VARCHAR},
-      PATH = #{path,jdbcType=VARCHAR},
-      IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
-      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    <set>
+      <if test="menuName != null">
+        MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMid != null">
+        PARENT_MID = #{parentMid,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null">
+        NODE_TYPE = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        ICON = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        SORT = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="pageUrl != null">
+        PAGE_URL = #{pageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        LEVEL = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        PATH = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </set>
     where MENU_ID = #{menuId,jdbcType=INTEGER}
   </update>
 
@@ -361,5 +395,13 @@
     <if test="authId != null and authId != '' ">
     LEFT JOIN (SELECT MENU_ID,AUTH_ID FROM TBL_MENU_AUTH WHERE AUTH_ID=#{authId}) MENUAUTH ON MENU.MENU_ID=MENUAUTH.MENU_ID
     </if>
+  </select>
+
+  <select id="selectMaxMenuIdByRoot" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu" resultType="java.lang.String">
+    select max(MENU_ID) from TBL_MENU where PARENT_MID is NULL
+  </select>
+
+  <select id="selectMaxMenuId" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu" resultType="java.lang.String">
+     select max(MENU_ID) from TBL_MENU where PARENT_MID = #{parentMid,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -116,8 +116,15 @@ public class TtblMenuServiceImpl implements TblMenuService {
         return new ArrayList<CurrentMenusDto>();
     }
 
+    @Override
+    public String selectMaxMenuIdByRoot(TblMenu tblMenu) {
+        return tblMenuMapper.selectMaxMenuIdByRoot(tblMenu);
+    }
 
-
+    @Override
+    public String selectMaxMenuId(TblMenu tblMenu) {
+        return tblMenuMapper.selectMaxMenuId(tblMenu);
+    }
 
 
     public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser ){
