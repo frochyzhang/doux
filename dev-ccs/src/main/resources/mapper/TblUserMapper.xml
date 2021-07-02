@@ -89,7 +89,7 @@
   <update id="deleteByPrimaryKey" parameterType="java.lang.String">
     update TBL_USER
     SET
-      IS_AVAILABLE = 0
+      IS_AVAILABLE = 'N'
     WHERE
       USER_ID = #{userId,jdbcType=INTEGER}
   </update>

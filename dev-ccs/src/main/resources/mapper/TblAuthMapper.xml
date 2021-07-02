@@ -192,6 +192,7 @@
     select
     <include refid="Base_Column_List" />
     from TBL_AUTH
+    WHERE IS_AVAILABLE='Y'
   </select>
 
   <update id="invalidateAuth" parameterType="java.lang.String">

@@ -22,8 +22,14 @@ public class TblBankManageService {
     @Autowired
     private TblBankManageMapper tblBankManageMapper;
 
-    public int deleteByPrimaryKey(int authId) {
-        return tblBankManageMapper.deleteByPrimaryKey(authId);
+    public int deleteByPrimaryKey(BankManageReqParam bankManageReqParam) {
+        int i = 1;
+        for (String bankId : bankManageReqParam.getBankIds()) {
+            i = tblBankManageMapper.deleteByPrimaryKey(bankId);
+            //断言 如果存在更新失败，则抛出异常？？
+            assert i == 0;
+        }
+        return i;
     }
 
     public int insert(TblBankManage record) {
@@ -44,6 +50,7 @@ public class TblBankManageService {
     }
 
     public int updateByPrimaryKey(TblBankManage record) {
+        record.setUpdateTime(new Date());
         return tblBankManageMapper.updateByPrimaryKey(record);
     }
 

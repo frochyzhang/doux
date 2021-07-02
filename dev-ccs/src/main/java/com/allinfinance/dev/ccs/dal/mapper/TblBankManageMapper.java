@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface TblBankManageMapper {
-    int deleteByPrimaryKey(Integer bankId);
+    int deleteByPrimaryKey(@Param("bankId") String bankId);
 
     int insert(TblBankManage record);
 
