@@ -99,6 +99,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 tblMenuAuths.forEach((authMenu)->{
                     menuIds.add(authMenu.getMenuId());
                 });
+                menuIds.add("");
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
                 logger.info("获取数据库菜单：{}",tblMenus.toString());
                 List<TblMenu> tblMenusData = menusData(null, tblMenus);

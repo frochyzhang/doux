@@ -11,6 +11,7 @@ import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 public class BankManageReqParam extends TblBankManage {
     private Integer current;
     private Integer pageSize;
+    private String[] bankIds;
 
     public Integer getCurrent() {
         return current;
@@ -26,5 +27,13 @@ public class BankManageReqParam extends TblBankManage {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String[] getBankIds() {
+        return bankIds;
+    }
+
+    public void setBankIds(String[] bankIds) {
+        this.bankIds = bankIds;
     }
 }

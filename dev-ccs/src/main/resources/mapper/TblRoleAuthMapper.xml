@@ -23,10 +23,12 @@
 
   <select id="selectByRoleId" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from TBL_ROLE_AUTH
+    ROLE_ID, ROLEAUTH.AUTH_ID, ROLEAUTH.UPDATE_TIME, ROLEAUTH.UPDATE_BY, ROLEAUTH.RESERVED_FIELD1, ROLEAUTH.RESERVED_FIELD2, ROLEAUTH.RESERVED_FIELD3
+    from TBL_ROLE_AUTH   ROLEAUTH
+    LEFT JOIN TBL_AUTH AUTH  ON   AUTH.AUTH_ID=ROLEAUTH.AUTH_ID
     where
        ROLE_ID = #{roleId,jdbcType=INTEGER}
+       AND AUTH.IS_AVAILABLE='Y'
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey">

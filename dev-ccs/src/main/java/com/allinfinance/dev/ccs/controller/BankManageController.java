@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,9 +66,12 @@ public class BankManageController {
     //更新银行
     @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
     @ResponseBody
-    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String BankId) {
+    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String BankId,HttpServletRequest request) {
         logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, BankId);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String userName = JwtUtil.getUsername(token);
         tblBank.setBankId(BankId);
+        tblBank.setUpdateBy(userName);
         int result;
         try {
             result = tblBankManageService.updateByPrimaryKey(tblBank);
@@ -92,7 +96,7 @@ public class BankManageController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public Result updateUserInfo(@RequestBody BankManageReqParam BankManageReqParam) {
+    public Result updateBankManage(@RequestBody BankManageReqParam BankManageReqParam) {
         logger.info("接收到的更新银行信息: {}", BankManageReqParam);
         int result = 0;
         try {
@@ -105,19 +109,44 @@ public class BankManageController {
         return Result.success(result);
     }
 
+    /**
+     * 删除银行信息
+     *
+     * @param BankManageReqParam
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody
+    public Result delBankManage(@RequestBody BankManageReqParam bankManageReqParam) {
+        logger.info("删除的银行信息: {}", bankManageReqParam);
+        int result = 0;
+        try {
+            result = tblBankManageService.deleteByPrimaryKey(bankManageReqParam);
+        } catch (Exception e) {
+            logger.error("删除银行异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        logger.info("删除银行执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
+        return Result.success(result);
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Result addBank(@RequestBody BankManageReqParam BankManageReqParam, HttpServletRequest request) {
-        logger.info("接收到的新增银行信息: {}", BankManageReqParam);
+    public Result addBank(@RequestBody BankManageReqParam bankManageReqParam, HttpServletRequest request) {
+        logger.info("接收到的新增银行信息: {}", bankManageReqParam);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String userName = JwtUtil.getUsername(token);
+        // 设置创建和创建时间
+        bankManageReqParam.setCreateBy(userName);
+        bankManageReqParam.setCreateTime(new Date());
         //系统银行重名检查
-        List<TblBankManage> tblBankManages = tblBankManageService.selectByBankInfo(BankManageReqParam);
+        List<TblBankManage> tblBankManages = tblBankManageService.selectByBankInfo(bankManageReqParam);
         if (tblBankManages.size() != 0) {
             return Result.failure("该银行已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
         int result = 0;
         try {
-            result = tblBankManageService.insertSelective(BankManageReqParam);
+            result = tblBankManageService.insertSelective(bankManageReqParam);
         } catch (Exception e) {
             logger.error("新增银行异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);

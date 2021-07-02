@@ -95,11 +95,12 @@
     SELECT ROOT.MENU_ID, ROOT.MENU_NAME, ROOT.PARENT_MID, ROOT.NODE_TYPE, ROOT.ICON, ROOT.SORT, ROOT.PAGE_URL, ROOT.LEVEL,
     ROOT.PATH, ROOT.IS_AVAILABLE,      ROOT.CREATE_TIME, ROOT.CREATE_BY, ROOT.UPDATE_TIME,
     ROOT.UPDATE_BY,ROOT.RESERVED_FIELD1, ROOT.RESERVED_FIELD2,      ROOT.RESERVED_FIELD3,ROOT.ORG
-     FROM TBL_MENU ROOT WHERE ROOT.menu_Id in
+     FROM TBL_MENU ROOT WHERE ROOT.menu_Id in (
     <foreach collection="menuIds" item="menuId" index="index"
-             open="(" close=")" separator=",">
+              separator=",">
       #{menuId}
     </foreach>
+    )
     UNION  ALL
     SELECT CHILD.MENU_ID, CHILD.MENU_NAME, CHILD.PARENT_MID, CHILD.NODE_TYPE, CHILD.ICON, CHILD.SORT, CHILD.PAGE_URL, CHILD.LEVEL,
     CHILD.PATH, CHILD.IS_AVAILABLE,      CHILD.CREATE_TIME, CHILD.CREATE_BY, CHILD.UPDATE_TIME,
@@ -117,11 +118,12 @@
     SELECT <include refid="Base_Column_List" />
     from  TBL_MENU t
     WHERE  t.parent_mid is not null and t.LEVEL=#{level,jdbcType=VARCHAR}
-    and t.MENU_ID in
+    and t.MENU_ID in (
     <foreach collection="menuIds" item="menuId" index="index"
-             open="(" close=")" separator=",">
+              separator=",">
       #{menuId}
     </foreach>
+    )
     ) tt WHERE tt.PARENT_MID=#{parentMid,jdbcType=VARCHAR}
   </select>
 

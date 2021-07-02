@@ -81,7 +81,7 @@ public class UserController {
             }
         }
         //剔除不可用的用户
-        userReqParam.setIsAvailable("1");
+        userReqParam.setIsAvailable("Y");
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
