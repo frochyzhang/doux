@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,6 @@ public interface TblAuthMapper {
     List<TblAuth> selectAuths();
 
     int invalidateAuth(@Param("authId") String authId,@Param("isAvailable") String isAvailable);
+
+    List<TblMenuAuth> selectOnUseAuths(@Param("authIds") String[] authIds);
 }

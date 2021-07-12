@@ -91,16 +91,16 @@ public class BankManageController {
     /**
      * 更新银行信息
      *
-     * @param BankManageReqParam
+     * @param bankManageReqParam
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public Result updateBankManage(@RequestBody BankManageReqParam BankManageReqParam) {
-        logger.info("接收到的更新银行信息: {}", BankManageReqParam);
+    public Result updateBankManage(@RequestBody BankManageReqParam bankManageReqParam) {
+        logger.info("接收到的更新银行信息: {}", bankManageReqParam);
         int result = 0;
         try {
-            result = tblBankManageService.updateByPrimaryKeySelective(BankManageReqParam);
+            result = tblBankManageService.updateByPrimaryKeySelective(bankManageReqParam);
         } catch (Exception e) {
             logger.error("更新银行异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -112,7 +112,7 @@ public class BankManageController {
     /**
      * 删除银行信息
      *
-     * @param BankManageReqParam
+     * @param bankManageReqParam
      * @return
      */
     @RequestMapping(method = RequestMethod.DELETE)

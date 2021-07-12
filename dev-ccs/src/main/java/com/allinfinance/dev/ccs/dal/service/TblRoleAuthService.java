@@ -1,11 +1,15 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,4 +56,9 @@ public class TblRoleAuthService {
     public int deleteByRoleId(String roleId) {
         return tblRoleAuthMapper.deleteByRoleId(roleId);
     }
+
+    public List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam) {
+        return tblRoleAuthMapper.selectOnUseAuth(new ArrayList<>(Arrays.asList(authReqParam.getAuthIds())));
+    }
+
 }

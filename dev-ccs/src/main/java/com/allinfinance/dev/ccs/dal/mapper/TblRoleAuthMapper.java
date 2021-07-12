@@ -1,8 +1,10 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,4 +28,6 @@ public interface TblRoleAuthMapper  {
     List<TblRoleAuth> selectRoleAuths();
 
     int deleteByRoleId(String roleId);
+
+    List<TblRoleAuth> selectOnUseAuth(@Param("authIds") List<String> authIds);
 }
