@@ -54,7 +54,7 @@ public class OptLogController {
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
             //当当前的用户是超级管理员时显示所有列表
-            if (org.equals("000000000000")) {
+            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 logReqParam.setOrg(null);
             } else {
                 logReqParam.setOrg(org);

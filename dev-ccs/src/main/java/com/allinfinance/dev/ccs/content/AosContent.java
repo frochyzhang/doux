@@ -18,6 +18,7 @@ public  class AosContent {
     public static final String NOT_BIND="0";
     public static final String IS_BIND="1";
 
+    public static final String ALLINFINANCE_ORG="000000000000";
 
     public static final String FIRST_PASS="0";
     public static final String NOT_FIRST_PASS="1";

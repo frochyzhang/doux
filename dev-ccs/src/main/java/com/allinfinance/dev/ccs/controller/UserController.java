@@ -77,7 +77,7 @@ public class UserController {
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
             //当当前的用户是超级管理员时显示所有列表
-            if (org.equals("000000000000")) {
+            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 userReqParam.setOrg(null);
             } else {
                 userReqParam.setOrg(org);

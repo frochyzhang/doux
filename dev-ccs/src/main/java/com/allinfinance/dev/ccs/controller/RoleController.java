@@ -58,7 +58,6 @@ public class RoleController {
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);
             logger.info("角色列表: {}",roles);
-
             //获取角色和权限映射
             List<TblRoleAuth> roleAuths = tblRoleAuthService.selectRoleAuths();
             logger.info("角色权限映射: {}",roleAuths);
