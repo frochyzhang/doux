@@ -1,5 +1,7 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
@@ -41,6 +43,11 @@ public class OptLogController {
     @ResponseBody
     @OperLog(operModul = "操作日志-日志列表",operType = AosContent.QUERY,operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
+        if (logReqParam.getTime()!=null){
+            JSONObject ob= JSON.parseObject(logReqParam.getTime());
+            logReqParam.setBeginDate(ob.getString("beginDate"));
+            logReqParam.setEndDate(ob.getString("endDate"));
+        }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
@@ -52,10 +59,6 @@ public class OptLogController {
             } else {
                 logReqParam.setOrg(org);
             }
-        }
-        if (logReqParam.getCurrent()==null || logReqParam.getPageSize()==null){
-            logReqParam.setCurrent(1);
-            logReqParam.setPageSize(10);
         }
         PageInfo<UserLogRespDto> optLogs;
         try {

@@ -12,8 +12,17 @@ public class LogReqParam extends TblUserOptLog {
     private Integer current;
     private Integer pageSize;
     private String userName;
+    private String time;
     private String beginDate;
     private String endDate;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getUserName() {
         return userName;
@@ -23,22 +32,6 @@ public class LogReqParam extends TblUserOptLog {
         this.userName = userName;
     }
 
-
-    public String getBeginDate() {
-        return beginDate;
-    }
-
-    public void setBeginDate(String beginDate) {
-        this.beginDate = beginDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
 
     public Integer getCurrent() {
         return current;
@@ -54,5 +47,21 @@ public class LogReqParam extends TblUserOptLog {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(String beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }
