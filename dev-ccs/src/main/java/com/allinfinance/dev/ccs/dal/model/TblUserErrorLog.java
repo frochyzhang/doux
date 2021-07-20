@@ -2,18 +2,14 @@ package com.allinfinance.dev.ccs.dal.model;
 
 import java.util.Date;
 
-public class TblUserOptLog {
-    private String operId;
+public class TblUserErrorLog {
+    private String excId;
 
-    private String operModule;
+    private String excRequParam;
 
-    private String operType;
+    private String excName;
 
-    private String operDesc;
-
-    private String operRequParam;
-
-    private String operRespParam;
+    private String excMessage;
 
     private String operUserId;
 
@@ -35,52 +31,36 @@ public class TblUserOptLog {
 
     private String org;
 
-    public String getOperId() {
-        return operId;
+    public String getExcId() {
+        return excId;
     }
 
-    public void setOperId(String operId) {
-        this.operId = operId == null ? null : operId.trim();
+    public void setExcId(String excId) {
+        this.excId = excId == null ? null : excId.trim();
     }
 
-    public String getOperModule() {
-        return operModule;
+    public String getExcRequParam() {
+        return excRequParam;
     }
 
-    public void setOperModule(String operModule) {
-        this.operModule = operModule == null ? null : operModule.trim();
+    public void setExcRequParam(String excRequParam) {
+        this.excRequParam = excRequParam == null ? null : excRequParam.trim();
     }
 
-    public String getOperType() {
-        return operType;
+    public String getExcName() {
+        return excName;
     }
 
-    public void setOperType(String operType) {
-        this.operType = operType == null ? null : operType.trim();
+    public void setExcName(String excName) {
+        this.excName = excName == null ? null : excName.trim();
     }
 
-    public String getOperDesc() {
-        return operDesc;
+    public String getExcMessage() {
+        return excMessage;
     }
 
-    public void setOperDesc(String operDesc) {
-        this.operDesc = operDesc == null ? null : operDesc.trim();
-    }
-
-    public String getOperRequParam() {
-        return operRequParam;
-    }
-
-    public void setOperRequParam(String operRequParam) {
-        this.operRequParam = operRequParam == null ? null : operRequParam.trim();
-    }
-
-    public String getOperRespParam() {
-        return operRespParam;
-    }
-
-    public void setOperRespParam(String operRespParam) {
-        this.operRespParam = operRespParam == null ? null : operRespParam.trim();
+    public void setExcMessage(String excMessage) {
+        this.excMessage = excMessage == null ? null : excMessage.trim();
     }
 
     public String getOperUserId() {

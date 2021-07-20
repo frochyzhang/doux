@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
@@ -11,6 +12,7 @@ import com.allinfinance.dev.ccs.dal.service.TblMenuAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ public class AuthController {
 
     //分页查询权限
     @GetMapping
+    @OperLog(operModul = "权限管理-权限列表",operType = AosContent.QUERY,operDesc = "分页查询权限列表")
     public Result selectAuths(AuthReqParam authReqParam) {
         logger.info("AuthReqParam: {}", authReqParam);
         PageInfo<TblAuth> auths;
@@ -81,6 +84,7 @@ public class AuthController {
 
     //更新权限
     @PostMapping
+    @OperLog(operModul = "权限管理-更新权限",operType = AosContent.UPDATE,operDesc = "更新权限信息")
     public Result modifyAuth(@RequestBody TblAuth tblAuth) {
         logger.info("-----------------更新权限-------------------");
         logger.info("权限更新接收到的请求参数: tblAuth-{}", tblAuth);
@@ -112,6 +116,7 @@ public class AuthController {
 
     //新增权限
     @PutMapping
+    @OperLog(operModul = "权限管理-新增权限",operType = AosContent.INSERT,operDesc = "新增权限信息")
     public Result createAuth(@RequestBody TblAuth tblAuth) {
         logger.info("-------------------新增权限---------------------------");
         logger.info("将新增的权限: {}", tblAuth);
@@ -148,6 +153,7 @@ public class AuthController {
     }
 
     @RequestMapping(path = "/menus", method = RequestMethod.GET)
+    @OperLog(operModul = "权限管理-权限列表",operType = AosContent.QUERY,operDesc = "获取权限对应下的列表信息")
     public Result getAuthMenus(@Param("authId") String authId) {
         ArrayList<AuthMenusDto> authMenus;
         try {
@@ -196,6 +202,7 @@ public class AuthController {
 
     //删除一个或多个权限
     @RequestMapping(method = RequestMethod.DELETE)
+    @OperLog(operModul = "权限管理-删除权限",operType = AosContent.DELETE,operDesc = "删除权限信息")
     public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
         logger.info("authReqParam: {}", authReqParam);
         String[] authIds = authReqParam.getAuthIds();
@@ -223,13 +230,10 @@ public class AuthController {
             logger.error("删除权限发生异常", e);
             return Result.failure();
         }
-
         if (result == 1) {
             return Result.success();
         } else {
             return Result.failure();
         }
     }
-
-
 }

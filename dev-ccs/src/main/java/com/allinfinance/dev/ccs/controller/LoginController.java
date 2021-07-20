@@ -6,12 +6,14 @@ import com.allinfinance.dev.ccs.content.RSAKeyProperties;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
 import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
+import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,9 @@ public class LoginController {
     TblUserService userService;
 
     @Autowired
+    private TblMenuService tblMenuService;
+
+    @Autowired
     @Qualifier(value = "rsaKeyProperties")
     private RSAKeyProperties rsaProperties;
 
@@ -54,6 +59,7 @@ public class LoginController {
 
     @RequestMapping(path = "login/reLogin" ,method = RequestMethod.POST)
     @ResponseBody
+    @OperLog(operModul = "系统登录-二次认证",operType = AosContent.QUERY,operDesc = "二次验证登录")
     public Result getMenusList(@RequestBody SecondCheckPassVo checkPassVo,HttpServletRequest request){
         logger.info("接受到的参数:userName-->{},checkCode-->{}", checkPassVo.getUserName(), checkPassVo.getCheckCode());
         String token = request.getHeader(AosContent.AOS_TOKEN);
@@ -83,6 +89,7 @@ public class LoginController {
 
     @RequestMapping(path = "currentUser" ,method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "系统登录-当前用户",operType = AosContent.QUERY,operDesc = "获取当前登录的用户")
     public Result getCurrentUser(HttpServletRequest request){
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String username = JwtUtil.getUsername(token);
@@ -96,6 +103,7 @@ public class LoginController {
 
     @RequestMapping(path = "getQRCodeUrl" ,method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "系统登录-动态口令",operType = AosContent.QUERY,operDesc = "动态口令验证")
     public Result getQRCodeUrl(HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
@@ -136,6 +144,7 @@ public class LoginController {
     }
     @RequestMapping(path = "getPublicKey" ,method = RequestMethod.POST)
     @ResponseBody
+    @OperLog(operModul = "系统登录-登录密钥",operType = AosContent.QUERY,operDesc = "获取登录密钥")
     public Result getPublicKey(HttpServletRequest request){
         return Result.success(rsaProperties.getPublicKey().getEncoded());
     }

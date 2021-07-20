@@ -1,227 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblUserOptLogMapper">
-    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto">
-        <id column="OPERATION_ID" jdbcType="VARCHAR" property="operationId"/>
-        <result column="USER_ID" jdbcType="VARCHAR" property="userId"/>
-        <result column="USER_IP" jdbcType="VARCHAR" property="userIp"/>
-        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
-        <result column="OPERATION_TYPE" jdbcType="VARCHAR" property="operationType"/>
-        <result column="OPERATION_PATH" jdbcType="VARCHAR" property="operationPath"/>
-        <result column="INTERVIEWT_TIME" jdbcType="TIMESTAMP" property="interviewtTime"/>
-        <result column="TABLE_NAME" jdbcType="VARCHAR" property="tableName"/>
-        <result column="COLUMN_NAME" jdbcType="VARCHAR" property="columnName"/>
-        <result column="NEW_VALUE" jdbcType="VARCHAR" property="newValue"/>
-        <result column="OLD_VALUE" jdbcType="VARCHAR" property="oldValue"/>
-        <result column="org" jdbcType="VARCHAR" property="org"/>
-        <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1"/>
-        <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2"/>
-        <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        OPERATION_ID, lg.USER_ID, USER_IP,USER_NAME, OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
-    TABLE_NAME, COLUMN_NAME, NEW_VALUE, OLD_VALUE,lg.org, lg.RESERVED_FIELD1, lg.RESERVED_FIELD2,
-    lg.RESERVED_FIELD3
-    </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from TBL_USER_OPT_LOG
-        where OPERATION_ID = #{operationId,jdbcType=VARCHAR}
-    </select>
-    <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from TBL_USER_OPT_LOG lg
-        LEFT JOIN TBL_USER  us  ON lg.user_id=us.user_id
-        where 1=1
-        <if test="logReqParam!=null">
-            <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
-                and us.USER_NAME like '%${logReqParam.userName}%'
-            </if>
-            <if test="logReqParam.org!=null">
-                and us.org = #{logReqParam.org}
-            </if>
-            <if test="logReqParam.operationType!=null">
-                and OPERATION_TYPE = #{logReqParam.operationType}
-            </if>
-            <if test="logReqParam.beginDate != null and logReqParam.beginDate!=''">
-                and INTERVIEWT_TIME <![CDATA[>=]]> #{logReqParam.beginDate}
-            </if>
-            <if test="logReqParam.endDate != null and logReqParam.endDate!=''">
-                and INTERVIEWT_TIME <![CDATA[<=]]> #{logReqParam.endDate}
-            </if>
-        </if>
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete
-        from TBL_USER_OPT_LOG
-        where OPERATION_ID = #{operationId,jdbcType=VARCHAR}
-    </delete>
-    <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-        insert into TBL_USER_OPT_LOG (USER_ID, USER_IP,
-                                      OPERATION_TYPE, OPERATION_PATH, INTERVIEWT_TIME,
-                                      TABLE_NAME, COLUMN_NAME, NEW_VALUE,
-                                      OLD_VALUE, RESERVED_FIELD1, RESERVED_FIELD2,
-                                      RESERVED_FIELD3)
-        values ( #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
-                #{operationType,jdbcType=VARCHAR}, #{operationPath,jdbcType=VARCHAR},
-                #{interviewtTime,jdbcType=TIMESTAMP},
-                #{tableName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{newValue,jdbcType=VARCHAR},
-                #{oldValue,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
-                #{reservedField3,jdbcType=VARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-        insert into TBL_USER_OPT_LOG
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="operationId != null">
-                OPERATION_ID,
-            </if>
-            <if test="userId != null">
-                USER_ID,
-            </if>
-            <if test="userIp != null">
-                USER_IP,
-            </if>
-            <if test="operationType != null">
-                OPERATION_TYPE,
-            </if>
-            <if test="operationPath != null">
-                OPERATION_PATH,
-            </if>
-            <if test="interviewtTime != null">
-                INTERVIEWT_TIME,
-            </if>
-            <if test="tableName != null">
-                TABLE_NAME,
-            </if>
-            <if test="columnName != null">
-                COLUMN_NAME,
-            </if>
-            <if test="newValue != null">
-                NEW_VALUE,
-            </if>
-            <if test="oldValue != null">
-                OLD_VALUE,
-            </if>
-            <if test="org != null">
-                org,
-            </if>
-            <if test="reservedField1 != null">
-                RESERVED_FIELD1,
-            </if>
-            <if test="reservedField2 != null">
-                RESERVED_FIELD2,
-            </if>
-            <if test="reservedField3 != null">
-                RESERVED_FIELD3,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="operationId != null">
-                #{operationId,jdbcType=VARCHAR},
-            </if>
-            <if test="userId != null">
-                #{userId,jdbcType=VARCHAR},
-            </if>
-            <if test="userIp != null">
-                #{userIp,jdbcType=VARCHAR},
-            </if>
-            <if test="operationType != null">
-                #{operationType,jdbcType=VARCHAR},
-            </if>
-            <if test="operationPath != null">
-                #{operationPath,jdbcType=VARCHAR},
-            </if>
-            <if test="interviewtTime != null">
-                #{interviewtTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="tableName != null">
-                #{tableName,jdbcType=VARCHAR},
-            </if>
-            <if test="columnName != null">
-                #{columnName,jdbcType=VARCHAR},
-            </if>
-            <if test="newValue != null">
-                #{newValue,jdbcType=VARCHAR},
-            </if>
-            <if test="oldValue != null">
-                #{oldValue,jdbcType=VARCHAR},
-            </if>
-            <if test="org != null">
-                #{org,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField1 != null">
-                #{reservedField1,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField2 != null">
-                #{reservedField2,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField3 != null">
-                #{reservedField3,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-        update TBL_USER_OPT_LOG
-        <set>
-            <if test="userId != null">
-                USER_ID = #{userId,jdbcType=VARCHAR},
-            </if>
-            <if test="userIp != null">
-                USER_IP = #{userIp,jdbcType=VARCHAR},
-            </if>
-            <if test="operationType != null">
-                OPERATION_TYPE = #{operationType,jdbcType=VARCHAR},
-            </if>
-            <if test="operationPath != null">
-                OPERATION_PATH = #{operationPath,jdbcType=VARCHAR},
-            </if>
-            <if test="interviewtTime != null">
-                INTERVIEWT_TIME = #{interviewtTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="tableName != null">
-                TABLE_NAME = #{tableName,jdbcType=VARCHAR},
-            </if>
-            <if test="columnName != null">
-                COLUMN_NAME = #{columnName,jdbcType=VARCHAR},
-            </if>
-            <if test="newValue != null">
-                NEW_VALUE = #{newValue,jdbcType=VARCHAR},
-            </if>
-            <if test="oldValue != null">
-                OLD_VALUE = #{oldValue,jdbcType=VARCHAR},
-            </if>
-            <if test="org != null">
-                org = #{oldValue,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField1 != null">
-                RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField2 != null">
-                RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField3 != null">
-                RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where OPERATION_ID = #{operationId,jdbcType=VARCHAR}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-        update TBL_USER_OPT_LOG
-        set USER_ID         = #{userId,jdbcType=VARCHAR},
-            USER_IP         = #{userIp,jdbcType=VARCHAR},
-            OPERATION_TYPE  = #{operationType,jdbcType=VARCHAR},
-            OPERATION_PATH  = #{operationPath,jdbcType=VARCHAR},
-            INTERVIEWT_TIME = #{interviewtTime,jdbcType=TIMESTAMP},
-            TABLE_NAME      = #{tableName,jdbcType=VARCHAR},
-            COLUMN_NAME     = #{columnName,jdbcType=VARCHAR},
-            NEW_VALUE       = #{newValue,jdbcType=VARCHAR},
-            OLD_VALUE       = #{oldValue,jdbcType=VARCHAR},
-            org             = #{org,jdbcType=VARCHAR},
-            RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-            RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-            RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-        where OPERATION_ID = #{operationId,jdbcType=VARCHAR}
-    </update>
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    <id column="OPER_ID" jdbcType="VARCHAR" property="operId" />
+    <result column="OPER_MODULE" jdbcType="VARCHAR" property="operModule" />
+    <result column="OPER_TYPE" jdbcType="VARCHAR" property="operType" />
+    <result column="OPER_DESC" jdbcType="VARCHAR" property="operDesc" />
+    <result column="OPER_REQU_PARAM" jdbcType="VARCHAR" property="operRequParam" />
+    <result column="OPER_RESP_PARAM" jdbcType="VARCHAR" property="operRespParam" />
+    <result column="OPER_USER_ID" jdbcType="VARCHAR" property="operUserId" />
+    <result column="OPER_USER_NAME" jdbcType="VARCHAR" property="operUserName" />
+    <result column="OPER_METHOD" jdbcType="VARCHAR" property="operMethod" />
+    <result column="OPER_URI" jdbcType="VARCHAR" property="operUri" />
+    <result column="OPER_IP" jdbcType="VARCHAR" property="operIp" />
+    <result column="OPER_CREATE_TIME" jdbcType="TIMESTAMP" property="operCreateTime" />
+    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
+    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
+    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
+    <result column="ORG" jdbcType="VARCHAR" property="org" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    OPER_ID, OPER_MODULE, OPER_TYPE, OPER_DESC, OPER_REQU_PARAM, OPER_RESP_PARAM, OPER_USER_ID, 
+    OPER_USER_NAME, OPER_METHOD, OPER_URI, OPER_IP, OPER_CREATE_TIME, RESERVED_FIELD1, 
+    RESERVED_FIELD2, RESERVED_FIELD3, ORG
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CES_TEST.TBL_USER_OPT_LOG
+    where OPER_ID = #{operId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CES_TEST.TBL_USER_OPT_LOG
+    where OPER_ID = #{operId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    insert into CES_TEST.TBL_USER_OPT_LOG (OPER_MODULE, OPER_TYPE,
+      OPER_DESC, OPER_REQU_PARAM, OPER_RESP_PARAM, 
+      OPER_USER_ID, OPER_USER_NAME, OPER_METHOD, 
+      OPER_URI, OPER_IP, OPER_CREATE_TIME, 
+      RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3, 
+      ORG)
+    values (#{operModule,jdbcType=VARCHAR}, #{operType,jdbcType=VARCHAR},
+      #{operDesc,jdbcType=VARCHAR}, #{operRequParam,jdbcType=VARCHAR}, #{operRespParam,jdbcType=VARCHAR}, 
+      #{operUserId,jdbcType=VARCHAR}, #{operUserName,jdbcType=VARCHAR}, #{operMethod,jdbcType=VARCHAR}, 
+      #{operUri,jdbcType=VARCHAR}, #{operIp,jdbcType=VARCHAR}, #{operCreateTime,jdbcType=TIMESTAMP},
+      #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR}, 
+      #{org,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    insert into CES_TEST.TBL_USER_OPT_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="operId != null">
+        OPER_ID,
+      </if>
+      <if test="operModule != null">
+        OPER_MODULE,
+      </if>
+      <if test="operType != null">
+        OPER_TYPE,
+      </if>
+      <if test="operDesc != null">
+        OPER_DESC,
+      </if>
+      <if test="operRequParam != null">
+        OPER_REQU_PARAM,
+      </if>
+      <if test="operRespParam != null">
+        OPER_RESP_PARAM,
+      </if>
+      <if test="operUserId != null">
+        OPER_USER_ID,
+      </if>
+      <if test="operUserName != null">
+        OPER_USER_NAME,
+      </if>
+      <if test="operMethod != null">
+        OPER_METHOD,
+      </if>
+      <if test="operUri != null">
+        OPER_URI,
+      </if>
+      <if test="operIp != null">
+        OPER_IP,
+      </if>
+      <if test="operCreateTime != null">
+        OPER_CREATE_TIME,
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1,
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2,
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3,
+      </if>
+      <if test="org != null">
+        ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="operId != null">
+        #{operId,jdbcType=VARCHAR},
+      </if>
+      <if test="operModule != null">
+        #{operModule,jdbcType=VARCHAR},
+      </if>
+      <if test="operType != null">
+        #{operType,jdbcType=VARCHAR},
+      </if>
+      <if test="operDesc != null">
+        #{operDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="operRequParam != null">
+        #{operRequParam,jdbcType=VARCHAR},
+      </if>
+      <if test="operRespParam != null">
+        #{operRespParam,jdbcType=VARCHAR},
+      </if>
+      <if test="operUserId != null">
+        #{operUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="operUserName != null">
+        #{operUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="operMethod != null">
+        #{operMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="operUri != null">
+        #{operUri,jdbcType=VARCHAR},
+      </if>
+      <if test="operIp != null">
+        #{operIp,jdbcType=VARCHAR},
+      </if>
+      <if test="operCreateTime != null">
+        #{operCreateTime,jdbcType=DATE},
+      </if>
+      <if test="reservedField1 != null">
+        #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        #{reservedField3,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    update CES_TEST.TBL_USER_OPT_LOG
+    <set>
+      <if test="operModule != null">
+        OPER_MODULE = #{operModule,jdbcType=VARCHAR},
+      </if>
+      <if test="operType != null">
+        OPER_TYPE = #{operType,jdbcType=VARCHAR},
+      </if>
+      <if test="operDesc != null">
+        OPER_DESC = #{operDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="operRequParam != null">
+        OPER_REQU_PARAM = #{operRequParam,jdbcType=VARCHAR},
+      </if>
+      <if test="operRespParam != null">
+        OPER_RESP_PARAM = #{operRespParam,jdbcType=VARCHAR},
+      </if>
+      <if test="operUserId != null">
+        OPER_USER_ID = #{operUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="operUserName != null">
+        OPER_USER_NAME = #{operUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="operMethod != null">
+        OPER_METHOD = #{operMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="operUri != null">
+        OPER_URI = #{operUri,jdbcType=VARCHAR},
+      </if>
+      <if test="operIp != null">
+        OPER_IP = #{operIp,jdbcType=VARCHAR},
+      </if>
+      <if test="operCreateTime != null">
+        OPER_CREATE_TIME = #{operCreateTime,jdbcType=DATE},
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        ORG = #{org,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where OPER_ID = #{operId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
+    update CES_TEST.TBL_USER_OPT_LOG
+    set OPER_MODULE = #{operModule,jdbcType=VARCHAR},
+      OPER_TYPE = #{operType,jdbcType=VARCHAR},
+      OPER_DESC = #{operDesc,jdbcType=VARCHAR},
+      OPER_REQU_PARAM = #{operRequParam,jdbcType=VARCHAR},
+      OPER_RESP_PARAM = #{operRespParam,jdbcType=VARCHAR},
+      OPER_USER_ID = #{operUserId,jdbcType=VARCHAR},
+      OPER_USER_NAME = #{operUserName,jdbcType=VARCHAR},
+      OPER_METHOD = #{operMethod,jdbcType=VARCHAR},
+      OPER_URI = #{operUri,jdbcType=VARCHAR},
+      OPER_IP = #{operIp,jdbcType=VARCHAR},
+      OPER_CREATE_TIME = #{operCreateTime,jdbcType=DATE},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      ORG = #{org,jdbcType=VARCHAR}
+    where OPER_ID = #{operId,jdbcType=VARCHAR}
+  </update>
+  <!--自定义SQL-->
+  <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from TBL_USER_OPT_LOG lg
+    where 1=1
+    <if test="logReqParam!=null">
+      <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
+        and lg.OPER_USER_NAME like '%${logReqParam.operUserName}%'
+      </if>
+      <if test="logReqParam.org!=null">
+        and lg.org = #{logReqParam.org}
+      </if>
+      <if test="logReqParam.operType!=null">
+        and OPER_TYPE = #{logReqParam.operType}
+      </if>
+      <if test="logReqParam.beginDate != null and logReqParam.beginDate!=''">
+        and OPER_CREATE_TIME <![CDATA[>=]]> #{logReqParam.beginDate}
+      </if>
+      <if test="logReqParam.endDate != null and logReqParam.endDate!=''">
+        and OPER_CREATE_TIME <![CDATA[<=]]> #{logReqParam.endDate}
+      </if>
+    </if>
+  </select>
 </mapper>

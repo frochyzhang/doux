@@ -14,6 +14,7 @@ import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
 import com.allinfinance.dev.ccs.utils.RSAUtils;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +73,7 @@ public class AccountController {
 
     @RequestMapping(path = "updateNewPass", method = RequestMethod.POST)
     @ResponseBody
+    @OperLog(operModul = "账户管理-更新密码",operType = AosContent.UPDATE,operDesc = "更新账户密码")
     public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);

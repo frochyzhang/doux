@@ -7,6 +7,7 @@ import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class OptLogController {
      */
     @RequestMapping(path = "/opts", method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "操作日志-日志列表",operType = AosContent.QUERY,operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader( AosContent.AOS_TOKEN);

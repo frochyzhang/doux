@@ -11,6 +11,7 @@ import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class UserController {
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
@@ -62,6 +64,7 @@ public class UserController {
      * @param userReqParam
      * @return
      */
+    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "查询用户列表")
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
@@ -81,7 +84,7 @@ public class UserController {
             }
         }
         //剔除不可用的用户
-        userReqParam.setIsAvailable("Y");
+        userReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
@@ -101,6 +104,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
+    @OperLog(operModul = "用户管理-新增用户",operType = AosContent.INSERT,operDesc = "新增用户信息")
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
         //设置初始密码
@@ -148,6 +152,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
+    @OperLog(operModul = "用户管理-更新用户",operType = AosContent.UPDATE,operDesc = "更新用户信息")
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时启用加密
@@ -173,6 +178,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
+    @OperLog(operModul = "用户管理-删除用户",operType = AosContent.DELETE,operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         logger.info("请求的uri: {}", requestURI);

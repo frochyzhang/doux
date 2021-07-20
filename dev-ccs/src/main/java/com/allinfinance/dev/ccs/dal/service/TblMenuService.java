@@ -29,6 +29,8 @@ public interface TblMenuService {
 
     List<CurrentMenusDto> getCurrMenus(String  userId);
 
+    String[] getCurrPowers(String  userId);
+
     String selectMaxMenuIdByRoot(TblMenu tblMenu);
 
     String selectMaxMenuId(TblMenu tblMenu);

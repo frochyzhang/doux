@@ -9,6 +9,7 @@ import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class TtblMenuController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "菜单管理-查询菜单",operType = AosContent.QUERY,operDesc = "分页查询菜单列表")
     public Result getMenusList(MenusReqParam menusReqParam) {
         logger.info("菜单查询开始，接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
         PageInfo<MenusReqParam> optLogs;
@@ -51,6 +53,7 @@ public class TtblMenuController {
 
     @GetMapping(value = "/getCurrMenus")
     @ResponseBody
+    @OperLog(operModul = "菜单管理-当前菜单",operType = AosContent.QUERY,operDesc = "获取当前用户可访问菜单列表")
     public Result getCurrMenus(HttpServletRequest request) {
         String token = request.getHeader( AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
@@ -67,8 +70,26 @@ public class TtblMenuController {
         return Result.success(currentMenusDtos.toArray());
     }
 
+    @GetMapping(value = "/getCurrPowers")
+    @ResponseBody
+    @OperLog(operModul = "菜单管理-当前权限",operType = AosContent.QUERY,operDesc = "获取当前用户拥有的按钮权限")
+    public Result getCurrPowers(HttpServletRequest request) {
+        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String userId = JwtUtil.getUserId(token);
+        logger.info("获取当前用户所有权限数据开始:userId-->{}", userId);
+        String[]  currPowers;
+        try {
+            currPowers = tblMenuService.getCurrPowers(userId);
+        } catch (Exception e) {
+            logger.error("查询当前用户所有权限数据异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        return Result.success(currPowers);
+    }
+
     @PostMapping
     @ResponseBody
+    @OperLog(operModul = "菜单管理-新增菜单",operType = AosContent.INSERT,operDesc = "新增菜单信息")
     public Result addMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
         logger.info("菜单新增接口接收参数-->{}", tblMenu.toString());
         String token = request.getHeader( AosContent.AOS_TOKEN);
@@ -105,6 +126,10 @@ public class TtblMenuController {
                     tblMenu.setMenuId(nextMenuId);
                 }
             }
+            //为了防止可能出现的重复问题，在每个模块配置的时候添加上父节点id
+            if (tblMenu.getNodeType().equals(AosContent.MENU_BTN)){
+                tblMenu.setPath(tblMenu.getParentMid()+":"+tblMenu.getPath());
+            }
             tblMenuService.addMenu(tblMenu);
         } catch (RuntimeException e) {
             logger.error("新增菜单异常!", e);
@@ -115,6 +140,7 @@ public class TtblMenuController {
 
     @PutMapping
     @ResponseBody
+    @OperLog(operModul = "菜单管理-更新菜单",operType = AosContent.UPDATE,operDesc = "更新菜单信息")
     public Result updateMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
         logger.info("菜单更新接口开始，接收参数-->{}", tblMenu.toString());
         try {
@@ -132,6 +158,7 @@ public class TtblMenuController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
+    @OperLog(operModul = "菜单管理-删除菜单",operType = AosContent.DELETE,operDesc = "删除菜单信息")
     public Result delMenu(@RequestBody MenusReqParam menusReqParam) {
         String[] menusId = menusReqParam.getMenusId();
         logger.info("菜单删除接口接收参数-->{}", (menusId));

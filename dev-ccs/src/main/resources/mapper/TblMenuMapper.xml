@@ -107,10 +107,51 @@
     CHILD.UPDATE_BY,CHILD.RESERVED_FIELD1, CHILD.RESERVED_FIELD2,      CHILD.RESERVED_FIELD3,CHILD.ORG
     FROM childNode PARENT, TBL_MENU CHILD WHERE PARENT.menu_Id = CHILD.PARENT_MID
     )
-    SELECT DISTINCT <include refid="Base_Column_List" /> FROM childNode
+    SELECT DISTINCT <include refid="Base_Column_List" /> FROM childNode WHERE NODE_TYPE!=3
     UNION
-    SELECT DISTINCT <include refid="Base_Column_List" />FROM parentNode
+    SELECT DISTINCT <include refid="Base_Column_List" />FROM parentNode WHERE NODE_TYPE!=3
 
+  </select>
+
+<!--查询用户的具有页面按钮的所有的访问权限-->
+  <select id="selectMenusPowers"  resultMap="BaseResultMap">
+    WITH parentNode(<include refid="Base_Column_List" />) AS
+    (
+    SELECT <include refid="Base_Column_List" />
+    FROM TBL_MENU b
+    WHERE b.menu_Id in
+    <foreach collection="menuIds" item="menuId" index="index"
+             open="(" close=")" separator=",">
+      #{menuId}
+    </foreach>
+    and b.menu_Id not in (select a.menu_Id from TBL_MENU a where a.PARENT_MID=b.menu_Id)
+    UNION ALL
+    SELECT nplus1.MENU_ID, nplus1.MENU_NAME, nplus1.PARENT_MID, nplus1.NODE_TYPE, nplus1.ICON, nplus1.SORT, nplus1.PAGE_URL, nplus1.LEVEL,
+    nplus1.PATH, nplus1.IS_AVAILABLE,      nplus1.CREATE_TIME, nplus1.CREATE_BY, nplus1.UPDATE_TIME,
+    nplus1.UPDATE_BY,nplus1.RESERVED_FIELD1, nplus1.RESERVED_FIELD2,      nplus1.RESERVED_FIELD3,nplus1.ORG
+    FROM TBL_MENU as nplus1, parentNode
+    WHERE parentNode.PARENT_MID = nplus1.menu_Id
+    )
+    ,childNode (<include refid="Base_Column_List" />) AS
+    (
+    SELECT ROOT.MENU_ID, ROOT.MENU_NAME, ROOT.PARENT_MID, ROOT.NODE_TYPE, ROOT.ICON, ROOT.SORT, ROOT.PAGE_URL, ROOT.LEVEL,
+    ROOT.PATH, ROOT.IS_AVAILABLE,      ROOT.CREATE_TIME, ROOT.CREATE_BY, ROOT.UPDATE_TIME,
+    ROOT.UPDATE_BY,ROOT.RESERVED_FIELD1, ROOT.RESERVED_FIELD2,      ROOT.RESERVED_FIELD3,ROOT.ORG
+    FROM TBL_MENU ROOT WHERE ROOT.menu_Id in (
+    <foreach collection="menuIds" item="menuId" index="index"
+             separator=",">
+      #{menuId}
+    </foreach>
+    )
+    UNION  ALL
+    SELECT CHILD.MENU_ID, CHILD.MENU_NAME, CHILD.PARENT_MID, CHILD.NODE_TYPE, CHILD.ICON, CHILD.SORT, CHILD.PAGE_URL, CHILD.LEVEL,
+    CHILD.PATH, CHILD.IS_AVAILABLE,      CHILD.CREATE_TIME, CHILD.CREATE_BY, CHILD.UPDATE_TIME,
+    CHILD.UPDATE_BY,CHILD.RESERVED_FIELD1, CHILD.RESERVED_FIELD2,      CHILD.RESERVED_FIELD3,CHILD.ORG
+    FROM childNode PARENT, TBL_MENU CHILD WHERE PARENT.menu_Id = CHILD.PARENT_MID
+    )
+    SELECT DISTINCT <include refid="Base_Column_List" /> FROM childNode WHERE NODE_TYPE=3
+    UNION
+    SELECT DISTINCT <include refid="Base_Column_List" />FROM parentNode WHERE NODE_TYPE=3
   </select>
   <!--通过parentId查询下级目录-->
   <select id="selectMenusPathByPMid"  resultMap="BaseResultMap">

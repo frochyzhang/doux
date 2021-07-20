@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -115,6 +116,39 @@ public class TtblMenuServiceImpl implements TblMenuService {
             }
         }
         return new ArrayList<CurrentMenusDto>();
+    }
+
+    @Override
+    public String[] getCurrPowers(String userId) {
+        // 查询当前用户
+        TblUser tblUser = userMapper.selectByPrimaryKey(userId);
+        if (tblUser != null) {
+            //通过当前用户的角色查询权限
+            TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
+            tblRoleAuthKey.setRoleId(tblUser.getRoleId());
+            // 获取的role和Auth的关联表
+            List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
+            if (tblRoleAuths.size() > 0) {
+                // 获取的角色的权限列表信息
+                ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
+                tblRoleAuths.forEach(roleAuth -> {
+                    authIds.add(roleAuth.getAuthId());
+                });
+
+                // 通过权限id查询菜单
+                List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
+                ArrayList<String> menuIds = new ArrayList<>();
+                tblMenuAuths.forEach((authMenu)->{
+                    menuIds.add(authMenu.getMenuId());
+                });
+                menuIds.add("");
+                List<TblMenu> tblMenus = tblMenuMapper.selectMenusPowers(menuIds);
+                logger.info("当前用户的菜单权限：{}条",tblMenus.size());
+                String collect = tblMenus.stream().map(item -> String.valueOf(item.getPath())).collect(Collectors.joining(","));
+                return  collect.split(",");
+            }
+        }
+        return new String[0];
     }
 
     @Override

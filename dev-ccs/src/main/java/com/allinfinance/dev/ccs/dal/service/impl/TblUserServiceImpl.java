@@ -1,12 +1,10 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
-import com.allinfinance.dev.ccs.dal.mapper.TblUserOptLogMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
-import com.allinfinance.dev.ccs.result.OperTypeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +38,6 @@ public class TblUserServiceImpl implements TblUserService {
     public int deleteByPrimaryKey(UserReqParam userReqParam) {
         //逻辑删除，只是说将用户变为不可用
         TblUserOptLog optLog = new TblUserOptLog();
-        optLog.setInterviewtTime(new Date());
-        optLog.setUserId("10.250.2.7");
-        // optLog.setColumnName();
-        optLog.setOperationPath(userReqParam.getReservedField1());
-        optLog.setTableName("TBL_USER");
-        optLog.setOperationType(OperTypeEnum.UPDATE.code());
 //        int res = tblUserOptLogMapper.insertSelective(optLog);
 //        assert res == 0;
         int i = 1;

@@ -4,6 +4,7 @@ public  class AosContent {
     public static  final String  LEVEL_0="0";//根目录
     public static  final String  LEVEL_1="1";//一级菜单
     public static  final String  LEVEL_2="2";//二级菜单
+    public static  final String  MENU_BTN="3";//菜单按钮
 
     // 此状态为权限控制框架需要，业务无需更改
     public static  final String  ACCOUNT_OK="1"; //账户正常
@@ -25,5 +26,11 @@ public  class AosContent {
     public static final String IS_AVAILABLE_FALSE="N";//无效
 
     public static final String MENU_ID_ROOT="001";//根节点初始化值
+
+    //操作类型
+    public static final String QUERY = "query";
+    public static final String DELETE = "delete";
+    public static final String UPDATE = "update";
+    public static final String INSERT = "insert";
 
 }

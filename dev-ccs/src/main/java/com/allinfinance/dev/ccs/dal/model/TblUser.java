@@ -56,6 +56,7 @@ public class TblUser implements Serializable {
 
     private String credentialsNotExpired;
 
+
     private static final long serialVersionUID = 1L;
 
     public String getUserId() {
