@@ -11,6 +11,7 @@ import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
+import com.allinfinance.dev.ccs.utils.RSAUtils;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class UserController {
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
-            //当当前的用户是超级管理员时显示所有列表
+            //当前的用户是超级管理员时显示所有列表
             if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 userReqParam.setOrg(null);
             } else {
@@ -155,9 +156,16 @@ public class UserController {
     @OperLog(operModul = "用户管理-更新用户",operType = AosContent.UPDATE,operDesc = "更新用户信息")
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
-        //当接收到的密码字段不为空时启用加密
+        //当接收到的密码字段不为空时先解密再加密
         if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
-            userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+            String decryptPass = null;
+            try {
+                decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
+            } catch (Exception e) {
+                logger.error("密文解密错误！",e);
+                return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+            }
+            userReqParam.setUserPass(passwordEncoder.encode(decryptPass));
         }
         int result = 0;
         try {
