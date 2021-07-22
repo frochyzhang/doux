@@ -43,33 +43,38 @@ public class RoleController {
 
     //分页查询角色
     @RequestMapping(method = RequestMethod.GET)
-    @OperLog(operModul = "角色管理-角色列表",operType = AosContent.QUERY,operDesc = "分页查询角色列表")
+    @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "分页查询角色列表")
     public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
         logger.info("roleReqParam:-{}", roleReqParam);
         // 获取当前用户的id
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
+        //  获取当前用户的机构号
+        String org = JwtUtil.getOrg(token);
+        if (!AosContent.ALLINFINANCE_ORG.equals(org)){
+            roleReqParam.setOrg(org);
+        }
         roleReqParam.setUserId(userId);
         if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
             roleReqParam.setCurrent(1);
-            roleReqParam.setPageSize(10);
+            roleReqParam.setPageSize(20);
         }
         PageInfo<TblRole> roles;
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);
-            logger.info("角色列表: {}",roles);
+            logger.info("角色列表: {}", roles);
             //获取角色和权限映射
             List<TblRoleAuth> roleAuths = tblRoleAuthService.selectRoleAuths();
-            logger.info("角色权限映射: {}",roleAuths);
+            logger.info("角色权限映射: {}", roleAuths);
             HashMap<String, ArrayList<String>> roleAuthMapping = new HashMap<>();
-            for (TblRoleAuth tblRoleAuth : roleAuths){
+            for (TblRoleAuth tblRoleAuth : roleAuths) {
                 ArrayList<String> auths = roleAuthMapping.computeIfAbsent(tblRoleAuth.getRoleId(), k -> new ArrayList<>());
                 auths.add(tblRoleAuth.getAuthId());
             }
-            logger.info("roleAuthMapping: {}",roleAuthMapping);
+            logger.info("roleAuthMapping: {}", roleAuthMapping);
 
             List<TblRole> roleList = roles.getList();
-            for (TblRole tblRole: roleList){
+            for (TblRole tblRole : roleList) {
                 tblRole.setAuth(roleAuthMapping.get(tblRole.getRoleId()));
             }
         } catch (Exception e) {
@@ -83,7 +88,7 @@ public class RoleController {
 
     //更新角色
     @RequestMapping(method = RequestMethod.POST)
-    @OperLog(operModul = "角色管理-更新角色",operType = AosContent.UPDATE,operDesc = "更新角色信息")
+    @OperLog(operModul = "角色管理-更新角色", operType = AosContent.UPDATE, operDesc = "更新角色信息")
     public Result modifyRole(@RequestBody TblRole tblRole) {
         logger.info("更新角色,接收到的请求参数: tblRole:{}", tblRole);
         int result;
@@ -107,9 +112,9 @@ public class RoleController {
 
     private void createRoleAuthMapping(TblRole tblRole) {
         ArrayList<String> auths = tblRole.getAuth();
-        logger.info("Auths: {}",auths);
-        if (auths != null && auths.size() > 0){
-            for(String auth:auths){
+        logger.info("Auths: {}", auths);
+        if (auths != null && auths.size() > 0) {
+            for (String auth : auths) {
                 TblRoleAuth record = new TblRoleAuth();
                 record.setRoleId(tblRole.getRoleId());
                 record.setAuthId(auth);
@@ -120,28 +125,28 @@ public class RoleController {
 
     //新增角色
     @RequestMapping(method = RequestMethod.PUT)
-    @OperLog(operModul = "角色管理-新增角色",operType = AosContent.INSERT,operDesc = "新增角色信息")
+    @OperLog(operModul = "角色管理-新增角色", operType = AosContent.INSERT, operDesc = "新增角色信息")
     public Result createRole(@RequestBody TblRole tblRole) {
         logger.info("将新增的角色: {}", tblRole);
         int result;
         try {
             //插入权限表
             result = tblRoleService.insertSelective(tblRole);
-            logger.info("插入权限后: tblRole--{}",tblRole);
+            logger.info("插入权限后: tblRole--{}", tblRole);
             //插入角色权限映射
             createRoleAuthMapping(tblRole);
             //查询API_PERMISSION
-            List<TblPermissionInfo> permissionInfos  = tblRoleService.selectPermissionInfos();
-            logger.info("查询到的所有permission code: {}",permissionInfos);
+            List<TblPermissionInfo> permissionInfos = tblRoleService.selectPermissionInfos();
+            logger.info("查询到的所有permission code: {}", permissionInfos);
             //插入AUTH_PERMISSION_CODE
-            for (TblPermissionInfo tblPermissionInfo: permissionInfos){
+            for (TblPermissionInfo tblPermissionInfo : permissionInfos) {
                 TblRolePermissionInfo rolePermissionInfo = new TblRolePermissionInfo();
                 rolePermissionInfo.setRoleId(tblRole.getRoleId());
                 rolePermissionInfo.setPermissioncode(tblPermissionInfo.getPermissioncode());
-                logger.info("插入权限代码前 rolePermissionInfo: {}",rolePermissionInfo);
+                logger.info("插入权限代码前 rolePermissionInfo: {}", rolePermissionInfo);
                 int permissionCode = tblRoleService.insertRolePermissionInfoSelective(rolePermissionInfo);
-                logger.info("插入权限代码结果: {}",permissionCode);
-                logger.info("插入后: rolePermissionInfo--{}",rolePermissionInfo);
+                logger.info("插入权限代码结果: {}", permissionCode);
+                logger.info("插入后: rolePermissionInfo--{}", rolePermissionInfo);
             }
 
         } catch (Exception e) {
@@ -157,36 +162,35 @@ public class RoleController {
     }
 
 
-
     //删除一个或多个角色
     @RequestMapping(method = RequestMethod.DELETE)
-    @OperLog(operModul = "角色管理-删除角色",operType = AosContent.DELETE,operDesc = "删除菜单信息")
+    @OperLog(operModul = "角色管理-删除角色", operType = AosContent.DELETE, operDesc = "删除菜单信息")
     public Result deleteRoles(@RequestBody RoleReqParam roleReqParam) {
         logger.info("**************************************");
-        logger.info("roleReqParam: {}",roleReqParam);
+        logger.info("roleReqParam: {}", roleReqParam);
         String[] roleIds = roleReqParam.getRoleIds();
         logger.info("待删除的角色-roleIds: {}", roleIds);
         int result = 0;
         try {
-            if (roleIds != null && roleIds.length > 0){
-                for (String roleId:roleIds){
+            if (roleIds != null && roleIds.length > 0) {
+                for (String roleId : roleIds) {
 //                    //删除角色和权限映射
 //                    int i = tblRoleAuthService.deleteByRoleId(roleId);
                     //删除角色
 //                    result = tblRoleService.deleteByPrimaryKey(roleId);
 //                    删除PERMISSION CODE
                     int delResult = tblRoleService.deleteRolePermissionInfoByRoleId(roleId);
-                    logger.info("删除权限代码结果: {}",delResult);
+                    logger.info("删除权限代码结果: {}", delResult);
                     //使角色无效
                     result = tblRoleService.invalidateRole(roleId);
-                    logger.info("result={}",result);
+                    logger.info("result={}", result);
                 }
             }
         } catch (Exception e) {
             logger.error("删除角色发生异常", e);
             return Result.failure();
         }
-        
+
         if (result == 1) {
             return Result.success();
         } else {
