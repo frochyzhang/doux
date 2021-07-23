@@ -111,7 +111,10 @@ public class TblUserOptLogAspect {
             operlog.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
             operlog.setOperUri(request.getRequestURI()); // 请求URI
             operlog.setOperCreateTime(new Date()); // 创建时间
-            tblOptLogService.insertLog(operlog);
+            // 实际使用中因为查询操作太多 所以剔除部分无意义的查询日志  主要是无参数查询
+            if (!(operlog.getOperType().equals(AosContent.QUERY)&&operlog.getOperRequParam().equals("{}"))){
+                tblOptLogService.insertLog(operlog);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
