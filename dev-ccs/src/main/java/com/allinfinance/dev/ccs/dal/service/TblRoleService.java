@@ -7,6 +7,7 @@ import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -65,7 +66,11 @@ public class TblRoleService {
     public PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) {
         PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
         List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
-        return new PageInfo<TblRole>(users);
+        return new PageInfo<>(users);
+    }
+
+    public List<TblRole> pageRoles(RoleReqParam roleReqParam) {
+        return tblRoleMapper.SelectRoles(roleReqParam);
     }
 
     public int invalidateRole(String roleId) {
@@ -84,4 +89,5 @@ public class TblRoleService {
     public int deleteRolePermissionInfoByRoleId(String roleId) {
         return tblRolePermissionInfoMapper.deleteRolePermissionInfoByRoleId(roleId);
     }
+
 }

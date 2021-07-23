@@ -1,9 +1,11 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TblUserMapper  {
@@ -25,4 +27,6 @@ public interface TblUserMapper  {
     List<TblUser> pageSelectUsers(@Param("userReqParam") UserReqParam userReqParam);
 
     TblUser selectByNameAndOrg(@Param("userReqParam") UserReqParam userReqParam);
+
+    List<TblUser> selectUsersByRoleIds(@Param("roleIds") List<String> roleIds);
 }

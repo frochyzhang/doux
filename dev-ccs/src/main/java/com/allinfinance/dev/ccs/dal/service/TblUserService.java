@@ -2,9 +2,12 @@ package com.allinfinance.dev.ccs.dal.service;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 
 import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 
 /**
@@ -35,4 +38,6 @@ public interface TblUserService {
     public TblUser selectCurrentUser(String  userName) ;
 
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) ;
+
+    List<TblUser> selectOnUseRoles(RoleReqParam roleReqParam);
 }

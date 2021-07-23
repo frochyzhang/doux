@@ -205,6 +205,31 @@
       </if>
     </if>
   </select>
+<!--无分页的角色查询-->
+  <select id="SelectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
+  resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from TBL_ROLE a where 1=1
+  and (cast(a.WEIGHT as bigint) &lt; (select cast(re.WEIGHT as bigint) from  tbl_role re,tbl_user ur where re.role_id=ur.role_id  and USER_ID = ${roleReqParam.userId}))
+  <if test="roleReqParam!=null">
+    <if test="roleReqParam.roleId!=null and roleReqParam.roleId!=0">
+      and ROLE_ID = ${roleReqParam.roleId}
+    </if>
+    <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
+      and ROLE_NAME like  '%${roleReqParam.roleName}%'
+    </if>
+    <if test="roleReqParam.isAvailable!=null and roleReqParam.isAvailable!='' ">
+      and IS_AVAILABLE  =  #{roleReqParam.isAvailable}
+    </if>
+    <if test="roleReqParam.org != null and roleReqParam.org != '' ">
+      and ORG  =  #{roleReqParam.org}
+    </if>
+    <if test="roleReqParam.weight != null and roleReqParam.org != 0 ">
+      and WEIGHT  =  #{roleReqParam.weight}
+    </if>
+  </if>
+</select>
 
   <update id="invalidateRole" parameterType="java.lang.String">
     update TBL_ROLE

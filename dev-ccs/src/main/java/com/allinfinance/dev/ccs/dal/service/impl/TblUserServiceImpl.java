@@ -3,6 +3,7 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.github.pagehelper.PageHelper;
@@ -10,6 +11,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -96,5 +99,10 @@ public class TblUserServiceImpl implements TblUserService {
     @Override
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
        return tblUserMapper.selectByNameAndOrg(userReqParam);
+    }
+
+    @Override
+    public List<TblUser> selectOnUseRoles(RoleReqParam roleReqParam) {
+        return tblUserMapper.selectUsersByRoleIds(new ArrayList<>(Arrays.asList(roleReqParam.getRoleIds())));
     }
 }

@@ -210,7 +210,7 @@ public class AuthController {
         // 为避免配置给用户的权限被删除 在删除之前先检查删除的权中是否有当前正在被使用的权限 有则当前的删除操作不执行并提示
         List<TblRoleAuth> tblRoleAuths = tblRoleAuthService.selectOnUseAuths(authReqParam);
         if (tblRoleAuths.size() != 0) {
-            return Result.failure("当前删除的内容包含正在被使用的权限，请解除相关配置后再删除！", null);
+            return Result.success(5008);
         }
         int result = 0;
         try {
