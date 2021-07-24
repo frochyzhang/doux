@@ -11,8 +11,11 @@ import java.util.List;
 public interface TblMenuMapper {
 
     List<MenusReqParam> pageSelectOptMenus(@Param("menusReqParam") MenusReqParam menusReqParam);
+
     void delMenuBatch(@Param("menuIds") String[] ids);
+
     List<TblMenu> selectRootMenusPath(@Param("menuIds") List menuIds);
+
     List<TblMenu> selectMenusPathByPMid(@Param("level") String level, @Param("menuIds") List<String> menuId, @Param("parentMid") String parentMid);
 
 

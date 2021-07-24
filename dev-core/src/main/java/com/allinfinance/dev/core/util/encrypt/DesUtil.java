@@ -66,6 +66,7 @@ public class DesUtil {
 
         return DesUtil.encode(bytes);
     }
+
     /**
      * Creates a clone of the given byte array.
      */

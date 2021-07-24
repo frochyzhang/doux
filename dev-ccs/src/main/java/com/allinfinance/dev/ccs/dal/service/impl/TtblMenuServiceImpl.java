@@ -43,8 +43,9 @@ public class TtblMenuServiceImpl implements TblMenuService {
     @Autowired
     TblUserMapper userMapper;
 
-    private  ConcurrentHashMap<String, List<TblMenu>> menusMap= new ConcurrentHashMap<>();
-    private AtomicInteger intLevel=new AtomicInteger(0);
+    private ConcurrentHashMap<String, List<TblMenu>> menusMap = new ConcurrentHashMap<>();
+    private AtomicInteger intLevel = new AtomicInteger(0);
+
     @Override
     public PageInfo<MenusReqParam> pageSelectOptMenus(MenusReqParam menusReqParam) {
         PageHelper.startPage(menusReqParam.getCurrent(), menusReqParam.getPageSize());
@@ -56,6 +57,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
     public void delMenuByIds(String[] ids) {
         tblMenuMapper.delMenuBatch(ids);
     }
+
     @Override
     public void deleteByPrimaryKey(String menuId) {
         tblMenuMapper.deleteByPrimaryKey(menuId);
@@ -90,32 +92,29 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 // 通过权限id查询菜单
                 List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
                 ArrayList<String> menuIds = new ArrayList<>(tblRoleAuths.size());
-                tblMenuAuths.forEach((authMenu)->{
+                tblMenuAuths.forEach((authMenu) -> {
                     menuIds.add(authMenu.getMenuId());
                 });
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
-                logger.info("获取数据库菜单：{}",tblMenus.toString());
+                logger.info("获取数据库菜单：{}", tblMenus.toString());
                 List<TblMenu> tblMenusData = menusData(null, tblMenus);
                 List<CurrentMenusDto> getmenus = getmenus(tblMenusData, tblUser);
-                List<CurrentMenusDto> currentMenusDtos=new ArrayList<>();
-                getmenus.forEach((menusDto)->{
-                    if(menusDto.getChildren().size()>0){
+                List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
+                getmenus.forEach((menusDto) -> {
+                    if (menusDto.getChildren().size() > 0) {
                         currentMenusDtos.add(menusDto);
                     }
                 });
-                logger.info("格式化后的层级菜单：{}",currentMenusDtos.toString());
-                return  currentMenusDtos;
+                logger.info("格式化后的层级菜单：{}", currentMenusDtos.toString());
+                return currentMenusDtos;
             }
         }
         return new ArrayList<CurrentMenusDto>();
     }
 
 
-
-
-
-    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser ){
-        List<CurrentMenusDto> currentMenusDtos=new ArrayList<>();
+    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser) {
+        List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
         for (TblMenu menusData : tblMenusData) {
             CurrentMenusDto currentMenusDto = new CurrentMenusDto();
             CurrentMenusDto menusDto = currentMenusDto;
@@ -125,7 +124,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
             menusDto.setAuthority(new String[]{tblUser.getRoleId()});
             List<TblMenu> childMenus = menusData.getChildMenus();
             menusDto.setChildren(getmenus(menusData.getChildMenus(), tblUser));
-               currentMenusDtos.add(menusDto);
+            currentMenusDtos.add(menusDto);
         }
         return currentMenusDtos;
         //组合前端需要的数据结构
@@ -169,15 +168,15 @@ public class TtblMenuServiceImpl implements TblMenuService {
     }
 
 
-    public  List<TblMenu> menusData( String pId, List<TblMenu> tblMenus){
+    public List<TblMenu> menusData(String pId, List<TblMenu> tblMenus) {
         ArrayList<TblMenu> menusDtos_0 = new ArrayList<>();
         for (TblMenu menu_0 : tblMenus) {
-            if(StringUtils.equals(pId,menu_0.getParentMid())){
-                menu_0.setChildMenus(menusData(menu_0.getMenuId(),tblMenus));
+            if (StringUtils.equals(pId, menu_0.getParentMid())) {
+                menu_0.setChildMenus(menusData(menu_0.getMenuId(), tblMenus));
                 menusDtos_0.add(menu_0);
             }
         }
-     return menusDtos_0;
+        return menusDtos_0;
     }
 
 }

@@ -5,7 +5,8 @@ import java.util.Date;
 
 /**
  * batch_job_execution_params
- * @author 
+ *
+ * @author
  */
 public class JobExecutionParams implements Serializable {
     private Long jobExecutionId;

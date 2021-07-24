@@ -2,7 +2,6 @@ package com.allinfinance.dev.core.util.convert.simple8583.type;
 
 /**
  * <p>.</p>
- *
  */
 public class LLLVAR implements IsoType {
 

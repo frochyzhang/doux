@@ -45,7 +45,8 @@
         <quartz.version>2.3.2</quartz.version>
         <redisson.version>3.15.0</redisson.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <nacos.version>1.4.1</nacos.version>
+        <nacos.version>1.4.2</nacos.version>
+        <xxl.version>2.3.0</xxl.version>
     </properties>
 
     <dependencyManagement>
@@ -405,9 +406,9 @@
                 <version>0.1.55</version>
             </dependency>
             <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.67</version>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.67</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -491,6 +492,12 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>2.12.1</version>
+            </dependency>
+            <!-- xxl-job-core -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

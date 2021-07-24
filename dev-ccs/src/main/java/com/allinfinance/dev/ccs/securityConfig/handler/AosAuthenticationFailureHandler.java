@@ -39,13 +39,13 @@ public class AosAuthenticationFailureHandler implements AuthenticationFailureHan
         } else if (e instanceof DisabledException) {
             //账号不可用
             result = Result.failure(ResultCodeEnum.USER_ACCOUNT_FORBIDDEN);
-        }  else if (e instanceof InternalAuthenticationServiceException) {
+        } else if (e instanceof InternalAuthenticationServiceException) {
             //用户不存在
             result = Result.failure(ResultCodeEnum.USER_NOT_EXIST);
         } else if (e instanceof TokenExpiredExeption) {
             //用户不存在
             result = Result.failure(ResultCodeEnum.USER_ACCOUNT_USE_BY_OTHERS);
-        }else{
+        } else {
             //其他错误
             result = Result.failure(ResultCodeEnum.SYSTEM_ERROR);
         }

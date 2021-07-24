@@ -1,4 +1,5 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
+
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -20,7 +21,7 @@ public class AosAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
         Iterator<ConfigAttribute> iterator = collection.iterator();
-             while (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             ConfigAttribute ca = iterator.next();
             //当前请求需要的权限
             String needRole = ca.getAttribute();
@@ -30,7 +31,7 @@ public class AosAccessDecisionManager implements AccessDecisionManager {
                 if (authority.getAuthority().equals(needRole)) {
                     return;
                 }
-             }
+            }
         }
         throw new AccessDeniedException("权限不足!");
     }

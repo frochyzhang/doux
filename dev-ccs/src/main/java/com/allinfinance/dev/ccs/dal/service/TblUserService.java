@@ -15,23 +15,23 @@ import com.github.pagehelper.PageInfo;
 
 public interface TblUserService {
 
-    public int deleteByPrimaryKey(String userId) ;
+    public int deleteByPrimaryKey(String userId);
 
-    public int deleteByPrimaryKey(UserReqParam userReqParam) ;
+    public int deleteByPrimaryKey(UserReqParam userReqParam);
 
     public int insert(TblUser record);
 
     public int insertSelective(TblUser record);
 
-    public TblUser selectByPrimaryKey(String userId) ;
+    public TblUser selectByPrimaryKey(String userId);
 
-    public int updateByPrimaryKeySelective(TblUser record) ;
+    public int updateByPrimaryKeySelective(TblUser record);
 
     public int updateByPrimaryKey(TblUser record);
 
-    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
+    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam);
 
-    public TblUser selectCurrentUser(String  userName) ;
+    public TblUser selectCurrentUser(String userName);
 
-    public TblUser selectByNameAndOrg(UserReqParam userReqParam) ;
+    public TblUser selectByNameAndOrg(UserReqParam userReqParam);
 }

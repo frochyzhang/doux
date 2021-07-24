@@ -1,176 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper">
-  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    <id column="AUTH_ID" jdbcType="VARCHAR" property="authId" />
-    <id column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
-    <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
-    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
-    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
-    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
-    <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    AUTH_ID, MENU_ID, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, 
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
+        <id column="AUTH_ID" jdbcType="VARCHAR" property="authId"/>
+        <id column="MENU_ID" jdbcType="VARCHAR" property="menuId"/>
+        <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1"/>
+        <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2"/>
+        <result column="RESERVED_FIELD3" jdbcType="VARCHAR" property="reservedField3"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        AUTH_ID, MENU_ID, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1,
     RESERVED_FIELD2, RESERVED_FIELD3
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from TBL_MENU_AUTH
-    where AUTH_ID = #{authId,jdbcType=VARCHAR}
-      and MENU_ID = #{menuId,jdbcType=VARCHAR}
-  </select>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_MENU_AUTH
+        where AUTH_ID = #{authId,jdbcType=VARCHAR}
+        and MENU_ID = #{menuId,jdbcType=VARCHAR}
+    </select>
 
-  <select id="selectBatchIds" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from TBL_MENU_AUTH
-    where AUTH_ID in
-    <foreach close=")" collection="authIds" index="index" item="authId" open="(" separator=",">
-      #{authId}
-    </foreach>
-  </select>
+    <select id="selectBatchIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_MENU_AUTH
+        where AUTH_ID in
+        <foreach close=")" collection="authIds" index="index" item="authId" open="(" separator=",">
+            #{authId}
+        </foreach>
+    </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey">
-    delete from TBL_MENU_AUTH
-    where AUTH_ID = #{authId,jdbcType=VARCHAR}
-      and MENU_ID = #{menuId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    insert into TBL_MENU_AUTH (AUTH_ID, MENU_ID, IS_AVAILABLE, 
-      CREATE_TIME, CREATE_BY, UPDATE_TIME, 
-      UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
-      RESERVED_FIELD3)
-    values (#{authId,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, 
-      #{reservedField3,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    insert into TBL_MENU_AUTH
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="authId != null">
-        AUTH_ID,
-      </if>
-      <if test="menuId != null">
-        MENU_ID,
-      </if>
-      <if test="isAvailable != null">
-        IS_AVAILABLE,
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME,
-      </if>
-      <if test="createBy != null">
-        CREATE_BY,
-      </if>
-      <if test="updateTime != null">
-        UPDATE_TIME,
-      </if>
-      <if test="updateBy != null">
-        UPDATE_BY,
-      </if>
-      <if test="reservedField1 != null">
-        RESERVED_FIELD1,
-      </if>
-      <if test="reservedField2 != null">
-        RESERVED_FIELD2,
-      </if>
-      <if test="reservedField3 != null">
-        RESERVED_FIELD3,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="authId != null">
-        #{authId,jdbcType=VARCHAR},
-      </if>
-      <if test="menuId != null">
-        #{menuId,jdbcType=VARCHAR},
-      </if>
-      <if test="isAvailable != null">
-        #{isAvailable,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField1 != null">
-        #{reservedField1,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField2 != null">
-        #{reservedField2,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField3 != null">
-        #{reservedField3,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    update TBL_MENU_AUTH
-    <set>
-      <if test="isAvailable != null">
-        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField1 != null">
-        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField2 != null">
-        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-      </if>
-      <if test="reservedField3 != null">
-        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where AUTH_ID = #{authId,jdbcType=VARCHAR}
-      and MENU_ID = #{menuId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    update TBL_MENU_AUTH
-    set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
-      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-    where AUTH_ID = #{authId,jdbcType=VARCHAR}
-      and MENU_ID = #{menuId,jdbcType=VARCHAR}
-  </update>
+    <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey">
+        delete
+        from TBL_MENU_AUTH
+        where AUTH_ID = #{authId,jdbcType=VARCHAR}
+          and MENU_ID = #{menuId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
+        insert into TBL_MENU_AUTH (AUTH_ID, MENU_ID, IS_AVAILABLE,
+                                   CREATE_TIME, CREATE_BY, UPDATE_TIME,
+                                   UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2,
+                                   RESERVED_FIELD3)
+        values (#{authId,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+                #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
+                #{reservedField3,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
+        insert into TBL_MENU_AUTH
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="authId != null">
+                AUTH_ID,
+            </if>
+            <if test="menuId != null">
+                MENU_ID,
+            </if>
+            <if test="isAvailable != null">
+                IS_AVAILABLE,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="updateBy != null">
+                UPDATE_BY,
+            </if>
+            <if test="reservedField1 != null">
+                RESERVED_FIELD1,
+            </if>
+            <if test="reservedField2 != null">
+                RESERVED_FIELD2,
+            </if>
+            <if test="reservedField3 != null">
+                RESERVED_FIELD3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="authId != null">
+                #{authId,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=VARCHAR},
+            </if>
+            <if test="isAvailable != null">
+                #{isAvailable,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField1 != null">
+                #{reservedField1,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField2 != null">
+                #{reservedField2,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField3 != null">
+                #{reservedField3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
+        update TBL_MENU_AUTH
+        <set>
+            <if test="isAvailable != null">
+                IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                CREATE_BY = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField1 != null">
+                RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField2 != null">
+                RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+            </if>
+            <if test="reservedField3 != null">
+                RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where AUTH_ID = #{authId,jdbcType=VARCHAR}
+        and MENU_ID = #{menuId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
+        update TBL_MENU_AUTH
+        set IS_AVAILABLE    = #{isAvailable,jdbcType=VARCHAR},
+            CREATE_TIME     = #{createTime,jdbcType=TIMESTAMP},
+            CREATE_BY       = #{createBy,jdbcType=VARCHAR},
+            UPDATE_TIME     = #{updateTime,jdbcType=TIMESTAMP},
+            UPDATE_BY       = #{updateBy,jdbcType=VARCHAR},
+            RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+            RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+            RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+        where AUTH_ID = #{authId,jdbcType=VARCHAR}
+          and MENU_ID = #{menuId,jdbcType=VARCHAR}
+    </update>
 
-<!--  *****************************************-->
-  <select id="selectMenuAuths"  resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from TBL_MENU_AUTH
-  </select>
+    <!--  *****************************************-->
+    <select id="selectMenuAuths" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_MENU_AUTH
+    </select>
 
-  <delete id="deleteMenuAuths" >
-    delete from TBL_MENU_AUTH
-    where AUTH_ID = #{authId,jdbcType=VARCHAR}
-  </delete>
+    <delete id="deleteMenuAuths">
+        delete
+        from TBL_MENU_AUTH
+        where AUTH_ID = #{authId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

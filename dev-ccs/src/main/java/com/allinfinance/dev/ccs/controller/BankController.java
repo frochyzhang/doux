@@ -36,10 +36,10 @@ public class BankController {
     @ResponseBody
     public Result selectBanks(BankReqParam bankReqParam, HttpServletRequest request) {
         logger.info("BankReqParam: {}", bankReqParam);
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (org != null && org.length() != 0 ) {
+        if (org != null && org.length() != 0) {
             if ((!"000000000000".equals(org)) && bankReqParam.getOrg() == null) {
                 bankReqParam.setOrg(org);
             }

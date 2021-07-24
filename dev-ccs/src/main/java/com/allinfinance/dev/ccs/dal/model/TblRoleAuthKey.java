@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class TblRoleAuthKey implements Serializable {
     private String authId;
 
-    private String  roleId;
+    private String roleId;
 
     private static final long serialVersionUID = 1L;
 

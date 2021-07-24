@@ -27,5 +27,5 @@ public interface TblMenuService {
 
     void updateMenuById(TblMenu tblMenu);
 
-    List<CurrentMenusDto> getCurrMenus(String  userId);
+    List<CurrentMenusDto> getCurrMenus(String userId);
 }

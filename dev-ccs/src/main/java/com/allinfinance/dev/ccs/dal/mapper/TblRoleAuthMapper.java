@@ -6,7 +6,7 @@ import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
 
 import java.util.List;
 
-public interface TblRoleAuthMapper  {
+public interface TblRoleAuthMapper {
     int deleteByPrimaryKey(TblRoleAuthKey key);
 
     int insert(TblRoleAuth record);

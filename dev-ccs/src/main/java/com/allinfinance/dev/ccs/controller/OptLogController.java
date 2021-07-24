@@ -43,7 +43,7 @@ public class OptLogController {
     @ResponseBody
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
@@ -54,7 +54,7 @@ public class OptLogController {
                 logReqParam.setOrg(org);
             }
         }
-        if (logReqParam.getCurrent()==null || logReqParam.getPageSize()==null){
+        if (logReqParam.getCurrent() == null || logReqParam.getPageSize() == null) {
             logReqParam.setCurrent(1);
             logReqParam.setPageSize(10);
         }

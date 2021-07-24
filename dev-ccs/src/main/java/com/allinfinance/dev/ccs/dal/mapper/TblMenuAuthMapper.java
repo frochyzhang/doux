@@ -9,13 +9,13 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author liuqi
  * @since 2021-05-14
  */
-public interface TblMenuAuthMapper  {
+public interface TblMenuAuthMapper {
 
     List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
 

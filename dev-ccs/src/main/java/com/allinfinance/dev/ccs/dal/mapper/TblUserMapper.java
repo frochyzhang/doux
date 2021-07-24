@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface TblUserMapper  {
+public interface TblUserMapper {
     int deleteByPrimaryKey(String userId);
 
     int insert(TblUser record);
@@ -14,11 +14,12 @@ public interface TblUserMapper  {
     int insertSelective(TblUser record);
 
     TblUser selectByPrimaryKey(String userId);
+
     TblUser selectByUserNameAndBank(String userName, String org);
 
     TblUser selectByUserName(String userName);
 
-    int updateByPrimaryKeySelective(@Param("record")TblUser record);
+    int updateByPrimaryKeySelective(@Param("record") TblUser record);
 
     int updateByPrimaryKey(TblUser record);
 

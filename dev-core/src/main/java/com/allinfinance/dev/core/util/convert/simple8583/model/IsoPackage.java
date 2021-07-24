@@ -10,18 +10,17 @@ import java.util.List;
 
 /**
  * <p>8583报文包.</p>
- *
  */
- @XmlAccessorType(XmlAccessType.FIELD)
- public class IsoPackage extends LinkedList<IsoField> implements Cloneable{
+@XmlAccessorType(XmlAccessType.FIELD)
+public class IsoPackage extends LinkedList<IsoField> implements Cloneable {
 
-	private static final long serialVersionUID = 2715585287358366066L;
-	
-	@XmlAttribute(name="mti")
+    private static final long serialVersionUID = 2715585287358366066L;
+
+    @XmlAttribute(name = "mti")
     private String mti;
-	
-    @XmlElement(name="field")
-    public List<IsoField> getFields(){
+
+    @XmlElement(name = "field")
+    public List<IsoField> getFields() {
         return this;
     }
 
@@ -30,30 +29,33 @@ import java.util.List;
 
     /**
      * 根据key获取报文域
+     *
      * @param key
      * @return
      */
-    public IsoField getIsoField(String key){
-    	for(IsoField isoField:this){
-    		if(isoField.getId().equalsIgnoreCase(key)){
-    			return isoField;
-    		}
-    	}
-    	return null;
+    public IsoField getIsoField(String key) {
+        for (IsoField isoField : this) {
+            if (isoField.getId().equalsIgnoreCase(key)) {
+                return isoField;
+            }
+        }
+        return null;
     }
 
     /**
      * 是否为Mac位
+     *
      * @param key
      * @return
      */
-    public boolean isMacPos(String key){
-        return (this.isBit64()&&"64".equals(key))
-                ||(!this.isBit64()&&"128".equals(key));
+    public boolean isMacPos(String key) {
+        return (this.isBit64() && "64".equals(key))
+                || (!this.isBit64() && "128".equals(key));
     }
 
     /**
      * 深度拷贝方法
+     *
      * @return
      * @throws IOException
      * @throws ClassNotFoundException
@@ -64,25 +66,25 @@ import java.util.List;
         ByteArrayInputStream byteIn = null;
         ObjectInputStream in = null;
         IsoPackage isoPackage;
-        try{
+        try {
             byteOut = new ByteArrayOutputStream();
-            out =  new ObjectOutputStream(byteOut);
+            out = new ObjectOutputStream(byteOut);
             out.writeObject(this);
 
             byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-            in  =new ObjectInputStream(byteIn);
-            isoPackage =  (IsoPackage)in.readObject();
-        }finally{
-            if(byteOut!=null){
+            in = new ObjectInputStream(byteIn);
+            isoPackage = (IsoPackage) in.readObject();
+        } finally {
+            if (byteOut != null) {
                 byteOut.close();
             }
-            if(out!=null){
+            if (out != null) {
                 out.close();
             }
-            if(byteIn!=null){
+            if (byteIn != null) {
                 byteIn.close();
             }
-            if(in!=null){
+            if (in != null) {
                 in.close();
             }
         }
@@ -106,14 +108,14 @@ import java.util.List;
     }
 
     @Override
-    public String toString(){
-    	StringBuffer accum = new StringBuffer("[");
-    	for(IsoField isoField:this){
-    		accum.append(isoField.getId()).append(":").append(isoField.getValue()).append(",");
-    	}
-    	accum.append("]");
-    	return accum.toString();
+    public String toString() {
+        StringBuffer accum = new StringBuffer("[");
+        for (IsoField isoField : this) {
+            accum.append(isoField.getId()).append(":").append(isoField.getValue()).append(",");
+        }
+        accum.append("]");
+        return accum.toString();
     }
-    
- }
+
+}
 

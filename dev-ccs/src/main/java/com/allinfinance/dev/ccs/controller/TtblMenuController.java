@@ -52,7 +52,7 @@ public class TtblMenuController {
     @GetMapping(value = "/getCurrMenus")
     @ResponseBody
     public Result getCurrMenus(HttpServletRequest request) {
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         String username = JwtUtil.getUsername(token);
         logger.info("获取菜单权限数据开始:userId-->{}", userId);
@@ -63,16 +63,16 @@ public class TtblMenuController {
             logger.error("查询当前用户菜单权限异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("查询当前用户菜单权限结束，当前用户名：{}",username);
+        logger.info("查询当前用户菜单权限结束，当前用户名：{}", username);
         return Result.success(currentMenusDtos.toArray());
     }
 
     @PostMapping
     @ResponseBody
-    public Result addMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
+    public Result addMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
         logger.info("菜单新增接口接收参数-->{}", tblMenu.toString());
         try {
-            String token = request.getHeader( AosContent.AOS_TOKEN);
+            String token = request.getHeader(AosContent.AOS_TOKEN);
             String username = JwtUtil.getUsername(token);
             tblMenu.setCreateTime(new Date());
             tblMenu.setCreateBy(username);
@@ -86,10 +86,10 @@ public class TtblMenuController {
 
     @PutMapping
     @ResponseBody
-    public Result updateMenu(@RequestBody TblMenu tblMenu,HttpServletRequest request) {
+    public Result updateMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
         logger.info("菜单更新接口开始，接收参数-->{}", tblMenu.toString());
         try {
-            String token = request.getHeader( AosContent.AOS_TOKEN);
+            String token = request.getHeader(AosContent.AOS_TOKEN);
             String username = JwtUtil.getUsername(token);
             tblMenu.setUpdateTime(new Date());
             tblMenu.setUpdateBy(username);

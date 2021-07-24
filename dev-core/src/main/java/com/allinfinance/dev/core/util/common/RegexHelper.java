@@ -18,12 +18,13 @@ public class RegexHelper {
 
     /**
      * 利用正则表达式从文本text中找到夹在两个关键字中间的部分(keyword1)(.+)(keyword2)
+     *
      * @param text
      * @param keyword1
      * @param keyword2
      * @return
      */
-    public static final String getStrBetweenKeywords(String text,String keyword1,String keyword2){
+    public static final String getStrBetweenKeywords(String text, String keyword1, String keyword2) {
         Pattern p = Pattern.compile("(" + keyword1 + ")" +
                         "(.+)" +
                         "(" + keyword2 + ")",
@@ -37,22 +38,23 @@ public class RegexHelper {
 
     /**
      * 利用正则表达式从文本text中找到夹在两个关键字中间的部分(keyword1)(.+?)(keyword2)，懒惰模式匹配
+     *
      * @param text
      * @param keyword1
      * @param keyword2
      * @return
      */
-    public static final String[] getLazyStrBetweenKeywords(String text,String keyword1,String keyword2){
-        String [] ret = new String[0];
+    public static final String[] getLazyStrBetweenKeywords(String text, String keyword1, String keyword2) {
+        String[] ret = new String[0];
         Set<String> tmp = new HashSet<String>();
-        Pattern p = Pattern.compile( new StringBuffer()
+        Pattern p = Pattern.compile(new StringBuffer()
                         .append("(").append(keyword1).append(")")
                         .append("(.+?)")
                         .append("(").append(keyword2).append(")")
                         .toString(),
                 Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(text);
-        while(m.find()){
+        while (m.find()) {
             tmp.add(m.group(2));
         }
         return tmp.toArray(ret);
@@ -61,12 +63,13 @@ public class RegexHelper {
 
     /**
      * 利用正则表达式检查是否完整匹配
+     *
      * @param text
      * @param reg
      * @return
      */
-    public static final boolean isMatch(String text,String reg){
-        if (StringUtils.isNotEmpty(text)&&StringUtils.isNotBlank(reg)){
+    public static final boolean isMatch(String text, String reg) {
+        if (StringUtils.isNotEmpty(text) && StringUtils.isNotBlank(reg)) {
             Pattern p = Pattern.compile(reg);
             Matcher m = p.matcher(text);
             return m.matches();
@@ -76,12 +79,13 @@ public class RegexHelper {
 
     /**
      * 利用正则表达式检查是否包含
+     *
      * @param text
      * @param reg
      * @return
      */
-    public static final boolean isContain(String text,String reg){
-        if (StringUtils.isNotEmpty(text)&&StringUtils.isNotBlank(reg)){
+    public static final boolean isContain(String text, String reg) {
+        if (StringUtils.isNotEmpty(text) && StringUtils.isNotBlank(reg)) {
             Pattern p = Pattern.compile(reg);
             Matcher m = p.matcher(text);
             return m.find();
@@ -90,7 +94,8 @@ public class RegexHelper {
     }
 
 
-    private RegexHelper(){}
+    private RegexHelper() {
+    }
 
     public static void main(String[] args) {
     }

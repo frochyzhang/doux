@@ -2,4 +2,4 @@ server:
   port: 8087
 logging:
   level:
-     com.allinfinance.dev.ccs.dal.mapper: debug
+    com.allinfinance.dev.ccs.dal.mapper: debug

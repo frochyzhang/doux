@@ -5,7 +5,8 @@ import java.util.Date;
 
 /**
  * batch_step_execution
- * @author 
+ *
+ * @author
  */
 public class StepExecution implements Serializable {
     private Long stepExecutionId;

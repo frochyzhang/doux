@@ -23,5 +23,5 @@ public interface TblBankManageMapper {
 
     List<TblBankManage> selectBank(@Param("bankReqParam") BankReqParam bankReqParam);
 
-    TblBankManage selectBankByOrg(@Param("org")String org);
+    TblBankManage selectBankByOrg(@Param("org") String org);
 }

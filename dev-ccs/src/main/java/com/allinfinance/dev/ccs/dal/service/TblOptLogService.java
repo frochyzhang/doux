@@ -12,5 +12,5 @@ import com.github.pagehelper.PageInfo;
  */
 
 public interface TblOptLogService {
-    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) ;
+    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam);
 }

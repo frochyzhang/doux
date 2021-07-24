@@ -3,10 +3,8 @@ package com.allinfinance.dev.ccs.utils;
 import com.allinfinance.dev.ccs.content.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,12 +36,14 @@ public class RSAUtils {
     private static final int MAX_ENCRYPT_BLOCK = 117;
 
     /**
-    /**
+     * /**
      * RSA最大解密密文大小
      */
     private static final int MAX_DECRYPT_BLOCK = 128;
+
     /**
      * 从文件中读取公钥
+     *
      * @param filename 公钥保存路径
      * @return
      * @throws Exception
@@ -55,6 +55,7 @@ public class RSAUtils {
 
     /**
      * 从文件中获取密钥
+     *
      * @param filename
      * @return
      * @throws Exception
@@ -66,6 +67,7 @@ public class RSAUtils {
 
     /**
      * 获取公钥
+     *
      * @param bytes 公钥字节形式
      * @return
      * @throws NoSuchAlgorithmException
@@ -135,6 +137,7 @@ public class RSAUtils {
 
     /**
      * 获取密钥
+     *
      * @param bytes 密钥字节形式
      * @return
      * @throws NoSuchAlgorithmException
@@ -149,10 +152,11 @@ public class RSAUtils {
 
     /**
      * 根据密文，生成RSA公钥和密钥，并写入文件
-     * @param publicKeyFilename     公钥文件路径
-     * @param privateKeyFilename    私钥文件路径
-     * @param secret                生成密钥的密文
-     * @param keySize               指定密钥长度，如果比默认小则选择默认长度2048
+     *
+     * @param publicKeyFilename  公钥文件路径
+     * @param privateKeyFilename 私钥文件路径
+     * @param secret             生成密钥的密文
+     * @param keySize            指定密钥长度，如果比默认小则选择默认长度2048
      * @throws Exception
      */
     public static void generateKey(String publicKeyFilename, String privateKeyFilename, String secret, int keySize) throws Exception {
@@ -187,11 +191,12 @@ public class RSAUtils {
         }
         Files.write(file.toPath(), bytes);
     }
+
     @Autowired
     @Qualifier(value = "rsaKeyProperties")
     private RSAKeyProperties rsaProperties;
 
     public static void main(String[] args) {
-        String mm="UHXbGbHo82xFzBp+EN+vcFl+x7371VvE9fbdpGh+e4xu1dFfJV7vLu4pXn64NfkY9oR56RC/jtUSqoYnUvK8F6ua052282pAaFMGjtzFoQUNKyV/W3OwtleaUNno5SciuhJR1wJEm6gStdT9qEgGiaf5wxjnO4gN9RZ3SvYJHpPE6fvtFWrXdWCJf2OPTVeLEoFbvITVJRVDlenedl9Icb43QEf5VkeeVeK/AeefsmUqFx+38G6zLO2UqswhvFcT23op+1Rj4htvHa0bQdWyVab+5v7rulVWt1ZW54YnsmagoutlOT3yUF1uRGnjrmWpNPJHZvCFeodykqcfpCIcnw==";
+        String mm = "UHXbGbHo82xFzBp+EN+vcFl+x7371VvE9fbdpGh+e4xu1dFfJV7vLu4pXn64NfkY9oR56RC/jtUSqoYnUvK8F6ua052282pAaFMGjtzFoQUNKyV/W3OwtleaUNno5SciuhJR1wJEm6gStdT9qEgGiaf5wxjnO4gN9RZ3SvYJHpPE6fvtFWrXdWCJf2OPTVeLEoFbvITVJRVDlenedl9Icb43QEf5VkeeVeK/AeefsmUqFx+38G6zLO2UqswhvFcT23op+1Rj4htvHa0bQdWyVab+5v7rulVWt1ZW54YnsmagoutlOT3yUF1uRGnjrmWpNPJHZvCFeodykqcfpCIcnw==";
     }
 }

@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * batch_job_execution_context
- * @author 
+ *
+ * @author
  */
 public class JobExecutionContext implements Serializable {
     private Long jobExecutionId;

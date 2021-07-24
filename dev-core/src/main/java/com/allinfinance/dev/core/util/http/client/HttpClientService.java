@@ -24,10 +24,10 @@ import java.util.HashMap;
 public class HttpClientService {
     private Logger logger = LoggerFactory.getLogger(HttpClientService.class);
 
-//    @Autowired
+    //    @Autowired
     private HttpConnectionManager httpConnectionManager;
 
-    public String httpRequest(HashMap<String,String> header, String request, String url, int retryTimes, int timeout) {
+    public String httpRequest(HashMap<String, String> header, String request, String url, int retryTimes, int timeout) {
         logger.info("httpRequest开始!");
 
         if (StringUtils.isBlank(request)
@@ -47,14 +47,14 @@ public class HttpClientService {
             StringEntity stringEntity = new StringEntity(request, "UTF-8");
             stringEntity.setContentType("application/xml");
             HttpPost httpPost = new HttpPost(url);
-            if(header==null){
+            if (header == null) {
                 logger.error("消息头信息为null，请检查请求参数");
                 return null;
             }
 
             //添加消息头信息
-            for(String s:header.keySet()){
-                httpPost.setHeader(s,header.get(s));
+            for (String s : header.keySet()) {
+                httpPost.setHeader(s, header.get(s));
             }
 
             httpPost.setEntity(stringEntity);

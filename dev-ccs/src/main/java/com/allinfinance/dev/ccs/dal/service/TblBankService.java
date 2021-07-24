@@ -58,6 +58,6 @@ public class TblBankService {
     }
 
     public TblBankManage selectBankInfoByOrg(String org) {
-       return tblBankManageMapper.selectBankByOrg(org);
+        return tblBankManageMapper.selectBankByOrg(org);
     }
 }

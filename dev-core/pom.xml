@@ -8,7 +8,7 @@
         <version>1.2.0-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>${project.artifactId}  Core核心基础运行模块</name>
+    <name>${project.artifactId} Core核心基础运行模块</name>
     <artifactId>dev-core</artifactId>
 
     <dependencies>
@@ -89,8 +89,8 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -1,8 +1,8 @@
 package com.allinfinance.dev.ccs.dal.respdto;
 
 public class OrgResultDto {
-    private  String lable;
-    private  String value;
+    private String lable;
+    private String value;
 
     public String getLable() {
         return lable;

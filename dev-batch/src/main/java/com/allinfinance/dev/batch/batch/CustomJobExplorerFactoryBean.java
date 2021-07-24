@@ -42,138 +42,138 @@ import javax.sql.DataSource;
  * @since 2.0
  */
 public class CustomJobExplorerFactoryBean extends AbstractJobExplorerFactoryBean
-implements InitializingBean {
+        implements InitializingBean {
 
-	private DataSource dataSource;
+    private DataSource dataSource;
 
-	private JdbcOperations jdbcOperations;
+    private JdbcOperations jdbcOperations;
 
-	private String tablePrefix = AbstractJdbcBatchMetadataDao.DEFAULT_TABLE_PREFIX;
+    private String tablePrefix = AbstractJdbcBatchMetadataDao.DEFAULT_TABLE_PREFIX;
 
-	private DataFieldMaxValueIncrementer incrementer = new AbstractDataFieldMaxValueIncrementer() {
-		@Override
-		protected long getNextKey() {
-			throw new IllegalStateException("JobExplorer is read only.");
-		}
-	};
+    private DataFieldMaxValueIncrementer incrementer = new AbstractDataFieldMaxValueIncrementer() {
+        @Override
+        protected long getNextKey() {
+            throw new IllegalStateException("JobExplorer is read only.");
+        }
+    };
 
-	private LobHandler lobHandler;
+    private LobHandler lobHandler;
 
-	private ExecutionContextSerializer serializer;
+    private ExecutionContextSerializer serializer;
 
-	/**
-	 * A custom implementation of the {@link ExecutionContextSerializer}.
-	 * The default, if not injected, is the {@link Jackson2ExecutionContextStringSerializer}.
-	 *
-	 * @param serializer used to serialize/deserialize an {@link ExecutionContext}
-	 * @see ExecutionContextSerializer
-	 */
-	public void setSerializer(ExecutionContextSerializer serializer) {
-		this.serializer = serializer;
-	}
+    /**
+     * A custom implementation of the {@link ExecutionContextSerializer}.
+     * The default, if not injected, is the {@link Jackson2ExecutionContextStringSerializer}.
+     *
+     * @param serializer used to serialize/deserialize an {@link ExecutionContext}
+     * @see ExecutionContextSerializer
+     */
+    public void setSerializer(ExecutionContextSerializer serializer) {
+        this.serializer = serializer;
+    }
 
-	/**
-	 * Public setter for the {@link DataSource}.
-	 *
-	 * @param dataSource
-	 *            a {@link DataSource}
-	 */
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-	
-	/**
-	 * Public setter for the {@link JdbcOperations}. If this property is not set explicitly,
-	 * a new {@link JdbcTemplate} will be created for the configured DataSource by default.
-	 * @param jdbcOperations a {@link JdbcOperations}
-	 */
-	public void setJdbcOperations(JdbcOperations jdbcOperations) {
-		this.jdbcOperations = jdbcOperations;
-	}	
+    /**
+     * Public setter for the {@link DataSource}.
+     *
+     * @param dataSource a {@link DataSource}
+     */
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	/**
-	 * Sets the table prefix for all the batch meta-data tables.
-	 *
-	 * @param tablePrefix prefix for the batch meta-data tables
-	 */
-	public void setTablePrefix(String tablePrefix) {
-		this.tablePrefix = tablePrefix;
-	}
+    /**
+     * Public setter for the {@link JdbcOperations}. If this property is not set explicitly,
+     * a new {@link JdbcTemplate} will be created for the configured DataSource by default.
+     *
+     * @param jdbcOperations a {@link JdbcOperations}
+     */
+    public void setJdbcOperations(JdbcOperations jdbcOperations) {
+        this.jdbcOperations = jdbcOperations;
+    }
 
-	/**
-	 * The lob handler to use when saving {@link ExecutionContext} instances.
-	 * Defaults to null which works for most databases.
-	 *
-	 * @param lobHandler Large object handler for saving {@link ExecutionContext}
-	 */
-	public void setLobHandler(LobHandler lobHandler) {
-		this.lobHandler = lobHandler;
-	}
+    /**
+     * Sets the table prefix for all the batch meta-data tables.
+     *
+     * @param tablePrefix prefix for the batch meta-data tables
+     */
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
+    }
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
+    /**
+     * The lob handler to use when saving {@link ExecutionContext} instances.
+     * Defaults to null which works for most databases.
+     *
+     * @param lobHandler Large object handler for saving {@link ExecutionContext}
+     */
+    public void setLobHandler(LobHandler lobHandler) {
+        this.lobHandler = lobHandler;
+    }
 
-		Assert.notNull(dataSource, "DataSource must not be null.");
+    @Override
+    public void afterPropertiesSet() throws Exception {
 
-		if (jdbcOperations == null) {
-			jdbcOperations = new JdbcTemplate(dataSource);
-		}	
+        Assert.notNull(dataSource, "DataSource must not be null.");
 
-		if(serializer == null) {
-			serializer = new Jackson2ExecutionContextStringSerializer();
-		}
-	}
+        if (jdbcOperations == null) {
+            jdbcOperations = new JdbcTemplate(dataSource);
+        }
 
-	private ICustomJobExplorer getTarget() throws Exception {
-		//使用自定义job explorer
-		return new CustomJobExplorer(createJobInstanceDao(),
-				createJobExecutionDao(), createStepExecutionDao(),
-				createExecutionContextDao());
-	}
+        if (serializer == null) {
+            serializer = new Jackson2ExecutionContextStringSerializer();
+        }
+    }
 
-	@Override
-	protected ExecutionContextDao createExecutionContextDao() throws Exception {
-		JdbcExecutionContextDao dao = new JdbcExecutionContextDao();
-		dao.setJdbcTemplate(jdbcOperations);
-		dao.setLobHandler(lobHandler);
-		dao.setTablePrefix(tablePrefix);
-		dao.setSerializer(serializer);
-		dao.afterPropertiesSet();
-		return dao;
-	}
+    private ICustomJobExplorer getTarget() throws Exception {
+        //使用自定义job explorer
+        return new CustomJobExplorer(createJobInstanceDao(),
+                createJobExecutionDao(), createStepExecutionDao(),
+                createExecutionContextDao());
+    }
 
-	@Override
-	protected JobInstanceDao createJobInstanceDao() throws Exception {
-		JdbcJobInstanceDao dao = new JdbcJobInstanceDao();
-		dao.setJdbcTemplate(jdbcOperations);
-		dao.setJobIncrementer(incrementer);
-		dao.setTablePrefix(tablePrefix);
-		dao.afterPropertiesSet();
-		return dao;
-	}
+    @Override
+    protected ExecutionContextDao createExecutionContextDao() throws Exception {
+        JdbcExecutionContextDao dao = new JdbcExecutionContextDao();
+        dao.setJdbcTemplate(jdbcOperations);
+        dao.setLobHandler(lobHandler);
+        dao.setTablePrefix(tablePrefix);
+        dao.setSerializer(serializer);
+        dao.afterPropertiesSet();
+        return dao;
+    }
 
-	@Override
-	protected JobExecutionDao createJobExecutionDao() throws Exception {
-		JdbcJobExecutionDao dao = new JdbcJobExecutionDao();
-		dao.setJdbcTemplate(jdbcOperations);
-		dao.setJobExecutionIncrementer(incrementer);
-		dao.setTablePrefix(tablePrefix);
-		dao.afterPropertiesSet();
-		return dao;
-	}
+    @Override
+    protected JobInstanceDao createJobInstanceDao() throws Exception {
+        JdbcJobInstanceDao dao = new JdbcJobInstanceDao();
+        dao.setJdbcTemplate(jdbcOperations);
+        dao.setJobIncrementer(incrementer);
+        dao.setTablePrefix(tablePrefix);
+        dao.afterPropertiesSet();
+        return dao;
+    }
 
-	@Override
-	protected StepExecutionDao createStepExecutionDao() throws Exception {
-		JdbcStepExecutionDao dao = new JdbcStepExecutionDao();
-		dao.setJdbcTemplate(jdbcOperations);
-		dao.setStepExecutionIncrementer(incrementer);
-		dao.setTablePrefix(tablePrefix);
-		dao.afterPropertiesSet();
-		return dao;
-	}
+    @Override
+    protected JobExecutionDao createJobExecutionDao() throws Exception {
+        JdbcJobExecutionDao dao = new JdbcJobExecutionDao();
+        dao.setJdbcTemplate(jdbcOperations);
+        dao.setJobExecutionIncrementer(incrementer);
+        dao.setTablePrefix(tablePrefix);
+        dao.afterPropertiesSet();
+        return dao;
+    }
 
-	@Override
-	public ICustomJobExplorer getObject() throws Exception {
-		return getTarget();
-	}
+    @Override
+    protected StepExecutionDao createStepExecutionDao() throws Exception {
+        JdbcStepExecutionDao dao = new JdbcStepExecutionDao();
+        dao.setJdbcTemplate(jdbcOperations);
+        dao.setStepExecutionIncrementer(incrementer);
+        dao.setTablePrefix(tablePrefix);
+        dao.afterPropertiesSet();
+        return dao;
+    }
+
+    @Override
+    public ICustomJobExplorer getObject() throws Exception {
+        return getTarget();
+    }
 }

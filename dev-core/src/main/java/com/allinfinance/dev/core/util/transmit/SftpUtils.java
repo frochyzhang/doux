@@ -22,19 +22,12 @@ public class SftpUtils {
     /**
      * 连接sftp服务器，获得连接会话
      *
-     * @param host
-     *            服务器名
-     * @param port
-     *            端口号
-     * @param username
-     *            用户名
-     * @param password
-     *            密码
-     *
+     * @param host     服务器名
+     * @param port     端口号
+     * @param username 用户名
+     * @param password 密码
      * @return SHH对话SESSION
-     *
-     * @throws JSchException
-     *             连接失败
+     * @throws JSchException 连接失败
      */
     public static Session connect(String host, int port, String username,
                                   String password) throws JSchException {
@@ -60,22 +53,15 @@ public class SftpUtils {
     /**
      * 上传文件
      *
-     * @param remotePath
-     *            远程文件路径
-     * @param remoteFileName
-     *            远程文件名
-     * @param localFileFullName
-     *            本地文件名（包含路径）
-     * @param channelSftp
-     *            SFTP通道
-     *
-     * @throws SftpException
-     *             SFTP通信异常
-     * @throws IOException
-     *             本地IO异常
+     * @param remotePath        远程文件路径
+     * @param remoteFileName    远程文件名
+     * @param localFileFullName 本地文件名（包含路径）
+     * @param channelSftp       SFTP通道
+     * @throws SftpException SFTP通信异常
+     * @throws IOException   本地IO异常
      */
     public static boolean uploadFile(String remotePath, String remoteFileName,
-                              String localFileFullName, ChannelSftp channelSftp)
+                                     String localFileFullName, ChannelSftp channelSftp)
             throws SftpException, IOException {
         FileInputStream fileInputStream = null;
         boolean flag = true;
@@ -91,11 +77,10 @@ public class SftpUtils {
                 }
             }
             channelSftp.put(fileInputStream, remoteFileName);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             flag = false;
-        }
-        finally {
+        } finally {
             if (fileInputStream != null) {
                 fileInputStream.close();
             }
@@ -106,22 +91,15 @@ public class SftpUtils {
     /**
      * 下载文件
      *
-     * @param remotePath
-     *            远程文件路径
-     * @param remoteFileName
-     *            远程文件名
-     * @param localFileFullName
-     *            本地文件名（包含路径）
-     * @param channelSftp
-     *            SFTP通道
-     *
-     * @throws SftpException
-     *             SFTP通信异常
-     * @throws IOException
-     *             本地IO异常
+     * @param remotePath        远程文件路径
+     * @param remoteFileName    远程文件名
+     * @param localFileFullName 本地文件名（包含路径）
+     * @param channelSftp       SFTP通道
+     * @throws SftpException SFTP通信异常
+     * @throws IOException   本地IO异常
      */
     public static boolean downloadFile(String remotePath, String remoteFileName,
-                                String localFileFullName, ChannelSftp channelSftp)
+                                       String localFileFullName, ChannelSftp channelSftp)
             throws SftpException, IOException {
         FileOutputStream fileOutputStream = null;
         boolean flag = true;
@@ -131,11 +109,10 @@ public class SftpUtils {
                 channelSftp.cd(remotePath);
             }
             channelSftp.get(remoteFileName, fileOutputStream);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             flag = false;
-        }finally
-        {
+        } finally {
             if (fileOutputStream != null) {
                 fileOutputStream.close();
             }
@@ -146,31 +123,20 @@ public class SftpUtils {
     /**
      * 上传文件
      *
-     * @param host
-     *            服务器名
-     * @param port
-     *            端口号
-     * @param username
-     *            用户名
-     * @param password
-     *            密码
-     * @param remotePath
-     *            远程文件路径
-     * @param remoteFileName
-     *            远程文件名
-     * @param localFileFullName
-     *            本地文件名（包含路径）
-     *
-     * @throws JSchException
-     *             连接失败
-     * @throws SftpException
-     *             SFTP通信异常
-     * @throws IOException
-     *             本地IO异常
+     * @param host              服务器名
+     * @param port              端口号
+     * @param username          用户名
+     * @param password          密码
+     * @param remotePath        远程文件路径
+     * @param remoteFileName    远程文件名
+     * @param localFileFullName 本地文件名（包含路径）
+     * @throws JSchException 连接失败
+     * @throws SftpException SFTP通信异常
+     * @throws IOException   本地IO异常
      */
     public static boolean upload(String host, int port, String username,
-                              String password, String remotePath, String remoteFileName,
-                              String localFileFullName) throws JSchException, SftpException, IOException {
+                                 String password, String remotePath, String remoteFileName,
+                                 String localFileFullName) throws JSchException, SftpException, IOException {
         Session session = null;
         ChannelSftp channel = null;
         boolean flag = true;
@@ -187,11 +153,10 @@ public class SftpUtils {
             if (!uploadFile(remotePath, remoteFileName, localFileFullName, channel)) {
                 flag = false;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             flag = false;
-        }
-        finally {
+        } finally {
             if (channel != null) {
                 channel.disconnect();
             }
@@ -205,31 +170,20 @@ public class SftpUtils {
     /**
      * 下载文件
      *
-     * @param host
-     *            服务器名
-     * @param port
-     *            端口号
-     * @param username
-     *            用户名
-     * @param password
-     *            密码
-     * @param remotePath
-     *            远程文件路径
-     * @param remoteFileName
-     *            远程文件名
-     * @param localFileFullName
-     *            本地文件名（包含路径）
-     *
-     * @throws JSchException
-     *             连接失败
-     * @throws SftpException
-     *             SFTP通信异常
-     * @throws IOException
-     *             本地IO异常
+     * @param host              服务器名
+     * @param port              端口号
+     * @param username          用户名
+     * @param password          密码
+     * @param remotePath        远程文件路径
+     * @param remoteFileName    远程文件名
+     * @param localFileFullName 本地文件名（包含路径）
+     * @throws JSchException 连接失败
+     * @throws SftpException SFTP通信异常
+     * @throws IOException   本地IO异常
      */
     public static boolean download(String host, int port, String username,
-                                String password, String remotePath, String remoteFileName,
-                                String localFileFullName) throws JSchException, SftpException, IOException {
+                                   String password, String remotePath, String remoteFileName,
+                                   String localFileFullName) throws JSchException, SftpException, IOException {
         Session session = null;
         ChannelSftp channel = null;
         boolean flag = true;
@@ -250,9 +204,7 @@ public class SftpUtils {
         } catch (Exception e) {
             e.printStackTrace();
             flag = false;
-        }
-        finally
-        {
+        } finally {
             if (channel != null) {
                 channel.disconnect();
             }
@@ -264,7 +216,7 @@ public class SftpUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        boolean flag = SftpUtils.upload("10.250.3.34",22,"qpp","qpp","","XQL01110023","/Users/hongmr/Work/Temp/XQL0111002");
+        boolean flag = SftpUtils.upload("10.250.3.34", 22, "qpp", "qpp", "", "XQL01110023", "/Users/hongmr/Work/Temp/XQL0111002");
         System.out.println("flag:" + flag);
     }
 }

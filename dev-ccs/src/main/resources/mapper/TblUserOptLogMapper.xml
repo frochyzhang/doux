@@ -29,11 +29,12 @@
         from TBL_USER_OPT_LOG
         where OPERATION_ID = #{operationId,jdbcType=VARCHAR}
     </select>
-    <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam" resultMap="BaseResultMap">
+    <select id="pageSelectOptLogs" parameterType="com.allinfinance.dev.ccs.dal.paramvo.LogReqParam"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from TBL_USER_OPT_LOG lg
-        LEFT JOIN TBL_USER  us  ON lg.user_id=us.user_id
+        LEFT JOIN TBL_USER us ON lg.user_id=us.user_id
         where 1=1
         <if test="logReqParam!=null">
             <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
@@ -64,11 +65,12 @@
                                       TABLE_NAME, COLUMN_NAME, NEW_VALUE,
                                       OLD_VALUE, RESERVED_FIELD1, RESERVED_FIELD2,
                                       RESERVED_FIELD3)
-        values ( #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
+        values (#{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
                 #{operationType,jdbcType=VARCHAR}, #{operationPath,jdbcType=VARCHAR},
                 #{interviewtTime,jdbcType=TIMESTAMP},
                 #{tableName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{newValue,jdbcType=VARCHAR},
-                #{oldValue,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
+                #{oldValue,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR},
+                #{reservedField2,jdbcType=VARCHAR},
                 #{reservedField3,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">

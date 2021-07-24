@@ -20,7 +20,7 @@ public class DataValidator {
 
     /**
      * 检验 日期是否在指定区间内，如果格式错误，返回false
-     *
+     * <p>
      * 如果maxDateStr或minDateStr为空则比较时变为正负无穷大，如果都为空，则返回false
      *
      * @param aDate
@@ -36,7 +36,7 @@ public class DataValidator {
      * 检查字符串是否为空，并且长度是否为指定值
      *
      * @param str
-     * @param l 长度
+     * @param l   长度
      * @return
      */
     public static final boolean isStrLenEqual(String str, int l) {
@@ -47,7 +47,7 @@ public class DataValidator {
      * 检查字符串是否为空，并且长度是否小于指定值
      *
      * @param str
-     * @param l 长度
+     * @param l   长度
      * @return
      */
     public static final boolean isStrLenLess(String str, int l) {
@@ -58,7 +58,7 @@ public class DataValidator {
      * 检查字符串是否为空，并且长度是否小等于指定值
      *
      * @param str
-     * @param l 长度
+     * @param l   长度
      * @return
      */
     public static final boolean isStrLenLessEqual(String str, int l) {
@@ -444,10 +444,10 @@ public class DataValidator {
         if (StringUtils.isBlank(custId)) {
             return false;
         }
-        if(custId.getBytes().length != 16){
+        if (custId.getBytes().length != 16) {
             return false;
         }
-        if(!isDigits(custId)){
+        if (!isDigits(custId)) {
             return false;
         }
         return true;
@@ -457,8 +457,8 @@ public class DataValidator {
      * 校验是否是指定精度的数字
      *
      * @param doubleAmt
-     * @param p 最大长度
-     * @param s 小数点后位数
+     * @param p         最大长度
+     * @param s         小数点后位数
      * @return
      */
     public static boolean isDoubleAmtParam(String doubleAmt, int p, int s) {
@@ -476,8 +476,8 @@ public class DataValidator {
      * 校验是否是指定精度的数字且大于0
      *
      * @param doubleAmt
-     * @param p 最大长度
-     * @param s 小数点后位数
+     * @param p         最大长度
+     * @param s         小数点后位数
      * @return
      */
     public static boolean isDoubleAmt(String doubleAmt, int p, int s) {
@@ -498,8 +498,8 @@ public class DataValidator {
      * 校验是否是指定精度的数字可以为0
      *
      * @param doubleAmt
-     * @param p 最大长度
-     * @param s 小数点后位数
+     * @param p         最大长度
+     * @param s         小数点后位数
      * @return
      */
     public static boolean isDoubleAmtOrZero(String doubleAmt, int p, int s) {
@@ -585,8 +585,8 @@ public class DataValidator {
      * 校验购买比例格式，以0开头，且大于0
      *
      * @param doubleRatio
-     * @param p 最大长度
-     * @param s 小数点后位数
+     * @param p           最大长度
+     * @param s           小数点后位数
      * @return
      */
     public static boolean isDoubleRatio(String doubleRatio, int p, int s) {

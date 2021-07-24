@@ -14,8 +14,10 @@ import java.lang.annotation.*;
 @Documented
 public @interface CBinaryInt {
     boolean bigEndian() default true;
+
     /**
      * 字节数,最大值为8
+     *
      * @return
      */
     int length() default 4;

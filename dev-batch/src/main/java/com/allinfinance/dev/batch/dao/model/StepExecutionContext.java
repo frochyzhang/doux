@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * batch_step_execution_context
- * @author 
+ *
+ * @author
  */
 public class StepExecutionContext implements Serializable {
     private Long stepExecutionId;

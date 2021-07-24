@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author 张勇
  * @date 2020-11-28 01:23
-*/
+ */
 @Configuration
 public class SpringConfigTool implements ApplicationContextAware {
 

@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class LogoutSeccessReapDto implements Serializable {
 
-    private String  userId;
-    private String  userName;
-    private String  token;
+    private String userId;
+    private String userName;
+    private String token;
 
 
     public String getUserId() {

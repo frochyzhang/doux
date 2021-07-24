@@ -21,9 +21,10 @@ import java.util.List;
 public class TblRolePermissionInfoServiceImpl implements TblRolePermissionInfoService {
     @Autowired
     TblRolePermissionInfoMapper rolePermissionInfoMapper;
+
     @Override
     public List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId) {
-        List<TblRolePermissionInfo> permissionInfos=rolePermissionInfoMapper.getRolePermissionInfByRoleId(roleId);
+        List<TblRolePermissionInfo> permissionInfos = rolePermissionInfoMapper.getRolePermissionInfByRoleId(roleId);
         return permissionInfos;
     }
 

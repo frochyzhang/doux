@@ -41,7 +41,7 @@ public class TblMenu implements Serializable {
     private String reservedField3;
 
     private String org;
-    private List<TblMenu> childMenus=new ArrayList<>();
+    private List<TblMenu> childMenus = new ArrayList<>();
 
     public List<TblMenu> getChildMenus() {
         return childMenus;

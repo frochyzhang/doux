@@ -2,7 +2,6 @@ package com.allinfinance.dev.core.dto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 张勇

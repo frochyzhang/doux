@@ -70,7 +70,6 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
 
-
     public TblUser selectByPrimaryKey(Integer userId) {
         return null;
     }
@@ -104,9 +103,8 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
 
-
     @Override
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
-       return tblUserMapper.selectByNameAndOrg(userReqParam);
+        return tblUserMapper.selectByNameAndOrg(userReqParam);
     }
 }

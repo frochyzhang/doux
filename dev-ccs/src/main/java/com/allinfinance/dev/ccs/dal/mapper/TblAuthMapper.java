@@ -23,5 +23,5 @@ public interface TblAuthMapper {
 
     List<TblAuth> selectAuths();
 
-    int invalidateAuth(@Param("authId") String authId,@Param("isAvailable") String isAvailable);
+    int invalidateAuth(@Param("authId") String authId, @Param("isAvailable") String isAvailable);
 }

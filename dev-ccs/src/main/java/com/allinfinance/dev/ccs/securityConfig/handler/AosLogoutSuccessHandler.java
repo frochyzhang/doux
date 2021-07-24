@@ -1,6 +1,5 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
-import com.allinfinance.dev.ccs.dal.respdto.LogoutSeccessReapDto;
 import com.allinfinance.dev.ccs.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;

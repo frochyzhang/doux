@@ -28,7 +28,7 @@ public class TblOptLogServiceImpl implements TblOptLogService {
         PageHelper.startPage(logReqParam.getCurrent(), logReqParam.getPageSize());
         List<UserLogRespDto> optLogs = tblUserOptLogMapper.pageSelectOptLogs(logReqParam);
         //将list转为对象数组
-        UserLogRespDto[] logs= new UserLogRespDto[optLogs.size()];
+        UserLogRespDto[] logs = new UserLogRespDto[optLogs.size()];
         logs = optLogs.toArray(logs);
         return new PageInfo<UserLogRespDto>(optLogs);
     }

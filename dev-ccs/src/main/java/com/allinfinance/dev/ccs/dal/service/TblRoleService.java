@@ -33,37 +33,37 @@ public class TblRoleService {
     @Autowired
     private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
 
-    public int deleteByPrimaryKey(String roleId){
+    public int deleteByPrimaryKey(String roleId) {
         return tblRoleMapper.deleteByPrimaryKey(roleId);
     }
 
-    public int insert(TblRole record){
+    public int insert(TblRole record) {
         return tblRoleMapper.insert(record);
     }
 
-    public int insertSelective(TblRole record){
+    public int insertSelective(TblRole record) {
         return tblRoleMapper.insertSelective(record);
     }
 
-    public TblRole selectByPrimaryKey(String roleId){
+    public TblRole selectByPrimaryKey(String roleId) {
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 
-    public TblRole selectByRoleId(String roleId){
+    public TblRole selectByRoleId(String roleId) {
         return tblRoleMapper.selectByRoleId(roleId);
     }
 
-    public int updateByPrimaryKeySelective(TblRole record){
+    public int updateByPrimaryKeySelective(TblRole record) {
         return tblRoleMapper.updateByPrimaryKeySelective(record);
     }
 
-    public int updateByPrimaryKey(TblRole record){
+    public int updateByPrimaryKey(TblRole record) {
         return tblRoleMapper.updateByPrimaryKey(record);
     }
 
 
     public PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) {
-        PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
+        PageHelper.startPage(roleReqParam.getCurrent(), roleReqParam.getPageSize());
         List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
         return new PageInfo<TblRole>(users);
     }
@@ -77,7 +77,7 @@ public class TblRoleService {
         return tblPermissionInfoMapper.selectPermissionInfos();
     }
 
-    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
+    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo) {
         return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
     }
 

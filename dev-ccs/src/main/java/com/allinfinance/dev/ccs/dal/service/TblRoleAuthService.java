@@ -20,32 +20,32 @@ public class TblRoleAuthService {
     @Autowired
     TblRoleAuthMapper tblRoleAuthMapper;
 
-    public int deleteByPrimaryKey(TblRoleAuthKey key){
+    public int deleteByPrimaryKey(TblRoleAuthKey key) {
         return tblRoleAuthMapper.deleteByPrimaryKey(key);
     }
 
-    public int insert(TblRoleAuth record){
+    public int insert(TblRoleAuth record) {
         return tblRoleAuthMapper.deleteByPrimaryKey(record);
     }
 
-    public int insertSelective(TblRoleAuth record){
+    public int insertSelective(TblRoleAuth record) {
         return tblRoleAuthMapper.insertSelective(record);
     }
 
-    public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key){
+    public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key) {
         return tblRoleAuthMapper.selectByPrimaryKey(key);
     }
 
-    public int updateByPrimaryKeySelective(TblRoleAuth record){
+    public int updateByPrimaryKeySelective(TblRoleAuth record) {
         return tblRoleAuthMapper.updateByPrimaryKeySelective(record);
     }
 
-    public int updateByPrimaryKey(TblRoleAuth record){
+    public int updateByPrimaryKey(TblRoleAuth record) {
         return tblRoleAuthMapper.updateByPrimaryKey(record);
     }
 
 
-    public List<TblRoleAuth> selectRoleAuths(){
+    public List<TblRoleAuth> selectRoleAuths() {
         return tblRoleAuthMapper.selectRoleAuths();
     }
 

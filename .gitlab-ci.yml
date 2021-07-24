@@ -37,7 +37,7 @@ job3:
   when: always #不管前面几步成功与否，永远会执行这一步。它有几个值：on_success （默认值）\on_failure\always\manual（手动执行）
 
 # 定义 job
-.job4:    #对于临时不想执行的job，可以选择在前面加个"."，这样就会跳过此步任务，否则你除了要注释掉这个jobj外，还需要注释上面为deploy的stage
+.job4: #对于临时不想执行的job，可以选择在前面加个"."，这样就会跳过此步任务，否则你除了要注释掉这个jobj外，还需要注释上面为deploy的stage
   stage: deploy
   script:
     - echo "I am job4"

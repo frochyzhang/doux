@@ -42,6 +42,7 @@ public class JwtUtil {
     private static String TOKEN_SECRET;
 
     private static long EXPIRE_END_TIME;
+
     /**
      * 校验token是否正确
      *
@@ -58,8 +59,8 @@ public class JwtUtil {
             DecodedJWT jwt = verifier.verify(token);
             Date expiresAt = jwt.getExpiresAt();
             Date date = new Date();
-            if(date.after(expiresAt)){
-                throw  new TokenExpiredExeption("token过期");
+            if (date.after(expiresAt)) {
+                throw new TokenExpiredExeption("token过期");
             }
             return true;
         } catch (Exception e) {
@@ -85,6 +86,7 @@ public class JwtUtil {
 
     /**
      * 获取用户ID
+     *
      * @param token
      * @return token中包含的用户id
      */
@@ -96,8 +98,10 @@ public class JwtUtil {
             return null;
         }
     }
+
     /**
      * 获取用户所属机构
+     *
      * @param token
      * @return token中包含的用户所属机构
      */
@@ -109,8 +113,10 @@ public class JwtUtil {
             return null;
         }
     }
+
     /**
      * 获取用户角色
+     *
      * @param token
      * @return token中包含的用户角色
      */
@@ -125,40 +131,43 @@ public class JwtUtil {
 
     /**
      * 签发access  token
+     *
      * @param userName
      * @param userId
      * @param role
      * @param org
      * @return
      */
-    public static String sign(String userName,String userId, String role,String org) {
+    public static String sign(String userName, String userId, String role, String org) {
         //过期时间
         Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         setExpireEndTime(date.getTime());
-        return sign(userName,userId,role,org,date);
+        return sign(userName, userId, role, org, date);
     }
 
 
     /**
      * 签发refresh token
+     *
      * @param userName
      * @param userId
      * @param role
      * @param org
      * @return
      */
-    public static String signRefresh(String userName,String userId, String role,String org) {
-        return sign(userName,userId,role,org,new Date(System.currentTimeMillis() + EXPIRE_TIME));
+    public static String signRefresh(String userName, String userId, String role, String org) {
+        return sign(userName, userId, role, org, new Date(System.currentTimeMillis() + EXPIRE_TIME));
     }
+
     /**
      * 生成用户登录后的身份签名
      *
      * @param userName 用户名
-     * @param userId 用户id
-     * @param role 用户角色
+     * @param userId   用户id
+     * @param role     用户角色
      * @return 加密的token
      */
-    public static String sign(String userName,String userId, String role,String org,Date date) {
+    public static String sign(String userName, String userId, String role, String org, Date date) {
         try {
 //
 //            私钥及加密算法
@@ -181,41 +190,44 @@ public class JwtUtil {
             return null;
         }
     }
-    public static Jws<Claims>  psrserAuthenticteToken(String token){
-        try{
+
+    public static Jws<Claims> psrserAuthenticteToken(String token) {
+        try {
             Jws<Claims> parser = Jwts.parser().setSigningKey(TOKEN_SECRET).parseClaimsJws(token);
             return parser;
 
-        }catch (ExpiredJwtException e){
-            return  new DefaultJws<>(null,e.getClaims(),"");
+        } catch (ExpiredJwtException e) {
+            return new DefaultJws<>(null, e.getClaims(), "");
         }
     }
 
 
     /**
      * 判断token是否过期
+     *
      * @param
      * @return
      */
-    public static  boolean isJwtExpired (String token){
-        return  JWT.decode(token).getExpiresAt().before(new Date());
+    public static boolean isJwtExpired(String token) {
+        return JWT.decode(token).getExpiresAt().before(new Date());
     }
 
     /**
      * 判断是否马上过期
+     *
      * @param token
      * @return
      */
-    public static  boolean isWillExpired (String token){
+    public static boolean isWillExpired(String token) {
         Date expires = JWT.decode(token).getExpiresAt();
-        Calendar calendar=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(expires);
-        calendar.add(Calendar.HOUR,-1);
+        calendar.add(Calendar.HOUR, -1);
         Date calendarTime = calendar.getTime();
         return calendarTime.before(new Date());
     }
 
-    public static DefaultJws  setJwtExpired (Jws<Claims> jws){
+    public static DefaultJws setJwtExpired(Jws<Claims> jws) {
         Claims claims = jws.getBody().setExpiration((new Date(System.currentTimeMillis() + EXPIRE_TIME)));
         DefaultJws defaultJws = new DefaultJws(jws.getHeader(), claims, jws.getSignature());
         return defaultJws;
@@ -224,19 +236,22 @@ public class JwtUtil {
     public static long getExpireTime() {
         return EXPIRE_TIME;
     }
+
     @Value("${token.expire_time:7}")
-    public  void setExpireTime(long expireTime) {
-        expireTime= expireTime==0?1:expireTime;
-        EXPIRE_TIME = expireTime  *60*60* 1000;
+    public void setExpireTime(long expireTime) {
+        expireTime = expireTime == 0 ? 1 : expireTime;
+        EXPIRE_TIME = expireTime * 60 * 60 * 1000;
     }
 
     public static String getTokenSecret() {
         return TOKEN_SECRET;
     }
+
     @Value("${token.token_secret:f26e587c28064d0e855e72c0a6a0e618}")
-    public  void setTokenSecret(String tokenSecret) {
+    public void setTokenSecret(String tokenSecret) {
         TOKEN_SECRET = tokenSecret;
     }
+
     public static long getRefreshExpireTime() {
         return REFRESH_EXPIRE_TIME;
     }

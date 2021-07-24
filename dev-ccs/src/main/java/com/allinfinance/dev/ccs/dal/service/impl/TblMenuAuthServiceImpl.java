@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author liuqi
  * @since 2021-05-14
  */
 @Service
-public class TblMenuAuthServiceImpl  implements TblMenuAuthService {
+public class TblMenuAuthServiceImpl implements TblMenuAuthService {
 
 
     @Override
