@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0-RELEASE</version>
+    <version>1.2.1-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
