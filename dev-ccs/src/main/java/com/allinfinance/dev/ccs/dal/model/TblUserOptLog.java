@@ -162,4 +162,19 @@ public class TblUserOptLog {
     public void setOrg(String org) {
         this.org = org == null ? null : org.trim();
     }
+
+    @Override
+    public String toString() {
+        return "TblUserOptLog{" +
+                "operType='" + operType + '\'' +
+                ", operRequParam='" + operRequParam + '\'' +
+                ", operUserId='" + operUserId + '\'' +
+                ", operUserName='" + operUserName + '\'' +
+                ", operMethod='" + operMethod + '\'' +
+                ", operUri='" + operUri + '\'' +
+                ", operIp='" + operIp + '\'' +
+                ", operCreateTime=" + operCreateTime +
+                ", org='" + org + '\'' +
+                '}';
+    }
 }

@@ -9,18 +9,22 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.controller.OptLogController;
 import com.allinfinance.dev.ccs.dal.model.TblUserErrorLog;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.IpAddressUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -36,6 +40,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Aspect
 @Component
 public class TblUserOptLogAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(TblUserOptLogAspect.class);
 
     @Autowired
     private TblOptLogService tblOptLogService;
@@ -99,10 +105,15 @@ public class TblUserOptLogAspect {
             operlog.setOperMethod(methodName); // 请求方法
 
             // 请求的参数
+            assert request != null;
             Map<String, String> rtnMap = converMap(request.getParameterMap());
             // 将参数所在的数组转换成json
             String params = JSON.toJSONString(rtnMap);
-
+            // 这里没有参数就检查是不是因为@RequestBody作为请求参数，调用专门的工具类取解析这样的请求参数
+            if (StringUtils.equals(params,"{}")){
+                Object[] args = joinPoint.getArgs();
+                params = ObjectMapUtil.getParameterValue(args);
+            }
             operlog.setOperRequParam(params); // 请求参数
 //            operlog.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
             operlog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
@@ -111,12 +122,12 @@ public class TblUserOptLogAspect {
             operlog.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
             operlog.setOperUri(request.getRequestURI()); // 请求URI
             operlog.setOperCreateTime(new Date()); // 创建时间
-            // 实际使用中因为查询操作太多 所以剔除部分无意义的查询日志  主要是无参数查询
+            // 实际使用中因为查询操作太多 所以剔除部分无意义的查询日志  无参数查询不记录
             if (!(operlog.getOperType().equals(AosContent.QUERY)&&operlog.getOperRequParam().equals("{}"))){
                 tblOptLogService.insertLog(operlog);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("操作日志INSERT异常-->日志信息{}",operlog.toString());
         }
     }
 

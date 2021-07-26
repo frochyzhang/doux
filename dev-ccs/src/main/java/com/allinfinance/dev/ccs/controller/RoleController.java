@@ -52,7 +52,7 @@ public class RoleController {
         String userId = JwtUtil.getUserId(token);
         //  获取当前用户的机构号
         String org = JwtUtil.getOrg(token);
-        if (!AosContent.ALLINFINANCE_ORG.equals(org)){
+        if (!AosContent.ALLINFINANCE_ORG.equals(org)) {
             roleReqParam.setOrg(org);
         }
         roleReqParam.setUserId(userId);
@@ -89,11 +89,12 @@ public class RoleController {
 
     /**
      * 无分页查询角色
+     *
      * @param roleReqParam
      * @param request
      * @return
      */
-    @RequestMapping(value = "/currLists",method = RequestMethod.GET)
+    @RequestMapping(value = "/currLists", method = RequestMethod.GET)
     @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "无分页角色列表")
     public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
         // 从token中获取当前用户的id
@@ -101,7 +102,7 @@ public class RoleController {
         String userId = JwtUtil.getUserId(token);
         //  获取当前用户的机构号
         String org = JwtUtil.getOrg(token);
-        if (!AosContent.ALLINFINANCE_ORG.equals(org)){
+        if (!AosContent.ALLINFINANCE_ORG.equals(org)) {
             roleReqParam.setOrg(org);
         }
         // 排除不可用的角色
@@ -205,7 +206,7 @@ public class RoleController {
         logger.info("待删除的角色-roleIds: {}", roleIds);
         // 执行删除角色操作之前 先检查是否有正在使用的权限，如果有则不允许删除，要先删除用户才行
         List<TblUser> users = tblUserService.selectOnUseRoles(roleReqParam);
-        if (users!=null){
+        if (users.size() != 0) {
             return Result.success(5008);
         }
         int result = 0;
