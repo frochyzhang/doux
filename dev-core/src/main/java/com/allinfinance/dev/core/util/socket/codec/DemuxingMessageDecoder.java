@@ -78,11 +78,10 @@ public class DemuxingMessageDecoder implements MessageDecoder {
             }
             return MessageDecoderResult.OK;
         }
-        int blen = in.remaining();
-        byte[] bBody = new byte[blen];
+        byte[] bBody = new byte[len];
         in.get(bBody);
 
-        logger.info("编码消息: 字节length = " + len + ", content[" + ConvertUtils.bytesArrayToHexString(bBody) + "]");
+        logger.info("编码消息: 字节length = " + len + ", content[" + ConvertUtils.bytesArrayToHexString(bBody).substring(0, 10) + "]");
 
         StringBuilder buf = new StringBuilder("");
         buf.append(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
