@@ -28,7 +28,7 @@ public class HttpClientService {
 
     private HttpConnectionManager httpConnectionManager;
 
-    public String httpRequest(HashMap<String, String> header, String request, String url, String charset, int retryTimes, int timeout) {
+    public String httpRequest(HashMap<String, String> header, String request, String url, int retryTimes, int timeout) {
         logger.info("httpRequest开始!");
 
         if (StringUtils.isBlank(request)
@@ -45,7 +45,9 @@ public class HttpClientService {
         CloseableHttpResponse httpResponse;
         String response;
         try {
-            StringEntity stringEntity = new StringEntity(request, charset);
+            httpConnectionManager = (HttpConnectionManager) SpringConfigTool.getBeanByBeanName("httpConnectionManager");
+
+            StringEntity stringEntity = new StringEntity(request, httpConnectionManager.getCharSet());
             HttpPost httpPost = new HttpPost(url);
             if (header == null) {
                 logger.error("消息头信息为null，请检查请求参数");
@@ -59,7 +61,6 @@ public class HttpClientService {
             }
 
             httpPost.setEntity(stringEntity);
-            httpConnectionManager = (HttpConnectionManager) SpringConfigTool.getBeanByBeanName("httpConnectionManager");
             httpResponse = httpConnectionManager.getHttpClient(retryTimes, timeout).execute(httpPost);
             if (httpResponse == null) {
                 logger.error("http应答为空!");

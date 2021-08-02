@@ -10,6 +10,7 @@ import com.allinfinance.dev.core.util.convert.simple8583.model.IsoPackage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -44,13 +45,13 @@ public class XmlReader {
         InputStream is = null;
         try {
             // 获取
-            is = ClassLoader.getSystemResourceAsStream(path);
+            is = new FileInputStream(path);
             if (is == null) {
                 throw new Simple8583Exception("配置文件路径错误:" + path);
             }
             IsoContainer container = this.readConfigFromStream(IsoContainer.class, is);
             // System.out.println(container.size());
-            is = ClassLoader.getSystemResourceAsStream(path);
+            is = new FileInputStream(path);
             IsoHeaderList headerList = readConfigFromStream(IsoHeaderList.class, is);
             // System.out.println(headerList.size());
             for (IsoPackage pack : container) {
