@@ -22,10 +22,8 @@ import java.util.HashMap;
  */
 @Service
 public class HttpClientService {
-    private Logger logger = LoggerFactory.getLogger(HttpClientService.class);
-
     private static final String DEFAULT_CONTENT_TYPE = "application/xml";
-
+    private final Logger logger = LoggerFactory.getLogger(HttpClientService.class);
     private HttpConnectionManager httpConnectionManager;
 
     public String httpRequest(HashMap<String, String> header, String request, String url, int retryTimes, int timeout) {

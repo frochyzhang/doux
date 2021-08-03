@@ -15,6 +15,7 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -32,30 +33,15 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * maxPoolSize https连接池最大连接数，最大不超过50
- * initPollSize https连接池默认连接数
- * charSet 编码方式
- * socketSoTimeOut 底层通讯超时时间，毫秒单位
- *
- * @author hongmr
- * @date 2017/7/19
- */
-public class HttpConnectionManager {
-
-    private PoolingHttpClientConnectionManager connManager = null;
+public class HttpConnectionManagerTrust {
 
     private static final int DEFAULT_MAX_POOL_SIZE = 50;
-
-    private int maxPoolSize = 20;
-
-    private int initPoolSize = 5;
-
-    private String charSet = "utf-8";
-
-    private int socketSoTimeOut = 30000;
-
     private static final Log logger = LogFactory.getLog(HttpConnectionManager.class);
+    private PoolingHttpClientConnectionManager connManager = null;
+    private int maxPoolSize = 20;
+    private int initPoolSize = 5;
+    private String charSet = "utf-8";
+    private int socketSoTimeOut = 30000;
 
     public void init() {
         logger.info("*************init httpclient connect pool,charSet="
@@ -64,14 +50,14 @@ public class HttpConnectionManager {
         ConnectionConfig connConfig = ConnectionConfig.custom()
                 .setCharset(Charset.forName(charSet)).build();
         SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(socketSoTimeOut).build();
-        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create();
+        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.create();
         ConnectionSocketFactory plainConnectionSocketFactory = new PlainConnectionSocketFactory();
         registryBuilder.register("http", plainConnectionSocketFactory);
         //指定信任密钥存储对象和连接套接字工厂
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, (paramArrayOfX509Certificate, paramString) -> true).build();
-            LayeredConnectionSocketFactory sslSf = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+            LayeredConnectionSocketFactory sslSf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
             registryBuilder.register("https", sslSf);
         } catch (KeyStoreException e) {
             logger.error("创建受信任的keystore异常", e);
