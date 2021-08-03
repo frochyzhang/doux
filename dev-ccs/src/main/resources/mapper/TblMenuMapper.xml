@@ -110,7 +110,7 @@
     SELECT DISTINCT <include refid="Base_Column_List" /> FROM childNode WHERE NODE_TYPE!=3
     UNION
     SELECT DISTINCT <include refid="Base_Column_List" />FROM parentNode WHERE NODE_TYPE!=3
-
+    ORDER BY MENU_ID ASC
   </select>
 
 <!--查询用户的具有页面按钮的所有的访问权限-->
