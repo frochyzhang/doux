@@ -84,8 +84,8 @@ public class UserController {
                 userReqParam.setOrg(org);
             }
         }
-        //剔除不可用的用户
-        userReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
+//        剔除不可用的用户(20210804评审认为应当删除页面的删除按钮，改为显示所有用户通过update维护，所以显示所有的用户)
+//        userReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
