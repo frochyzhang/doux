@@ -45,7 +45,7 @@ public class HttpConnectionManagerTrust {
 
     public void init() {
         logger.info("*************init httpclient connect pool,charSet="
-                + charSet + ",socketSoTimeOut" + socketSoTimeOut);
+                + charSet + ",socketSoTimeOut=" + socketSoTimeOut);
 
         ConnectionConfig connConfig = ConnectionConfig.custom()
                 .setCharset(Charset.forName(charSet)).build();
