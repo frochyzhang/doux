@@ -51,14 +51,7 @@ public class OptLogController {
         if (logReqParam.getTime()!=null){
             JSONObject ob= JSON.parseObject(logReqParam.getTime());
             logReqParam.setBeginDate(ob.getString("beginDate"));
-            Calendar c = Calendar.getInstance();
-            try {
-                c.setTime(sf.parse(ob.getString("endDate")));
-                c.add(Calendar.DATE,1);
-            } catch (ParseException e) {
-                logger.error("日志查询日期格式转换异常!", e);
-            }
-            logReqParam.setEndDate(sf.format(c.getTime()));
+            logReqParam.setEndDate(ob.getString("endDate"));
         }
         if (logReqParam.getEndDate()!=null){
             Calendar cal = Calendar.getInstance();
