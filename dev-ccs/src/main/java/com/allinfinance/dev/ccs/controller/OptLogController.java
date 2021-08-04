@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
@@ -43,10 +46,30 @@ public class OptLogController {
     @ResponseBody
     @OperLog(operModul = "操作日志-日志列表",operType = AosContent.QUERY,operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//        处理未输入参数时默认的时间
         if (logReqParam.getTime()!=null){
             JSONObject ob= JSON.parseObject(logReqParam.getTime());
             logReqParam.setBeginDate(ob.getString("beginDate"));
-            logReqParam.setEndDate(ob.getString("endDate"));
+            Calendar c = Calendar.getInstance();
+            try {
+                c.setTime(sf.parse(ob.getString("endDate")));
+                c.add(Calendar.DATE,1);
+            } catch (ParseException e) {
+                logger.error("日志查询日期格式转换异常!", e);
+            }
+            logReqParam.setEndDate(sf.format(c.getTime()));
+        }
+        if (logReqParam.getEndDate()!=null){
+            Calendar cal = Calendar.getInstance();
+            try {
+                cal.setTime(sf.parse(logReqParam.getEndDate()));
+                cal.add(Calendar.DATE,1);
+ //             如果接受的直接有endDate直接处理
+                logReqParam.setEndDate(sf.format(cal.getTime()));
+            } catch (ParseException e) {
+                logger.error("日志查询日期格式转换异常!", e);
+            }
         }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader( AosContent.AOS_TOKEN);
