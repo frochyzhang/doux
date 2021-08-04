@@ -17,6 +17,7 @@
         <module>dev-socket-example</module>
         <module>dev-redis-example</module>
         <module>dev-batch-example</module>
+        <module>dev-http-example</module>
     </modules>
 
     <properties>

@@ -100,7 +100,6 @@ public class HttpsClientTrustService {
             timeout = 30000;
         }
         CloseableHttpResponse httpResponse;
-        String response;
         try {
             httpConnectionManager = (HttpConnectionManagerTrust) SpringConfigTool.getBeanByBeanName("httpConnectionManagerTrust");
 
