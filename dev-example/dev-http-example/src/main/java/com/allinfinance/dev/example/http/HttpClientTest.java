@@ -1,7 +1,7 @@
 package com.allinfinance.dev.example.http;
 
 import com.alibaba.fastjson.JSONObject;
-import com.allinfinance.dev.core.util.http.client.HttpsClientTrustService;
+import com.allinfinance.dev.core.util.http.client.HttpClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +23,7 @@ public class HttpClientTest {
 
     public static void main(String[] args) throws Exception {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:application-context-test.xml");
-        HttpsClientTrustService httpClientService = applicationContext.getBean("httpsClientTrustService", HttpsClientTrustService.class);
+        HttpClientService httpClientService = applicationContext.getBean("httpClientService", HttpClientService.class);
         HashMap<String, String> header = new HashMap<>();
         header.put("appId", "EUCP-EMY-SMS1-7YAL6");
         header.put("gzip", "on");

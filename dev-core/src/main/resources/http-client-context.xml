@@ -9,12 +9,6 @@
         <property name="initPoolSize" value="${dev.http.initPoolSize}"/>
         <property name="charSet" value="${dev.http.charSet}"/>
         <property name="socketSoTimeOut" value="${dev.http.socketSoTimeOut}"/>
-    </bean>
-    <bean id="httpConnectionManagerTrust" class="com.allinfinance.dev.core.util.http.client.HttpConnectionManagerTrust"
-          init-method="init">
-        <property name="maxPoolSize" value="${dev.http.maxPoolSize}"/>
-        <property name="initPoolSize" value="${dev.http.initPoolSize}"/>
-        <property name="charSet" value="${dev.http.charSet}"/>
-        <property name="socketSoTimeOut" value="${dev.http.socketSoTimeOut}"/>
+        <property name="httpsTrust" value="${dev.http.httpsTrust}"/>
     </bean>
 </beans>
