@@ -35,4 +35,8 @@ public class SpringConfigTool implements ApplicationContextAware {
     public synchronized static Object getBeanByClassName(String className) throws ClassNotFoundException {
         return context.getBean(Class.forName(className));
     }
+
+    public synchronized static String getPropertyByName(String name) {
+        return context.getEnvironment().getProperty(name);
+    }
 }
