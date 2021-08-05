@@ -77,7 +77,7 @@ public class HttpClientService {
                     logger.error("http应答报文为空!");
                     return null;
                 }
-                logger.info("http应答报文:" + response);
+                logger.debug("http应答报文:" + response);
             } else {
                 logger.error("http post 请求失败! statusCode:" + statusCode);
                 httpResponse.close();
@@ -133,7 +133,11 @@ public class HttpClientService {
             if (HttpStatus.SC_OK == statusCode) {
                 logger.info("http post 请求成功!");
                 HashMap<String, Object> map = new HashMap<>();
-                Header[] httpHeaders = httpResponse.getAllHeaders();
+                HashMap<String, String> responseHeaderMap = new HashMap<>(5);
+
+                for (Header responseHeader : httpResponse.getAllHeaders()){
+                    responseHeaderMap.put(responseHeader.getName(),responseHeader.getValue());
+                }
                 HttpEntity httpEntity = httpResponse.getEntity();
                 byte[] httpBody = EntityUtils.toByteArray(httpEntity);
                 httpResponse.close();
@@ -141,12 +145,8 @@ public class HttpClientService {
                     logger.info("http应答报文体为空!");
                     return map;
                 }
-                map.put("header", httpHeaders);
+                map.put("header", responseHeaderMap);
                 map.put("body", httpBody);
-                for (Header header1 : httpHeaders) {
-                    logger.info("header:name:{},value:{}", header1.getName(), header1.getValue());
-                }
-                logger.info("body:{}", Arrays.toString(httpBody));
                 return map;
             } else {
                 logger.error("http post 请求失败! statusCode:" + statusCode);
