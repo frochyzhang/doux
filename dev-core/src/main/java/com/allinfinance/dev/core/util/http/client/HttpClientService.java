@@ -132,12 +132,10 @@ public class HttpClientService {
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (HttpStatus.SC_OK == statusCode) {
                 logger.info("http post 请求成功!");
-                HashMap<String, Object> map = new HashMap<>();
-                HashMap<String, String> responseHeaderMap = new HashMap<>(5);
+                HashMap<String, Object> map = new HashMap<>(2);
+                Header[] httpHeaders = httpResponse.getAllHeaders();
+                map.put("header", httpHeaders);
 
-                for (Header responseHeader : httpResponse.getAllHeaders()){
-                    responseHeaderMap.put(responseHeader.getName(),responseHeader.getValue());
-                }
                 HttpEntity httpEntity = httpResponse.getEntity();
                 byte[] httpBody = EntityUtils.toByteArray(httpEntity);
                 httpResponse.close();
@@ -145,7 +143,6 @@ public class HttpClientService {
                     logger.info("http应答报文体为空!");
                     return map;
                 }
-                map.put("header", responseHeaderMap);
                 map.put("body", httpBody);
                 return map;
             } else {
