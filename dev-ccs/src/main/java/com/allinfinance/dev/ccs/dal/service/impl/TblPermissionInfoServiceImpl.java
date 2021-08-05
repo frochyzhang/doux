@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 服务实现类
+ *  服务实现类
  * </p>
  *
  * @author liuqi
@@ -19,10 +19,9 @@ import org.springframework.stereotype.Service;
 public class TblPermissionInfoServiceImpl implements TblPermissionInfoService {
     @Autowired
     TblPermissionInfoMapper permissionInfoMapper;
-
     @Override
     public TblPermissionInfo getPromissionInfo(String requestUrl) {
-        TblPermissionInfo tblPermissionInfo = permissionInfoMapper.selectByRequestUrl(requestUrl);
+        TblPermissionInfo tblPermissionInfo=permissionInfoMapper.selectByRequestUrl( requestUrl);
         return tblPermissionInfo;
     }
 }

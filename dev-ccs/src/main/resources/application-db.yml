@@ -1,8 +1,8 @@
 jdbc:
   driver: com.ibm.db2.jcc.DB2Driver
-  url: jdbc:db2://10.250.20.209:50000/iacsdb:currentSchema=IACS;
-  username: iacs
-  password: iacs
+  url: jdbc:db2://10.250.23.33:50000/efss:currentSchema=CES_TEST;
+  username: efss
+  password: efss
   validationQuery: select 1 from sysibm.sysdummy1
 
 

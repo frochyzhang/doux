@@ -11,13 +11,13 @@ import java.util.List;
 public interface TblMenuMapper {
 
     List<MenusReqParam> pageSelectOptMenus(@Param("menusReqParam") MenusReqParam menusReqParam);
-
     void delMenuBatch(@Param("menuIds") String[] ids);
 
     List<TblMenu> selectRootMenusPath(@Param("menuIds") List menuIds);
 
-    List<TblMenu> selectMenusPathByPMid(@Param("level") String level, @Param("menuIds") List<String> menuId, @Param("parentMid") String parentMid);
+    List<TblMenu> selectMenusPowers(@Param("menuIds") List menuIds);
 
+    List<TblMenu> selectMenusPathByPMid(@Param("level") String level, @Param("menuIds") List<String> menuId, @Param("parentMid") String parentMid);
 
     void addMenu(TblMenu tblMenu);
 
@@ -27,5 +27,9 @@ public interface TblMenuMapper {
 
     TblUser getCurrentUserInfo(@Param("userName") String userName, @Param("org") String bank);
 
-    List<TblMenu> selectMenus();
+    List<TblMenu> selectMenus(@Param("authId") String authId);
+
+    String selectMaxMenuIdByRoot(TblMenu tblMenu);
+
+    String selectMaxMenuId(TblMenu tblMenu);
 }

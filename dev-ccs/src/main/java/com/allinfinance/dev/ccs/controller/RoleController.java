@@ -1,24 +1,20 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
-import com.allinfinance.dev.ccs.dal.model.TblRole;
-import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
-import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
+import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -41,25 +37,33 @@ public class RoleController {
     private TblRoleService tblRoleService;
 
     @Autowired
+    private TblUserService tblUserService;
+
+    @Autowired
     private TblRoleAuthService tblRoleAuthService;
 
     //分页查询角色
     @RequestMapping(method = RequestMethod.GET)
-    public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
+    @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "分页查询角色列表")
+    public Result selectPageRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
         logger.info("roleReqParam:-{}", roleReqParam);
         // 获取当前用户的id
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
+        //  获取当前用户的机构号
+        String org = JwtUtil.getOrg(token);
+        if (!AosContent.ALLINFINANCE_ORG.equals(org)) {
+            roleReqParam.setOrg(org);
+        }
         roleReqParam.setUserId(userId);
         if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
             roleReqParam.setCurrent(1);
-            roleReqParam.setPageSize(10);
+            roleReqParam.setPageSize(20);
         }
         PageInfo<TblRole> roles;
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);
             logger.info("角色列表: {}", roles);
-
             //获取角色和权限映射
             List<TblRoleAuth> roleAuths = tblRoleAuthService.selectRoleAuths();
             logger.info("角色权限映射: {}", roleAuths);
@@ -83,8 +87,43 @@ public class RoleController {
         return Result.success(roles);
     }
 
+    /**
+     * 无分页查询角色
+     *
+     * @param roleReqParam
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/currLists", method = RequestMethod.GET)
+    @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "无分页角色列表")
+    public Result selectRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
+        // 从token中获取当前用户的id
+        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String userId = JwtUtil.getUserId(token);
+        //  获取当前用户的机构号
+        String org = JwtUtil.getOrg(token);
+        if (!AosContent.ALLINFINANCE_ORG.equals(org)) {
+            roleReqParam.setOrg(org);
+        }
+        // 排除不可用的角色
+        roleReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
+        roleReqParam.setUserId(userId);
+        List<TblRole> roles;
+        try {
+            roles = tblRoleService.pageRoles(roleReqParam);
+            logger.info("角色列表: {}", roles);
+        } catch (Exception e) {
+            logger.error("查询角色列表异常", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+
+        logger.debug("查询到的角色列表: {}", roles);
+        return Result.success(roles);
+    }
+
     //更新角色
     @RequestMapping(method = RequestMethod.POST)
+    @OperLog(operModul = "角色管理-更新角色", operType = AosContent.UPDATE, operDesc = "更新角色信息")
     public Result modifyRole(@RequestBody TblRole tblRole) {
         logger.info("更新角色,接收到的请求参数: tblRole:{}", tblRole);
         int result;
@@ -121,6 +160,7 @@ public class RoleController {
 
     //新增角色
     @RequestMapping(method = RequestMethod.PUT)
+    @OperLog(operModul = "角色管理-新增角色", operType = AosContent.INSERT, operDesc = "新增角色信息")
     public Result createRole(@RequestBody TblRole tblRole) {
         logger.info("将新增的角色: {}", tblRole);
         int result;
@@ -159,11 +199,16 @@ public class RoleController {
 
     //删除一个或多个角色
     @RequestMapping(method = RequestMethod.DELETE)
+    @OperLog(operModul = "角色管理-删除角色", operType = AosContent.DELETE, operDesc = "删除菜单信息")
     public Result deleteRoles(@RequestBody RoleReqParam roleReqParam) {
-        logger.info("**************************************");
         logger.info("roleReqParam: {}", roleReqParam);
         String[] roleIds = roleReqParam.getRoleIds();
         logger.info("待删除的角色-roleIds: {}", roleIds);
+        // 执行删除角色操作之前 先检查是否有正在使用的权限，如果有则不允许删除，要先删除用户才行
+        List<TblUser> users = tblUserService.selectOnUseRoles(roleReqParam);
+        if (users.size() != 0) {
+            return Result.success(5008);
+        }
         int result = 0;
         try {
             if (roleIds != null && roleIds.length > 0) {
@@ -191,6 +236,4 @@ public class RoleController {
             return Result.failure();
         }
     }
-
-
 }

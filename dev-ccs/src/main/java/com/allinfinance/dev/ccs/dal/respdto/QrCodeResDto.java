@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class QrCodeResDto implements Serializable {
     private String qrCode;
-
     public String getQrCode() {
         return qrCode;
     }

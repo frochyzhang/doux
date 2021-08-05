@@ -7,6 +7,7 @@ import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -33,39 +34,43 @@ public class TblRoleService {
     @Autowired
     private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
 
-    public int deleteByPrimaryKey(String roleId) {
+    public int deleteByPrimaryKey(String roleId){
         return tblRoleMapper.deleteByPrimaryKey(roleId);
     }
 
-    public int insert(TblRole record) {
+    public int insert(TblRole record){
         return tblRoleMapper.insert(record);
     }
 
-    public int insertSelective(TblRole record) {
+    public int insertSelective(TblRole record){
         return tblRoleMapper.insertSelective(record);
     }
 
-    public TblRole selectByPrimaryKey(String roleId) {
+    public TblRole selectByPrimaryKey(String roleId){
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 
-    public TblRole selectByRoleId(String roleId) {
+    public TblRole selectByRoleId(String roleId){
         return tblRoleMapper.selectByRoleId(roleId);
     }
 
-    public int updateByPrimaryKeySelective(TblRole record) {
+    public int updateByPrimaryKeySelective(TblRole record){
         return tblRoleMapper.updateByPrimaryKeySelective(record);
     }
 
-    public int updateByPrimaryKey(TblRole record) {
+    public int updateByPrimaryKey(TblRole record){
         return tblRoleMapper.updateByPrimaryKey(record);
     }
 
 
     public PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) {
-        PageHelper.startPage(roleReqParam.getCurrent(), roleReqParam.getPageSize());
+        PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
         List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
-        return new PageInfo<TblRole>(users);
+        return new PageInfo<>(users);
+    }
+
+    public List<TblRole> pageRoles(RoleReqParam roleReqParam) {
+        return tblRoleMapper.SelectRoles(roleReqParam);
     }
 
     public int invalidateRole(String roleId) {
@@ -77,11 +82,12 @@ public class TblRoleService {
         return tblPermissionInfoMapper.selectPermissionInfos();
     }
 
-    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo) {
+    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
         return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
     }
 
     public int deleteRolePermissionInfoByRoleId(String roleId) {
         return tblRolePermissionInfoMapper.deleteRolePermissionInfoByRoleId(roleId);
     }
+
 }

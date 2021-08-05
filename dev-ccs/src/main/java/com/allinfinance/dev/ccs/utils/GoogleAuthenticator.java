@@ -13,12 +13,12 @@ public class GoogleAuthenticator {
     private static final int DEFAULT_TIME_STEP_SECONDS = 30;
     private static int NUM_DIGITS_OUTPUT = 6;
 
-    private static final String BLOCK_OF_ZEROS;
+    private static final String blockOfZeros;
 
     static {
         char[] chars = new char[NUM_DIGITS_OUTPUT];
         Arrays.fill(chars, '0');
-        BLOCK_OF_ZEROS = new String(chars);
+        blockOfZeros = new String(chars);
     }
 
 
@@ -73,7 +73,7 @@ public class GoogleAuthenticator {
             from -= windowMillis;
             to += windowMillis;
         }
-        long timeStepMillis = timeStepSeconds * 1000L;
+        long timeStepMillis = timeStepSeconds * 1000;
         for (long millis = from; millis <= to; millis += timeStepMillis) {
             long compare = generateNumber(base32Secret, millis, timeStepSeconds);
             if (compare == authNumber) {
@@ -170,7 +170,7 @@ public class GoogleAuthenticator {
         } else {
             StringBuilder sb = new StringBuilder(digits);
             int zeroCount = digits - numStr.length();
-            sb.append(BLOCK_OF_ZEROS, 0, zeroCount);
+            sb.append(blockOfZeros, 0, zeroCount);
             sb.append(numStr);
             return sb.toString();
         }
@@ -253,8 +253,6 @@ public class GoogleAuthenticator {
                     working |= (val & 0x1F);
                     result[resultIndex++] = (byte) working;
                     which = 0;
-                    break;
-                default:
                     break;
             }
         }

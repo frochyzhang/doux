@@ -70,7 +70,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         aosAuthenticationPrivider.setUserDetailsService(userDetailsService());
         return aosAuthenticationPrivider;
     }
-
     @Override
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -88,7 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests().
-                antMatchers("/getPublicKey", "/login/account", "/login/reLogin").permitAll().
+                antMatchers("/getPublicKey","/login/account", "/login/reLogin").permitAll().
                 anyRequest().hasAnyAuthority().
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override

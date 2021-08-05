@@ -1,5 +1,7 @@
 package com.allinfinance.dev.ccs.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
@@ -7,16 +9,17 @@ import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
@@ -41,22 +44,37 @@ public class OptLogController {
      */
     @RequestMapping(path = "/opts", method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "操作日志-日志列表",operType = AosContent.QUERY,operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//        处理未输入参数时默认的时间
+        if (logReqParam.getTime()!=null){
+            JSONObject ob= JSON.parseObject(logReqParam.getTime());
+            logReqParam.setBeginDate(ob.getString("beginDate"));
+            logReqParam.setEndDate(ob.getString("endDate"));
+        }
+        if (logReqParam.getEndDate()!=null){
+            Calendar cal = Calendar.getInstance();
+            try {
+                cal.setTime(sf.parse(logReqParam.getEndDate()));
+                cal.add(Calendar.DATE,1);
+ //             如果接受的直接有endDate直接处理
+                logReqParam.setEndDate(sf.format(cal.getTime()));
+            } catch (ParseException e) {
+                logger.error("日志查询日期格式转换异常!", e);
+            }
+        }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0) {
             //当当前的用户是超级管理员时显示所有列表
-            if ("000000000000".equals(org)) {
+            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 logReqParam.setOrg(null);
             } else {
                 logReqParam.setOrg(org);
             }
-        }
-        if (logReqParam.getCurrent() == null || logReqParam.getPageSize() == null) {
-            logReqParam.setCurrent(1);
-            logReqParam.setPageSize(10);
         }
         PageInfo<UserLogRespDto> optLogs;
         try {

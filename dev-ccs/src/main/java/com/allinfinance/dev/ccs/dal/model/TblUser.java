@@ -28,6 +28,8 @@ public class TblUser implements Serializable {
 
     private String createBy;
 
+    private String mobileNo;
+
     private Date createTime;
 
     private Date updateTime;
@@ -53,6 +55,7 @@ public class TblUser implements Serializable {
     private String accountNotLocked;
 
     private String credentialsNotExpired;
+
 
     private static final long serialVersionUID = 1L;
 
@@ -86,6 +89,14 @@ public class TblUser implements Serializable {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 
     public String getOrg() {

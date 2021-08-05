@@ -1,13 +1,11 @@
 package com.allinfinance.dev.ccs.securityConfig.handler;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.allinfinance.dev.ccs.exception.TokenExpiredExeption;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -39,13 +37,13 @@ public class AosAuthenticationFailureHandler implements AuthenticationFailureHan
         } else if (e instanceof DisabledException) {
             //账号不可用
             result = Result.failure(ResultCodeEnum.USER_ACCOUNT_FORBIDDEN);
-        } else if (e instanceof InternalAuthenticationServiceException) {
+        }  else if (e instanceof InternalAuthenticationServiceException) {
             //用户不存在
             result = Result.failure(ResultCodeEnum.USER_NOT_EXIST);
         } else if (e instanceof TokenExpiredExeption) {
             //用户不存在
             result = Result.failure(ResultCodeEnum.USER_ACCOUNT_USE_BY_OTHERS);
-        } else {
+        }else{
             //其他错误
             result = Result.failure(ResultCodeEnum.SYSTEM_ERROR);
         }

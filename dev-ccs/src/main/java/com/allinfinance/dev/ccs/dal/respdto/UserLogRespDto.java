@@ -9,7 +9,7 @@ import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
  * @description：日志列表返回DTO
  */
 public class UserLogRespDto extends TblUserOptLog {
-    private String userName;
+    private  String userName;
 
     public String getUserName() {
         return userName;

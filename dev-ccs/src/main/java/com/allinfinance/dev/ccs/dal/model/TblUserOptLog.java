@@ -1,30 +1,31 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class TblUserOptLog implements Serializable {
-    private String operationId;
+public class TblUserOptLog {
+    private String operId;
 
-    private String userId;
+    private String operModule;
 
-    private String userIp;
+    private String operType;
 
-    private String operationType;
+    private String operDesc;
 
-    private String operationPath;
+    private String operRequParam;
 
-    private Date interviewtTime;
+    private String operRespParam;
 
-    private String tableName;
+    private String operUserId;
 
-    private String columnName;
+    private String operUserName;
 
-    private String newValue;
+    private String operMethod;
 
-    private String oldValue;
+    private String operUri;
 
-    private String org;
+    private String operIp;
+
+    private Date operCreateTime;
 
     private String reservedField1;
 
@@ -32,94 +33,102 @@ public class TblUserOptLog implements Serializable {
 
     private String reservedField3;
 
-    private static final long serialVersionUID = 1L;
+    private String org;
 
-    public String getOperationId() {
-        return operationId;
+    public String getOperId() {
+        return operId;
     }
 
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
+    public void setOperId(String operId) {
+        this.operId = operId == null ? null : operId.trim();
     }
 
-    public String getOrg() {
-        return org;
+    public String getOperModule() {
+        return operModule;
     }
 
-    public void setOrg(String org) {
-        this.org = org;
+    public void setOperModule(String operModule) {
+        this.operModule = operModule == null ? null : operModule.trim();
     }
 
-    public String getUserId() {
-        return userId;
+    public String getOperType() {
+        return operType;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setOperType(String operType) {
+        this.operType = operType == null ? null : operType.trim();
     }
 
-    public String getUserIp() {
-        return userIp;
+    public String getOperDesc() {
+        return operDesc;
     }
 
-    public void setUserIp(String userIp) {
-        this.userIp = userIp;
+    public void setOperDesc(String operDesc) {
+        this.operDesc = operDesc == null ? null : operDesc.trim();
     }
 
-    public String getOperationType() {
-        return operationType;
+    public String getOperRequParam() {
+        return operRequParam;
     }
 
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
+    public void setOperRequParam(String operRequParam) {
+        this.operRequParam = operRequParam == null ? null : operRequParam.trim();
     }
 
-    public String getOperationPath() {
-        return operationPath;
+    public String getOperRespParam() {
+        return operRespParam;
     }
 
-    public void setOperationPath(String operationPath) {
-        this.operationPath = operationPath;
+    public void setOperRespParam(String operRespParam) {
+        this.operRespParam = operRespParam == null ? null : operRespParam.trim();
     }
 
-    public Date getInterviewtTime() {
-        return interviewtTime;
+    public String getOperUserId() {
+        return operUserId;
     }
 
-    public void setInterviewtTime(Date interviewtTime) {
-        this.interviewtTime = interviewtTime;
+    public void setOperUserId(String operUserId) {
+        this.operUserId = operUserId == null ? null : operUserId.trim();
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getOperUserName() {
+        return operUserName;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setOperUserName(String operUserName) {
+        this.operUserName = operUserName == null ? null : operUserName.trim();
     }
 
-    public String getColumnName() {
-        return columnName;
+    public String getOperMethod() {
+        return operMethod;
     }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
+    public void setOperMethod(String operMethod) {
+        this.operMethod = operMethod == null ? null : operMethod.trim();
     }
 
-    public String getNewValue() {
-        return newValue;
+    public String getOperUri() {
+        return operUri;
     }
 
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
+    public void setOperUri(String operUri) {
+        this.operUri = operUri == null ? null : operUri.trim();
     }
 
-    public String getOldValue() {
-        return oldValue;
+    public String getOperIp() {
+        return operIp;
     }
 
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
+    public void setOperIp(String operIp) {
+        this.operIp = operIp == null ? null : operIp.trim();
+    }
+
+    public Date getOperCreateTime() {
+        return operCreateTime;
+    }
+
+    public void setOperCreateTime(Date operCreateTime) {
+        this.operCreateTime = operCreateTime;
     }
 
     public String getReservedField1() {
@@ -127,7 +136,7 @@ public class TblUserOptLog implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -135,7 +144,7 @@ public class TblUserOptLog implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -143,6 +152,29 @@ public class TblUserOptLog implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org == null ? null : org.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "TblUserOptLog{" +
+                "operType='" + operType + '\'' +
+                ", operRequParam='" + operRequParam + '\'' +
+                ", operUserId='" + operUserId + '\'' +
+                ", operUserName='" + operUserName + '\'' +
+                ", operMethod='" + operMethod + '\'' +
+                ", operUri='" + operUri + '\'' +
+                ", operIp='" + operIp + '\'' +
+                ", operCreateTime=" + operCreateTime +
+                ", org='" + org + '\'' +
+                '}';
     }
 }

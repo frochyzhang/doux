@@ -1,205 +1,203 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblAuthMapper">
-    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblAuth">
-        <id column="AUTH_ID" jdbcType="VARCHAR" property="authId"/>
-        <result column="AUTH_NAME" jdbcType="VARCHAR" property="authName"/>
-        <result column="ORG" jdbcType="VARCHAR" property="org"/>
-        <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable"/>
-        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy"/>
-        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy"/>
-        <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1"/>
-        <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2"/>
-        <result column="RESERVEDselectAuths_FIELD3" jdbcType="VARCHAR" property="reservedField3"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        AUTH_ID, ORG ,AUTH_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY,
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    <id column="AUTH_ID" jdbcType="VARCHAR" property="authId" />
+    <result column="AUTH_NAME" jdbcType="VARCHAR" property="authName" />
+    <result column="ORG" jdbcType="VARCHAR" property="org" />
+    <result column="IS_AVAILABLE" jdbcType="VARCHAR" property="isAvailable" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="RESERVED_FIELD1" jdbcType="VARCHAR" property="reservedField1" />
+    <result column="RESERVED_FIELD2" jdbcType="VARCHAR" property="reservedField2" />
+    <result column="RESERVEDselectAuths_FIELD3" jdbcType="VARCHAR" property="reservedField3" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    AUTH_ID, ORG ,AUTH_NAME, IS_AVAILABLE, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY,
     RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
-    </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from TBL_AUTH
-        where AUTH_ID = #{authId,jdbcType=VARCHAR}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete
-        from TBL_AUTH
-        where AUTH_ID = #{authId,jdbcType=VARCHAR}
-    </delete>
-    <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-        insert into TBL_AUTH (AUTH_ID, ORG, AUTH_NAME, IS_AVAILABLE,
-                              CREATE_TIME, CREATE_BY, UPDATE_TIME,
-                              UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2,
-                              RESERVED_FIELD3)
-        values (#{authId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{authName,jdbcType=VARCHAR},
-                #{isAvailable,jdbcType=VARCHAR},
-                #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
-                #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR},
-                #{reservedField3,jdbcType=VARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-        <selectKey resultType="java.lang.String" keyProperty="authId" order="BEFORE">
-            SELECT
-            sequence_id.nextval
-            FROM sysibm.sysdummy1
-        </selectKey>
-        insert into TBL_AUTH
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="authId != null">
-                AUTH_ID,
-            </if>
-            <if test="org != null">
-                ORG,
-            </if>
-            <if test="authName != null">
-                AUTH_NAME,
-            </if>
-            <if test="isAvailable != null">
-                IS_AVAILABLE,
-            </if>
-            <if test="createTime != null">
-                CREATE_TIME,
-            </if>
-            <if test="createBy != null">
-                CREATE_BY,
-            </if>
-            <if test="updateTime != null">
-                UPDATE_TIME,
-            </if>
-            <if test="updateBy != null">
-                UPDATE_BY,
-            </if>
-            <if test="reservedField1 != null">
-                RESERVED_FIELD1,
-            </if>
-            <if test="reservedField2 != null">
-                RESERVED_FIELD2,
-            </if>
-            <if test="reservedField3 != null">
-                RESERVED_FIELD3,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="authId != null">
-                #{authId,jdbcType=VARCHAR},
-            </if>
-            <if test="org != null">
-                #{org,jdbcType=VARCHAR},
-            </if>
-            <if test="authName != null">
-                #{authName,jdbcType=VARCHAR},
-            </if>
-            <if test="isAvailable != null">
-                #{isAvailable,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateBy != null">
-                #{updateBy,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField1 != null">
-                #{reservedField1,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField2 != null">
-                #{reservedField2,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField3 != null">
-                #{reservedField3,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-        update TBL_AUTH
-        <set>
-            <if test="authName != null">
-                AUTH_NAME = #{authName,jdbcType=VARCHAR},
-            </if>
-            <if test="org != null">
-                ORG = #{org,jdbcType=VARCHAR},
-            </if>
-            <if test="isAvailable != null">
-                IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                CREATE_BY = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateBy != null">
-                UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField1 != null">
-                RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField2 != null">
-                RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-            </if>
-            <if test="reservedField3 != null">
-                RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where AUTH_ID = #{authId,jdbcType=VARCHAR}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-        update TBL_AUTH
-        set AUTH_NAME       = #{authName,jdbcType=VARCHAR},
-            ORG             = #{org,jdbcType=VARCHAR},
-            IS_AVAILABLE    = #{isAvailable,jdbcType=VARCHAR},
-            CREATE_TIME     = #{createTime,jdbcType=TIMESTAMP},
-            CREATE_BY       = #{createBy,jdbcType=VARCHAR},
-            UPDATE_TIME     = #{updateTime,jdbcType=TIMESTAMP},
-            UPDATE_BY       = #{updateBy,jdbcType=VARCHAR},
-            RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
-            RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
-            RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
-        where AUTH_ID = #{authId,jdbcType=VARCHAR}
-    </update>
-    <!--  **********以下为自定义SQL***********-->
-    <select id="pageSelectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam"
-            resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from TBL_AUTH where 1=1
-        <if test="authReqParam!=null">
-            <if test="authReqParam.org!=null and authReqParam.org!=''">
-                and ORG = #{authReqParam.org}
-            </if>
-            <if test="authReqParam.authId!=null and authReqParam.authId!=0">
-                and AUTH_ID = #{authReqParam.authId}
-            </if>
-            <if test="authReqParam.authName!=null and authReqParam.authName!='' ">
-                and AUTH_NAME like '%${authReqParam.authName}%'
-            </if>
-            <if test="authReqParam.isAvailable!=null and authReqParam.isAvailable!='' ">
-                and IS_AVAILABLE = #{authReqParam.isAvailable}
-            </if>
-        </if>
-    </select>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TBL_AUTH
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TBL_AUTH
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    insert into TBL_AUTH (AUTH_ID, ORG,AUTH_NAME, IS_AVAILABLE,
+      CREATE_TIME, CREATE_BY, UPDATE_TIME, 
+      UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
+      RESERVED_FIELD3)
+    values (#{authId,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR}, #{authName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, 
+      #{reservedField3,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    <selectKey resultType="java.lang.String" keyProperty="authId" order="BEFORE" >
+      SELECT
+      sequence_id.nextval
+      FROM sysibm.sysdummy1
+    </selectKey>
+    insert into TBL_AUTH
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="authId != null">
+        AUTH_ID,
+      </if>
+      <if test="org != null">
+        ORG,
+      </if>
+      <if test="authName != null">
+        AUTH_NAME,
+      </if>
+      <if test="isAvailable != null">
+        IS_AVAILABLE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1,
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2,
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="authId != null">
+        #{authId,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="authName != null">
+        #{authName,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        #{isAvailable,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    update TBL_AUTH
+    <set>
+      <if test="authName != null">
+        AUTH_NAME = #{authName,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        ORG = #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
+    update TBL_AUTH
+    set AUTH_NAME = #{authName,jdbcType=VARCHAR},
+      ORG = #{org,jdbcType=VARCHAR},
+      IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+  <!--  **********以下为自定义SQL***********-->
+  <select id="pageSelectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_AUTH where 1=1
+    <if test="authReqParam!=null">
+      <if test="authReqParam.org!=null and authReqParam.org!=''">
+        and ORG = #{authReqParam.org}
+      </if>
+      <if test="authReqParam.authId!=null and authReqParam.authId!=0">
+        and AUTH_ID = #{authReqParam.authId}
+      </if>
+      <if test="authReqParam.authName!=null and authReqParam.authName!='' ">
+        and AUTH_NAME like '%${authReqParam.authName}%'
+      </if>
+      <if test="authReqParam.isAvailable!=null and authReqParam.isAvailable!='' ">
+        and IS_AVAILABLE  =  #{authReqParam.isAvailable}
+      </if>
+    </if>
+  </select>
 
-    <select id="selectAuths" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from TBL_AUTH
-    </select>
+  <select id="selectAuths" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from TBL_AUTH
+    WHERE IS_AVAILABLE='Y'
+  </select>
 
-    <update id="invalidateAuth" parameterType="java.lang.String">
-        update TBL_AUTH
-        set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR}
-        where AUTH_ID = #{authId,jdbcType=VARCHAR}
-    </update>
-
+  <update id="invalidateAuth" parameterType="java.lang.String">
+    update TBL_AUTH
+    set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
 </mapper>

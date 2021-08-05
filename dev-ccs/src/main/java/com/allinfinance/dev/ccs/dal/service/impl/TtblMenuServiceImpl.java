@@ -9,6 +9,9 @@ import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.util.JSONWrappedObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,9 +48,8 @@ public class TtblMenuServiceImpl implements TblMenuService {
     @Autowired
     TblUserMapper userMapper;
 
-    private ConcurrentHashMap<String, List<TblMenu>> menusMap = new ConcurrentHashMap<>();
-    private AtomicInteger intLevel = new AtomicInteger(0);
-
+    private  ConcurrentHashMap<String, List<TblMenu>> menusMap= new ConcurrentHashMap<>();
+    private AtomicInteger intLevel=new AtomicInteger(0);
     @Override
     public PageInfo<MenusReqParam> pageSelectOptMenus(MenusReqParam menusReqParam) {
         PageHelper.startPage(menusReqParam.getCurrent(), menusReqParam.getPageSize());
@@ -57,7 +61,6 @@ public class TtblMenuServiceImpl implements TblMenuService {
     public void delMenuByIds(String[] ids) {
         tblMenuMapper.delMenuBatch(ids);
     }
-
     @Override
     public void deleteByPrimaryKey(String menuId) {
         tblMenuMapper.deleteByPrimaryKey(menuId);
@@ -82,8 +85,10 @@ public class TtblMenuServiceImpl implements TblMenuService {
             //通过当前用户的角色查询权限
             TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
             tblRoleAuthKey.setRoleId(tblUser.getRoleId());
+            // 获取的role和Auth的关联表
             List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
             if (tblRoleAuths.size() > 0) {
+                // 获取的角色的权限列表
                 ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
                 tblRoleAuths.forEach(roleAuth -> {
                     authIds.add(roleAuth.getAuthId());
@@ -91,30 +96,74 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
                 // 通过权限id查询菜单
                 List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
-                ArrayList<String> menuIds = new ArrayList<>(tblRoleAuths.size());
-                tblMenuAuths.forEach((authMenu) -> {
+                ArrayList<String> menuIds = new ArrayList<>();
+                tblMenuAuths.forEach((authMenu)->{
                     menuIds.add(authMenu.getMenuId());
                 });
+                menuIds.add("");
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
-                logger.info("获取数据库菜单：{}", tblMenus.toString());
+                logger.info("获取数据库菜单：{}",tblMenus.toString());
                 List<TblMenu> tblMenusData = menusData(null, tblMenus);
                 List<CurrentMenusDto> getmenus = getmenus(tblMenusData, tblUser);
-                List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
-                getmenus.forEach((menusDto) -> {
-                    if (menusDto.getChildren().size() > 0) {
+                List<CurrentMenusDto> currentMenusDtos=new ArrayList<>();
+                getmenus.forEach((menusDto)->{
+                    if(menusDto.getChildren().size()>0){
                         currentMenusDtos.add(menusDto);
                     }
                 });
-                logger.info("格式化后的层级菜单：{}", currentMenusDtos.toString());
-                return currentMenusDtos;
+                logger.info("格式化后的层级菜单：{}",currentMenusDtos.toString());
+                return  currentMenusDtos;
             }
         }
         return new ArrayList<CurrentMenusDto>();
     }
 
+    @Override
+    public String[] getCurrPowers(String userId) {
+        // 查询当前用户
+        TblUser tblUser = userMapper.selectByPrimaryKey(userId);
+        if (tblUser != null) {
+            //通过当前用户的角色查询权限
+            TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
+            tblRoleAuthKey.setRoleId(tblUser.getRoleId());
+            // 获取的role和Auth的关联表
+            List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
+            if (tblRoleAuths.size() > 0) {
+                // 获取的角色的权限列表信息
+                ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
+                tblRoleAuths.forEach(roleAuth -> {
+                    authIds.add(roleAuth.getAuthId());
+                });
 
-    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser) {
-        List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
+                // 通过权限id查询菜单
+                List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
+                ArrayList<String> menuIds = new ArrayList<>();
+                tblMenuAuths.forEach((authMenu)->{
+                    menuIds.add(authMenu.getMenuId());
+                });
+                menuIds.add("");
+                List<TblMenu> tblMenus = tblMenuMapper.selectMenusPowers(menuIds);
+                logger.info("当前用户的菜单权限：{}条",tblMenus.size());
+                String collect = tblMenus.stream().map(item -> String.valueOf(item.getPath())).collect(Collectors.joining(","));
+                return  collect.split(",");
+            }
+        }
+        return new String[0];
+    }
+
+    @Override
+    public String selectMaxMenuIdByRoot(TblMenu tblMenu) {
+        return tblMenuMapper.selectMaxMenuIdByRoot(tblMenu);
+    }
+
+    @Override
+    public String selectMaxMenuId(TblMenu tblMenu) {
+        return tblMenuMapper.selectMaxMenuId(tblMenu);
+    }
+
+
+    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser ){
+        List<CurrentMenusDto> currentMenusDtos=new ArrayList<>();
         for (TblMenu menusData : tblMenusData) {
             CurrentMenusDto currentMenusDto = new CurrentMenusDto();
             CurrentMenusDto menusDto = currentMenusDto;
@@ -124,7 +173,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
             menusDto.setAuthority(new String[]{tblUser.getRoleId()});
             List<TblMenu> childMenus = menusData.getChildMenus();
             menusDto.setChildren(getmenus(menusData.getChildMenus(), tblUser));
-            currentMenusDtos.add(menusDto);
+               currentMenusDtos.add(menusDto);
         }
         return currentMenusDtos;
         //组合前端需要的数据结构
@@ -168,15 +217,15 @@ public class TtblMenuServiceImpl implements TblMenuService {
     }
 
 
-    public List<TblMenu> menusData(String pId, List<TblMenu> tblMenus) {
+    public  List<TblMenu> menusData( String pId, List<TblMenu> tblMenus){
         ArrayList<TblMenu> menusDtos_0 = new ArrayList<>();
         for (TblMenu menu_0 : tblMenus) {
-            if (StringUtils.equals(pId, menu_0.getParentMid())) {
-                menu_0.setChildMenus(menusData(menu_0.getMenuId(), tblMenus));
+            if(StringUtils.equals(pId,menu_0.getParentMid())){
+                menu_0.setChildMenus(menusData(menu_0.getMenuId(),tblMenus));
                 menusDtos_0.add(menu_0);
             }
         }
-        return menusDtos_0;
+     return menusDtos_0;
     }
 
 }

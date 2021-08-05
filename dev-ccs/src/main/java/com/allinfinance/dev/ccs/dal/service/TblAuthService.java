@@ -33,32 +33,32 @@ public class TblAuthService {
     @Autowired
     private TblMenuMapper tblMenuMapper;
 
-    public int deleteByPrimaryKey(String authId) {
+    public int deleteByPrimaryKey(String authId){
         return tblAuthMapper.deleteByPrimaryKey(authId);
     }
 
-    public int insert(TblAuth record) {
+    public int insert(TblAuth record){
         return tblAuthMapper.insert(record);
     }
 
-    public int insertSelective(TblAuth record) {
+    public int insertSelective(TblAuth record){
         return tblAuthMapper.insertSelective(record);
     }
 
-    public TblAuth selectByPrimaryKey(String authId) {
+    public TblAuth selectByPrimaryKey(String authId){
         return tblAuthMapper.selectByPrimaryKey(authId);
     }
 
-    public int updateByPrimaryKeySelective(TblAuth record) {
+    public int updateByPrimaryKeySelective(TblAuth record){
         return tblAuthMapper.updateByPrimaryKeySelective(record);
     }
 
-    public int updateByPrimaryKey(TblAuth record) {
+    public int updateByPrimaryKey(TblAuth record){
         return tblAuthMapper.updateByPrimaryKeySelective(record);
     }
 
     public PageInfo<TblAuth> pageSelectAuths(AuthReqParam authReqParam) {
-        PageHelper.startPage(authReqParam.getCurrent(), authReqParam.getPageSize());
+        PageHelper.startPage(authReqParam.getCurrent(),authReqParam.getPageSize());
         List<TblAuth> auths = tblAuthMapper.pageSelectAuths(authReqParam);
         return new PageInfo<TblAuth>(auths);
     }
@@ -67,12 +67,12 @@ public class TblAuthService {
         return tblAuthMapper.selectAuths();
     }
 
-    public List<TblMenuAuth> selectMenuAuths() {
+    public List<TblMenuAuth> selectMenuAuths(){
         return tblMenuAuthMapper.selectMenuAuths();
     }
 
-    public List<TblMenu> selectMenus() {
-        return tblMenuMapper.selectMenus();
+    public List<TblMenu> selectMenus(String authId) {
+        return tblMenuMapper.selectMenus(authId);
     }
 
     public int deleteMenuAuths(String authId) {
@@ -85,6 +85,6 @@ public class TblAuthService {
 
     public int invalidateAuth(String authId) {
         String isAvailable = AosContent.IS_AVAILABLE_FALSE;
-        return tblAuthMapper.invalidateAuth(authId, isAvailable);
+        return tblAuthMapper.invalidateAuth(authId,isAvailable);
     }
 }

@@ -3,14 +3,16 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
+import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
-import com.allinfinance.dev.ccs.result.OperTypeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,6 @@ public class TblUserServiceImpl implements TblUserService {
     private TblUserMapper tblUserMapper;
 
 
-    @Override
     public int deleteByPrimaryKey(String userId) {
         return tblUserMapper.deleteByPrimaryKey(userId);
     }
@@ -40,12 +41,6 @@ public class TblUserServiceImpl implements TblUserService {
     public int deleteByPrimaryKey(UserReqParam userReqParam) {
         //逻辑删除，只是说将用户变为不可用
         TblUserOptLog optLog = new TblUserOptLog();
-        optLog.setInterviewtTime(new Date());
-        optLog.setUserId("10.250.2.7");
-        // optLog.setColumnName();
-        optLog.setOperationPath(userReqParam.getReservedField1());
-        optLog.setTableName("TBL_USER");
-        optLog.setOperationType(OperTypeEnum.UPDATE.code());
 //        int res = tblUserOptLogMapper.insertSelective(optLog);
 //        assert res == 0;
         int i = 1;
@@ -70,27 +65,24 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
 
+
     public TblUser selectByPrimaryKey(Integer userId) {
         return null;
     }
 
-    @Override
     public TblUser selectByPrimaryKey(String userId) {
         return tblUserMapper.selectByPrimaryKey(userId);
     }
 
-    @Override
     public int updateByPrimaryKeySelective(TblUser record) {
         record.setUpdateTime(new Date());
         return tblUserMapper.updateByPrimaryKeySelective(record);
     }
 
-    @Override
     public int updateByPrimaryKey(TblUser record) {
         return tblUserMapper.updateByPrimaryKey(record);
     }
 
-    @Override
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
         List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);
@@ -103,8 +95,14 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
 
+
     @Override
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
-        return tblUserMapper.selectByNameAndOrg(userReqParam);
+       return tblUserMapper.selectByNameAndOrg(userReqParam);
+    }
+
+    @Override
+    public List<TblUser> selectOnUseRoles(RoleReqParam roleReqParam) {
+        return tblUserMapper.selectUsersByRoleIds(new ArrayList<>(Arrays.asList(roleReqParam.getRoleIds())));
     }
 }

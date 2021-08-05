@@ -28,30 +28,29 @@ public class AosFilterInvocationSecurityMetadataSource implements FilterInvocati
     private TblPermissionInfoService tblPermissionService;
     @Autowired
     private TblRolePermissionInfoService itblRolePermissionService;
-
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         //获取请求地址
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
 
-        if (StringUtils.equals("/getPublicKey", requestUrl)) {
-            return null;
-        }
+         if(StringUtils.equals("/getPublicKey",requestUrl)){
+             return null;
+         }
         //查询具体某个接口的权限
-        if (requestUrl.contains("?")) {
+          if(requestUrl.contains("?")){
             String[] urlparam = requestUrl.split("\\?");
-            requestUrl = urlparam[0];
+            requestUrl=urlparam[0];
         }
-        TblPermissionInfo permission = tblPermissionService.getPromissionInfo(requestUrl);
-        if (permission == null) {
+        TblPermissionInfo permission=tblPermissionService.getPromissionInfo(requestUrl);
+        if(permission == null){
             //请求路径没有配置权限，表明该请求接口可以任意访问
             return null;
         }
         List<TblRolePermissionInfo> roleIdByPermissionCode = itblRolePermissionService.getRoleIdByPermissionCode(permission.getPermissioncode());
         ArrayList<String> arrayList = new ArrayList<>();
 
-        roleIdByPermissionCode.forEach((item) -> {
-            arrayList.add("ROLE_" + item.getRoleId());
+        roleIdByPermissionCode.forEach((item)->{
+            arrayList.add("ROLE_"+item.getRoleId());
         });
         return SecurityConfig.createList(arrayList.toArray(new String[arrayList.size()]));
     }

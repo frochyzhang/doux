@@ -3,18 +3,17 @@ package com.allinfinance.dev.ccs.controller;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.BankReqParam;
-import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
+import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
-import com.allinfinance.dev.ccs.dal.service.TblBankService;
+import com.allinfinance.dev.ccs.dal.service.TblBankManageService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
+import com.allinfinance.dev.ccs.utils.RSAUtils;
+import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 
 
@@ -41,13 +39,14 @@ public class UserController {
     private TblUserService tblUserService;
 
     @Autowired
-    private TblBankService tblBankService;
+    private TblBankManageService tblBankService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
+    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
@@ -66,26 +65,27 @@ public class UserController {
      * @param userReqParam
      * @return
      */
+    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "查询用户列表")
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
-        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         //获取当前登录的用户id
         String userId = JwtUtil.getUserId(token);
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
-            //当当前的用户是超级管理员时显示所有列表
-            if ("000000000000".equals(org)) {
+        if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
+            //当前的用户是超级管理员时显示所有列表
+            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 userReqParam.setOrg(null);
             } else {
                 userReqParam.setOrg(org);
             }
         }
-        //剔除不可用的用户
-        userReqParam.setIsAvailable("1");
+//        剔除不可用的用户(20210804评审认为应当删除页面的删除按钮，改为显示所有用户通过update维护，所以显示所有的用户)
+//        userReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
         PageInfo<TblUser> users = null;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
@@ -105,6 +105,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
+    @OperLog(operModul = "用户管理-新增用户",operType = AosContent.INSERT,operDesc = "新增用户信息")
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
         //设置初始密码
@@ -112,11 +113,11 @@ public class UserController {
         // 对密码进行加密
         userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         //配置用户口令
-        BankReqParam bankReqParam = new BankReqParam();
+        BankManageReqParam bankReqParam = new BankManageReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
         List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
         userReqParam.setReservedField2(tblBankManages.get(0).getBankNameEn());
-        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
         //设置首次用户登录时显示绑定二维码
@@ -152,11 +153,19 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
+    @OperLog(operModul = "用户管理-更新用户",operType = AosContent.UPDATE,operDesc = "更新用户信息")
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
-        //当接收到的密码字段不为空时启用加密
-        if (userReqParam.getUserPass() != null && (!"".equals(userReqParam.getUserPass()))) {
-            userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        //当接收到的密码字段不为空时先解密再加密
+        if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
+            String decryptPass = null;
+            try {
+                decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
+            } catch (Exception e) {
+                logger.error("密文解密错误！",e);
+                return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+            }
+            userReqParam.setUserPass(passwordEncoder.encode(decryptPass));
         }
         int result = 0;
         try {
@@ -177,6 +186,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
+    @OperLog(operModul = "用户管理-删除用户",operType = AosContent.DELETE,operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         logger.info("请求的uri: {}", requestURI);
@@ -191,37 +201,6 @@ public class UserController {
         }
         logger.info("删除用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
         return Result.success(result);
-    }
-
-    @RequestMapping(path = "updateNewPass", method = RequestMethod.POST)
-    @ResponseBody
-    public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userId = JwtUtil.getUserId(token);
-        String username = JwtUtil.getUsername(token);
-        String newPassword = passwordParam.getNewPassword();
-        if (StringUtils.isBlank(newPassword)) {
-            logger.error("新密码不能为空!");
-            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
-        }
-        byte[] dePass = Base64.decodeBase64(newPassword);
-        String password = org.apache.commons.codec.binary.StringUtils.newStringUtf8(dePass);
-        if (password.contains("#")) {
-            String[] vars = password.split("\\#");
-            password = vars[0];
-        }
-        TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
-        tblUser.setUserPass(passwordEncoder.encode(password));
-        tblUser.setPassStatus(AosContent.NOT_FIRST_PASS);
-        tblUser.setLastPassUpdateTime(new Date());
-        tblUser.setUpdateBy(username);
-        try {
-            tblUserService.updateByPrimaryKey(tblUser);
-        } catch (RuntimeException e) {
-            logger.error("更新密码异常异常!", e);
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-        }
-        return Result.success();
     }
 
 }

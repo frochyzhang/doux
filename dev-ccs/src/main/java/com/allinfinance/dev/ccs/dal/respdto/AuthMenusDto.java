@@ -10,25 +10,35 @@ import java.util.ArrayList;
  * @create: 2021-05-21 15:59
  */
 public class AuthMenusDto implements Serializable {
-    private String menuId;
-    private String menuName;
+    private String key;
+    private String title;
+    private String isUse;
+    private String value;
     private String parentId;
     private ArrayList<AuthMenusDto> children;
 
-    public String getMenuId() {
-        return menuId;
+    public String getKey() {
+        return key;
     }
 
-    public void setMenuId(String menuId) {
-        this.menuId = menuId;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getMenuName() {
-        return menuName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getParentId() {
@@ -47,11 +57,21 @@ public class AuthMenusDto implements Serializable {
         this.children = children;
     }
 
+    public String getIsUse() {
+        return isUse;
+    }
+
+    public void setIsUse(String isUse) {
+        this.isUse = isUse;
+    }
+
     @Override
     public String toString() {
         return "AuthMenusDto{" +
-                "menuId='" + menuId + '\'' +
-                ", menuName='" + menuName + '\'' +
+                "key='" + key + '\'' +
+                ", title='" + title + '\'' +
+                ", isUse='" + isUse + '\'' +
+                ", value='" + value + '\'' +
                 ", parentId='" + parentId + '\'' +
                 ", children=" + children +
                 '}';
