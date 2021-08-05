@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.2.1-RELEASE</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>dev-dal 数据库连接操作模块</name>

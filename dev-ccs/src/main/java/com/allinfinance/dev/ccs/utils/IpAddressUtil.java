@@ -21,12 +21,12 @@ public class IpAddressUtil {
         }
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
-            if (ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")) {
+            if ("127.0.0.1".equals(ipAddress) || "0:0:0:0:0:0:0:1".equals(ipAddress)) {
                 //根据网卡取本机配置的IP
                 InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
+                } catch (UnknownHostException ignored) {
                 }
                 ipAddress = inet.getHostAddress();
             }

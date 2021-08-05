@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1-RELEASE</version>
+    <version>${revision}</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -28,7 +28,7 @@
     <name>dev-parent - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.2.1-RELEASE</dev.version>
+        <revision>1.2.1-RELEASE</revision>
         <nds.version>2.2.149854</nds.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
@@ -54,47 +54,47 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-core</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-batch</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-dal</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-mq-rabbit</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-mq-rpc-portal</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-autoconfigure</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-rpc-dubbo</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-rpc-sofa</artifactId>
-                <version>${dev.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.nds</groupId>

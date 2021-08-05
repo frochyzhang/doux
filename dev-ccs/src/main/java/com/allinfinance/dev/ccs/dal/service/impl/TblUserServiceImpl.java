@@ -29,6 +29,7 @@ public class TblUserServiceImpl implements TblUserService {
     private TblUserMapper tblUserMapper;
 
 
+    @Override
     public int deleteByPrimaryKey(String userId) {
         return tblUserMapper.deleteByPrimaryKey(userId);
     }
@@ -70,19 +71,23 @@ public class TblUserServiceImpl implements TblUserService {
         return null;
     }
 
+    @Override
     public TblUser selectByPrimaryKey(String userId) {
         return tblUserMapper.selectByPrimaryKey(userId);
     }
 
+    @Override
     public int updateByPrimaryKeySelective(TblUser record) {
         record.setUpdateTime(new Date());
         return tblUserMapper.updateByPrimaryKeySelective(record);
     }
 
+    @Override
     public int updateByPrimaryKey(TblUser record) {
         return tblUserMapper.updateByPrimaryKey(record);
     }
 
+    @Override
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
         List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);

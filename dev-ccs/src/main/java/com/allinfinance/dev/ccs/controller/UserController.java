@@ -76,7 +76,7 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
+        if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
             //当前的用户是超级管理员时显示所有列表
             if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 userReqParam.setOrg(null);
@@ -157,12 +157,12 @@ public class UserController {
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时先解密再加密
-        if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
+        if (userReqParam.getUserPass() != null && (!"".equals(userReqParam.getUserPass()))) {
             String decryptPass = null;
             try {
                 decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
             } catch (Exception e) {
-                logger.error("密文解密错误！",e);
+                logger.error("密文解密错误！", e);
                 return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
             }
             userReqParam.setUserPass(passwordEncoder.encode(decryptPass));

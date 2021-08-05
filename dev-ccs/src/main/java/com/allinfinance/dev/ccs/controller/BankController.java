@@ -62,11 +62,11 @@ public class BankController {
     }
 
     //更新银行
-    @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{bankId}", method = RequestMethod.PUT)
     @ResponseBody
-    public Result modifyUser(@RequestBody BankReqParam tblBank, @PathVariable("BankId") String BankId) {
-        logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, BankId);
-        tblBank.setBankId(BankId);
+    public Result modifyUser(@RequestBody BankReqParam tblBank, @PathVariable("BankId") String bankId) {
+        logger.debug("更新操作接收到的请求参数: {},bankId:{}", tblBank, bankId);
+        tblBank.setBankId(bankId);
         int result;
         try {
             result = tblBankService.updateByPrimaryKey(tblBank);
