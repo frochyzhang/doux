@@ -21,7 +21,7 @@ public interface TblRoleMapper {
 
     List<TblRole> pageSelectRoles(@Param("roleReqParam") RoleReqParam roleReqParam);
 
-    List<TblRole> SelectRoles(@Param("roleReqParam") RoleReqParam roleReqParam);
+    List<TblRole> selectRoles(@Param("roleReqParam") RoleReqParam roleReqParam);
 
     int invalidateRole(@Param("roleId") String roleId,@Param("isAvailable") String isAvailable);
 

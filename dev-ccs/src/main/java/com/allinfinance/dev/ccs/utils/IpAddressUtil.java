@@ -1,5 +1,7 @@
 package com.allinfinance.dev.ccs.utils;
 
+import com.allinfinance.dev.ccs.content.AosContent;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -21,7 +23,7 @@ public class IpAddressUtil {
         }
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
-            if (ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")) {
+            if (AosContent.IPV4NATIVEIP.equals(ipAddress) || AosContent.IPV6NATIVEIP.equals(ipAddress)) {
                 //根据网卡取本机配置的IP
                 InetAddress inet = null;
                 try {

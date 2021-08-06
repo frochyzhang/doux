@@ -38,24 +38,24 @@ public class BankManageController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @OperLog(operModul = "银行管理-银行列表",operType = AosContent.QUERY,operDesc = "分页查询银行列表")
-    public Result selectBanks(BankManageReqParam BankManageReqParam, HttpServletRequest request) {
-        logger.info("BankManageReqParam: {}", BankManageReqParam);
+    public Result selectBanks(BankManageReqParam bankManageReqParam, HttpServletRequest request) {
+        logger.info("BankManageReqParam: {}", bankManageReqParam);
         String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (org != null && org.length() != 0 ) {
-            if ((!org.equals(AosContent.ALLINFINANCE_ORG))&& BankManageReqParam.getOrg()==null) {
-                BankManageReqParam.setOrg(org);
+            if ((!org.equals(AosContent.ALLINFINANCE_ORG))&& bankManageReqParam.getOrg()==null) {
+                bankManageReqParam.setOrg(org);
             }
         }
-        if (BankManageReqParam.getCurrent() == null || BankManageReqParam.getPageSize() == null) {
+        if (bankManageReqParam.getCurrent() == null || bankManageReqParam.getPageSize() == null) {
             // 如果请求中没有传页码和大小就调用查询所有的银行的方法
-            List<TblBankManage> tblBankManages = tblBankManageService.selectByBankInfo(BankManageReqParam);
+            List<TblBankManage> tblBankManages = tblBankManageService.selectByBankInfo(bankManageReqParam);
             return Result.success(tblBankManages);
         }
         PageInfo<TblBankManage> banks;
         try {
-            banks = tblBankManageService.pageSelectBanks(BankManageReqParam);
+            banks = tblBankManageService.pageSelectBanks(bankManageReqParam);
         } catch (Exception e) {
             logger.error("查询银行列表异常", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -69,11 +69,11 @@ public class BankManageController {
     @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
     @ResponseBody
     @OperLog(operModul = "银行管理-更新银行",operType = AosContent.UPDATE,operDesc = "根据id更新银行信息")
-    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String BankId,HttpServletRequest request) {
-        logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, BankId);
+    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String bankId,HttpServletRequest request) {
+        logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, bankId);
         String token = request.getHeader( AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
-        tblBank.setBankId(BankId);
+        tblBank.setBankId(bankId);
         tblBank.setUpdateBy(userName);
         int result;
         try {

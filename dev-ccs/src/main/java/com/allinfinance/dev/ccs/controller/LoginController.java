@@ -104,7 +104,7 @@ public class LoginController {
     @RequestMapping(path = "getQRCodeUrl" ,method = RequestMethod.GET)
     @ResponseBody
     @OperLog(operModul = "系统登录-动态口令",operType = AosContent.QUERY,operDesc = "动态口令验证")
-    public Result getQRCodeUrl(HttpServletRequest request, HttpServletResponse response){
+    public Result getQrCodeUrl(HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
@@ -118,12 +118,11 @@ public class LoginController {
         String issuer=currentUser.getReservedField3();
         String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName,secret ,issuer);
         String encodePath="";
-        String qrcodePath=this.desePath + File.separator + userName;
+        String qrcodePath= desePath + File.separator + userName;
         String stringImg="";
         try {
             encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//            response.setHeader("Content-type","image/jpg");
             File file = new File(qrcodePath+File.separator+encodePath);
             FileInputStream inputStream = new FileInputStream(file);
             byte[] bit=new byte[1024];
@@ -152,7 +151,7 @@ public class LoginController {
     private static String desePath;
     @Value("${qrCode.path:/home/aos/qrcode/}")
     public  void setDesePath(String desePath) {
-        this.desePath = desePath;
+        LoginController.desePath = desePath;
     }
 }
 
