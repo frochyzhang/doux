@@ -76,7 +76,7 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (userReqParam.getOrg() == null || userReqParam.getOrg().equals("")) {
+        if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
             //当前的用户是超级管理员时显示所有列表
             if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 userReqParam.setOrg(null);
@@ -157,7 +157,7 @@ public class UserController {
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时先解密再加密
-        if (userReqParam.getUserPass() != null && (!userReqParam.getUserPass().equals(""))) {
+        if (userReqParam.getUserPass() != null && (!"".equals(userReqParam.getUserPass()))) {
             String decryptPass = null;
             try {
                 decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
@@ -188,10 +188,10 @@ public class UserController {
     @ResponseBody
     @OperLog(operModul = "用户管理-删除用户",operType = AosContent.DELETE,operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        logger.info("请求的uri: {}", requestURI);
+        String requestUri = request.getRequestURI();
+        logger.info("请求的uri: {}", requestUri);
         //暂时存放进于预留域传到service
-        userReqParam.setReservedField1(requestURI);
+        userReqParam.setReservedField1(requestUri);
         int result = 0;
         try {
             result = tblUserService.deleteByPrimaryKey(userReqParam);

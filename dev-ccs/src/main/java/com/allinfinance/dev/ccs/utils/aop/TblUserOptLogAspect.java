@@ -79,55 +79,60 @@ public class TblUserOptLogAspect {
                 .resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
         TblUserOptLog operlog = new TblUserOptLog();
-        try {
 //            operlog.setOperId(UuidUtil.get32UUID()); // 主键ID
 
-            // 从切面织入点处通过反射机制获取织入点处的方法
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            // 获取切入点所在的方法
-            Method method = signature.getMethod();
-            // 获取操作
-            OperLog opLog = method.getAnnotation(OperLog.class);
-            if (opLog != null) {
-                String operModul = opLog.operModul();
-                String operType = opLog.operType();
-                String operDesc = opLog.operDesc();
-                operlog.setOperModule(operModul); // 操作模块
-                operlog.setOperType(operType); // 操作类型
-                operlog.setOperDesc(operDesc); // 操作描述
-            }
-            // 获取请求的类名
-            String className = joinPoint.getTarget().getClass().getName();
-            // 获取请求的方法名
-            String methodName = method.getName();
-            methodName = className + "." + methodName;
+        // 从切面织入点处通过反射机制获取织入点处的方法
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        // 获取切入点所在的方法
+        Method method = signature.getMethod();
+        // 获取操作
+        OperLog opLog = method.getAnnotation(OperLog.class);
+        if (opLog != null) {
+            String operModul = opLog.operModul();
+            String operType = opLog.operType();
+            String operDesc = opLog.operDesc();
+            operlog.setOperModule(operModul); // 操作模块
+            operlog.setOperType(operType); // 操作类型
+            operlog.setOperDesc(operDesc); // 操作描述
+        }
+        // 获取请求的类名
+        String className = joinPoint.getTarget().getClass().getName();
+        // 获取请求的方法名
+        String methodName = method.getName();
+        methodName = className + "." + methodName;
 
-            operlog.setOperMethod(methodName); // 请求方法
+        operlog.setOperMethod(methodName); // 请求方法
 
-            // 请求的参数
-            assert request != null;
-            Map<String, String> rtnMap = converMap(request.getParameterMap());
-            // 将参数所在的数组转换成json
-            String params = JSON.toJSONString(rtnMap);
-            // 这里没有参数就检查是不是因为@RequestBody作为请求参数，调用专门的工具类取解析这样的请求参数
-            if (StringUtils.equals(params,"{}")){
-                Object[] args = joinPoint.getArgs();
-                params = ObjectMapUtil.getParameterValue(args);
-            }
-            operlog.setOperRequParam(params); // 请求参数
+        // 请求的参数
+        if (request != null) {
+            try {
+                Map<String, String> rtnMap = converMap(request.getParameterMap());
+                // 将参数所在的数组转换成json
+                String params = JSON.toJSONString(rtnMap);
+                // 这里没有参数就检查是不是因为@RequestBody作为请求参数，调用专门的工具类取解析这样的请求参数
+                if (StringUtils.equals(params, "{}")) {
+                    Object[] args = joinPoint.getArgs();
+                    params = ObjectMapUtil.getParameterValue(args);
+                }
+                operlog.setOperRequParam(params); // 请求参数
 //            operlog.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
-            operlog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
-            operlog.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
-            operlog.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
-            operlog.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
-            operlog.setOperUri(request.getRequestURI()); // 请求URI
-            operlog.setOperCreateTime(new Date()); // 创建时间
-            // 实际使用中因为查询操作太多 所以剔除部分无意义的查询日志  无参数查询不记录
-            if (!(operlog.getOperType().equals(AosContent.QUERY)&&operlog.getOperRequParam().equals("{}"))){
+                operlog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
+                operlog.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
+                operlog.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
+                operlog.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
+                operlog.setOperUri(request.getRequestURI()); // 请求URI
+                operlog.setOperCreateTime(new Date()); // 创建时间
+            } catch (Exception e) {
+                logger.error("操作日志参数获取异常：{}", e.getMessage());
+            }
+        }
+        // 实际使用中因为查询操作太多 所以剔除查询日志
+        try {
+            if (!(operlog.getOperType().equals(AosContent.QUERY))) {
                 tblOptLogService.insertLog(operlog);
             }
         } catch (Exception e) {
-            logger.error("操作日志INSERT异常-->日志信息{}",operlog.toString());
+            logger.error("操作日志INSERT异常-->日志信息{}", operlog.toString());
         }
     }
 
