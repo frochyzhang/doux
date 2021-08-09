@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-example</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>${revision}</version>
+        <version>1.2.1-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>dev-redis-example - Redisson整合实例</name>

@@ -5,7 +5,8 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>${revision}</version>
+        <version>1.2.1-RELEASE</version>
+        <relativePath>../dev-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>${project.artifactId} 自动配置加载模块</name>
