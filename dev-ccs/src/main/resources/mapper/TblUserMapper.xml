@@ -121,7 +121,7 @@
     <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
         <selectKey resultType="java.lang.String" keyProperty="userId" order="BEFORE">
             SELECT
-            sequence_id.nextval
+            TBL_USER_SEQ.nextval
             FROM sysibm.sysdummy1
         </selectKey>
         insert into TBL_USER
