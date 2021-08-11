@@ -206,7 +206,7 @@
     </if>
   </select>
 <!--无分页的角色查询-->
-  <select id="SelectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
+  <select id="selectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
   resultMap="BaseResultMap">
   select
   <include refid="Base_Column_List" />
