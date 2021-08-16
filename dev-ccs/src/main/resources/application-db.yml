@@ -1,6 +1,6 @@
 jdbc:
   driver: com.ibm.db2.jcc.DB2Driver
-  url: jdbc:db2://10.250.23.33:50000/efss:currentSchema=CES_TEST;
+  url: jdbc:db2://10.250.23.33:50000/efss:currentSchema=CES_DEV;
   username: efss
   password: efss
   validationQuery: select 1 from sysibm.sysdummy1

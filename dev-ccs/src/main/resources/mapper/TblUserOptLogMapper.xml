@@ -229,7 +229,7 @@
     where 1=1
     <if test="logReqParam!=null">
       <if test="logReqParam.userName!=null and logReqParam.userName!='' ">
-        and lg.OPER_USER_NAME like '%${logReqParam.operUserName}%'
+        and lg.OPER_USER_NAME like '%#{logReqParam.operUserName}%'
       </if>
       <if test="logReqParam.org!=null">
         and lg.org = #{logReqParam.org}
