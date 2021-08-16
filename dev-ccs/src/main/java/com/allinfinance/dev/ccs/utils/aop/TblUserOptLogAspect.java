@@ -116,6 +116,7 @@ public class TblUserOptLogAspect {
                 }
                 operlog.setOperRequParam(params); // 请求参数
 //            operlog.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
+                // 系统登录时用户的额
                 operlog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
                 operlog.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
                 operlog.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构

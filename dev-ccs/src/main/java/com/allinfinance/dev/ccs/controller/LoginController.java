@@ -143,7 +143,7 @@ public class LoginController {
     }
     @RequestMapping(path = "getPublicKey" ,method = RequestMethod.POST)
     @ResponseBody
-    @OperLog(operModul = "系统登录-登录密钥",operType = AosContent.QUERY,operDesc = "获取登录密钥")
+//    @OperLog(operModul = "系统登录-登录密钥",operType = AosContent.QUERY,operDesc = "获取登录密钥")
     public Result getPublicKey(HttpServletRequest request){
         return Result.success(rsaProperties.getPublicKey().getEncoded());
     }
