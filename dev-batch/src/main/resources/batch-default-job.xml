@@ -44,6 +44,7 @@
     <bean id="itemFilePartitioner" class="com.allinfinance.dev.batch.reader.ColumnRangePartitioner" scope="step">
         <property name="filePath" value="#{jobParameters['filePath']}"/>
         <property name="startLine" value="#{jobParameters['startLine']}"/>
+        <property name="encoding" value="#{jobParameters['encoding']}"/
     </bean>
     <bean id="simpleBinaryBufferedReaderFactory"
           class="org.springframework.batch.item.file.SimpleBinaryBufferedReaderFactory" scope="step"/>
