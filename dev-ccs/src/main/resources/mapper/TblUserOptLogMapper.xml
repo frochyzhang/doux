@@ -27,15 +27,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from CES_TEST.TBL_USER_OPT_LOG
+    from TBL_USER_OPT_LOG
     where OPER_ID = #{operId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from CES_TEST.TBL_USER_OPT_LOG
+    delete from TBL_USER_OPT_LOG
     where OPER_ID = #{operId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    insert into CES_TEST.TBL_USER_OPT_LOG (OPER_MODULE, OPER_TYPE,
+    insert into TBL_USER_OPT_LOG (OPER_MODULE, OPER_TYPE,
       OPER_DESC, OPER_REQU_PARAM, OPER_RESP_PARAM, 
       OPER_USER_ID, OPER_USER_NAME, OPER_METHOD, 
       OPER_URI, OPER_IP, OPER_CREATE_TIME, 
@@ -49,7 +49,7 @@
       #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    insert into CES_TEST.TBL_USER_OPT_LOG
+    insert into TBL_USER_OPT_LOG
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="operId != null">
         OPER_ID,
@@ -152,7 +152,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    update CES_TEST.TBL_USER_OPT_LOG
+    update TBL_USER_OPT_LOG
     <set>
       <if test="operModule != null">
         OPER_MODULE = #{operModule,jdbcType=VARCHAR},
@@ -203,7 +203,7 @@
     where OPER_ID = #{operId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    update CES_TEST.TBL_USER_OPT_LOG
+    update TBL_USER_OPT_LOG
     set OPER_MODULE = #{operModule,jdbcType=VARCHAR},
       OPER_TYPE = #{operType,jdbcType=VARCHAR},
       OPER_DESC = #{operDesc,jdbcType=VARCHAR},
