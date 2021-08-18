@@ -192,7 +192,7 @@
         and ROLE_ID = #{roleReqParam.roleId}
       </if>
       <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
-        and ROLE_NAME like  '%#{roleReqParam.roleName}%'
+        and ROLE_NAME like  '%${roleReqParam.roleName}%'
       </if>
       <if test="roleReqParam.isAvailable!=null and roleReqParam.isAvailable!='' ">
         and IS_AVAILABLE  =  #{roleReqParam.isAvailable}
@@ -217,7 +217,7 @@
       and ROLE_ID = #{roleReqParam.roleId}
     </if>
     <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
-      and ROLE_NAME like  '%#{roleReqParam.roleName}%'
+      and ROLE_NAME like  '%${roleReqParam.roleName}%'
     </if>
     <if test="roleReqParam.isAvailable!=null and roleReqParam.isAvailable!='' ">
       and IS_AVAILABLE  =  #{roleReqParam.isAvailable}

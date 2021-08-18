@@ -43,7 +43,7 @@
         and IS_AVAILABLE = #{menusReqParam.isAvailable}
       </if>
       <if test="menusReqParam.menuName != null and menusReqParam.menuName!=''">
-        and MENU_NAME like '%#{menusReqParam.menuName}%'
+        and MENU_NAME like '%${menusReqParam.menuName}%'
       </if>
     </if>
   </select>

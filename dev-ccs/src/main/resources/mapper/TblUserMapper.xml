@@ -73,7 +73,7 @@
         re.role_id = ur.role_id AND user_id=#{userReqParam.userId}))
         <if test="userReqParam!=null">
             <if test="userReqParam.userName!=null and userReqParam.userName!='' ">
-                and user_Name like '%#{userReqParam.userName}%'
+                and user_Name like '%${userReqParam.userName}%'
             </if>
             <if test="userReqParam.roleId!=null">
                 and ur.role_Id = #{userReqParam.roleId}
