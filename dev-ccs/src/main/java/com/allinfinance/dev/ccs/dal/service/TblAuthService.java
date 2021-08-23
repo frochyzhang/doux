@@ -63,8 +63,8 @@ public class TblAuthService {
         return new PageInfo<TblAuth>(auths);
     }
 
-    public List<TblAuth> selectAuths() {
-        return tblAuthMapper.selectAuths();
+    public List<TblAuth> selectAuths(AuthReqParam authReqParam) {
+        return tblAuthMapper.selectAuths(authReqParam);
     }
 
     public List<TblMenuAuth> selectMenuAuths(){

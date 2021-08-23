@@ -237,6 +237,9 @@
       <if test="logReqParam.operType!=null">
         and OPER_TYPE = #{logReqParam.operType}
       </if>
+      <if test="logReqParam.operDesc!=null">
+        and OPER_DESC like '%${logReqParam.operDesc}%'
+      </if>
       <if test="logReqParam.beginDate != null and logReqParam.beginDate!=''">
         and OPER_CREATE_TIME <![CDATA[>=]]> #{logReqParam.beginDate}
       </if>

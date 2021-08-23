@@ -22,7 +22,7 @@ public interface TblAuthMapper {
 
     List<TblAuth> pageSelectAuths(@Param("authReqParam") AuthReqParam authReqParam);
 
-    List<TblAuth> selectAuths();
+    List<TblAuth> selectAuths(@Param("authReqParam")AuthReqParam authReqParam);
 
     int invalidateAuth(@Param("authId") String authId,@Param("isAvailable") String isAvailable);
 
