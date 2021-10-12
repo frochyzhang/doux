@@ -2,11 +2,9 @@ package com.allinfinance.dev.core.util.convert.common;
 
 import com.allinfinance.dev.core.constant.CommonConstants;
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.JobDataMap;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class ConvertUtils {
 
@@ -370,14 +368,6 @@ public class ConvertUtils {
             }
         }
         return str;
-    }
-
-    public static JobDataMap HashToJobData(HashMap<String, String> hashMap) {
-        JobDataMap jobDataMap = new JobDataMap();
-        if (hashMap != null && hashMap.size() > 0) {
-            jobDataMap.putAll(hashMap);
-        }
-        return jobDataMap;
     }
 
     public static String bytesArrayToHexString(byte[] bBody) {

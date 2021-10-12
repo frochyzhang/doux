@@ -1,6 +1,5 @@
 package com.allinfinance.dev.batch.quartz;
 
-import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +17,18 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
     private final Logger logger = LoggerFactory.getLogger(QuartzBatchServiceImpl.class);
     private Scheduler scheduler;
 
+    public static JobDataMap HashToJobData(HashMap<String, String> hashMap) {
+        JobDataMap jobDataMap = new JobDataMap();
+        if (hashMap != null && hashMap.size() > 0) {
+            jobDataMap.putAll(hashMap);
+        }
+        return jobDataMap;
+    }
+
     @Override
     public void addCronJob(String jobName, String jobGroupName, Class jobClass, String triggerName, String triggerGroupName, String cronParam, HashMap<String, String> jobParams) {
         try {
-            JobDataMap jobDataMap = ConvertUtils.HashToJobData(jobParams);
+            JobDataMap jobDataMap = HashToJobData(jobParams);
             JobDetail jobDetail = JobBuilder.newJob(jobClass)
                     .withIdentity(jobName, jobGroupName)
                     .usingJobData(jobDataMap)
