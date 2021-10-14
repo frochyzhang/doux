@@ -17,18 +17,10 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
     private final Logger logger = LoggerFactory.getLogger(QuartzBatchServiceImpl.class);
     private Scheduler scheduler;
 
-    public static JobDataMap HashToJobData(HashMap<String, String> hashMap) {
-        JobDataMap jobDataMap = new JobDataMap();
-        if (hashMap != null && hashMap.size() > 0) {
-            jobDataMap.putAll(hashMap);
-        }
-        return jobDataMap;
-    }
-
     @Override
     public void addCronJob(String jobName, String jobGroupName, Class jobClass, String triggerName, String triggerGroupName, String cronParam, HashMap<String, String> jobParams) {
         try {
-            JobDataMap jobDataMap = HashToJobData(jobParams);
+            JobDataMap jobDataMap = hashToJobData(jobParams);
             JobDetail jobDetail = JobBuilder.newJob(jobClass)
                     .withIdentity(jobName, jobGroupName)
                     .usingJobData(jobDataMap)
@@ -127,6 +119,14 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
         }
 
         return null;
+    }
+
+    public static JobDataMap hashToJobData(HashMap<String, String> hashMap) {
+        JobDataMap jobDataMap = new JobDataMap();
+        if (hashMap != null && hashMap.size() > 0) {
+            jobDataMap.putAll(hashMap);
+        }
+        return jobDataMap;
     }
 
     public Scheduler getScheduler() {

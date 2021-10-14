@@ -353,7 +353,7 @@ public class StrUtils {
         String encryptPhoneNo = null;
         if (phoneNo != null && phoneNo.length() > 7) {
             int encryptLen = phoneNo.length() - 7;
-            encryptPhoneNo = phoneNo.substring(0, encryptLen) + fillString(CommonConstants.EMPTY, '*', encryptLen, true) + phoneNo.substring(phoneNo.length() - 4);
+            encryptPhoneNo = phoneNo.substring(0, 3) + fillString(CommonConstants.EMPTY, '*', encryptLen, true) + phoneNo.substring(phoneNo.length() - 4);
             return encryptPhoneNo;
         } else {
             return phoneNo;
