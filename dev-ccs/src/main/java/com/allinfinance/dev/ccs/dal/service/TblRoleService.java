@@ -70,7 +70,7 @@ public class TblRoleService {
     }
 
     public List<TblRole> pageRoles(RoleReqParam roleReqParam) {
-        return tblRoleMapper.SelectRoles(roleReqParam);
+        return tblRoleMapper.selectRoles(roleReqParam);
     }
 
     public int invalidateRole(String roleId) {

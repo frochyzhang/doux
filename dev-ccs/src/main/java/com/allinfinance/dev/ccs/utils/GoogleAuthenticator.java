@@ -11,14 +11,14 @@ import java.util.Random;
 public class GoogleAuthenticator {
 
     private static final int DEFAULT_TIME_STEP_SECONDS = 30;
-    private static final int NUM_DIGITS_OUTPUT = 6;
+    private static int NUM_DIGITS_OUTPUT = 6;
 
-    private static final String BLOCK_OF_ZEROS;
+    private static final String BLOCKOFZEROS;
 
     static {
         char[] chars = new char[NUM_DIGITS_OUTPUT];
         Arrays.fill(chars, '0');
-        BLOCK_OF_ZEROS = new String(chars);
+        BLOCKOFZEROS = new String(chars);
     }
 
 
@@ -170,7 +170,7 @@ public class GoogleAuthenticator {
         } else {
             StringBuilder sb = new StringBuilder(digits);
             int zeroCount = digits - numStr.length();
-            sb.append(BLOCK_OF_ZEROS, 0, zeroCount);
+            sb.append(BLOCKOFZEROS, 0, zeroCount);
             sb.append(numStr);
             return sb.toString();
         }
@@ -254,6 +254,7 @@ public class GoogleAuthenticator {
                     result[resultIndex++] = (byte) working;
                     which = 0;
                     break;
+                default:
             }
         }
         if (which != 0) {

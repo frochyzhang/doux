@@ -5,6 +5,7 @@ import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblBankManageService;
+
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
@@ -36,14 +37,14 @@ public class BankManageController {
     //分页查询银行
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "银行管理-银行列表", operType = AosContent.QUERY, operDesc = "分页查询银行列表")
+    @OperLog(operModul = "银行管理-银行列表",operType = AosContent.QUERY,operDesc = "分页查询银行列表")
     public Result selectBanks(BankManageReqParam bankManageReqParam, HttpServletRequest request) {
-        logger.info("bankManageReqParam: {}", bankManageReqParam);
-        String token = request.getHeader(AosContent.AOS_TOKEN);
+        logger.info("BankManageReqParam: {}", bankManageReqParam);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (org != null && org.length() != 0) {
-            if ((!org.equals(AosContent.ALLINFINANCE_ORG)) && bankManageReqParam.getOrg() == null) {
+        if (org != null && org.length() != 0 ) {
+            if ((!org.equals(AosContent.ALLINFINANCE_ORG))&& bankManageReqParam.getOrg()==null) {
                 bankManageReqParam.setOrg(org);
             }
         }
@@ -67,10 +68,10 @@ public class BankManageController {
     //更新银行
     @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
     @ResponseBody
-    @OperLog(operModul = "银行管理-更新银行", operType = AosContent.UPDATE, operDesc = "根据id更新银行信息")
-    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String bankId, HttpServletRequest request) {
-        logger.debug("更新操作接收到的请求参数: {},bankId:{}", tblBank, bankId);
-        String token = request.getHeader(AosContent.AOS_TOKEN);
+    @OperLog(operModul = "银行管理-更新银行",operType = AosContent.UPDATE,operDesc = "根据id更新银行信息")
+    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String bankId,HttpServletRequest request) {
+        logger.debug("更新操作接收到的请求参数: {},BankId:{}", tblBank, bankId);
+        String token = request.getHeader( AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         tblBank.setBankId(bankId);
         tblBank.setUpdateBy(userName);

@@ -25,15 +25,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from CES_TEST.TBL_USER_ERROR_LOG
+    from TBL_USER_ERROR_LOG
     where EXC_ID = #{excId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from CES_TEST.TBL_USER_ERROR_LOG
+    delete from TBL_USER_ERROR_LOG
     where EXC_ID = #{excId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserErrorLog">
-    insert into CES_TEST.TBL_USER_ERROR_LOG (EXC_ID, EXC_REQU_PARAM, EXC_NAME, 
+    insert into TBL_USER_ERROR_LOG (EXC_ID, EXC_REQU_PARAM, EXC_NAME, 
       EXC_MESSAGE, OPER_USER_ID, OPER_USER_NAME, 
       OPER_METHOD, OPER_URI, OPER_IP, 
       OPER_CREATE_TIME, RESERVED_FIELD1, RESERVED_FIELD2, 
@@ -45,7 +45,7 @@
       #{reservedField3,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserErrorLog">
-    insert into CES_TEST.TBL_USER_ERROR_LOG
+    insert into TBL_USER_ERROR_LOG
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="excId != null">
         EXC_ID,
@@ -136,7 +136,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserErrorLog">
-    update CES_TEST.TBL_USER_ERROR_LOG
+    update TBL_USER_ERROR_LOG
     <set>
       <if test="excRequParam != null">
         EXC_REQU_PARAM = #{excRequParam,jdbcType=VARCHAR},
@@ -181,7 +181,7 @@
     where EXC_ID = #{excId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserErrorLog">
-    update CES_TEST.TBL_USER_ERROR_LOG
+    update TBL_USER_ERROR_LOG
     set EXC_REQU_PARAM = #{excRequParam,jdbcType=VARCHAR},
       EXC_NAME = #{excName,jdbcType=VARCHAR},
       EXC_MESSAGE = #{excMessage,jdbcType=VARCHAR},

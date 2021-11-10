@@ -188,10 +188,10 @@ public class UserController {
     @ResponseBody
     @OperLog(operModul = "用户管理-删除用户",operType = AosContent.DELETE,operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        logger.info("请求的uri: {}", requestURI);
+        String requestUri = request.getRequestURI();
+        logger.info("请求的uri: {}", requestUri);
         //暂时存放进于预留域传到service
-        userReqParam.setReservedField1(requestURI);
+        userReqParam.setReservedField1(requestUri);
         int result = 0;
         try {
             result = tblUserService.deleteByPrimaryKey(userReqParam);

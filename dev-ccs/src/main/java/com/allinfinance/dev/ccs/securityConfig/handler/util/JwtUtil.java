@@ -225,7 +225,7 @@ public class JwtUtil {
     @Value("${token.expire_time:7}")
     public  void setExpireTime(long expireTime) {
         expireTime= expireTime==0?1:expireTime;
-        EXPIRE_TIME = expireTime  *60*60* 1000;
+        EXPIRE_TIME = expireTime  *60* 1000;
     }
 
     public static String getTokenSecret() {

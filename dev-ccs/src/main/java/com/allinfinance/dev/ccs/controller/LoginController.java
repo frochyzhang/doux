@@ -101,29 +101,28 @@ public class LoginController {
         return Result.success(currentUser);
     }
 
-    @RequestMapping(path = "getQRCodeUrl", method = RequestMethod.GET)
+    @RequestMapping(path = "getQRCodeUrl" ,method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "系统登录-动态口令", operType = AosContent.QUERY, operDesc = "动态口令验证")
-    public Result getQrCodeUrl(HttpServletRequest request, HttpServletResponse response) {
+    @OperLog(operModul = "系统登录-动态口令",operType = AosContent.QUERY,operDesc = "动态口令验证")
+    public Result getQrCodeUrl(HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
         String org = JwtUtil.getOrg(token);
         QrCodeResDto qrCodeResDto = new QrCodeResDto();
         TblUser currentUser = userService.selectByPrimaryKey(userId);
-        if (AosContent.IS_BIND.equals(currentUser.getReservedField1())) {
-            return Result.success(qrCodeResDto);
-        }
-        String secret = currentUser.getReservedField2();
+        if(AosContent.IS_BIND.equals(currentUser.getReservedField1())){
+          return Result.success(qrCodeResDto);
+         }
+        String secret=currentUser.getReservedField2();
         String issuer=currentUser.getReservedField3();
         String cuiwy = GoogleAuthenticator.generateOtpAuthUrl(userName,secret ,issuer);
-        String encodePath = "";
-        String qrcodePath = DEST_PATH + File.separator + userName;
-        String stringImg = "";
+        String encodePath="";
+        String qrcodePath= desePath + File.separator + userName;
+        String stringImg="";
         try {
             encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//            response.setHeader("Content-type","image/jpg");
             File file = new File(qrcodePath+File.separator+encodePath);
             FileInputStream inputStream = new FileInputStream(file);
             byte[] bit=new byte[1024];
@@ -144,15 +143,15 @@ public class LoginController {
     }
     @RequestMapping(path = "getPublicKey" ,method = RequestMethod.POST)
     @ResponseBody
-    @OperLog(operModul = "系统登录-登录密钥",operType = AosContent.QUERY,operDesc = "获取登录密钥")
+//    @OperLog(operModul = "系统登录-登录密钥",operType = AosContent.QUERY,operDesc = "获取登录密钥")
     public Result getPublicKey(HttpServletRequest request){
         return Result.success(rsaProperties.getPublicKey().getEncoded());
     }
 
-    private static String DEST_PATH;
+    private static String desePath;
     @Value("${qrCode.path:/home/aos/qrcode/}")
     public  void setDesePath(String desePath) {
-        LoginController.DEST_PATH = desePath;
+        LoginController.desePath = desePath;
     }
 }
 

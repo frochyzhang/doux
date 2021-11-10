@@ -139,9 +139,9 @@
 
   <select id="selectOnUseAuth" resultMap="BaseResultMap">
     select roleAuth.ROLE_ID, AUTH_ID, roleAuth.UPDATE_TIME, roleAuth.UPDATE_BY, roleAuth.RESERVED_FIELD1, roleAuth.RESERVED_FIELD2, roleAuth.RESERVED_FIELD3 from TBL_ROLE_AUTH  roleAuth
-    left join TBL_USER  us  on roleAuth.ROLE_ID = us.ROLE_ID
+    left join TBL_ROLE  us  on roleAuth.ROLE_ID = us.ROLE_ID
     WHERE
-    us.user_id is not null
+    us.ROLE_ID is not null
     AND AUTH_ID in
     <foreach collection="authIds" item="authId" index="index"
              open="(" close=")" separator=",">

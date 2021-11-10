@@ -28,7 +28,6 @@ public class TblUserServiceImpl implements TblUserService {
     @Autowired
     private TblUserMapper tblUserMapper;
 
-
     @Override
     public int deleteByPrimaryKey(String userId) {
         return tblUserMapper.deleteByPrimaryKey(userId);
@@ -64,7 +63,6 @@ public class TblUserServiceImpl implements TblUserService {
         record.setCreateTime(new Date());
         return tblUserMapper.insertSelective(record);
     }
-
 
 
     public TblUser selectByPrimaryKey(Integer userId) {

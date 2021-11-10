@@ -44,7 +44,7 @@
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRole">
     <selectKey resultType="java.lang.String" keyProperty="roleId" order="BEFORE" >
       SELECT
-      sequence_id.nextval
+      TBL_ROLE_SEQ.nextval
       FROM sysibm.sysdummy1
     </selectKey>
     insert into TBL_ROLE
@@ -186,10 +186,10 @@
     select
     <include refid="Base_Column_List" />
     from TBL_ROLE a where 1=1
-    and (cast(a.WEIGHT as bigint) &lt; (select cast(re.WEIGHT as bigint) from  tbl_role re,tbl_user ur where re.role_id=ur.role_id  and USER_ID = ${roleReqParam.userId}))
+    and (cast(a.WEIGHT as bigint) &lt; (select cast(re.WEIGHT as bigint) from  tbl_role re,tbl_user ur where re.role_id=ur.role_id  and USER_ID = #{roleReqParam.userId}))
     <if test="roleReqParam!=null">
       <if test="roleReqParam.roleId!=null and roleReqParam.roleId!=0">
-        and ROLE_ID = ${roleReqParam.roleId}
+        and ROLE_ID = #{roleReqParam.roleId}
       </if>
       <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
         and ROLE_NAME like  '%${roleReqParam.roleName}%'
@@ -206,15 +206,15 @@
     </if>
   </select>
 <!--无分页的角色查询-->
-  <select id="SelectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
+  <select id="selectRoles"  parameterType="com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam"
   resultMap="BaseResultMap">
   select
   <include refid="Base_Column_List" />
   from TBL_ROLE a where 1=1
-  and (cast(a.WEIGHT as bigint) &lt; (select cast(re.WEIGHT as bigint) from  tbl_role re,tbl_user ur where re.role_id=ur.role_id  and USER_ID = ${roleReqParam.userId}))
+  and (cast(a.WEIGHT as bigint) &lt; (select cast(re.WEIGHT as bigint) from  tbl_role re,tbl_user ur where re.role_id=ur.role_id  and USER_ID = #{roleReqParam.userId}))
   <if test="roleReqParam!=null">
     <if test="roleReqParam.roleId!=null and roleReqParam.roleId!=0">
-      and ROLE_ID = ${roleReqParam.roleId}
+      and ROLE_ID = #{roleReqParam.roleId}
     </if>
     <if test="roleReqParam.roleName!=null and roleReqParam.roleName!='' ">
       and ROLE_NAME like  '%${roleReqParam.roleName}%'

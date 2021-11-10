@@ -41,7 +41,7 @@
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
     <selectKey resultType="java.lang.String" keyProperty="authId" order="BEFORE" >
       SELECT
-      sequence_id.nextval
+      TBL_AUTH_SEQ.nextval
       FROM sysibm.sysdummy1
     </selectKey>
     insert into TBL_AUTH
@@ -188,11 +188,16 @@
     </if>
   </select>
 
-  <select id="selectAuths" resultMap="BaseResultMap">
+  <select id="selectAuths" parameterType="com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_AUTH
     WHERE IS_AVAILABLE='Y'
+    <if test="authReqParam!=null">
+      <if test="authReqParam.org!=null and authReqParam.org!=''">
+        and ORG = #{authReqParam.org}
+      </if>
+    </if>
   </select>
 
   <update id="invalidateAuth" parameterType="java.lang.String">
