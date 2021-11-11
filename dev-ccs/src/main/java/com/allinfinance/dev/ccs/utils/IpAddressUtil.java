@@ -28,7 +28,7 @@ public class IpAddressUtil {
                 InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
+                } catch (UnknownHostException ignored) {
                 }
                 ipAddress = inet.getHostAddress();
             }

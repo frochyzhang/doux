@@ -17,8 +17,7 @@ public class QuartzCustomJobFactory extends AdaptableJobFactory {
     private AutowireCapableBeanFactory capableBeanFactory;
 
     @Override
-    protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception
-    {
+    protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
         Object jobInstance = super.createJobInstance(bundle);
         capableBeanFactory.autowireBean(jobInstance);
         return jobInstance;

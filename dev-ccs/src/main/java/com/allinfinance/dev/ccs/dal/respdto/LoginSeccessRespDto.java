@@ -1,18 +1,17 @@
 package com.allinfinance.dev.ccs.dal.respdto;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class LoginSeccessReapDto  implements Serializable {
-    private String [] currentAuthority;
-    private String  QRcode;
-    private String  userId;
-    private String  userName;
-    private String  org;
-    private String  passStatus;
-    private String  isFirstLogin;
-    private String  token;
-    private String  refreshToken;
+public class LoginSeccessRespDto implements Serializable {
+    private String[] currentAuthority;
+    private String QRcode;
+    private String userId;
+    private String userName;
+    private String org;
+    private String passStatus;
+    private String isFirstLogin;
+    private String token;
+    private String refreshToken;
     private long expirTime;
 
     public long getExpirTime() {

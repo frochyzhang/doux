@@ -5,7 +5,8 @@
     <parent>
         <artifactId>dev-parent</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.2.0-RELEASE</version>
+        <version>1.2.1-RELEASE</version>
+        <relativePath>../dev-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>dev-example 各模块使用示例</name>
@@ -17,6 +18,7 @@
         <module>dev-socket-example</module>
         <module>dev-redis-example</module>
         <module>dev-batch-example</module>
+        <module>dev-http-example</module>
     </modules>
 
     <properties>

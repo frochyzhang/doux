@@ -14,5 +14,8 @@ public class TestBatch {
 
     public static void main(String[] args) {
         new ClassPathXmlApplicationContext("application-context-test.xml");
+        while (true) {
+
+        }
     }
 }

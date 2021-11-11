@@ -1,6 +1,5 @@
 package com.allinfinance.dev.batch.quartz;
 
-import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +18,20 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
     private Scheduler scheduler;
 
     @Override
-    public void addCronJob(String jobName,String jobGroupName, Class jobClass,String triggerName,String triggerGroupName,String cronParam,HashMap<String,String> jobParams) {
+    public void addCronJob(String jobName, String jobGroupName, Class jobClass, String triggerName, String triggerGroupName, String cronParam, HashMap<String, String> jobParams) {
         try {
-            JobDataMap jobDataMap = ConvertUtils.HashToJobData(jobParams);
+            JobDataMap jobDataMap = hashToJobData(jobParams);
             JobDetail jobDetail = JobBuilder.newJob(jobClass)
                     .withIdentity(jobName, jobGroupName)
                     .usingJobData(jobDataMap)
                     .build();
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
-            triggerBuilder.withIdentity(triggerName,triggerGroupName);
+            triggerBuilder.withIdentity(triggerName, triggerGroupName);
             triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(cronParam));
-            CronTrigger trigger = (CronTrigger)triggerBuilder.build();
+            CronTrigger trigger = (CronTrigger) triggerBuilder.build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            logger.error("创建计划任务失败："+ triggerName);
+            logger.error("创建计划任务失败：" + triggerName);
             logger.error("异常信息:", e);
         }
         logger.info(new Date() + ": 新建" + triggerName + "计划任务");
@@ -40,9 +39,9 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
 
 
     @Override
-    public void modifyCronJobTime(CronTrigger trigger,String newCronParam){
+    public void modifyCronJobTime(CronTrigger trigger, String newCronParam) {
         try {
-            if(trigger == null) {
+            if (trigger == null) {
                 logger.warn("未找到相应触发器");
             } else if (!newCronParam.equalsIgnoreCase(trigger.getCronExpression())) {
                 CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(newCronParam);
@@ -52,7 +51,7 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
                         .build();
                 scheduler.rescheduleJob(key, trigger);
                 logger.info(new Date() + ": 更新" + trigger.getKey().getName() + "计划任务");
-            }else {
+            } else {
                 logger.info("计划任务时间相同，无需更新：" + trigger.getKey().getName());
             }
         } catch (SchedulerException e) {
@@ -63,19 +62,19 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
 
 
     @Override
-    public void removeCronJob(String jobName,String jobGroupName,String triggerName,String triggerGroupName) {
+    public void removeCronJob(String jobName, String jobGroupName, String triggerName, String triggerGroupName) {
         try {
             TriggerKey key = TriggerKey.triggerKey(triggerName, triggerGroupName);
-            CronTrigger trigger = (CronTrigger)scheduler.getTrigger(key);
-            if(trigger == null) {
-                logger.warn("未找到相应触发器："+ triggerName);
+            CronTrigger trigger = (CronTrigger) scheduler.getTrigger(key);
+            if (trigger == null) {
+                logger.warn("未找到相应触发器：" + triggerName);
             } else {
                 // 停止触发器
                 scheduler.pauseTrigger(key);
                 // 移除触发器
                 scheduler.unscheduleJob(key);
                 // 删除任务
-                scheduler.deleteJob(JobKey.jobKey(key.getName(),key.getGroup()));
+                scheduler.deleteJob(JobKey.jobKey(key.getName(), key.getGroup()));
                 logger.info(new Date() + ": 删除" + triggerName + "计划任务");
             }
         } catch (SchedulerException e) {
@@ -99,7 +98,7 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
     @Override
     public void shutdownCronJobs() {
         try {
-            if(!scheduler.isShutdown()) {
+            if (!scheduler.isShutdown()) {
                 scheduler.shutdown();
             }
         } catch (SchedulerException e) {
@@ -120,6 +119,14 @@ public class QuartzBatchServiceImpl implements IQuartzBatchService {
         }
 
         return null;
+    }
+
+    public static JobDataMap hashToJobData(HashMap<String, String> hashMap) {
+        JobDataMap jobDataMap = new JobDataMap();
+        if (hashMap != null && hashMap.size() > 0) {
+            jobDataMap.putAll(hashMap);
+        }
+        return jobDataMap;
     }
 
     public Scheduler getScheduler() {

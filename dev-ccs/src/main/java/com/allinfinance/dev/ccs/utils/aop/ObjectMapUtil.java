@@ -1,15 +1,8 @@
 package com.allinfinance.dev.ccs.utils.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.allinfinance.dev.ccs.controller.OptLogController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 
 /**
@@ -22,8 +15,8 @@ public class ObjectMapUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectMapUtil.class);
 
-    public static String getParameterValue(Object objs[]) {
-        String jsonObj ="";
+    public static String getParameterValue(Object[] objs) {
+        String jsonObj = "";
         try {
             for (Object arg : objs) {
                 // 加上getClass 是因为部分的参数获取不到全类名  另此处获取的的是该controller的全部参数

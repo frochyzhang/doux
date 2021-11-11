@@ -1,7 +1,7 @@
 package com.allinfinance.dev.hsp.config;
 
-import com.allinfinance.dev.dal.mybatis.MapperScanner;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Primary;
 @Slf4j
 @Configuration
 @EnableCaching
-@MapperScanner(basePackages = {"com.allinfinance.dev.hsp.mapper"}, sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScan(basePackages = {"com.allinfinance.dev.hsp.mapper"}, sqlSessionFactoryRef = "sqlSessionFactory")
 @ImportResource(locations = {"classpath:hsp-rpc-context.xml"})
 public class HspInitConfiguration {
 

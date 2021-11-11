@@ -102,7 +102,7 @@ public class TtblMenuController {
                 if (maxMenuId == null){
                     tblMenu.setMenuId(AosContent.MENU_ID_ROOT);
                 }else {
-                    char temp[] = maxMenuId.toCharArray();//获取位数
+                    char[] temp = maxMenuId.toCharArray();//获取位数
                     int num = temp.length;
                     int menuId = Integer.valueOf(maxMenuId);
                     menuId++;
@@ -118,7 +118,7 @@ public class TtblMenuController {
                     String order = maxMenuId.replaceAll(tblMenu.getParentMid(),"");
                     int orderNum = Integer.valueOf(order);
                     orderNum++;
-                    char temp[] = order.toCharArray();//获取位数
+                    char[] temp = order.toCharArray();//获取位数
                     int num = temp.length;
                     String nextOrderNum =  String.format("%0" + num + "d",orderNum);
                     logger.error("nextOrderNum:{}",nextOrderNum);

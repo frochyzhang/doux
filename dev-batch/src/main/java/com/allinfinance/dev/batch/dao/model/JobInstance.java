@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * batch_job_instance
- * @author 
+ *
+ * @author
  */
 public class JobInstance implements Serializable {
     private Long jobInstanceId;

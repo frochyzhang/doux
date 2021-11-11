@@ -8,22 +8,21 @@ import java.util.Vector;
 
 /**
  * <p>组织包报文格式类.</p>
- *
  */
-@XmlRootElement(name="simple8583-config")
+@XmlRootElement(name = "simple8583-config")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class IsoContainer extends Vector<IsoPackage>{
+public class IsoContainer extends Vector<IsoPackage> {
 
-	private static final long serialVersionUID = -4470632464434928749L;
+    private static final long serialVersionUID = -4470632464434928749L;
 
-	@XmlElement(name="package")
-    public Vector<IsoPackage> getPackages(){
+    @XmlElement(name = "package")
+    public Vector<IsoPackage> getPackages() {
         return this;
     }
 
-    public IsoPackage getPackByMti(String mti){
-        for(IsoPackage pack:this){
-            if(pack.getMti().equals(mti)){
+    public IsoPackage getPackByMti(String mti) {
+        for (IsoPackage pack : this) {
+            if (pack.getMti().equals(mti)) {
                 return pack;
             }
         }

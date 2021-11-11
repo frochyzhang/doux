@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.allinfinance.dev</groupId>
-    <artifactId>dev-parent</artifactId>
+    <artifactId>dev-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0-RELEASE</version>
+    <version>1.2.1-RELEASE</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -22,21 +22,24 @@
         <module>dev-rpc</module>
         <module>dev-rpc/dev-rpc-dubbo</module>
         <module>dev-rpc/dev-rpc-sofa</module>
-        <module>dev-nds</module>
-        <module>dev-ccs</module>
+        <!--        <module>dev-nds</module>-->
+        <!--        <module>dev-ccs</module>-->
+        <module>dev-parent</module>
     </modules>
-    <name>dev-parent - 开发三部应用程序开发框架</name>
+    <name>dev-project - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.2.0-RELEASE</dev.version>
+        <dev.version>1.2.1-RELEASE</dev.version>
         <nds.version>2.2.149854</nds.version>
+        <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.4.2</springframework.boot.version>
-        <sofa.boot.version>3.6.0</sofa.boot.version>
+        <nacos.boot.version>1.0.0</nacos.boot.version>
+        <sofa.boot.version>3.7.0</sofa.boot.version>
         <springframework.version>5.3.3</springframework.version>
         <batch.version>4.3.0</batch.version>
         <mina.version>2.0.19</mina.version>
-        <dubbo.version>2.7.8</dubbo.version>
+        <dubbo.version>2.7.12</dubbo.version>
         <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
         <commons.version>2.8.0</commons.version>
@@ -44,56 +47,12 @@
         <quartz.version>2.3.2</quartz.version>
         <redisson.version>3.15.0</redisson.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <nacos.version>1.4.1</nacos.version>
+        <nacos.version>1.4.2</nacos.version>
+        <xxl.version>2.3.0</xxl.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-core</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-batch</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-dal</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-mq-rabbit</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-mq-rpc-portal</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-autoconfigure</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-dubbo</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-sofa</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.nds</groupId>
                 <artifactId>nds-sdk</artifactId>
@@ -118,6 +77,11 @@
                 <version>${sofa.boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-spring-boot-parent</artifactId>
+                <version>${nacos.boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -399,9 +363,9 @@
                 <version>0.1.55</version>
             </dependency>
             <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.67</version>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.56</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -466,6 +430,11 @@
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-x-discovery</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
@@ -474,17 +443,63 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.12.1</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.12.1</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.12.1</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-base</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <!-- xxl-job-core -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.7.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -525,9 +540,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.allinfinance</groupId>
-            <artifactId>iso8583</artifactId>
-            <version>1.1.0-RELEASE</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 

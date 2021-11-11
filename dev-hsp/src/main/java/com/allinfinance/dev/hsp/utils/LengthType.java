@@ -23,10 +23,10 @@ public enum LengthType {
             if (lengthSize != 1 && lengthSize != 2 && lengthSize != 4) {
                 throw new CodecException("INT类型的长度容量必须为1,2,4中的一个");
             } else {
-                byte[] result = new byte[]{(byte)(value >>> 24 & 255), (byte)(value >>> 16 & 255), (byte)(value >>> 8 & 255), (byte)(value >>> 0 & 255)};
+                byte[] result = new byte[]{(byte) (value >>> 24 & 255), (byte) (value >>> 16 & 255), (byte) (value >>> 8 & 255), (byte) (value >>> 0 & 255)};
                 byte[] tempBytes = new byte[lengthSize];
 
-                for(int i = tempBytes.length - 1; i >= 0; --i) {
+                for (int i = tempBytes.length - 1; i >= 0; --i) {
                     tempBytes[i] = result[4 - (tempBytes.length - i)];
                 }
 
@@ -72,7 +72,7 @@ public enum LengthType {
         }
     };
 
-    private LengthType() {
+    LengthType() {
     }
 
     public abstract int getValueLengthByType(byte[] var1) throws IllegalArgumentException, CodecException;

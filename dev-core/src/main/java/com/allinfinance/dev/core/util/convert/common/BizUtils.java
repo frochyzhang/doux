@@ -16,9 +16,9 @@ public class BizUtils {
                 .toString();
     }
 
-    public static String toXAmtStr(BigDecimal amt,String dbcrFlag,int amtLen) {
+    public static String toXAmtStr(BigDecimal amt, String dbcrFlag, int amtLen) {
         return dbcrFlag + ConvertUtils.fillString(amt.multiply(HUNDRED).setScale(0, BigDecimal.ROUND_FLOOR)
-                .toString(),'0',amtLen,false);
+                .toString(), '0', amtLen, false);
     }
 
     public static BigDecimal toBigDecimal(String amt) {

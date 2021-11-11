@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author 张勇
  * @date 2020-11-28 01:23
-*/
+ */
 @Configuration
 public class SpringConfigTool implements ApplicationContextAware {
 
@@ -34,5 +34,9 @@ public class SpringConfigTool implements ApplicationContextAware {
 
     public synchronized static Object getBeanByClassName(String className) throws ClassNotFoundException {
         return context.getBean(Class.forName(className));
+    }
+
+    public synchronized static String getPropertyByName(String name) {
+        return context.getEnvironment().getProperty(name);
     }
 }

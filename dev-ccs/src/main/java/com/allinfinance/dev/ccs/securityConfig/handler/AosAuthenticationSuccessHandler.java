@@ -3,7 +3,7 @@ package com.allinfinance.dev.ccs.securityConfig.handler;
 
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.respdto.LoginSeccessReapDto;
+import com.allinfinance.dev.ccs.dal.respdto.LoginSeccessRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
@@ -44,7 +44,7 @@ public class AosAuthenticationSuccessHandler implements AuthenticationSuccessHan
         tbluser.setUpdateBy(tbluser.getUserName());
         tbUserService.updateByPrimaryKey(tbluser);
          //返回json数据
-        LoginSeccessReapDto seccessReapDto = new LoginSeccessReapDto();
+        LoginSeccessRespDto seccessReapDto = new LoginSeccessRespDto();
         seccessReapDto.setCurrentAuthority(new String[]{tbluser.getRoleId()});
         seccessReapDto.setPassStatus(tbluser.getPassStatus());
         seccessReapDto.setUserName(tbluser.getUserName());

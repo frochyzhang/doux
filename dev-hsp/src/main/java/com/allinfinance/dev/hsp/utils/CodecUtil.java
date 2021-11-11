@@ -22,7 +22,7 @@ public class CodecUtil {
             byte[] length;
             buff = ByteBuffer.allocate(lengthSize + bytes.length);
             label34:
-            switch(lengthType) {
+            switch (lengthType) {
                 case STRING:
                     length = String.format("%0" + lengthSize + "d", bytes.length).getBytes();
                     break;
@@ -34,12 +34,12 @@ public class CodecUtil {
                     length = new byte[lengthSize];
                     int i = 0;
 
-                    while(true) {
+                    while (true) {
                         if (i >= lengthSize) {
                             break label34;
                         }
 
-                        length[i] = (byte)(bytes.length >> (lengthSize - i - 1) * 8);
+                        length[i] = (byte) (bytes.length >> (lengthSize - i - 1) * 8);
                         ++i;
                     }
                 case BCD:
@@ -72,7 +72,7 @@ public class CodecUtil {
         } else {
             int n = 0;
 
-            for(int i = 0; i < bytes.length; ++i) {
+            for (int i = 0; i < bytes.length; ++i) {
                 n <<= 8;
                 n |= bytes[i] & 255;
             }

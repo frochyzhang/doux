@@ -7,6 +7,7 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,14 +25,20 @@ public class SocketBeanLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketBeanLoader.class);
 
+    @Value("${dev.socket.config-path}")
+    private String fileParentPath;
+
     @Bean(name = "socketBeans")
     public List<MinaSocketBean> loadSocketBeansFromFile() throws Exception {
         Configurations configurations = new Configurations();
-        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
+//        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
         logger.info("加载配置文件路径:{}", fileParentPath);
 
         //文件名必须以【socket-】开头，以【.properties】结束
-        String[] configFiles = new File(fileParentPath).list((dir, name) -> name.startsWith(CommonConstants.FILE_PREFIX) && name.endsWith(CommonConstants.FILE_SUF_FIX) ? Boolean.TRUE : Boolean.FALSE);
+        String[] configFiles = new File(fileParentPath).list((dir, name) ->
+                name.startsWith(CommonConstants.FILE_PREFIX) && name.endsWith(CommonConstants.FILE_SUF_FIX)
+                        ? Boolean.TRUE
+                        : Boolean.FALSE);
 
         //若未指定配置文件，则不返回默认配置信息，抛出异常，结束程序
         if (configFiles == null || configFiles.length == 0) {

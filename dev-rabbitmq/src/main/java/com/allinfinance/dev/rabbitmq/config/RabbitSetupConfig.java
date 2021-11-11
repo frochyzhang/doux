@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+
 //"classpath:dev-config-autoconfigure.xml",
 // TODO: 2021/1/17 若出现connectionFactory bean找不到的情况，请添加scanBasePackages
 @Configuration

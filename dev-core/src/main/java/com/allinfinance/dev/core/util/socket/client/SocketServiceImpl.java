@@ -45,7 +45,7 @@ public class SocketServiceImpl implements ISocketService {
             }
             clientConnector.setHandler(new ClientIoHandler(checkMac));
             clientConnector.getSessionConfig().setUseReadOperation(true);
-            clientConnector.setConnectTimeoutMillis(timeOut * 1000);
+            clientConnector.setConnectTimeoutMillis(timeOut * 1000L);
             ConnectFuture future = clientConnector
                     .connect(new InetSocketAddress(remoteIp, remotePort));
             future.awaitUninterruptibly();

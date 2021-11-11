@@ -1,15 +1,11 @@
 package com.allinfinance.dev.core.util.validate;
 
 import com.allinfinance.dev.core.constant.CommonConstants;
-import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
-import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.lang3.ArrayUtils;
+import com.allinfinance.dev.core.loader.SpringConfigTool;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.regex.Pattern;
@@ -75,30 +71,30 @@ public class BeanConvertValidator {
 
     // TODO: 2021/1/22 此处待优化
     static {
-        Configurations configurations = new Configurations();
-
-        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
-        String[] configFiles = new File(fileParentPath).list((dir, name) -> {
-            if (name.endsWith(CommonConstants.FILE_SUF_FIX)) {
-                return Boolean.TRUE;
-            }
-            return Boolean.FALSE;
-        });
-
-        if (ArrayUtils.isNotEmpty(configFiles)) {
-            for (String fileName : configFiles) {
-                PropertiesConfiguration properties = null;
-                try {
-                    properties = configurations.properties(fileParentPath + fileName);
-                } catch (ConfigurationException e) {
-                    e.printStackTrace();
-                }
-                String value = properties.getString(CommonConstants.XML_BEAN_VALIDATOR_REQUIRE);
-                if (null != value) {
-                    required = Boolean.valueOf(value);
-                }
-            }
+//        Configurations configurations = new Configurations();
+//
+//        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
+//        String[] configFiles = new File(fileParentPath).list((dir, name) -> {
+//            if (name.endsWith(CommonConstants.FILE_SUF_FIX)) {
+//                return Boolean.TRUE;
+//            }
+//            return Boolean.FALSE;
+//        });
+//
+//        if (ArrayUtils.isNotEmpty(configFiles)) {
+//            for (String fileName : configFiles) {
+//                PropertiesConfiguration properties = null;
+//                try {
+//                    properties = configurations.properties(fileParentPath + fileName);
+//                } catch (ConfigurationException e) {
+//                    e.printStackTrace();
+//                }
+        String value = SpringConfigTool.getPropertyByName(CommonConstants.XML_BEAN_VALIDATOR_REQUIRE);
+        if (null != value) {
+            required = Boolean.valueOf(value);
         }
+//            }
+//        }
 
         logger.info("获取字段校验开关--dev.xml.field.verify:{}", BeanConvertValidator.required);
     }

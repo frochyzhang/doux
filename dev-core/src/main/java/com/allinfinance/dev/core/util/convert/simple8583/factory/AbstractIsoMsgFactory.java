@@ -128,8 +128,8 @@ public abstract class AbstractIsoMsgFactory {
             case NUMERIC:
             case CHAR:
             case BINARY:
-                if(field.getId().equals(SimpleConstants.BIT_MAP)){
-                    if(bts[offset]>>15 == 0){
+                if (field.getId().equals(SimpleConstants.BIT_MAP)) {
+                    if (bts[offset] >> 15 == 0) {
                         length = 8;
                     }
                 }

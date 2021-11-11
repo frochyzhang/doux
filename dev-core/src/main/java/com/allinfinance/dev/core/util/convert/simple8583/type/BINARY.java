@@ -2,7 +2,6 @@ package com.allinfinance.dev.core.util.convert.simple8583.type;
 
 /**
  * <p>字节.</p>
- *
  */
 public class BINARY implements IsoType {
 

@@ -20,14 +20,17 @@ public @interface Check {
      * 字段长度
      */
     int length() default 0;
+
     /**
      * 字段长度最大值
      */
     int maxLength() default 0;
+
     /**
      * 字段长度最小值
      */
     int minLength() default 0;
+
     /**
      * 字段校验正则
      */

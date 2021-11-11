@@ -162,7 +162,7 @@ public class UserController {
             try {
                 decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
             } catch (Exception e) {
-                logger.error("密文解密错误！",e);
+                logger.error("密文解密错误！", e);
                 return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
             }
             userReqParam.setUserPass(passwordEncoder.encode(decryptPass));

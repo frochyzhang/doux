@@ -16,12 +16,12 @@ import java.net.Socket;
  */
 @Slf4j
 public class HsmSocketTest {
-    private static final String host = "10.250.5.150";
+    private static final String HOST = "10.250.5.150";
     private static Integer count = 0;
 
     public byte[] request(byte[] request) {
         count++;
-        try (Socket socket = new Socket(host, 6666);
+        try (Socket socket = new Socket(HOST, 6666);
              InputStream inputStream = socket.getInputStream();
              OutputStream outputStream = socket.getOutputStream()) {
 
@@ -30,11 +30,8 @@ public class HsmSocketTest {
             outputStream.flush();
 
             byte[] resp = new byte[1024];
-            inputStream.read(resp);
+            int read = inputStream.read(resp);
 
-            outputStream.close();
-            inputStream.close();
-            socket.close();
             log.debug("调用加密机次数:{}", count);
             return resp;
         } catch (IOException e) {

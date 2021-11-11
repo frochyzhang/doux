@@ -15,12 +15,13 @@ import java.util.List;
  */
 public class FileWriter implements ItemWriter<TestStrDto> {
 
-    private static int i  = 0;
+    private static int i = 0;
 
     @Autowired
     private IBasicBatchService basicBatchService;
 
     private static final Logger logger = LoggerFactory.getLogger(FileWriter.class);
+
     @Override
     public void write(List<? extends TestStrDto> list) throws Exception {
         if (list == null || list.isEmpty()) {
@@ -32,8 +33,8 @@ public class FileWriter implements ItemWriter<TestStrDto> {
 //        for (TestStrDto testStrDto : list) {
 //            logger.info("{}",testStrDto);
 //        }
-        i+=list.size();
-        if (i==6000){
+        i += list.size();
+        if (i == 6000) {
 //            basicBatchService.pauseJob("readFileJob");
 
 //            basicBatchService.abandonJob();

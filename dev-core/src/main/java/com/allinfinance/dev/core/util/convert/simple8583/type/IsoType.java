@@ -5,18 +5,19 @@ import java.io.Serializable;
 /**
  * <p>报文域类型接口定义.</p>
  * <p>继承Serializable接口，实例需要被序列化</p>
- *
  */
-public interface IsoType extends Serializable{
+public interface IsoType extends Serializable {
 
     /**
      * 是否为变长域
+     *
      * @return
      */
     public boolean isLVar();
 
     /**
      * 字节数组转换为字符串储存
+     *
      * @param bts
      * @return
      */
@@ -24,6 +25,7 @@ public interface IsoType extends Serializable{
 
     /**
      * 字符串转换为字节数组
+     *
      * @param bts
      * @return
      */
@@ -32,6 +34,7 @@ public interface IsoType extends Serializable{
 
     /**
      * 变长长度
+     *
      * @return
      */
     public abstract int varLength(byte[] bytes);

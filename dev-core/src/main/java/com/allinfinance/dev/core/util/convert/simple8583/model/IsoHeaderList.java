@@ -6,17 +6,16 @@ import java.util.List;
 
 /**
  * <p>报文域详情.</p>
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="simple8583-config")
-public class IsoHeaderList  extends ArrayList<IsoField> implements Cloneable {
+@XmlRootElement(name = "simple8583-config")
+public class IsoHeaderList extends ArrayList<IsoField> implements Cloneable {
 
-	private static final long serialVersionUID = 264233287032969509L;
+    private static final long serialVersionUID = 264233287032969509L;
 
-	@XmlElementWrapper(name="header")
-    @XmlElement(name="field")
-    public List<IsoField> getHeaderList(){
+    @XmlElementWrapper(name = "header")
+    @XmlElement(name = "field")
+    public List<IsoField> getHeaderList() {
         return this;
     }
 }
