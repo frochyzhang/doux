@@ -23,7 +23,7 @@
         <module>dev-rpc/dev-rpc-dubbo</module>
         <module>dev-rpc/dev-rpc-sofa</module>
         <!--        <module>dev-nds</module>-->
-        <!--        <module>dev-ccs</module>-->
+                <module>dev-ccs</module>
         <module>dev-parent</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
