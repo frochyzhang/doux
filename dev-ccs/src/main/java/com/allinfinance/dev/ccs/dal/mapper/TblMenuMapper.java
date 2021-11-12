@@ -17,6 +17,8 @@ public interface TblMenuMapper {
 
     List<TblMenu> selectMenusPowers(@Param("menuIds") List menuIds);
 
+    List<TblMenu> selectAllMenus();
+
     List<TblMenu> selectMenusPathByPMid(@Param("level") String level, @Param("menuIds") List<String> menuId, @Param("parentMid") String parentMid);
 
     void addMenu(TblMenu tblMenu);
