@@ -19,9 +19,9 @@ public class Result implements Serializable {
         this.success = success;
     }
 
-    public void setResultCode(ResultCodeEnum resultCodeEnum) {
-        this.code = resultCodeEnum.code();
-        this.message = resultCodeEnum.message();
+    public void setResultCode(ResultCode resultCode) {
+        this.code = resultCode.code();
+        this.message = resultCode.message();
     }
 
     public static Result success() {
@@ -41,11 +41,11 @@ public class Result implements Serializable {
         return result;
     }
 
-    public static Result failure(ResultCodeEnum resultCodeEnum) {
+    public static Result failure(ResultCode resultCode) {
         Result result = new Result();
         result.setSuccess(Boolean.FALSE);
-        result.setCode(resultCodeEnum.code());
-        result.setMessage(resultCodeEnum.message());
+        result.setCode(resultCode.code());
+        result.setMessage(resultCode.message());
         result.setStatus(-1);
         return result;
     }
