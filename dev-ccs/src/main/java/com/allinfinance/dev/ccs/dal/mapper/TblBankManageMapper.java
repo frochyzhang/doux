@@ -9,8 +9,6 @@ import java.util.List;
 public interface TblBankManageMapper {
     int deleteByPrimaryKey(@Param("bankId") String bankId);
 
-    int insert(TblBankManage record);
-
     int insertSelective(TblBankManage record);
 
     TblBankManage selectByPrimaryKey(Integer bankId);

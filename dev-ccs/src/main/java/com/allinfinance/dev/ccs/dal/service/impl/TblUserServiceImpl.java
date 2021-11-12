@@ -6,6 +6,7 @@ import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class TblUserServiceImpl implements TblUserService {
     public int insertSelective(TblUser record) {
         //添加当前系统时间为新增用户的创建时间
         record.setCreateTime(new Date());
+        record.setUserId(IdUtils.getId());
         return tblUserMapper.insertSelective(record);
     }
 

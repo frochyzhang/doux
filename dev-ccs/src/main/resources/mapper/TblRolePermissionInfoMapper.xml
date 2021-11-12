@@ -41,11 +41,6 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
-    <selectKey resultType="java.lang.String" keyProperty="id" order="BEFORE" >
-      SELECT
-      TBL_ROLE_PERMISSION_INFO_SEQ.nextval
-      FROM sysibm.sysdummy1
-    </selectKey>
     insert into TBL_ROLE_PERMISSION_INFO
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

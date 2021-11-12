@@ -34,10 +34,6 @@
   </update>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
     <selectKey resultType="java.lang.String" keyProperty="bankId" order="BEFORE" >
-      SELECT
-      TBL_BANK_MANAGE_SEQ.nextval
-      FROM sysibm.sysdummy1
-    </selectKey>
     insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME,BANK_NAME_EN,
       IS_AVAILABLE, CREATE_TIME, CREATE_BY,
       UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1,
@@ -48,11 +44,6 @@
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    <selectKey resultType="java.lang.String" keyProperty="bankId" order="BEFORE" >
-      SELECT
-      TBL_BANK_MANAGE_SEQ.nextval
-      FROM sysibm.sysdummy1
-    </selectKey>
     insert into TBL_BANK_MANAGE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="bankId != null">
