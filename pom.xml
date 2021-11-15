@@ -7,7 +7,7 @@
     <groupId>com.allinfinance.dev</groupId>
     <artifactId>dev-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1-RELEASE</version>
+    <version>${revision}</version>
     <modules>
         <module>dev-socket</module>
         <module>dev-core</module>
@@ -29,7 +29,8 @@
     <name>dev-project - 开发三部应用程序开发框架</name>
 
     <properties>
-        <dev.version>1.2.1-RELEASE</dev.version>
+        <revision>1.2.2-RELEASE</revision>
+        <dev.version>1.2.2-RELEASE</dev.version>
         <nds.version>2.2.149854</nds.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -194,7 +195,12 @@
             <dependency>
                 <groupId>com.ibm.db2</groupId>
                 <artifactId>db2jcc</artifactId>
-                <version>3.59.81</version>
+                <version>3.69.78</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.db2</groupId>
+                <artifactId>db2jcc4</artifactId>
+                <version>4.19.80</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
@@ -587,6 +593,31 @@
                                 ${project.build.directory}/dependency
                             </outputDirectory>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

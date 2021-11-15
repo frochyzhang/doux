@@ -87,9 +87,6 @@
         </if>
     </select>
 
-    <!--  <select id="selectSequenceId"  resultMap="java.lang.String">-->
-    <!--    -->
-    <!--  </select>-->
     <update id="deleteByPrimaryKey" parameterType="java.lang.String">
     update TBL_USER
     SET
@@ -119,11 +116,6 @@
             #{credentialsNotExpired,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
-        <selectKey resultType="java.lang.String" keyProperty="userId" order="BEFORE">
-            SELECT
-            TBL_USER_SEQ.nextval
-            FROM sysibm.sysdummy1
-        </selectKey>
         insert into TBL_USER
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">

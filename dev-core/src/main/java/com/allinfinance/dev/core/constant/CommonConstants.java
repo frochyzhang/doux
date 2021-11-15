@@ -8,6 +8,7 @@ import java.util.Locale;
  */
 public class CommonConstants {
 
+    public static final String STRING_CLASS_NAME = String.class.getName();
     public static final String FILE_PREFIX = "socket-";
     public static final String FILE_SUF_FIX = ".properties";
     public static final String FILE_PARENT_PATH = "socket-config-path";

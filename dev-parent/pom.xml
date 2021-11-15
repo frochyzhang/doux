@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-project</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.2.1-RELEASE</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -64,6 +64,13 @@
                 <artifactId>dev-rpc-sofa</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-ccs</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
+
+

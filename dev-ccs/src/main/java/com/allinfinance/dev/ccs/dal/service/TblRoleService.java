@@ -7,8 +7,8 @@ import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
-import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,7 @@ public class TblRoleService {
     }
 
     public int insertSelective(TblRole record){
+        record.setRoleId(IdUtils.getId());
         return tblRoleMapper.insertSelective(record);
     }
 
@@ -83,6 +84,7 @@ public class TblRoleService {
     }
 
     public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
+        tblRolePermissionInfo.setId(IdUtils.getId());
         return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
     }
 

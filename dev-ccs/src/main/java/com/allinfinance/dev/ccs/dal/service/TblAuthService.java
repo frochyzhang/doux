@@ -8,6 +8,7 @@ import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class TblAuthService {
     }
 
     public int insertSelective(TblAuth record){
+        record.setAuthId(IdUtils.getId());
         return tblAuthMapper.insertSelective(record);
     }
 
@@ -80,6 +82,7 @@ public class TblAuthService {
     }
 
     public int insertMenuAuth(TblMenuAuth record) {
+        record.setAuthId(IdUtils.getId());
         return tblMenuAuthMapper.insertSelective(record);
     }
 

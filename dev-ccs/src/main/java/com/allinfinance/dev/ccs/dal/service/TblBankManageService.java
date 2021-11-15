@@ -3,6 +3,7 @@ package com.allinfinance.dev.ccs.dal.service;
 import com.allinfinance.dev.ccs.dal.mapper.TblBankManageMapper;
 import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,12 @@ public class TblBankManageService {
     }
 
     public int insert(TblBankManage record) {
-        return tblBankManageMapper.insert(record);
+        return insertSelective(record);
     }
 
     public int insertSelective(TblBankManage record) {
         record.setCreateTime(new Date());
+        record.setBankId(IdUtils.getId());
         return tblBankManageMapper.insertSelective(record);
     }
 
