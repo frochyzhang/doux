@@ -82,7 +82,6 @@ public class TblAuthService {
     }
 
     public int insertMenuAuth(TblMenuAuth record) {
-        record.setAuthId(IdUtils.getId());
         return tblMenuAuthMapper.insertSelective(record);
     }
 
