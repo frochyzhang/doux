@@ -105,7 +105,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 });
                 menuIds.add("");
                 List<TblMenu> tblMenus = tblMenuMapper.selectRootMenusPath(menuIds);
-                logger.info("获取数据库菜单：{}", tblMenus.toString());
+//                logger.info("获取数据库菜单：{}", tblMenus.toString());
                 List<TblMenu> tblMenusData = menusData(null, tblMenus);
                 List<CurrentMenusDto> getmenus = getmenus(tblMenusData, tblUser);
                 List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
@@ -114,7 +114,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                         currentMenusDtos.add(menusDto);
                     }
                 });
-                logger.info("格式化后的层级菜单：{}", currentMenusDtos.toString());
+//                logger.info("格式化后的层级菜单：{}", currentMenusDtos.toString());
                 return currentMenusDtos;
             }
         }
@@ -145,63 +145,73 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 });
                 menuIds.add("");
                 // 先获取所有节点
-                List<TblMenu> rootMenu = tblMenuMapper.selectAllMenus();
-                // 存储menuIds包含的节点·
+                List<TblMenu> allMenus = tblMenuMapper.selectAllMenus();
+                // 存储menuIds包含的节点
                 List<TblMenu> menuList = new ArrayList<>();
                 // 最后的结果
                 List<TblMenu> powerList = new ArrayList<>();
                 // 先找到所有的一级菜单
-                for (int i = 0; i < rootMenu.size(); i++) {
-                    // 一级菜单没有parentId
-                    if (StringUtils.isBlank(rootMenu.get(i).getParentMid())) {
-                        menuList.add(rootMenu.get(i));
-                    }
-                }
-                // 为一级菜单设置子菜单，getChild是递归调用的
-                for (TblMenu menu : menuList) {
-                    List<TblMenu> child = getChild(menu.getMenuId(), rootMenu);
-                    if (child != null) {
-                        for (TblMenu m : child) {
-                            if (m.getNodeType().equals("2")) {
-                                List<TblMenu> childMenus = m.getChildMenus();
-                                powerList.addAll(childMenus);
-                            }
+                for (TblMenu tblMenu : allMenus) {
+                    for (String menuId : menuIds) {
+                        if (tblMenu.getMenuId().equals(menuId)) {
+                            menuList.add(tblMenu);
                         }
                     }
                 }
-                String[] powers = new String[powerList.size()];
-                for (int i = 0; i < powerList.size(); i++) {
-                    powers[i] = powerList.get(i).getPath();
+                for (int i = 0; i < menuList.size(); i++) {
+                    // 寻找当前节点的父节点
+                    TblMenu menuParent = getMenuParentTmp(menuList.get(i), allMenus);
+                    System.out.println("当前节点的父节点为：" + menuParent);
+                    allMenus.stream().map(TblMenu::getMenuId).collect(Collectors.toList());
                 }
+                String[] powers = new String[10];
                 return powers;
             }
         }
         return new String[0];
     }
 
-    private List<TblMenu> getChild(String id, List<TblMenu> rootMenu) {
-        // 子菜单
-        List<TblMenu> childList = new ArrayList<>();
-        for (TblMenu menu : rootMenu) {
-            // 遍历所有节点，将父菜单id与传过来的id比较
-            if (StringUtils.isNotBlank(menu.getParentMid())) {
-                if (menu.getParentMid().equals(id)) {
-                    childList.add(menu);
+    // 寻找父节点
+    public TblMenu getMenuParent(TblMenu currMenu, List<TblMenu> allMenus) {
+        TblMenu menu = new TblMenu();
+        List<String> menuIdList = allMenus.stream().map(TblMenu::getMenuId).collect(Collectors.toList());
+        //  保存子节点
+        List<TblMenu> menus = new ArrayList<>();
+        for (int i = 0; i < allMenus.size(); i++) {
+            // 如果当前节点的父节点不是根节点则 继续寻找
+            if (StringUtils.isNotBlank(currMenu.getParentMid()) && menuIdList.contains(currMenu.getParentMid())) {
+                menu = allMenus.get(i);
+                menus.add(currMenu);
+                // 将当前节点添加到子节点中
+                menu.setChildMenus(menus);
+                // 当节点的父ID不为null 则递归继续寻找
+                if (menu.getParentMid() != null) {
+                    getMenuParent(menu, allMenus);
+                } else {
+                    break;
                 }
             }
         }
-        // 把子菜单的子菜单再循环一遍
-        for (TblMenu menu : childList) {
-            // node_type不为3还有子菜单
-            if (!(menu.getNodeType().equals(AosContent.MENU_BTN))) {
-                // 递归
-                menu.setChildMenus(getChild(menu.getMenuId(), rootMenu));
+        return menu;
+    }
+
+    public TblMenu getMenuParentTmp(TblMenu currMenu, List<TblMenu> allMenus) {
+        TblMenu menu = new TblMenu();
+        List<String> menuIdList = allMenus.stream().map(TblMenu::getMenuId).collect(Collectors.toList());
+        //  保存子节点
+        List<TblMenu> menus = new ArrayList<>();
+        // 如果当前节点的父节点不是根节点则 继续寻找
+        if (StringUtils.isNotBlank(currMenu.getParentMid()) && menuIdList.contains(currMenu.getParentMid())) {
+            menu = allMenus.stream().filter(m -> m.getMenuId().equals(currMenu.getParentMid())).findAny().orElse(null);
+            menus.add(currMenu);
+            // 将当前节点添加到子节点中
+            menu.setChildMenus(menus);
+            // 当节点的父ID不为null 则递归继续寻找
+            if (menu.getParentMid() != null) {
+                menu = getMenuParentTmp(menu, allMenus);
             }
-        } // 递归退出条件
-        if (childList.size() == 0) {
-            return null;
         }
-        return childList;
+        return menu;
     }
 
 
