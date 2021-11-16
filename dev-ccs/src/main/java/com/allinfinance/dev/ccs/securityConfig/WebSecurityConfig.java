@@ -1,7 +1,15 @@
 package com.allinfinance.dev.ccs.securityConfig;
 
 
-import com.allinfinance.dev.ccs.securityConfig.handler.*;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosAccessDecisionManager;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosAccessDeniedHandler;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationFailureHandler;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationPrivider;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationSuccessHandler;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosFilterInvocationSecurityMetadataSource;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosLogoutHandler;
+import com.allinfinance.dev.ccs.securityConfig.handler.AosLogoutSuccessHandler;
+import com.allinfinance.dev.ccs.securityConfig.handler.JwtAuthenticationTokenFilter;
 import com.allinfinance.dev.ccs.securityConfig.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         aosAuthenticationPrivider.setUserDetailsService(userDetailsService());
         return aosAuthenticationPrivider;
     }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -87,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests().
-                antMatchers("/getPublicKey","/login/account", "/login/reLogin").permitAll().
+                antMatchers("/getPublicKey", "/login/account", "/login/reLogin").permitAll().
                 anyRequest().hasAnyAuthority().
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
@@ -96,22 +105,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         o.setSecurityMetadataSource(securityMetadataSource);//安全元数据源
                         return o;
                     }
-                }).
+                })
                 //登入
-                        and().formLogin().
-                loginProcessingUrl("/login/account").
-                passwordParameter("userPass").
-                usernameParameter("userName").
-                permitAll().//允许所有用户
-                successHandler(authenticationSuccessHandler).//登录成功处理逻辑
-                failureHandler(authenticationFailureHandler).//登录失败处理逻辑
-                and().logout().
-                logoutUrl("/login/logout").addLogoutHandler(aosLogoutHandler).
-                permitAll().//允许所有用户
-                logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
+                .and().formLogin()
+                .loginProcessingUrl("/login/account")
+                .passwordParameter("userPass")
+                .usernameParameter("userName")
+                .permitAll()//允许所有用户
+                .successHandler(authenticationSuccessHandler)//登录成功处理逻辑
+                .failureHandler(authenticationFailureHandler)//登录失败处理逻辑
+                .and().logout()
+                .logoutUrl("/login/logout")
+                .addLogoutHandler(aosLogoutHandler)
+                .permitAll()//允许所有用户
+                .logoutSuccessHandler(logoutSuccessHandler)//登出成功处理逻辑
                 //异常处理(权限拒绝、登录失效等)
-                        and().exceptionHandling().
-                accessDeniedHandler(accessDeniedHandler);//权限拒绝处理逻辑
+                .and().exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler);//权限拒绝处理逻辑
         //关闭session
         // and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
