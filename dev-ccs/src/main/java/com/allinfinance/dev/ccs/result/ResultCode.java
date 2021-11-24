@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.result;
 
 public interface ResultCode {
-    Integer code();
+    String code();
 
     String message();
 }

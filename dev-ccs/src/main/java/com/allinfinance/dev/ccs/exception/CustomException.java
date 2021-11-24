@@ -8,10 +8,10 @@ import com.allinfinance.dev.ccs.result.ResultCodeEnum;
  * @date 2020/5/17 02:24
  */
 public class CustomException extends RuntimeException {
-    private Integer code;
+    private String code;
     private String message;
 
-    public CustomException(Integer code, String message) {
+    public CustomException(String code, String message) {
         super(message);
         this.code = code;
     }
@@ -27,11 +27,11 @@ public class CustomException extends RuntimeException {
         return "CustomException{" + "code=" + code + ", message=" + this.getMessage() + '}';
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

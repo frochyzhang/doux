@@ -9,7 +9,7 @@
         <relativePath>../dev-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>dev-css 用户*角色*权限 管理模块</name>
+    <name>dev-ccs 用户*角色*权限 管理模块</name>
 
     <artifactId>dev-ccs</artifactId>
 

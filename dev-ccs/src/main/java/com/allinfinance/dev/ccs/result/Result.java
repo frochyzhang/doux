@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Result implements Serializable {
 
     private Boolean success;
-    private Integer code;
+    private String code;
     private String message;
     private Object data;
     private Integer status;
@@ -59,7 +59,7 @@ public class Result implements Serializable {
         return result;
     }
 
-    public static Result failure(String message, Integer code) {
+    public static Result failure(String message, String code) {
         Result result = new Result();
         result.setSuccess(Boolean.FALSE);
         result.setCode(code);
@@ -73,11 +73,11 @@ public class Result implements Serializable {
         return success;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
