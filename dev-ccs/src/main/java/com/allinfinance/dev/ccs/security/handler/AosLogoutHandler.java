@@ -1,20 +1,14 @@
-package com.allinfinance.dev.ccs.securityConfig.handler;
+package com.allinfinance.dev.ccs.security.handler;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.respdto.LogoutSeccessReapDto;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
-import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
 @Component
 public class AosLogoutHandler implements LogoutHandler {
     @Override

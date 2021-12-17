@@ -1,4 +1,4 @@
-package com.allinfinance.dev.ccs.securityConfig.handler;
+package com.allinfinance.dev.ccs.security.handler;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;

@@ -1,4 +1,4 @@
-package com.allinfinance.dev.ccs.securityConfig.service;
+package com.allinfinance.dev.ccs.security.service;
 
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
@@ -7,17 +7,12 @@ import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.intercept.RunAsUserToken;
 import org.springframework.security.authentication.*;
-import org.springframework.security.authentication.jaas.JaasAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;

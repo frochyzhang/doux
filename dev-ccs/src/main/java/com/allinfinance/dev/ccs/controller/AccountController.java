@@ -2,35 +2,22 @@ package com.allinfinance.dev.ccs.controller;
 
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.content.RSAKeyProperties;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
 import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
-import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
-import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
-import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
-import com.allinfinance.dev.ccs.utils.QRCodeUtils;
+import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.RSAUtils;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 
 /**
@@ -43,7 +30,7 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping("/account")
-public class AccountController {
+public class                AccountController {
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
     @Autowired
     TblUserService userService;

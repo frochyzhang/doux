@@ -1,6 +1,5 @@
-package com.allinfinance.dev.ccs.securityConfig.handler;
+package com.allinfinance.dev.ccs.security.handler;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.allinfinance.dev.ccs.exception.TokenExpiredExeption;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;

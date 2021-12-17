@@ -1,16 +1,16 @@
-package com.allinfinance.dev.ccs.securityConfig;
+package com.allinfinance.dev.ccs.security;
 
 
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAccessDecisionManager;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAccessDeniedHandler;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationFailureHandler;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationPrivider;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosAuthenticationSuccessHandler;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosFilterInvocationSecurityMetadataSource;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosLogoutHandler;
-import com.allinfinance.dev.ccs.securityConfig.handler.AosLogoutSuccessHandler;
-import com.allinfinance.dev.ccs.securityConfig.handler.JwtAuthenticationTokenFilter;
-import com.allinfinance.dev.ccs.securityConfig.service.UserDetailsServiceImpl;
+import com.allinfinance.dev.ccs.security.handler.AosAccessDecisionManager;
+import com.allinfinance.dev.ccs.security.handler.AosAccessDeniedHandler;
+import com.allinfinance.dev.ccs.security.handler.AosAuthenticationFailureHandler;
+import com.allinfinance.dev.ccs.security.handler.AosAuthenticationPrivider;
+import com.allinfinance.dev.ccs.security.handler.AosAuthenticationSuccessHandler;
+import com.allinfinance.dev.ccs.security.handler.AosFilterInvocationSecurityMetadataSource;
+import com.allinfinance.dev.ccs.security.handler.AosLogoutHandler;
+import com.allinfinance.dev.ccs.security.handler.AosLogoutSuccessHandler;
+import com.allinfinance.dev.ccs.security.handler.JwtAuthenticationTokenFilter;
+import com.allinfinance.dev.ccs.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

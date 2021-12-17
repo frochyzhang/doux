@@ -5,7 +5,7 @@ import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblUserErrorLog;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
-import com.allinfinance.dev.ccs.securityConfig.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.IpAddressUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.lang3.StringUtils;

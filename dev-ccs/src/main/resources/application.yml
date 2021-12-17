@@ -3,7 +3,7 @@ spring:
     active: db,web
 
 # token过期时间  默认为7天
-token.expire_time: 2
+token.expire_time: 3600
 # refreshToken过期时间  默认为30天
 #token.refresh_expire_time: 7
 # token 生成秘钥

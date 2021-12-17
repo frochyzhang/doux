@@ -1,9 +1,9 @@
 jdbc:
-  driver: com.ibm.db2.jcc.DB2Driver
-  url: jdbc:db2://10.250.23.33:50000/efss:currentSchema=CES_AUTH;
-  username: efss
-  password: efss
-  validationQuery: select 1 from sysibm.sysdummy1
+  driver: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://10.250.28.143/iasp_backend
+  username: root
+  password: allinfinance
+  validationQuery: select 1
 
 
 dev:

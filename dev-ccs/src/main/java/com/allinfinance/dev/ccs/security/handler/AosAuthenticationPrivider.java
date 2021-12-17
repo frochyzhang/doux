@@ -1,4 +1,4 @@
-package com.allinfinance.dev.ccs.securityConfig.handler;
+package com.allinfinance.dev.ccs.security.handler;
 
 import com.allinfinance.dev.ccs.utils.RSAUtils;
 import org.springframework.security.authentication.BadCredentialsException;
