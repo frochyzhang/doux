@@ -52,7 +52,7 @@ public class AuthController {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         //当前的用户是超级管理员时显示所有列表
-        if (org != null && !org.equals("")) {
+        if (org != null && !"".equals(org)) {
             if (org.equals(AosContent.ALLINFINANCE_ORG)) {
                 authReqParam.setOrg(null);
             } else {
