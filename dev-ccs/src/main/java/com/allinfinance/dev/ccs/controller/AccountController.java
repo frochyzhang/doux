@@ -30,7 +30,7 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping("/account")
-public class                AccountController {
+public class AccountController {
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
     @Autowired
     TblUserService userService;
