@@ -51,12 +51,12 @@ public class AosAuthenticationSuccessHandler implements AuthenticationSuccessHan
         seccessReapDto.setOrg(tbluser.getOrg());
         seccessReapDto.setIsFirstLogin(tbluser.getReservedField1());
 //        seccessReapDto.setRefreshToken(JwtUtil.signRefresh(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId(),tbluser.getOrg()));
-        String sign = JwtUtil.sign(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId(), tbluser.getOrg());
+       // String sign = JwtUtil.sign(tbluser.getUserName(), String.valueOf(tbluser.getUserId()), tbluser.getRoleId(), tbluser.getOrg());
         //seccessReapDto.setExpirTime(JwtUtil.getExpireEndTime());
         Result result = Result.success(seccessReapDto);
         ObjectMapper objectMapper = new ObjectMapper();
-        httpServletResponse.setHeader("Access-control-Expose-Headers",AosContent.AOS_TOKEN);
-        httpServletResponse.setHeader(AosContent.AOS_TOKEN,sign);
+//        httpServletResponse.setHeader("Access-control-Expose-Headers",AosContent.AOS_TOKEN);
+//        httpServletResponse.setHeader(AosContent.AOS_TOKEN,sign);
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(objectMapper.writeValueAsString(result));
     }

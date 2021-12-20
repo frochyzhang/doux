@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -35,7 +36,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String token = request.getHeader( AosContent.AOS_TOKEN);
         //String refresh_token = request.getHeader( AosContent.AOS_REFRESH_TOKEN);
          String uri = request.getRequestURI();
-         if("/login/account".equals(uri) ||"/getPublicKey".equals(uri) ){
+         if(Arrays.stream(AosContent.MATCHERS).anyMatch(h->h.equals(uri))){
             chain.doFilter(request, response);
             return;
         }

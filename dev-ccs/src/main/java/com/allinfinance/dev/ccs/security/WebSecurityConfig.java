@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.security;
 
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.security.handler.AosAccessDecisionManager;
 import com.allinfinance.dev.ccs.security.handler.AosAccessDeniedHandler;
 import com.allinfinance.dev.ccs.security.handler.AosAuthenticationFailureHandler;
@@ -96,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests().
-                antMatchers("/getPublicKey", "/login/account", "/login/reLogin").permitAll().
+                antMatchers(AosContent.MATCHERS).permitAll().
                 anyRequest().hasAnyAuthority().
                 withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
