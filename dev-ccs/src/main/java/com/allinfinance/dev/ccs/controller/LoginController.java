@@ -71,16 +71,16 @@ public class LoginController {
         if(StringUtils.isBlank(checkPassVo.getCheckCode())){
             return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
         }
-//        try {
-//            String secret=currentUser.getReservedField2();
-//            int code=Integer.valueOf(checkPassVo.getCheckCode());
-//            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
-//            if(!validate){
-//                return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
-//            }
-//        } catch (GeneralSecurityException e) {
-//            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-//        }
+        try {
+            String secret=currentUser.getReservedField2();
+            int code=Integer.valueOf(checkPassVo.getCheckCode());
+            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
+            if(!validate){
+                return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
+            }
+        } catch (GeneralSecurityException e) {
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
         currentUser.setReservedField1(AosContent.IS_BIND);
         currentUser.setUpdateTime(new Date());
         currentUser.setUpdateBy("登陆邦定动态验证码成功更新");
