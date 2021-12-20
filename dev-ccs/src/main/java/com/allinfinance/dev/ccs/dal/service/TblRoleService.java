@@ -22,74 +22,33 @@ import java.util.List;
  * @author: Lum Wang
  * @create: 2021-05-13 16:16
  */
-@Service
-public class TblRoleService {
+ public interface TblRoleService {
 
-    @Autowired
-    private TblRoleMapper tblRoleMapper;
+     int deleteByPrimaryKey(String roleId);
 
-    @Autowired
-    private TblPermissionInfoMapper tblPermissionInfoMapper;
+     int insert(TblRole record);
 
-    @Autowired
-    private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
+     int insertSelective(TblRole record);
 
-    public int deleteByPrimaryKey(String roleId){
-        return tblRoleMapper.deleteByPrimaryKey(roleId);
-    }
+     TblRole selectByPrimaryKey(String roleId);
 
-    public int insert(TblRole record){
-        return tblRoleMapper.insert(record);
-    }
+     TblRole selectByRoleId(String roleId);
 
-    public int insertSelective(TblRole record){
-        record.setRoleId(IdUtils.getId());
-        return tblRoleMapper.insertSelective(record);
-    }
+     int updateByPrimaryKeySelective(TblRole record);
 
-    public TblRole selectByPrimaryKey(String roleId){
-        return tblRoleMapper.selectByPrimaryKey(roleId);
-    }
-
-    public TblRole selectByRoleId(String roleId){
-        return tblRoleMapper.selectByRoleId(roleId);
-    }
-
-    public int updateByPrimaryKeySelective(TblRole record){
-        return tblRoleMapper.updateByPrimaryKeySelective(record);
-    }
-
-    public int updateByPrimaryKey(TblRole record){
-        return tblRoleMapper.updateByPrimaryKey(record);
-    }
+     int updateByPrimaryKey(TblRole record);
 
 
-    public PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) {
-        PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
-        List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
-        return new PageInfo<>(users);
-    }
+     PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) ;
 
-    public List<TblRole> pageRoles(RoleReqParam roleReqParam) {
-        return tblRoleMapper.selectRoles(roleReqParam);
-    }
+     List<TblRole> pageRoles(RoleReqParam roleReqParam);
 
-    public int invalidateRole(String roleId) {
-        String isAvailable = AosContent.IS_AVAILABLE_FALSE;
-        return tblRoleMapper.invalidateRole(roleId, isAvailable);
-    }
+     int invalidateRole(String roleId) ;
 
-    public List<TblPermissionInfo> selectPermissionInfos() {
-        return tblPermissionInfoMapper.selectPermissionInfos();
-    }
+     List<TblPermissionInfo> selectPermissionInfos();
 
-    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
-        tblRolePermissionInfo.setId(IdUtils.getId());
-        return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
-    }
+     int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo);
 
-    public int deleteRolePermissionInfoByRoleId(String roleId) {
-        return tblRolePermissionInfoMapper.deleteRolePermissionInfoByRoleId(roleId);
-    }
+     int deleteRolePermissionInfoByRoleId(String roleId);
 
 }

@@ -18,55 +18,25 @@ import java.util.List;
  * @date ：2021/5/19 13:51
  * @description：
  */
-@Service
-public class TblBankManageService {
-    @Autowired
-    private TblBankManageMapper tblBankManageMapper;
 
-    public int deleteByPrimaryKey(BankManageReqParam bankManageReqParam) {
-        int i = 1;
-        for (String bankId : bankManageReqParam.getBankIds()) {
-            i = tblBankManageMapper.deleteByPrimaryKey(bankId);
-            //断言 如果存在更新失败，则抛出异常？？
-            assert i == 0;
-        }
-        return i;
-    }
+public interface TblBankManageService {
 
-    public int insert(TblBankManage record) {
-        return insertSelective(record);
-    }
 
-    public int insertSelective(TblBankManage record) {
-        record.setCreateTime(new Date());
-        record.setBankId(IdUtils.getId());
-        return tblBankManageMapper.insertSelective(record);
-    }
+    int deleteByPrimaryKey(BankManageReqParam bankManageReqParam);
 
-    public TblBankManage selectByPrimaryKey(Integer bankId) {
-        return tblBankManageMapper.selectByPrimaryKey(bankId);
-    }
+    int insert(TblBankManage record);
 
-    public int updateByPrimaryKeySelective(TblBankManage record) {
-        return tblBankManageMapper.updateByPrimaryKeySelective(record);
-    }
+    int insertSelective(TblBankManage record);
 
-    public int updateByPrimaryKey(TblBankManage record) {
-        record.setUpdateTime(new Date());
-        return tblBankManageMapper.updateByPrimaryKey(record);
-    }
+    TblBankManage selectByPrimaryKey(Integer bankId);
 
-    public PageInfo<TblBankManage> pageSelectBanks(BankManageReqParam bankReqParam) {
-        PageHelper.startPage(bankReqParam.getCurrent(), bankReqParam.getPageSize());
-        List<TblBankManage> banks = tblBankManageMapper.pageSelectBanks(bankReqParam);
-        return new PageInfo<TblBankManage>(banks);
-    }
+    int updateByPrimaryKeySelective(TblBankManage record);
 
-    public List<TblBankManage> selectByBankInfo(BankManageReqParam bankReqParam) {
-        return tblBankManageMapper.selectBank(bankReqParam);
-    }
+    int updateByPrimaryKey(TblBankManage record);
 
-    public TblBankManage selectBankInfoByOrg(String org) {
-       return tblBankManageMapper.selectBankByOrg(org);
-    }
+    PageInfo<TblBankManage> pageSelectBanks(BankManageReqParam bankReqParam);
+
+    List<TblBankManage> selectByBankInfo(BankManageReqParam bankReqParam);
+
+    TblBankManage selectBankInfoByOrg(String org);
 }

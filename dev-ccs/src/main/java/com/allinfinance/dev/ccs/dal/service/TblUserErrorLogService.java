@@ -6,5 +6,5 @@ package com.allinfinance.dev.ccs.dal.service;
  * @date ：2021/7/19 12:25
  * @description：
  */
-public class TblUserErrorLogService {
+public interface TblUserErrorLogService {
 }

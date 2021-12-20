@@ -18,47 +18,26 @@ import java.util.List;
  * @author: Lum Wang
  * @create: 2021-05-14 11:50
  */
-@Service
-public class TblRoleAuthService {
-
-    @Autowired
-    TblRoleAuthMapper tblRoleAuthMapper;
-
-    public int deleteByPrimaryKey(TblRoleAuthKey key){
-        return tblRoleAuthMapper.deleteByPrimaryKey(key);
-    }
-
-    public int insert(TblRoleAuth record){
-        return tblRoleAuthMapper.deleteByPrimaryKey(record);
-    }
-
-    public int insertSelective(TblRoleAuth record){
-        return tblRoleAuthMapper.insertSelective(record);
-    }
-
-    public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key){
-        return tblRoleAuthMapper.selectByPrimaryKey(key);
-    }
-
-    public int updateByPrimaryKeySelective(TblRoleAuth record){
-        return tblRoleAuthMapper.updateByPrimaryKeySelective(record);
-    }
-
-    public int updateByPrimaryKey(TblRoleAuth record){
-        return tblRoleAuthMapper.updateByPrimaryKey(record);
-    }
+ public interface TblRoleAuthService {
 
 
-    public List<TblRoleAuth> selectRoleAuths(){
-        return tblRoleAuthMapper.selectRoleAuths();
-    }
+     int deleteByPrimaryKey(TblRoleAuthKey key) ;
 
-    public int deleteByRoleId(String roleId) {
-        return tblRoleAuthMapper.deleteByRoleId(roleId);
-    }
+     int insert(TblRoleAuth record) ;
 
-    public List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam) {
-        return tblRoleAuthMapper.selectOnUseAuth(new ArrayList<>(Arrays.asList(authReqParam.getAuthIds())));
-    }
+     int insertSelective(TblRoleAuth record) ;
+
+     TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key) ;
+
+     int updateByPrimaryKeySelective(TblRoleAuth record) ;
+
+     int updateByPrimaryKey(TblRoleAuth record) ;
+
+
+     List<TblRoleAuth> selectRoleAuths() ;
+
+     int deleteByRoleId(String roleId);
+
+     List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam);
 
 }
