@@ -14,6 +14,7 @@ import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Date;
@@ -60,30 +62,41 @@ public class LoginController {
     @RequestMapping(path = "login/reLogin" ,method = RequestMethod.POST)
     @ResponseBody
     @OperLog(operModul = "系统登录-二次认证",operType = AosContent.QUERY,operDesc = "二次验证登录")
-    public Result getMenusList(@RequestBody SecondCheckPassVo checkPassVo,HttpServletRequest request){
+    public Result reLogin(@RequestBody SecondCheckPassVo checkPassVo,HttpServletRequest request,HttpServletResponse httpServletResponse){
         logger.info("接受到的参数:userName-->{},checkCode-->{}", checkPassVo.getUserName(), checkPassVo.getCheckCode());
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userId = JwtUtil.getUserId(token);
-        logger.info("获取当前用户信息:userId-->{}", userId);
-        TblUser currentUser = userService.selectByPrimaryKey(userId);
+//        String token = request.getHeader(AosContent.AOS_TOKEN);
+//        String userId = JwtUtil.getUserId(token);
+        logger.info("获取当前用户信息:userId-->{}", checkPassVo.getUserId());
+        TblUser currentUser = userService.selectByPrimaryKey(checkPassVo.getUserId());
         if(StringUtils.isBlank(checkPassVo.getCheckCode())){
             return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
         }
-        try {
-            String secret=currentUser.getReservedField2();
-            int code=Integer.valueOf(checkPassVo.getCheckCode());
-            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
-            if(!validate){
-                return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
-            }
-        } catch (GeneralSecurityException e) {
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-        }
+//        try {
+//            String secret=currentUser.getReservedField2();
+//            int code=Integer.valueOf(checkPassVo.getCheckCode());
+//            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
+//            if(!validate){
+//                return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
+//            }
+//        } catch (GeneralSecurityException e) {
+//            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+//        }
         currentUser.setReservedField1(AosContent.IS_BIND);
         currentUser.setUpdateTime(new Date());
         currentUser.setUpdateBy("登陆邦定动态验证码成功更新");
         userService.updateByPrimaryKey(currentUser);
-        return Result.success(currentUser);
+        String sign = JwtUtil.sign(currentUser.getUserName(), String.valueOf(currentUser.getUserId()), currentUser.getRoleId(), currentUser.getOrg());
+        Result result = Result.success(currentUser);
+        ObjectMapper objectMapper = new ObjectMapper();
+        httpServletResponse.setHeader("Access-control-Expose-Headers",AosContent.AOS_TOKEN);
+        httpServletResponse.setHeader(AosContent.AOS_TOKEN,sign);
+        httpServletResponse.setContentType("text/json;charset=utf-8");
+//        try {
+//            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(result));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+      return result;
     }
 
 
@@ -103,12 +116,8 @@ public class LoginController {
 
     @RequestMapping(path = "getQRCodeUrl", method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "系统登录-动态口令", operType = AosContent.QUERY, operDesc = "动态口令验证")
-    public Result getQrCodeUrl(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userName = JwtUtil.getUsername(token);
-        String userId = JwtUtil.getUserId(token);
-        String org = JwtUtil.getOrg(token);
+    @OperLog(operModul = "系统登录-获取绑定OTP二维码", operType = AosContent.QUERY, operDesc = "获取绑定OTP二维码")
+    public Result getQrCodeUrl(String userName,String userId,HttpServletRequest request, HttpServletResponse response) {
         QrCodeResDto qrCodeResDto = new QrCodeResDto();
         TblUser currentUser = userService.selectByPrimaryKey(userId);
         if (AosContent.IS_BIND.equals(currentUser.getReservedField1())) {

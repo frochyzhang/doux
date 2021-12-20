@@ -3,9 +3,19 @@ package com.allinfinance.dev.ccs.dal.paramvo;
 import java.io.Serializable;
 
 public class UpdatePasswordParam implements Serializable {
+    private  String userId ;
     private  String userName ;
     private  String oldPassword;
     private  String newPassword;
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getUserName() {
         return userName;

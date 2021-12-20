@@ -51,5 +51,6 @@ public  class AosContent {
     // 本机IP
     public static final String IPV4NATIVEIP = "127.0.0.1";
     public static final String IPV6NATIVEIP = "0:0:0:0:0:0:0:1";
+    public static String[] MATCHERS={"/getPublicKey", "/login/account", "/login/reLogin","/account/updateNewPass","/getQRCodeUrl"};
 
 }
