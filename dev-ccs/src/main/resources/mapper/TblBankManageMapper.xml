@@ -181,6 +181,7 @@
     select
     <include refid="Base_Column_List" />
     from TBL_BANK_MANAGE where 1=1
+    and IS_AVAILABLE='Y'
     <if test="bankReqParam!=null">
       <if test="bankReqParam.org!=null and bankReqParam.org!=''">
         and org like '%${bankReqParam.org}%'
@@ -196,6 +197,7 @@
     select
     <include refid="Base_Column_List" />
     FROM TBL_BANK_MANAGE WHERE 1=1
+    and IS_AVAILABLE='Y'
     <if test="bankReqParam!=null">
       <if test="bankReqParam.bankName!=null and bankReqParam.bankName!='' ">
         and BANK_NAME = #{bankReqParam.bankName,jdbcType=VARCHAR}
@@ -203,9 +205,9 @@
       <if test="bankReqParam.org!=null and bankReqParam.org!='' ">
         and org = #{bankReqParam.org,jdbcType=VARCHAR}
       </if>
-      <if test="bankReqParam.isAvailable!=null and bankReqParam.isAvailable!='' ">
-        and is_Available = #{bankReqParam.isAvailable,jdbcType=VARCHAR}
-      </if>
+<!--      <if test="bankReqParam.isAvailable!=null and bankReqParam.isAvailable!='' ">-->
+<!--        and is_Available = #{bankReqParam.isAvailable,jdbcType=VARCHAR}-->
+<!--      </if>-->
     </if>
   </select>
 

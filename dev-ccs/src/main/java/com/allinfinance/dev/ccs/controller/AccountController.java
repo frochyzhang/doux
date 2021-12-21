@@ -64,7 +64,13 @@ public class AccountController {
         String userId = passwordParam.getUserId();
         String username = passwordParam.getUserName();
         String newPassword = passwordParam.getNewPassword();
+        if(StringUtils.isEmpty(userId)){
+          return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
+        }
         TblUser tblUser = userService.selectByPrimaryKey(userId);
+        if(tblUser==null){
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
         if(StringUtils.isNotBlank(passwordParam.getOldPassword())){
             boolean b = checkOldPass(passwordParam.getOldPassword(), tblUser.getUserPass());
             if(!b){
