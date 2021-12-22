@@ -11,6 +11,9 @@ import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
+import com.allinfinance.dev.ccs.result.Result;
+import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,13 +70,71 @@ public class TtblMenuServiceImpl implements TblMenuService {
     }
 
     @Override
-    public void addMenu(TblMenu tblMenu) {
-        tblMenuMapper.addMenu(tblMenu);
+    public Result addMenu(TblMenu tblMenu, HttpServletRequest request) {
+        logger.info("**********************************菜单新增服务开始，接收参数-->{}*****************************", tblMenu.toString());
+        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String username = JwtUtil.getUsername(token);
+        tblMenu.setCreateTime(new Date());
+        tblMenu.setCreateBy(username);
+        try {
+            if (tblMenu.getParentMid() == null) {
+                String maxMenuId = tblMenuMapper.selectMaxMenuIdByRoot(tblMenu);
+                if (maxMenuId == null) {
+                    tblMenu.setMenuId(AosContent.MENU_ID_ROOT);
+                } else {
+                    char[] temp = maxMenuId.toCharArray();//获取位数
+                    int num = temp.length;
+                    int menuId = Integer.valueOf(maxMenuId);
+                    menuId++;
+                    String nextMenuId = String.format("%0" + num + "d", menuId);
+                    tblMenu.setMenuId(nextMenuId);
+                }
+            } else {
+                String maxMenuId = tblMenuMapper.selectMaxMenuId(tblMenu);
+                if (maxMenuId == null) {
+                    String nextMenuId = tblMenu.getParentMid() + "01";
+                    tblMenu.setMenuId(nextMenuId);
+                } else {
+                    String order = maxMenuId.replaceAll(tblMenu.getParentMid(), "");
+                    int orderNum = Integer.valueOf(order);
+                    orderNum++;
+                    char[] temp = order.toCharArray();//获取位数
+                    int num = temp.length;
+                    String nextOrderNum = String.format("%0" + num + "d", orderNum);
+                    logger.error("nextOrderNum:{}", nextOrderNum);
+                    String nextMenuId = tblMenu.getParentMid() + nextOrderNum;
+                    tblMenu.setMenuId(nextMenuId);
+                }
+            }
+            //为了防止可能出现的重复问题，在每个模块配置的时候添加上父节点id
+            if (tblMenu.getNodeType().equals(AosContent.MENU_BTN)) {
+                tblMenu.setPath(tblMenu.getParentMid() + ":" + tblMenu.getPath());
+            }
+            tblMenuMapper.addMenu(tblMenu);
+        } catch (RuntimeException e) {
+            logger.error("新增菜单异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        logger.info("*****************菜单新增服务结束***********");
+        return Result.success();
+
     }
 
     @Override
-    public void updateMenuById(TblMenu tblMenu) {
-        tblMenuMapper.updateById(tblMenu);
+    public Result updateMenuById(TblMenu tblMenu,HttpServletRequest request) {
+        logger.info("******************菜单更新服务开始，接收参数-->{}*******************", tblMenu.toString());
+        try {
+            String token = request.getHeader(AosContent.AOS_TOKEN);
+            String username = JwtUtil.getUsername(token);
+            tblMenu.setUpdateTime(new Date());
+            tblMenu.setUpdateBy(username);
+            tblMenuMapper.updateById(tblMenu);
+        } catch (RuntimeException e) {
+            logger.error("更新菜单异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        logger.info("*************************菜单更新服务结束*******************");
+        return Result.success();
     }
 
 

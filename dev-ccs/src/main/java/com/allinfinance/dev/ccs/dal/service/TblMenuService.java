@@ -4,8 +4,10 @@ package com.allinfinance.dev.ccs.dal.service;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
+import com.allinfinance.dev.ccs.result.Result;
 import com.github.pagehelper.PageInfo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -23,9 +25,9 @@ public interface TblMenuService {
 
     void deleteByPrimaryKey(String menuId);
 
-    void addMenu(TblMenu tblMenu);
+    Result addMenu(TblMenu tblMenu, HttpServletRequest request);
 
-    void updateMenuById(TblMenu tblMenu);
+    Result updateMenuById(TblMenu tblMenu,HttpServletRequest request);
 
     List<CurrentMenusDto> getCurrMenus(String  userId);
 
