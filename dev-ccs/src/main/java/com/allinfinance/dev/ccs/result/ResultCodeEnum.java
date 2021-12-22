@@ -30,7 +30,8 @@ public enum ResultCodeEnum implements ResultCode {
     /* 通用错误返回 */
     GENERIC_EXCEPTION("4000", "系统内部错误！"),
     NULL_POINT("4001", "空指针异常"),
-    HTTP_CLIENT_ERROR("4002", "HTTP异常");
+    HTTP_CLIENT_ERROR("4002", "HTTP异常"),
+    RETRY_COMMIT("5000","请勿重复提交！");
 
     private final String code;
     private final String message;
