@@ -3,6 +3,7 @@ package com.allinfinance.dev.ccs.dal.paramvo;
 public class SecondCheckPassVo {
    private  String userName;
    private  String checkCode;
+   private  String userId;
 
    public String getUserName() {
       return userName;
@@ -18,5 +19,13 @@ public class SecondCheckPassVo {
 
    public void setCheckCode(String checkCode) {
       this.checkCode = checkCode;
+   }
+
+   public String getUserId() {
+      return userId;
+   }
+
+   public void setUserId(String userId) {
+      this.userId = userId;
    }
 }

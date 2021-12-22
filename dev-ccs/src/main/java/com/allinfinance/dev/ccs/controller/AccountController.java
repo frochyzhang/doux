@@ -7,7 +7,6 @@ import com.allinfinance.dev.ccs.dal.paramvo.UpdatePasswordParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
-import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.RSAUtils;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.lang3.StringUtils;
@@ -62,11 +61,16 @@ public class AccountController {
     @ResponseBody
     @OperLog(operModul = "账户管理-更新密码",operType = AosContent.UPDATE,operDesc = "更新账户密码")
     public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
-        String token = request.getHeader(AosContent.AOS_TOKEN);
-        String userId = JwtUtil.getUserId(token);
-        String username = JwtUtil.getUsername(token);
+        String userId = passwordParam.getUserId();
+        String username = passwordParam.getUserName();
         String newPassword = passwordParam.getNewPassword();
+        if(StringUtils.isEmpty(userId)){
+          return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
+        }
         TblUser tblUser = userService.selectByPrimaryKey(userId);
+        if(tblUser==null){
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
         if(StringUtils.isNotBlank(passwordParam.getOldPassword())){
             boolean b = checkOldPass(passwordParam.getOldPassword(), tblUser.getUserPass());
             if(!b){
