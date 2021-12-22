@@ -181,7 +181,6 @@
     select
     <include refid="Base_Column_List" />
     from TBL_BANK_MANAGE where 1=1
-    and IS_AVAILABLE='Y'
     <if test="bankReqParam!=null">
       <if test="bankReqParam.org!=null and bankReqParam.org!=''">
         and org like '%${bankReqParam.org}%'
