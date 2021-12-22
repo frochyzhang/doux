@@ -2,6 +2,8 @@ package com.allinfinance.dev.ccs.dal.paramvo;
 
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 
+import java.util.Arrays;
+
 /**
  * @author ：Lucas Li
  * @project :dev-parent
@@ -9,10 +11,36 @@ import com.allinfinance.dev.ccs.dal.model.TblMenu;
  * @description：用户页面请求参数
  */
 
-public class MenusReqParam extends TblMenu {
-    private Integer current;
-    private Integer pageSize;
+public class MenusReqParam extends BaseReqParam {
+
     private String[] menusId;
+    private String menuId;
+    private String menuName;
+    private String nodeType;
+
+    public String getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
 
     public String[] getMenusId() {
         return menusId;
@@ -22,19 +50,13 @@ public class MenusReqParam extends TblMenu {
         this.menusId = menusId;
     }
 
-    public Integer getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(Integer current) {
-        this.current = current;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
+    @Override
+    public String toString() {
+        return "MenusReqParam{" +
+                "menusId=" + Arrays.toString(menusId) +
+                ", menuId='" + menuId + '\'' +
+                ", menuName='" + menuName + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                '}';
     }
 }

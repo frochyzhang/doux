@@ -14,6 +14,7 @@ import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,54 +44,28 @@ public class AuthController {
     @Autowired
     private TblRoleAuthService tblRoleAuthService;
 
+    //查询所有符合条件的权限列表
+//    @GetMapping
+//    @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "条件查询权限列表")
+//    public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
+//
+//        return null;
+//    }
+
     //分页查询权限
     @GetMapping
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "分页查询权限列表")
-    public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
-        logger.info("AuthReqParam: {}", authReqParam);
+    public Result selectPageAuths(AuthReqParam authReqParam, HttpServletRequest request) {
+        logger.info("分页查询权限列表请求参数 AuthReqParam: {}", authReqParam);
         //获取用户的机构号
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
-        //当前的用户是超级管理员时显示所有列表
-        if (org != null && !"".equals(org)) {
-            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
-                authReqParam.setOrg(null);
-            } else {
-                authReqParam.setOrg(org);
-            }
-        }
-        PageInfo<TblAuth> auths;
-        List<TblAuth> authList;
-        try {
-            if (authReqParam.getCurrent() == null || authReqParam.getPageSize() == null) {
-                authList = tblAuthService.selectAuths(authReqParam);
-                logger.info("权限列表: {}", authList);
-                return Result.success(authList);
-            } else {
-                auths = tblAuthService.pageSelectAuths(authReqParam);
-                logger.info("分页的权限列表: {}", auths);
-                List<TblAuth> tblAuths = auths.getList();
-                logger.info("tblAuths: {}", tblAuths);
-                //获取所有的权限,菜单项映射
-                List<TblMenuAuth> tblMenuAuths = tblAuthService.selectMenuAuths();
-                logger.info("tblMenuAuths: {}", tblMenuAuths);
-                HashMap<String, ArrayList<String>> authMenuMapping = new HashMap<>();
-                for (TblMenuAuth tblMenuAuth : tblMenuAuths) {
-                    ArrayList<String> menus = authMenuMapping.computeIfAbsent(tblMenuAuth.getAuthId(), k -> new ArrayList<>());
-                    menus.add(tblMenuAuth.getMenuId());
-                }
-                logger.info("roleMenuMapping: {}", authMenuMapping);
-                for (TblAuth tblAuth : tblAuths) {
-                    tblAuth.setMenus(authMenuMapping.get(tblAuth.getAuthId()));
-                }
-
-                return Result.success(auths);
-            }
-        } catch (Exception e) {
-            logger.error("查询权限列表异常", e);
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
-        }
-
+        String weight = JwtUtil.getWeight(token);
+        //先判断页面是否有传机构参数，如果没传参数就只
+        if (StringUtils.isBlank(authReqParam.getOrg()))
+            //判断当前操作员是否是超级管理员
+            if(weight.equals(AosContent.SUPERADMIN))
+            return null;
     }
 
 
@@ -218,7 +193,6 @@ public class AuthController {
     public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
         logger.info("authReqParam: {}", authReqParam);
         String[] authIds = authReqParam.getAuthIds();
-        logger.info("待删除的权限-authIds: {}", authIds);
         // 为避免配置给用户的权限被删除 在删除之前先检查删除的权中是否有当前正在被使用的权限 有则当前的删除操作不执行并提示
         List<TblRoleAuth> tblRoleAuths = tblRoleAuthService.selectOnUseAuths(authReqParam);
         if (tblRoleAuths.size() != 0) {
@@ -228,12 +202,6 @@ public class AuthController {
         try {
             if (authIds != null && authIds.length > 0) {
                 for (String authId : authIds) {
-                    //删除权限和菜单项映射
-//                    tblAuthService.deleteMenuAuths(authId);
-                    //删除权限
-//                    result = tblAuthService.deleteByPrimaryKey(authId);
-                    //删除角色许可代码
-                    //使权限无效
                     result = tblAuthService.invalidateAuth(authId);
                     logger.info("result={}", result);
                 }

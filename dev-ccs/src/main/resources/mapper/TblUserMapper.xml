@@ -57,7 +57,7 @@
     </select>
 
 
-    <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.paramvo.UserReqParam"
+    <select id="pageSelectUsers" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser"
             resultMap="BaseResultMap">
         select
         USER_ID, USER_NAME, USER_PASS, ur.ROLE_ID, MOBILE_NO ,ur.ORG, ur.IS_AVAILABLE, INIT_PASS, ERROR_NUM,

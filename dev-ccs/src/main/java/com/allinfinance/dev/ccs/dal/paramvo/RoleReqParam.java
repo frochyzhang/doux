@@ -10,12 +10,23 @@ import java.util.Arrays;
  * @author: Lum Wang
  * @create: 2021-05-18 14:29
  */
-public class RoleReqParam extends TblRole {
-    private Integer current;
-    private Integer pageSize;
+public class RoleReqParam extends BaseReqParam {
+
     private String userId;
     private String roleName;
+    private String isAvailable;
+    private String org;
+    private String roleId;
     private String[] roleIds;
+
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
 
     public String getUserId() {
         return userId;
@@ -23,6 +34,30 @@ public class RoleReqParam extends TblRole {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(String isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 
     public String[] getRoleIds() {
@@ -33,39 +68,14 @@ public class RoleReqParam extends TblRole {
         this.roleIds = roleIds;
     }
 
-    public Integer getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(Integer current) {
-        this.current = current;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-
-    @Override
-    public String getRoleName() {
-        return roleName;
-    }
-
-    @Override
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
     @Override
     public String toString() {
         return "RoleReqParam{" +
-                "current=" + current +
-                ", pageSize=" + pageSize +
+                "userId='" + userId + '\'' +
                 ", roleName='" + roleName + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", org='" + org + '\'' +
+                ", roleId='" + roleId + '\'' +
                 ", roleIds=" + Arrays.toString(roleIds) +
                 '}';
     }

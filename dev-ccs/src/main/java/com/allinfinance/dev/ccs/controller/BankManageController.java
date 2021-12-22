@@ -42,8 +42,8 @@ public class BankManageController {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (org != null && org.length() != 0 ) {
-            if ((!org.equals(AosContent.ALLINFINANCE_ORG))&& bankManageReqParam.getOrg()==null) {
+        if (org != null && org.length() != 0) {
+            if ((!org.equals(AosContent.ALLINFINANCE_ORG)) && bankManageReqParam.getOrg() == null) {
                 bankManageReqParam.setOrg(org);
             }
         }
@@ -68,15 +68,20 @@ public class BankManageController {
     @RequestMapping(path = "/{BankId}", method = RequestMethod.PUT)
     @ResponseBody
     @OperLog(operModul = "银行管理-更新银行", operType = AosContent.UPDATE, operDesc = "根据id更新银行信息")
-    public Result modifyUser(@RequestBody BankManageReqParam tblBank, @PathVariable("BankId") String bankId, HttpServletRequest request) {
-        logger.debug("更新操作接收到的请求参数: {},bankId:{}", tblBank, bankId);
+    public Result modifyUser(@RequestBody BankManageReqParam bankManageReqParam, @PathVariable("BankId") String bankId, HttpServletRequest request) {
+        logger.debug("更新操作接收到的请求参数: {},bankId:{}", bankManageReqParam, bankId);
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
-        tblBank.setBankId(bankId);
-        tblBank.setUpdateBy(userName);
+        TblBankManage tblBankManage = new TblBankManage();
+        tblBankManage.setBankName(bankManageReqParam.getBankName());
+        tblBankManage.setOrg(bankManageReqParam.getOrg());
+        tblBankManage.setBankNameEn(bankManageReqParam.getBankNameEn());
+        tblBankManage.setIsAvailable(bankManageReqParam.getIsAvailable());
+        tblBankManage.setBankId(bankId);
+        tblBankManage.setUpdateBy(userName);
         int result;
         try {
-            result = tblBankManageService.updateByPrimaryKey(tblBank);
+            result = tblBankManageService.updateByPrimaryKey(tblBankManage);
         } catch (Exception e) {
             logger.error("更新银行发生异常", e);
             return Result.failure();
@@ -98,12 +103,22 @@ public class BankManageController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    @OperLog(operModul = "银行管理-更新银行",operType = AosContent.UPDATE,operDesc = "更新银行信息")
-    public Result updateBankManage(@RequestBody BankManageReqParam bankManageReqParam) {
+    @OperLog(operModul = "银行管理-更新银行", operType = AosContent.UPDATE, operDesc = "更新银行信息")
+    public Result updateBankManage(@RequestBody BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("接收到的更新银行信息: {}", bankManageReqParam);
+        String userName = JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN));
+        TblBankManage tblBankManage = new TblBankManage();
+        tblBankManage.setBankId(bankManageReqParam.getBankId());
+        tblBankManage.setIsAvailable(bankManageReqParam.getIsAvailable());
+        tblBankManage.setBankNameEn(bankManageReqParam.getBankNameEn());
+        tblBankManage.setBankName(bankManageReqParam.getBankName());
+        tblBankManage.setOrg(bankManageReqParam.getOrg());
+        // 设置更新人和更新时间
+        tblBankManage.setUpdateBy(userName);
+        tblBankManage.setUpdateTime(new Date());
         int result = 0;
         try {
-            result = tblBankManageService.updateByPrimaryKeySelective(bankManageReqParam);
+            result = tblBankManageService.updateByPrimaryKeySelective(tblBankManage);
         } catch (Exception e) {
             logger.error("更新银行异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -120,7 +135,7 @@ public class BankManageController {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    @OperLog(operModul = "银行管理-删除银行",operType = AosContent.DELETE,operDesc = "删除银行信息")
+    @OperLog(operModul = "银行管理-删除银行", operType = AosContent.DELETE, operDesc = "删除银行信息")
     public Result delBankManage(@RequestBody BankManageReqParam bankManageReqParam) {
         logger.info("删除的银行信息: {}", bankManageReqParam);
         int result = 0;
@@ -136,14 +151,19 @@ public class BankManageController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    @OperLog(operModul = "银行管理-新增银行",operType = AosContent.INSERT,operDesc = "新增银行信息")
+    @OperLog(operModul = "银行管理-新增银行", operType = AosContent.INSERT, operDesc = "新增银行信息")
     public Result addBank(@RequestBody BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("接收到的新增银行信息: {}", bankManageReqParam);
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
+        TblBankManage tblBankManage = new TblBankManage();
+        tblBankManage.setIsAvailable(bankManageReqParam.getIsAvailable());
+        tblBankManage.setBankNameEn(bankManageReqParam.getBankNameEn());
+        tblBankManage.setBankName(bankManageReqParam.getBankName());
+        tblBankManage.setOrg(bankManageReqParam.getOrg());
         // 设置创建和创建时间
-        bankManageReqParam.setCreateBy(userName);
-        bankManageReqParam.setCreateTime(new Date());
+        tblBankManage.setCreateBy(userName);
+        tblBankManage.setCreateTime(new Date());
         //系统银行重名检查
         List<TblBankManage> tblBankManages = tblBankManageService.selectByBankInfo(bankManageReqParam);
         if (tblBankManages.size() != 0) {
@@ -151,7 +171,7 @@ public class BankManageController {
         }
         int result = 0;
         try {
-            result = tblBankManageService.insertSelective(bankManageReqParam);
+            result = tblBankManageService.insertSelective(tblBankManage);
         } catch (Exception e) {
             logger.error("新增银行异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);

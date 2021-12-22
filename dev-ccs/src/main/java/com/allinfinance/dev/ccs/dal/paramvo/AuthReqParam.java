@@ -10,28 +10,36 @@ import java.util.Arrays;
  * @author: Lum Wang
  * @create: 2021-05-18 11:19
  */
-public class AuthReqParam extends TblAuth {
-    private Integer current;
-    private Integer pageSize;
+public class AuthReqParam extends BaseReqParam {
+
     private String[] authIds;
+    private String authName;
+    private String org;
+    private String isAvailable;
 
-
-    public Integer getCurrent() {
-        return current;
+    public String getAuthName() {
+        return authName;
     }
 
-    public void setCurrent(Integer current) {
-        this.current = current;
+    public void setAuthName(String authName) {
+        this.authName = authName;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
+    public String getOrg() {
+        return org;
     }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
+    public void setOrg(String org) {
+        this.org = org;
     }
 
+    public String getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(String isAvailable) {
+        this.isAvailable = isAvailable;
+    }
 
     public String[] getAuthIds() {
         return authIds;
@@ -44,9 +52,10 @@ public class AuthReqParam extends TblAuth {
     @Override
     public String toString() {
         return "AuthReqParam{" +
-                "current=" + current +
-                ", pageSize=" + pageSize +
-                ", authIds=" + Arrays.toString(authIds) +
+                "authIds=" + Arrays.toString(authIds) +
+                ", authName='" + authName + '\'' +
+                ", org='" + org + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
                 '}';
     }
 }

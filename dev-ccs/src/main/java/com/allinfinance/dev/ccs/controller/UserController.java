@@ -46,7 +46,7 @@ public class UserController {
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "根据id查询用户")
+    @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
@@ -65,16 +65,13 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "查询用户列表")
+    @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "查询用户列表")
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String org = JwtUtil.getOrg(token);
-        //获取当前登录的用户id
-        String userId = JwtUtil.getUserId(token);
-        userReqParam.setUserId(userId);
         logger.info("获取当前操作用户的机构号:org-->{}", org);
         if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
             //当前的用户是超级管理员时显示所有列表
@@ -105,38 +102,45 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    @OperLog(operModul = "用户管理-新增用户",operType = AosContent.INSERT,operDesc = "新增用户信息")
+    @OperLog(operModul = "用户管理-新增用户", operType = AosContent.INSERT, operDesc = "新增用户信息")
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
+        TblUser tblUser = new TblUser();
+        tblUser.setUserName(userReqParam.getUserName());
+        tblUser.setRoleId(userReqParam.getRoleId());
+        tblUser.setOrg(userReqParam.getOrg());
+        tblUser.setUserPass(userReqParam.getUserPass());
+        tblUser.setMobileNo(userReqParam.getMobileNo());
+        tblUser.setIsAvailable(userReqParam.getIsAvailable());
         //设置初始密码
-        userReqParam.setInitPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        tblUser.setInitPass(passwordEncoder.encode(userReqParam.getUserPass()));
         // 对密码进行加密
         userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         //配置用户口令
         BankManageReqParam bankReqParam = new BankManageReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
         List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
-        userReqParam.setReservedField2(tblBankManages.get(0).getBankNameEn());
-        String token = request.getHeader( AosContent.AOS_TOKEN);
+        tblUser.setReservedField2(tblBankManages.get(0).getBankNameEn());
+        String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
         logger.info("获取当前系统用户姓名:userName-->{}", userName);
         //设置首次用户登录时显示绑定二维码
-        userReqParam.setReservedField1("0");
+        tblUser.setReservedField1("0");
         //查询bankmanage表设置用户的Issuer
         TblBankManage tblBankManage = tblBankService.selectBankInfoByOrg(userReqParam.getOrg());
-        userReqParam.setReservedField3(tblBankManage.getBankNameEn());
-        userReqParam.setReservedField2(GoogleAuthenticator.generateBase32Secret());
+        tblUser.setReservedField3(tblBankManage.getBankNameEn());
+        tblUser.setReservedField2(GoogleAuthenticator.generateBase32Secret());
         //设置用户的Issuer
 
-        userReqParam.setCreateBy(userName);
+        tblUser.setCreateBy(userName);
         //系统用户重名检查
-        TblUser tblUser = tblUserService.selectByNameAndOrg(userReqParam);
-        if (tblUser != null) {
+        TblUser isExitUser = tblUserService.selectByNameAndOrg(userReqParam);
+        if (isExitUser != null) {
             return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
         int result = 0;
         try {
-            result = tblUserService.insertSelective(userReqParam);
+            result = tblUserService.insertSelective(tblUser);
         } catch (Exception e) {
             logger.error("新增用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -153,7 +157,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    @OperLog(operModul = "用户管理-更新用户",operType = AosContent.UPDATE,operDesc = "更新用户信息")
+    @OperLog(operModul = "用户管理-更新用户", operType = AosContent.UPDATE, operDesc = "更新用户信息")
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时先解密再加密
@@ -186,12 +190,12 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    @OperLog(operModul = "用户管理-删除用户",operType = AosContent.DELETE,operDesc = "删除用户")
+    @OperLog(operModul = "用户管理-删除用户", operType = AosContent.DELETE, operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestUri = request.getRequestURI();
-        logger.info("请求的uri: {}", requestUri);
+        logger.info("请求的参数userReqParam: {}", userReqParam);
         //暂时存放进于预留域传到service
-        userReqParam.setReservedField1(requestUri);
+//        userReqParam.setReservedField1(requestUri);
         int result = 0;
         try {
             result = tblUserService.deleteByPrimaryKey(userReqParam);

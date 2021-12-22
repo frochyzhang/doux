@@ -56,10 +56,10 @@ public class RoleController {
             roleReqParam.setOrg(org);
         }
         roleReqParam.setUserId(userId);
-        if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
-            roleReqParam.setCurrent(1);
-            roleReqParam.setPageSize(20);
-        }
+//        if (roleReqParam.getCurrent() == null || roleReqParam.getPageSize() == null) {
+//            roleReqParam.setCurrent(1);
+//            roleReqParam.setPageSize(20);
+//        }
         PageInfo<TblRole> roles;
         try {
             roles = tblRoleService.pageSelectRoles(roleReqParam);

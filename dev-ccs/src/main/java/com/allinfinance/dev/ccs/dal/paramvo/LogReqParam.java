@@ -1,6 +1,5 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
-import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 
 /**
  * @author ：Lucas Li
@@ -8,13 +7,23 @@ import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
  * @date ：2021/5/17 10:56
  * @description：操作日志请求参数
  */
-public class LogReqParam extends TblUserOptLog {
-    private Integer current;
-    private Integer pageSize;
-    private String userName;
+public class LogReqParam extends BaseReqParam {
+
     private String time;
+    private String org;
+    private String operType;
+    private String operDesc;
     private String beginDate;
     private String endDate;
+
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
 
     public String getTime() {
         return time;
@@ -24,29 +33,20 @@ public class LogReqParam extends TblUserOptLog {
         this.time = time;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getOperType() {
+        return operType;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setOperType(String operType) {
+        this.operType = operType;
     }
 
-
-    public Integer getCurrent() {
-        return current;
+    public String getOperDesc() {
+        return operDesc;
     }
 
-    public void setCurrent(Integer current) {
-        this.current = current;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
+    public void setOperDesc(String operDesc) {
+        this.operDesc = operDesc;
     }
 
     public String getBeginDate() {
@@ -63,5 +63,17 @@ public class LogReqParam extends TblUserOptLog {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public String toString() {
+        return "LogReqParam{" +
+                "time='" + time + '\'' +
+                ", org='" + org + '\'' +
+                ", operType='" + operType + '\'' +
+                ", operDesc='" + operDesc + '\'' +
+                ", beginDate='" + beginDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                '}';
     }
 }
