@@ -1,28 +1,29 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
-
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
-import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuthExample;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface TblMenuAuthMapper {
+    long countByExample(TblMenuAuthExample example);
 
-/**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author liuqi
- * @since 2021-05-14
- */
-public interface TblMenuAuthMapper  {
+    int deleteByPrimaryKey(TblMenuAuthKey key);
 
-    List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
-
-    List<TblMenuAuth> selectMenuAuths();
-
-    int deleteMenuAuths(String authId);
+    int insert(TblMenuAuth record);
 
     int insertSelective(TblMenuAuth record);
+
+    List<TblMenuAuth> selectByExample(TblMenuAuthExample example);
+
+    TblMenuAuth selectByPrimaryKey(TblMenuAuthKey key);
+
+    int updateByExampleSelective(@Param("record") TblMenuAuth record, @Param("example") TblMenuAuthExample example);
+
+    int updateByExample(@Param("record") TblMenuAuth record, @Param("example") TblMenuAuthExample example);
+
+    int updateByPrimaryKeySelective(TblMenuAuth record);
+
+    int updateByPrimaryKey(TblMenuAuth record);
 }

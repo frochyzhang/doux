@@ -1,10 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-public class TblAuth implements Serializable {
+public class TblAuth {
     private String authId;
 
     private String authName;
@@ -27,16 +25,22 @@ public class TblAuth implements Serializable {
 
     private String org;
 
-    private ArrayList<String> menus;
-
-    private static final long serialVersionUID = 1L;
-
-    public ArrayList<String> getMenus() {
-        return menus;
+    public TblAuth(String authId, String authName, String isAvailable, Date createTime, String createBy, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String org) {
+        this.authId = authId;
+        this.authName = authName;
+        this.isAvailable = isAvailable;
+        this.createTime = createTime;
+        this.createBy = createBy;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.org = org;
     }
 
-    public void setMenus(ArrayList<String> menus) {
-        this.menus = menus;
+    public TblAuth() {
+        super();
     }
 
     public String getAuthId() {
@@ -44,7 +48,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setAuthId(String authId) {
-        this.authId = authId;
+        this.authId = authId == null ? null : authId.trim();
     }
 
     public String getAuthName() {
@@ -52,7 +56,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setAuthName(String authName) {
-        this.authName = authName;
+        this.authName = authName == null ? null : authName.trim();
     }
 
     public String getIsAvailable() {
@@ -60,7 +64,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public Date getCreateTime() {
@@ -76,7 +80,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getUpdateTime() {
@@ -92,7 +96,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -100,7 +104,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -108,7 +112,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -116,7 +120,7 @@ public class TblAuth implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
     }
 
     public String getOrg() {
@@ -124,24 +128,6 @@ public class TblAuth implements Serializable {
     }
 
     public void setOrg(String org) {
-        this.org = org;
-    }
-
-    @Override
-    public String toString() {
-        return "TblAuth{" +
-                "authId='" + authId + '\'' +
-                ", authName='" + authName + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", org='" + org + '\'' +
-                ", menus=" + menus +
-                '}';
+        this.org = org == null ? null : org.trim();
     }
 }

@@ -3,7 +3,7 @@ package com.allinfinance.dev.ccs.dal.model;
 import java.util.Date;
 
 public class TblUserOptLog {
-    private String operId;
+    private Integer operId;
 
     private String operModule;
 
@@ -35,12 +35,35 @@ public class TblUserOptLog {
 
     private String org;
 
-    public String getOperId() {
+    public TblUserOptLog(Integer operId, String operModule, String operType, String operDesc, String operRequParam, String operRespParam, String operUserId, String operUserName, String operMethod, String operUri, String operIp, Date operCreateTime, String reservedField1, String reservedField2, String reservedField3, String org) {
+        this.operId = operId;
+        this.operModule = operModule;
+        this.operType = operType;
+        this.operDesc = operDesc;
+        this.operRequParam = operRequParam;
+        this.operRespParam = operRespParam;
+        this.operUserId = operUserId;
+        this.operUserName = operUserName;
+        this.operMethod = operMethod;
+        this.operUri = operUri;
+        this.operIp = operIp;
+        this.operCreateTime = operCreateTime;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.org = org;
+    }
+
+    public TblUserOptLog() {
+        super();
+    }
+
+    public Integer getOperId() {
         return operId;
     }
 
-    public void setOperId(String operId) {
-        this.operId = operId == null ? null : operId.trim();
+    public void setOperId(Integer operId) {
+        this.operId = operId;
     }
 
     public String getOperModule() {
@@ -161,20 +184,5 @@ public class TblUserOptLog {
 
     public void setOrg(String org) {
         this.org = org == null ? null : org.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "TblUserOptLog{" +
-                "operType='" + operType + '\'' +
-                ", operRequParam='" + operRequParam + '\'' +
-                ", operUserId='" + operUserId + '\'' +
-                ", operUserName='" + operUserName + '\'' +
-                ", operMethod='" + operMethod + '\'' +
-                ", operUri='" + operUri + '\'' +
-                ", operIp='" + operIp + '\'' +
-                ", operCreateTime=" + operCreateTime +
-                ", org='" + org + '\'' +
-                '}';
     }
 }

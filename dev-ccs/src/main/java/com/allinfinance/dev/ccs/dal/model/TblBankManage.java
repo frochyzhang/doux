@@ -1,16 +1,13 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class TblBankManage implements Serializable {
+public class TblBankManage {
     private String bankId;
 
     private String org;
 
     private String bankName;
-
-    private String bankNameEn;
 
     private String isAvailable;
 
@@ -28,14 +25,25 @@ public class TblBankManage implements Serializable {
 
     private String reservedField3;
 
-    private static final long serialVersionUID = 1L;
+    private String bankNameEn;
 
-    public String getBankNameEn() {
-        return bankNameEn;
+    public TblBankManage(String bankId, String org, String bankName, String isAvailable, Date createTime, String createBy, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String bankNameEn) {
+        this.bankId = bankId;
+        this.org = org;
+        this.bankName = bankName;
+        this.isAvailable = isAvailable;
+        this.createTime = createTime;
+        this.createBy = createBy;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.bankNameEn = bankNameEn;
     }
 
-    public void setBankNameEn(String bankNameEn) {
-        this.bankNameEn = bankNameEn;
+    public TblBankManage() {
+        super();
     }
 
     public String getBankId() {
@@ -43,7 +51,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setBankId(String bankId) {
-        this.bankId = bankId;
+        this.bankId = bankId == null ? null : bankId.trim();
     }
 
     public String getOrg() {
@@ -51,7 +59,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setOrg(String org) {
-        this.org = org;
+        this.org = org == null ? null : org.trim();
     }
 
     public String getBankName() {
@@ -59,7 +67,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setBankName(String bankName) {
-        this.bankName = bankName;
+        this.bankName = bankName == null ? null : bankName.trim();
     }
 
     public String getIsAvailable() {
@@ -67,7 +75,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public Date getCreateTime() {
@@ -83,7 +91,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getUpdateTime() {
@@ -99,7 +107,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -107,7 +115,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -115,7 +123,7 @@ public class TblBankManage implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -123,6 +131,14 @@ public class TblBankManage implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
+    }
+
+    public String getBankNameEn() {
+        return bankNameEn;
+    }
+
+    public void setBankNameEn(String bankNameEn) {
+        this.bankNameEn = bankNameEn == null ? null : bankNameEn.trim();
     }
 }

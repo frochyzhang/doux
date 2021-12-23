@@ -1,11 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-public class TblMenu implements Serializable {
+public class TblMenu {
     private String menuId;
 
     private String menuName;
@@ -41,24 +38,38 @@ public class TblMenu implements Serializable {
     private String reservedField3;
 
     private String org;
-    private List<TblMenu> childMenus=new ArrayList<>();
 
-    public List<TblMenu> getChildMenus() {
-        return childMenus;
+    public TblMenu(String menuId, String menuName, String parentMid, String nodeType, String icon, String sort, String pageUrl, String level, String path, String isAvailable, Date createTime, String createBy, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String org) {
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.parentMid = parentMid;
+        this.nodeType = nodeType;
+        this.icon = icon;
+        this.sort = sort;
+        this.pageUrl = pageUrl;
+        this.level = level;
+        this.path = path;
+        this.isAvailable = isAvailable;
+        this.createTime = createTime;
+        this.createBy = createBy;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.org = org;
     }
 
-    public void setChildMenus(List<TblMenu> childMenus) {
-        this.childMenus = childMenus;
+    public TblMenu() {
+        super();
     }
-
-    private static final long serialVersionUID = 1L;
 
     public String getMenuId() {
         return menuId;
     }
 
     public void setMenuId(String menuId) {
-        this.menuId = menuId;
+        this.menuId = menuId == null ? null : menuId.trim();
     }
 
     public String getMenuName() {
@@ -66,7 +77,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setMenuName(String menuName) {
-        this.menuName = menuName;
+        this.menuName = menuName == null ? null : menuName.trim();
     }
 
     public String getParentMid() {
@@ -74,7 +85,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setParentMid(String parentMid) {
-        this.parentMid = parentMid;
+        this.parentMid = parentMid == null ? null : parentMid.trim();
     }
 
     public String getNodeType() {
@@ -82,7 +93,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+        this.nodeType = nodeType == null ? null : nodeType.trim();
     }
 
     public String getIcon() {
@@ -90,7 +101,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setIcon(String icon) {
-        this.icon = icon;
+        this.icon = icon == null ? null : icon.trim();
     }
 
     public String getSort() {
@@ -98,7 +109,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setSort(String sort) {
-        this.sort = sort;
+        this.sort = sort == null ? null : sort.trim();
     }
 
     public String getPageUrl() {
@@ -106,7 +117,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setPageUrl(String pageUrl) {
-        this.pageUrl = pageUrl;
+        this.pageUrl = pageUrl == null ? null : pageUrl.trim();
     }
 
     public String getLevel() {
@@ -114,7 +125,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setLevel(String level) {
-        this.level = level;
+        this.level = level == null ? null : level.trim();
     }
 
     public String getPath() {
@@ -122,7 +133,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.path = path == null ? null : path.trim();
     }
 
     public String getIsAvailable() {
@@ -130,7 +141,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public Date getCreateTime() {
@@ -146,7 +157,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getUpdateTime() {
@@ -162,7 +173,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -170,7 +181,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -178,7 +189,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -186,7 +197,7 @@ public class TblMenu implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
     }
 
     public String getOrg() {
@@ -194,31 +205,6 @@ public class TblMenu implements Serializable {
     }
 
     public void setOrg(String org) {
-        this.org = org;
-    }
-
-    @Override
-    public String toString() {
-        return "TblMenu{" +
-                "menuId='" + menuId + '\'' +
-                ", menuName='" + menuName + '\'' +
-                ", parentMid='" + parentMid + '\'' +
-                ", nodeType='" + nodeType + '\'' +
-                ", icon='" + icon + '\'' +
-                ", sort='" + sort + '\'' +
-                ", pageUrl='" + pageUrl + '\'' +
-                ", level='" + level + '\'' +
-                ", path='" + path + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", org='" + org + '\'' +
-                ", childMenus=" + childMenus +
-                '}';
+        this.org = org == null ? null : org.trim();
     }
 }

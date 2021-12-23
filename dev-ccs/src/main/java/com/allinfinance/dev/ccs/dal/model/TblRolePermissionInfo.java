@@ -1,22 +1,28 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-
-public class TblRolePermissionInfo implements Serializable {
+public class TblRolePermissionInfo {
     private String id;
 
     private String roleId;
 
     private String permissioncode;
 
-    private static final long serialVersionUID = 1L;
+    public TblRolePermissionInfo(String id, String roleId, String permissioncode) {
+        this.id = id;
+        this.roleId = roleId;
+        this.permissioncode = permissioncode;
+    }
+
+    public TblRolePermissionInfo() {
+        super();
+    }
 
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getRoleId() {
@@ -24,7 +30,7 @@ public class TblRolePermissionInfo implements Serializable {
     }
 
     public void setRoleId(String roleId) {
-        this.roleId = roleId;
+        this.roleId = roleId == null ? null : roleId.trim();
     }
 
     public String getPermissioncode() {
@@ -32,15 +38,6 @@ public class TblRolePermissionInfo implements Serializable {
     }
 
     public void setPermissioncode(String permissioncode) {
-        this.permissioncode = permissioncode;
-    }
-
-    @Override
-    public String toString() {
-        return "TblRolePermissionInfo{" +
-                "id='" + id + '\'' +
-                ", roleId='" + roleId + '\'' +
-                ", permissioncode='" + permissioncode + '\'' +
-                '}';
+        this.permissioncode = permissioncode == null ? null : permissioncode.trim();
     }
 }

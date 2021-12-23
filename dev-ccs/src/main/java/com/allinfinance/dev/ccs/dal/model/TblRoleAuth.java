@@ -1,10 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-
-import java.io.Serializable;
 import java.util.Date;
 
-public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
+public class TblRoleAuth extends TblRoleAuthKey {
     private Date updateTime;
 
     private String updateBy;
@@ -15,7 +13,18 @@ public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
 
     private String reservedField3;
 
-    private static final long serialVersionUID = 1L;
+    public TblRoleAuth(String roleId, String authId, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3) {
+        super(roleId, authId);
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+    }
+
+    public TblRoleAuth() {
+        super();
+    }
 
     public Date getUpdateTime() {
         return updateTime;
@@ -30,7 +39,7 @@ public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -38,7 +47,7 @@ public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -46,7 +55,7 @@ public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -54,6 +63,6 @@ public class TblRoleAuth extends TblRoleAuthKey implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
     }
 }

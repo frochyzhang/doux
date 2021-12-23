@@ -1,30 +1,28 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
-import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
-import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import com.allinfinance.dev.ccs.dal.model.TblAuthExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
 public interface TblAuthMapper {
+    long countByExample(TblAuthExample example);
+
     int deleteByPrimaryKey(String authId);
 
     int insert(TblAuth record);
 
     int insertSelective(TblAuth record);
 
+    List<TblAuth> selectByExample(TblAuthExample example);
+
     TblAuth selectByPrimaryKey(String authId);
+
+    int updateByExampleSelective(@Param("record") TblAuth record, @Param("example") TblAuthExample example);
+
+    int updateByExample(@Param("record") TblAuth record, @Param("example") TblAuthExample example);
 
     int updateByPrimaryKeySelective(TblAuth record);
 
     int updateByPrimaryKey(TblAuth record);
-
-    List<TblAuth> pageSelectAuths(@Param("authReqParam") AuthReqParam authReqParam);
-
-    List<TblAuth> selectAuths(@Param("authReqParam")AuthReqParam authReqParam);
-
-    int invalidateAuth(@Param("authId") String authId,@Param("isAvailable") String isAvailable);
-
-    List<TblMenuAuth> selectOnUseAuths(@Param("authIds") String[] authIds);
 }

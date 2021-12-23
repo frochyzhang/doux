@@ -1,8 +1,6 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-
-public class TblPermissionInfo implements Serializable {
+public class TblApiPermissionInfo {
     private String permissioncode;
 
     private String url;
@@ -13,14 +11,24 @@ public class TblPermissionInfo implements Serializable {
 
     private String field1;
 
-    private static final long serialVersionUID = 1L;
+    public TblApiPermissionInfo(String permissioncode, String url, String description, String enable, String field1) {
+        this.permissioncode = permissioncode;
+        this.url = url;
+        this.description = description;
+        this.enable = enable;
+        this.field1 = field1;
+    }
+
+    public TblApiPermissionInfo() {
+        super();
+    }
 
     public String getPermissioncode() {
         return permissioncode;
     }
 
     public void setPermissioncode(String permissioncode) {
-        this.permissioncode = permissioncode;
+        this.permissioncode = permissioncode == null ? null : permissioncode.trim();
     }
 
     public String getUrl() {
@@ -28,7 +36,7 @@ public class TblPermissionInfo implements Serializable {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = url == null ? null : url.trim();
     }
 
     public String getDescription() {
@@ -36,7 +44,7 @@ public class TblPermissionInfo implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description == null ? null : description.trim();
     }
 
     public String getEnable() {
@@ -44,7 +52,7 @@ public class TblPermissionInfo implements Serializable {
     }
 
     public void setEnable(String enable) {
-        this.enable = enable;
+        this.enable = enable == null ? null : enable.trim();
     }
 
     public String getField1() {
@@ -52,17 +60,6 @@ public class TblPermissionInfo implements Serializable {
     }
 
     public void setField1(String field1) {
-        this.field1 = field1;
-    }
-
-    @Override
-    public String toString() {
-        return "TblPermissionInfo{" +
-                "permissioncode='" + permissioncode + '\'' +
-                ", url='" + url + '\'' +
-                ", description='" + description + '\'' +
-                ", enable='" + enable + '\'' +
-                ", field1='" + field1 + '\'' +
-                '}';
+        this.field1 = field1 == null ? null : field1.trim();
     }
 }

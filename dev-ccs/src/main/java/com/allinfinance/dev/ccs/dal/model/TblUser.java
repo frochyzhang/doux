@@ -1,9 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class TblUser implements Serializable {
+public class TblUser {
     private String userId;
 
     private String userName;
@@ -24,11 +23,7 @@ public class TblUser implements Serializable {
 
     private Date lastPassUpdateTime;
 
-    private String reservedField4;
-
     private String createBy;
-
-    private String mobileNo;
 
     private Date createTime;
 
@@ -41,6 +36,8 @@ public class TblUser implements Serializable {
     private String reservedField2;
 
     private String reservedField3;
+
+    private String reservedField4;
 
     private String reservedField5;
 
@@ -56,15 +53,47 @@ public class TblUser implements Serializable {
 
     private String credentialsNotExpired;
 
+    private String mobileNo;
 
-    private static final long serialVersionUID = 1L;
+    public TblUser(String userId, String userName, String userPass, String roleId, String org, String isAvailable, String initPass, String errorNum, String passStatus, Date lastPassUpdateTime, String createBy, Date createTime, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String reservedField4, String reservedField5, String reservedField6, String reservedField7, Date lastLoginTime, String notExpired, String accountNotLocked, String credentialsNotExpired, String mobileNo) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPass = userPass;
+        this.roleId = roleId;
+        this.org = org;
+        this.isAvailable = isAvailable;
+        this.initPass = initPass;
+        this.errorNum = errorNum;
+        this.passStatus = passStatus;
+        this.lastPassUpdateTime = lastPassUpdateTime;
+        this.createBy = createBy;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.reservedField4 = reservedField4;
+        this.reservedField5 = reservedField5;
+        this.reservedField6 = reservedField6;
+        this.reservedField7 = reservedField7;
+        this.lastLoginTime = lastLoginTime;
+        this.notExpired = notExpired;
+        this.accountNotLocked = accountNotLocked;
+        this.credentialsNotExpired = credentialsNotExpired;
+        this.mobileNo = mobileNo;
+    }
+
+    public TblUser() {
+        super();
+    }
 
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
-        this.userId = userId;
+        this.userId = userId == null ? null : userId.trim();
     }
 
     public String getUserName() {
@@ -72,7 +101,7 @@ public class TblUser implements Serializable {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userName = userName == null ? null : userName.trim();
     }
 
     public String getUserPass() {
@@ -80,7 +109,7 @@ public class TblUser implements Serializable {
     }
 
     public void setUserPass(String userPass) {
-        this.userPass = userPass;
+        this.userPass = userPass == null ? null : userPass.trim();
     }
 
     public String getRoleId() {
@@ -88,15 +117,7 @@ public class TblUser implements Serializable {
     }
 
     public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getMobileNo() {
-        return mobileNo;
-    }
-
-    public void setMobileNo(String mobileNo) {
-        this.mobileNo = mobileNo;
+        this.roleId = roleId == null ? null : roleId.trim();
     }
 
     public String getOrg() {
@@ -104,7 +125,7 @@ public class TblUser implements Serializable {
     }
 
     public void setOrg(String org) {
-        this.org = org;
+        this.org = org == null ? null : org.trim();
     }
 
     public String getIsAvailable() {
@@ -112,7 +133,7 @@ public class TblUser implements Serializable {
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public String getInitPass() {
@@ -120,7 +141,7 @@ public class TblUser implements Serializable {
     }
 
     public void setInitPass(String initPass) {
-        this.initPass = initPass;
+        this.initPass = initPass == null ? null : initPass.trim();
     }
 
     public String getErrorNum() {
@@ -128,7 +149,7 @@ public class TblUser implements Serializable {
     }
 
     public void setErrorNum(String errorNum) {
-        this.errorNum = errorNum;
+        this.errorNum = errorNum == null ? null : errorNum.trim();
     }
 
     public String getPassStatus() {
@@ -136,7 +157,7 @@ public class TblUser implements Serializable {
     }
 
     public void setPassStatus(String passStatus) {
-        this.passStatus = passStatus;
+        this.passStatus = passStatus == null ? null : passStatus.trim();
     }
 
     public Date getLastPassUpdateTime() {
@@ -147,20 +168,12 @@ public class TblUser implements Serializable {
         this.lastPassUpdateTime = lastPassUpdateTime;
     }
 
-    public String getReservedField4() {
-        return reservedField4;
-    }
-
-    public void setReservedField4(String reservedField4) {
-        this.reservedField4 = reservedField4;
-    }
-
     public String getCreateBy() {
         return createBy;
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getCreateTime() {
@@ -184,7 +197,7 @@ public class TblUser implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -192,7 +205,7 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -200,7 +213,7 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -208,7 +221,15 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
+    }
+
+    public String getReservedField4() {
+        return reservedField4;
+    }
+
+    public void setReservedField4(String reservedField4) {
+        this.reservedField4 = reservedField4 == null ? null : reservedField4.trim();
     }
 
     public String getReservedField5() {
@@ -216,7 +237,7 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField5(String reservedField5) {
-        this.reservedField5 = reservedField5;
+        this.reservedField5 = reservedField5 == null ? null : reservedField5.trim();
     }
 
     public String getReservedField6() {
@@ -224,7 +245,7 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField6(String reservedField6) {
-        this.reservedField6 = reservedField6;
+        this.reservedField6 = reservedField6 == null ? null : reservedField6.trim();
     }
 
     public String getReservedField7() {
@@ -232,7 +253,7 @@ public class TblUser implements Serializable {
     }
 
     public void setReservedField7(String reservedField7) {
-        this.reservedField7 = reservedField7;
+        this.reservedField7 = reservedField7 == null ? null : reservedField7.trim();
     }
 
     public Date getLastLoginTime() {
@@ -248,7 +269,7 @@ public class TblUser implements Serializable {
     }
 
     public void setNotExpired(String notExpired) {
-        this.notExpired = notExpired;
+        this.notExpired = notExpired == null ? null : notExpired.trim();
     }
 
     public String getAccountNotLocked() {
@@ -256,7 +277,7 @@ public class TblUser implements Serializable {
     }
 
     public void setAccountNotLocked(String accountNotLocked) {
-        this.accountNotLocked = accountNotLocked;
+        this.accountNotLocked = accountNotLocked == null ? null : accountNotLocked.trim();
     }
 
     public String getCredentialsNotExpired() {
@@ -264,6 +285,14 @@ public class TblUser implements Serializable {
     }
 
     public void setCredentialsNotExpired(String credentialsNotExpired) {
-        this.credentialsNotExpired = credentialsNotExpired;
+        this.credentialsNotExpired = credentialsNotExpired == null ? null : credentialsNotExpired.trim();
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 }

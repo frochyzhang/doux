@@ -3,7 +3,7 @@ package com.allinfinance.dev.ccs.dal.model;
 import java.util.Date;
 
 public class TblUserErrorLog {
-    private String excId;
+    private Integer excId;
 
     private String excRequParam;
 
@@ -31,12 +31,33 @@ public class TblUserErrorLog {
 
     private String org;
 
-    public String getExcId() {
+    public TblUserErrorLog(Integer excId, String excRequParam, String excName, String excMessage, String operUserId, String operUserName, String operMethod, String operUri, String operIp, Date operCreateTime, String reservedField1, String reservedField2, String reservedField3, String org) {
+        this.excId = excId;
+        this.excRequParam = excRequParam;
+        this.excName = excName;
+        this.excMessage = excMessage;
+        this.operUserId = operUserId;
+        this.operUserName = operUserName;
+        this.operMethod = operMethod;
+        this.operUri = operUri;
+        this.operIp = operIp;
+        this.operCreateTime = operCreateTime;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.org = org;
+    }
+
+    public TblUserErrorLog() {
+        super();
+    }
+
+    public Integer getExcId() {
         return excId;
     }
 
-    public void setExcId(String excId) {
-        this.excId = excId == null ? null : excId.trim();
+    public void setExcId(Integer excId) {
+        this.excId = excId;
     }
 
     public String getExcRequParam() {

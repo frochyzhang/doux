@@ -1,10 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-public class TblRole implements Serializable {
+public class TblRole {
     private String roleId;
 
     private String roleName;
@@ -29,24 +27,31 @@ public class TblRole implements Serializable {
 
     private String org;
 
-    private ArrayList<String> auth;
-
-    public ArrayList<String> getAuth() {
-        return auth;
+    public TblRole(String roleId, String roleName, String isAvailable, Date createTime, String createBy, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String weight, String org) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+        this.isAvailable = isAvailable;
+        this.createTime = createTime;
+        this.createBy = createBy;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+        this.weight = weight;
+        this.org = org;
     }
 
-    public void setAuth(ArrayList<String> auth) {
-        this.auth = auth;
+    public TblRole() {
+        super();
     }
-
-    private static final long serialVersionUID = 1L;
 
     public String getRoleId() {
         return roleId;
     }
 
     public void setRoleId(String roleId) {
-        this.roleId = roleId;
+        this.roleId = roleId == null ? null : roleId.trim();
     }
 
     public String getRoleName() {
@@ -54,7 +59,7 @@ public class TblRole implements Serializable {
     }
 
     public void setRoleName(String roleName) {
-        this.roleName = roleName;
+        this.roleName = roleName == null ? null : roleName.trim();
     }
 
     public String getIsAvailable() {
@@ -62,7 +67,7 @@ public class TblRole implements Serializable {
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public Date getCreateTime() {
@@ -78,7 +83,7 @@ public class TblRole implements Serializable {
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getUpdateTime() {
@@ -94,7 +99,7 @@ public class TblRole implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -102,7 +107,7 @@ public class TblRole implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -110,7 +115,7 @@ public class TblRole implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -118,7 +123,7 @@ public class TblRole implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
     }
 
     public String getWeight() {
@@ -126,7 +131,7 @@ public class TblRole implements Serializable {
     }
 
     public void setWeight(String weight) {
-        this.weight = weight;
+        this.weight = weight == null ? null : weight.trim();
     }
 
     public String getOrg() {
@@ -134,25 +139,6 @@ public class TblRole implements Serializable {
     }
 
     public void setOrg(String org) {
-        this.org = org;
-    }
-
-    @Override
-    public String toString() {
-        return "TblRole{" +
-                "roleId='" + roleId + '\'' +
-                ", roleName='" + roleName + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
-                ", createTime=" + createTime +
-                ", createBy='" + createBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", weight='" + weight + '\'' +
-                ", org='" + org + '\'' +
-                ", auth=" + auth +
-                '}';
+        this.org = org == null ? null : org.trim();
     }
 }

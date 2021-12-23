@@ -1,37 +1,28 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
-
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
-import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
+import com.allinfinance.dev.ccs.dal.model.TblMenuExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
 public interface TblMenuMapper {
+    long countByExample(TblMenuExample example);
 
-    List<MenusReqParam> pageSelectOptMenus(@Param("menusReqParam") MenusReqParam menusReqParam);
-    void delMenuBatch(@Param("menuIds") String[] ids);
+    int deleteByPrimaryKey(String menuId);
 
-    List<TblMenu> selectRootMenusPath(@Param("menuIds") List menuIds);
+    int insert(TblMenu record);
 
-    List<TblMenu> selectMenusPowers(@Param("menuIds") List menuIds);
+    int insertSelective(TblMenu record);
 
-    List<TblMenu> selectAllMenus();
+    List<TblMenu> selectByExample(TblMenuExample example);
 
-    List<TblMenu> selectMenusPathByPMid(@Param("level") String level, @Param("menuIds") List<String> menuId, @Param("parentMid") String parentMid);
+    TblMenu selectByPrimaryKey(String menuId);
 
-    void addMenu(TblMenu tblMenu);
+    int updateByExampleSelective(@Param("record") TblMenu record, @Param("example") TblMenuExample example);
 
-    void updateById(TblMenu tblMenu);
+    int updateByExample(@Param("record") TblMenu record, @Param("example") TblMenuExample example);
 
-    void deleteByPrimaryKey(@Param("menuId") String menuId);
+    int updateByPrimaryKeySelective(TblMenu record);
 
-    TblUser getCurrentUserInfo(@Param("userName") String userName, @Param("org") String bank);
-
-    List<TblMenu> selectMenus(@Param("authId") String authId);
-
-    String selectMaxMenuIdByRoot(TblMenu tblMenu);
-
-    String selectMaxMenuId(TblMenu tblMenu);
+    int updateByPrimaryKey(TblMenu record);
 }

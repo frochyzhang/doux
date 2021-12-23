@@ -1,20 +1,25 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
-
-public class TblMenuAuthKey implements Serializable {
+public class TblMenuAuthKey {
     private String authId;
 
     private String menuId;
 
-    private static final long serialVersionUID = 1L;
+    public TblMenuAuthKey(String authId, String menuId) {
+        this.authId = authId;
+        this.menuId = menuId;
+    }
+
+    public TblMenuAuthKey() {
+        super();
+    }
 
     public String getAuthId() {
         return authId;
     }
 
     public void setAuthId(String authId) {
-        this.authId = authId;
+        this.authId = authId == null ? null : authId.trim();
     }
 
     public String getMenuId() {
@@ -22,6 +27,6 @@ public class TblMenuAuthKey implements Serializable {
     }
 
     public void setMenuId(String menuId) {
-        this.menuId = menuId;
+        this.menuId = menuId == null ? null : menuId.trim();
     }
 }

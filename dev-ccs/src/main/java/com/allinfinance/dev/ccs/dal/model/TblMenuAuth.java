@@ -1,9 +1,8 @@
 package com.allinfinance.dev.ccs.dal.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
+public class TblMenuAuth extends TblMenuAuthKey {
     private String isAvailable;
 
     private Date createTime;
@@ -20,14 +19,28 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
 
     private String reservedField3;
 
-    private static final long serialVersionUID = 1L;
+    public TblMenuAuth(String authId, String menuId, String isAvailable, Date createTime, String createBy, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3) {
+        super(authId, menuId);
+        this.isAvailable = isAvailable;
+        this.createTime = createTime;
+        this.createBy = createBy;
+        this.updateTime = updateTime;
+        this.updateBy = updateBy;
+        this.reservedField1 = reservedField1;
+        this.reservedField2 = reservedField2;
+        this.reservedField3 = reservedField3;
+    }
+
+    public TblMenuAuth() {
+        super();
+    }
 
     public String getIsAvailable() {
         return isAvailable;
     }
 
     public void setIsAvailable(String isAvailable) {
-        this.isAvailable = isAvailable;
+        this.isAvailable = isAvailable == null ? null : isAvailable.trim();
     }
 
     public Date getCreateTime() {
@@ -43,7 +56,7 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
     }
 
     public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+        this.createBy = createBy == null ? null : createBy.trim();
     }
 
     public Date getUpdateTime() {
@@ -59,7 +72,7 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
     }
 
     public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+        this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
     public String getReservedField1() {
@@ -67,7 +80,7 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
     }
 
     public void setReservedField1(String reservedField1) {
-        this.reservedField1 = reservedField1;
+        this.reservedField1 = reservedField1 == null ? null : reservedField1.trim();
     }
 
     public String getReservedField2() {
@@ -75,7 +88,7 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
     }
 
     public void setReservedField2(String reservedField2) {
-        this.reservedField2 = reservedField2;
+        this.reservedField2 = reservedField2 == null ? null : reservedField2.trim();
     }
 
     public String getReservedField3() {
@@ -83,6 +96,6 @@ public class TblMenuAuth extends TblMenuAuthKey implements Serializable {
     }
 
     public void setReservedField3(String reservedField3) {
-        this.reservedField3 = reservedField3;
+        this.reservedField3 = reservedField3 == null ? null : reservedField3.trim();
     }
 }

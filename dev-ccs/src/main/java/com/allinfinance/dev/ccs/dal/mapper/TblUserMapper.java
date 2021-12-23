@@ -1,32 +1,28 @@
 package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblUser;
-import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
-import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
+import com.allinfinance.dev.ccs.dal.model.TblUserExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface TblUserMapper {
+    long countByExample(TblUserExample example);
 
-public interface TblUserMapper  {
     int deleteByPrimaryKey(String userId);
 
     int insert(TblUser record);
 
     int insertSelective(TblUser record);
 
+    List<TblUser> selectByExample(TblUserExample example);
+
     TblUser selectByPrimaryKey(String userId);
-    TblUser selectByUserNameAndBank(String userName, String org);
 
-    TblUser selectByUserName(String userName);
+    int updateByExampleSelective(@Param("record") TblUser record, @Param("example") TblUserExample example);
 
-    int updateByPrimaryKeySelective(@Param("record")TblUser record);
+    int updateByExample(@Param("record") TblUser record, @Param("example") TblUserExample example);
+
+    int updateByPrimaryKeySelective(TblUser record);
 
     int updateByPrimaryKey(TblUser record);
-
-    List<TblUser> pageSelectUsers(@Param("userReqParam") UserReqParam userReqParam);
-
-    TblUser selectByNameAndOrg(@Param("userReqParam") UserReqParam userReqParam);
-
-    List<TblUser> selectUsersByRoleIds(@Param("roleIds") List<String> roleIds);
 }
