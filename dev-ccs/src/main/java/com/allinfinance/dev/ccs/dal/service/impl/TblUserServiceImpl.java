@@ -91,7 +91,7 @@ public class TblUserServiceImpl implements TblUserService {
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
         List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);
-        return new PageInfo<>(users);
+        return new PageInfo<TblUser>(users);
     }
 
     @Override
@@ -100,9 +100,10 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
 
+
     @Override
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
-        return tblUserMapper.selectByNameAndOrg(userReqParam);
+       return tblUserMapper.selectByNameAndOrg(userReqParam);
     }
 
     @Override

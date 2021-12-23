@@ -46,7 +46,7 @@ public class UserController {
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "根据id查询用户")
+    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {

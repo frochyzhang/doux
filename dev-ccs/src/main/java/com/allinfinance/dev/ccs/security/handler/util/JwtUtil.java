@@ -127,7 +127,7 @@ public class JwtUtil {
     }
 
     /**
-     * 获取用户角色权重
+     * 获取用户角色
      *
      * @param token
      * @return token中包含的用户角色

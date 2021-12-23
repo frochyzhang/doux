@@ -56,6 +56,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             String org = JwtUtil.getOrg(token);
             String userId = JwtUtil.getUserId(token);
             String roleId = JwtUtil.getRole(token);
+            String weight = JwtUtil.getWeight(token);
             if(JwtUtil.isJwtExpired(token)){
                 response.setStatus(HttpServletResponse.SC_OK);
                 Result result = Result.failure(ResultCodeEnum.USER_ACCOUNT_USE_BY_OTHERS);
@@ -65,7 +66,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 return ;
             }
             if(JwtUtil.isWillExpired(token)){
-                String sign = JwtUtil.sign(username, userId, roleId, org);
+                String sign = JwtUtil.sign(username, userId, roleId, org,weight);
                 response.setHeader("Access-control-Expose-Headers",AosContent.AOS_TOKEN);
                 response.setHeader(AosContent.AOS_TOKEN,sign);
             }

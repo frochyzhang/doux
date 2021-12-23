@@ -64,7 +64,7 @@ public class LoginController {
             return result;
         }
         TblUser currentUser = (TblUser) result.getData();
-        String sign = JwtUtil.sign(currentUser.getUserName(), String.valueOf(currentUser.getUserId()), currentUser.getRoleId(), currentUser.getOrg());
+        String sign = JwtUtil.sign(currentUser.getUserName(), String.valueOf(currentUser.getUserId()), currentUser.getRoleId(), currentUser.getOrg(),"3");
         httpServletResponse.setHeader("Access-control-Expose-Headers", AosContent.AOS_TOKEN);
         httpServletResponse.setHeader(AosContent.AOS_TOKEN, sign);
         httpServletResponse.setContentType("text/json;charset=utf-8");

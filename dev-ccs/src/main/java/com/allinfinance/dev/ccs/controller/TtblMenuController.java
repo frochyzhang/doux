@@ -112,7 +112,7 @@ public class TtblMenuController {
     @OperLog(operModul = "菜单管理-删除菜单", operType = AosContent.DELETE, operDesc = "删除菜单信息")
     public Result delMenu(@RequestBody MenusReqParam menusReqParam) {
         String[] menusId = menusReqParam.getMenusId();
-        logger.info("菜单删除接口接收参数-->{}", (menusId));
+//        logger.info("菜单删除接口接收参数-->{}", (menusId));
         try {
             tblMenuService.delMenuByIds(menusId);
         } catch (RuntimeException e) {

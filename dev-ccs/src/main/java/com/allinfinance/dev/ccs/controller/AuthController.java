@@ -64,10 +64,9 @@ public class AuthController {
         //先判断页面是否有传机构参数，如果没传参数就只
         if (StringUtils.isBlank(authReqParam.getOrg()))
             //判断当前操作员是否是超级管理员
-            if(weight.equals(AosContent.SUPERADMIN))
-            return null;
+            if (weight.equals(AosContent.SUPERADMIN)){}
+                return null;
     }
-
 
     //更新权限
     @PostMapping
