@@ -25,6 +25,7 @@
         <!--        <module>dev-nds</module>-->
                 <module>dev-ccs</module>
         <module>dev-parent</module>
+        <module>dev-xxl-job</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 
