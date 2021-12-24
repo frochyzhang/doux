@@ -1,19 +1,22 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
-import com.allinfinance.dev.ccs.dal.model.*;
+import com.allinfinance.dev.ccs.dal.model.TblMenu;
+import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;

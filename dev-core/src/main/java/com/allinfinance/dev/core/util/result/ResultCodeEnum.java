@@ -1,4 +1,4 @@
-package com.allinfinance.dev.ccs.result;
+package com.allinfinance.dev.core.util.result;
 
 import java.util.Arrays;
 

@@ -1,33 +1,25 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.content.RSAKeyProperties;
-import com.allinfinance.dev.ccs.controller.LoginController;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
 import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
 import com.allinfinance.dev.ccs.dal.service.LoginService;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
 import com.allinfinance.dev.ccs.utils.QRCodeUtils;
-import com.allinfinance.dev.ccs.utils.annotation.OperLog;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

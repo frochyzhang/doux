@@ -1,12 +1,10 @@
 package com.allinfinance.dev.ccs.security.handler;
 
 
-import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.respdto.LoginSeccessRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
+import com.allinfinance.dev.core.util.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
