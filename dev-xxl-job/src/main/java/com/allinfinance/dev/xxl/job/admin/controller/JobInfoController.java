@@ -1,5 +1,6 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
+import com.allinfinance.dev.core.util.result.Result;
 import com.allinfinance.dev.xxl.job.admin.core.exception.XxlJobException;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobGroup;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
@@ -14,23 +15,26 @@ import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobGroupDao;
 import com.allinfinance.dev.xxl.job.admin.service.LoginService;
 import com.allinfinance.dev.xxl.job.admin.service.XxlJobService;
-import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +43,8 @@ import java.util.Map;
  *
  * @author xuxueli 2015-12-19 16:13:16
  */
-@Controller
-@RequestMapping("/jobinfo")
+@RestController
+@RequestMapping("/jobs")
 public class JobInfoController {
     private static final Logger logger = LoggerFactory.getLogger(JobInfoController.class);
 
@@ -49,15 +53,16 @@ public class JobInfoController {
     @Resource
     private XxlJobService xxlJobService;
 
-    @RequestMapping
-    public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
+    @GetMapping("constants")
+    public Result index(HttpServletRequest request, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
 
+        Map<String, Object> map = new HashMap<>();
         // 枚举-字典
-        model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());        // 路由策略-列表
-        model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());                                // Glue类型-字典
-        model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());        // 阻塞处理策略-字典
-        model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values());                        // 调度类型
-        model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values());                    // 调度过期策略
+        map.put("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());        // 路由策略-列表
+        map.put("GlueTypeEnum", GlueTypeEnum.values());                                // Glue类型-字典
+        map.put("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());        // 阻塞处理策略-字典
+        map.put("ScheduleTypeEnum", ScheduleTypeEnum.values());                        // 调度类型
+        map.put("MisfireStrategyEnum", MisfireStrategyEnum.values());                    // 调度过期策略
 
         // 执行器列表
         List<XxlJobGroup> xxlJobGroupDaoAll = xxlJobGroupDao.findAll();
@@ -68,24 +73,25 @@ public class JobInfoController {
             throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
         }
 
-        model.addAttribute("JobGroupList", jobGroupList);
-        model.addAttribute("jobGroup", jobGroup);
+        map.put("JobGroupList", jobGroupList);
+        map.put("jobGroup", jobGroup);
 
-        return "jobinfo/jobinfo.index";
+
+        return Result.success(map);
     }
 
-    public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all) {
+    public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupListAll) {
         List<XxlJobGroup> jobGroupList = new ArrayList<>();
-        if (jobGroupList_all != null && jobGroupList_all.size() > 0) {
+        if (jobGroupListAll != null && jobGroupListAll.size() > 0) {
             XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
             if (loginUser.getRole() == 1) {
-                jobGroupList = jobGroupList_all;
+                jobGroupList = jobGroupListAll;
             } else {
                 List<String> groupIdStrs = new ArrayList<>();
                 if (loginUser.getPermission() != null && loginUser.getPermission().trim().length() > 0) {
                     groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
                 }
-                for (XxlJobGroup groupItem : jobGroupList_all) {
+                for (XxlJobGroup groupItem : jobGroupListAll) {
                     if (groupIdStrs.contains(String.valueOf(groupItem.getId()))) {
                         jobGroupList.add(groupItem);
                     }
@@ -102,61 +108,52 @@ public class JobInfoController {
         }
     }
 
-    @RequestMapping("/pageList")
-    @ResponseBody
-    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
-                                        @RequestParam(required = false, defaultValue = "10") int length,
-                                        int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+    @GetMapping
+    public Result pageList(@RequestParam(required = false, defaultValue = "0") int start,
+                           @RequestParam(required = false, defaultValue = "10") int length,
+                           int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
 
-        return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+        return Result.success(xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author));
     }
 
-    @RequestMapping("/add")
-    @ResponseBody
-    public ReturnT<String> add(XxlJobInfo jobInfo) {
-        return xxlJobService.add(jobInfo);
+    @PostMapping
+    public Result add(XxlJobInfo jobInfo) {
+        return Result.success(xxlJobService.add(jobInfo));
     }
 
-    @RequestMapping("/update")
-    @ResponseBody
-    public ReturnT<String> update(XxlJobInfo jobInfo) {
-        return xxlJobService.update(jobInfo);
+    @PutMapping
+    public Result update(XxlJobInfo jobInfo) {
+        return Result.success(xxlJobService.update(jobInfo));
     }
 
-    @RequestMapping("/remove")
-    @ResponseBody
-    public ReturnT<String> remove(int id) {
-        return xxlJobService.remove(id);
+    @DeleteMapping("{jobId}")
+    public Result remove(@PathVariable int jobId) {
+        return Result.success(xxlJobService.remove(jobId));
     }
 
-    @RequestMapping("/stop")
-    @ResponseBody
-    public ReturnT<String> pause(int id) {
-        return xxlJobService.stop(id);
+    @PutMapping("{jobId}/stop")
+    public Result pause(@PathVariable int jobId) {
+        return Result.success(xxlJobService.stop(jobId));
     }
 
-    @RequestMapping("/start")
-    @ResponseBody
-    public ReturnT<String> start(int id) {
-        return xxlJobService.start(id);
+    @PutMapping("{jobId}/start")
+    public Result start(@PathVariable int jobId) {
+        return Result.success(xxlJobService.start(jobId));
     }
 
-    @RequestMapping("/trigger")
-    @ResponseBody
-    //@PermissionLimit(limit = false)
-    public ReturnT<String> triggerJob(int id, String executorParam, String addressList) {
+    @PutMapping("{jobId}/trigger")
+    public Result triggerJob(@PathVariable int jobId, String executorParam, String addressList) {
         // force cover job param
         if (executorParam == null) {
             executorParam = "";
         }
 
-        JobTriggerPoolHelper.trigger(id, TriggerTypeEnum.MANUAL, -1, null, executorParam, addressList);
-        return ReturnT.SUCCESS;
+        JobTriggerPoolHelper.trigger(jobId, TriggerTypeEnum.MANUAL, -1, null, executorParam, addressList);
+        return Result.success();
     }
 
-    @RequestMapping("/nextTriggerTime")
-    @ResponseBody
-    public ReturnT<List<String>> nextTriggerTime(String scheduleType, String scheduleConf) {
+    @GetMapping("/nextTriggerTime")
+    public Result nextTriggerTime(String scheduleType, String scheduleConf) {
 
         XxlJobInfo paramXxlJobInfo = new XxlJobInfo();
         paramXxlJobInfo.setScheduleType(scheduleType);
@@ -175,9 +172,9 @@ public class JobInfoController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
+            return Result.failure("500", (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
         }
-        return new ReturnT<>(result);
+        return Result.success(result);
 
     }
 
