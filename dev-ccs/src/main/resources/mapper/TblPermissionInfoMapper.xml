@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper">
-  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblApiPermissionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo">
     <id column="PERMISSIONCODE" jdbcType="VARCHAR" property="permissioncode" />
     <result column="URL" jdbcType="VARCHAR" property="url" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
@@ -34,13 +34,13 @@
     delete from TBL_API_PERMISSION_INFO
     where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo">
     insert into TBL_API_PERMISSION_INFO (PERMISSIONCODE, URL, DESCRIPTION, 
       ENABLE, FIELD1)
     values (#{permissioncode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{enable,jdbcType=VARCHAR}, #{field1,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo">
     insert into TBL_API_PERMISSION_INFO
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="permissioncode != null">
@@ -77,7 +77,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo">
     update TBL_API_PERMISSION_INFO
     <set>
       <if test="url != null">
@@ -95,7 +95,7 @@
     </set>
     where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblPermissionInfo">
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo">
     update TBL_API_PERMISSION_INFO
     set URL = #{url,jdbcType=VARCHAR},
       DESCRIPTION = #{description,jdbcType=VARCHAR},

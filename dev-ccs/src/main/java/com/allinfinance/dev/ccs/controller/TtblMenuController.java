@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,15 +39,15 @@ public class TtblMenuController {
     @OperLog(operModul = "菜单管理-查询菜单", operType = AosContent.QUERY, operDesc = "分页查询菜单列表")
     public Result getMenusList(MenusReqParam menusReqParam) {
         logger.info("菜单查询开始，接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
-        PageInfo<MenusReqParam> optLogs;
+        PageInfo<TblMenu> menus;
         try {
-            optLogs = tblMenuService.pageSelectOptMenus(menusReqParam);
+            menus = tblMenuService.pageSelectOptMenus(menusReqParam);
         } catch (Exception e) {
             logger.error("查询菜单异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("查询到的菜单列表: {}", optLogs);
-        return Result.success(optLogs);
+        logger.info("查询到的菜单列表: {}", menus);
+        return Result.success(menus);
     }
 
 
@@ -112,7 +111,6 @@ public class TtblMenuController {
     @OperLog(operModul = "菜单管理-删除菜单", operType = AosContent.DELETE, operDesc = "删除菜单信息")
     public Result delMenu(@RequestBody MenusReqParam menusReqParam) {
         String[] menusId = menusReqParam.getMenusId();
-//        logger.info("菜单删除接口接收参数-->{}", (menusId));
         try {
             tblMenuService.delMenuByIds(menusId);
         } catch (RuntimeException e) {

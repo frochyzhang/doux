@@ -19,9 +19,9 @@ import java.util.List;
  * @since 2021-05-14
  */
 public interface TblMenuService {
-    PageInfo<MenusReqParam> pageSelectOptMenus(MenusReqParam menusReqParam);
+    PageInfo<TblMenu> pageSelectOptMenus(MenusReqParam menusReqParam);
 
-    void delMenuByIds(String[] ids);
+    int delMenuByIds(String[] ids);
 
     void deleteByPrimaryKey(String menuId);
 

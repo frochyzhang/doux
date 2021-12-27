@@ -16,6 +16,7 @@ public class MenusReqParam extends BaseReqParam {
     private String[] menusId;
     private String menuId;
     private String menuName;
+    private String isAvailable;
     private String nodeType;
 
     public String getMenuId() {
@@ -50,12 +51,21 @@ public class MenusReqParam extends BaseReqParam {
         this.menusId = menusId;
     }
 
+    public String getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(String isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
     @Override
     public String toString() {
         return "MenusReqParam{" +
                 "menusId=" + Arrays.toString(menusId) +
                 ", menuId='" + menuId + '\'' +
                 ", menuName='" + menuName + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
                 ", nodeType='" + nodeType + '\'' +
                 '}';
     }

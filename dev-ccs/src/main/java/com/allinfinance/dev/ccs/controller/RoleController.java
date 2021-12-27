@@ -171,13 +171,13 @@ public class RoleController {
             //插入角色权限映射
             createRoleAuthMapping(tblRole);
             //查询API_PERMISSION
-            List<TblPermissionInfo> permissionInfos = tblRoleService.selectPermissionInfos();
+            List<TblApiPermissionInfo> permissionInfos = tblRoleService.selectPermissionInfos();
             logger.info("查询到的所有permission code: {}", permissionInfos);
             //插入AUTH_PERMISSION_CODE
-            for (TblPermissionInfo tblPermissionInfo : permissionInfos) {
+            for (TblApiPermissionInfo TblApiPermissionInfo : permissionInfos) {
                 TblRolePermissionInfo rolePermissionInfo = new TblRolePermissionInfo();
                 rolePermissionInfo.setRoleId(tblRole.getRoleId());
-                rolePermissionInfo.setPermissioncode(tblPermissionInfo.getPermissioncode());
+                rolePermissionInfo.setPermissioncode(TblApiPermissionInfo.getPermissioncode());
                 logger.info("插入权限代码前 rolePermissionInfo: {}", rolePermissionInfo);
                 int permissionCode = tblRoleService.insertRolePermissionInfoSelective(rolePermissionInfo);
                 logger.info("插入权限代码结果: {}", permissionCode);

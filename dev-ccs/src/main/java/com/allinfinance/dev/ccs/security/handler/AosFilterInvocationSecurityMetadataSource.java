@@ -1,9 +1,9 @@
 package com.allinfinance.dev.ccs.security.handler;
 
 
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
-import com.allinfinance.dev.ccs.dal.service.TblPermissionInfoService;
+import com.allinfinance.dev.ccs.dal.service.TblApiPermissionInfoService;
 import com.allinfinance.dev.ccs.dal.service.TblRolePermissionInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.List;
 @Component
 public class AosFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     @Autowired
-    private TblPermissionInfoService tblPermissionService;
+    private TblApiPermissionInfoService tblPermissionService;
     @Autowired
     private TblRolePermissionInfoService itblRolePermissionService;
     @Override
@@ -41,7 +41,7 @@ public class AosFilterInvocationSecurityMetadataSource implements FilterInvocati
             String[] urlparam = requestUrl.split("\\?");
             requestUrl=urlparam[0];
         }
-        TblPermissionInfo permission=tblPermissionService.getPromissionInfo(requestUrl);
+        TblApiPermissionInfo permission=tblPermissionService.getPromissionInfo(requestUrl);
         if(permission == null){
             //请求路径没有配置权限，表明该请求接口可以任意访问
             return null;

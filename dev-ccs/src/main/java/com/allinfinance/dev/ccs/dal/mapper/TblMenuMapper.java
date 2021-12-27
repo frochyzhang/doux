@@ -25,4 +25,8 @@ public interface TblMenuMapper {
     int updateByPrimaryKeySelective(TblMenu record);
 
     int updateByPrimaryKey(TblMenu record);
+
+    String selectMaxMenuIdByRoot(TblMenu tblMenu);
+
+    String selectMaxMenuId(TblMenu tblMenu);
 }

@@ -14,7 +14,7 @@ import java.util.List;
  * @since 2021-05-16
  */
 public interface TblRolePermissionInfoService {
-    public List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
+    List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
 
     List<TblRolePermissionInfo> getRoleIdByPermissionCode(String permissionCode);
 }

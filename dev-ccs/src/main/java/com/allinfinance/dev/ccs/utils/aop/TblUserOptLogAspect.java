@@ -17,15 +17,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ：Lucas Li
@@ -39,6 +38,9 @@ import java.util.Map;
 public class TblUserOptLogAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(TblUserOptLogAspect.class);
+
+    @Value("${logType}")
+    private String logType;
 
     @Autowired
     private TblOptLogService tblOptLogService;
@@ -54,35 +56,29 @@ public class TblUserOptLogAspect {
         // 获取RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         // 从获取RequestAttributes中获取HttpServletRequest的信息
+        assert requestAttributes != null;
         HttpServletRequest request = (HttpServletRequest) requestAttributes
                 .resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
-        TblUserOptLog operlog = new TblUserOptLog();
+        TblUserOptLog log = new TblUserOptLog();
         try {
-//            operlog.setOperId(UuidUtil.get32UUID()); // 主键ID
-
             // 从切面织入点处通过反射机制获取织入点处的方法
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             // 获取切入点所在的方法
             Method method = signature.getMethod();
             // 获取操作
-            OperLog opLog = method.getAnnotation(OperLog.class);
-            if (opLog != null) {
-                String operModul = opLog.operModul();
-                String operType = opLog.operType();
-                String operDesc = opLog.operDesc();
-                operlog.setOperModule(operModul); // 操作模块
-                operlog.setOperType(operType); // 操作类型
-                operlog.setOperDesc(operDesc); // 操作描述
+            OperLog optLog = method.getAnnotation(OperLog.class);
+            if (optLog != null) {
+                log.setOperModule(optLog.operModul()); // 操作模块
+                log.setOperType(optLog.operType()); // 操作类型
+                log.setOperDesc(optLog.operDesc()); // 操作描述
             }
             // 获取请求的类名
             String className = joinPoint.getTarget().getClass().getName();
             // 获取请求的方法名
             String methodName = method.getName();
             methodName = className + "." + methodName;
-
-            operlog.setOperMethod(methodName); // 请求方法
-
+            log.setOperMethod(methodName); // 请求方法
             // 请求的参数
             assert request != null;
             Map<String, String> rtnMap = converMap(request.getParameterMap());
@@ -93,70 +89,22 @@ public class TblUserOptLogAspect {
                 Object[] args = joinPoint.getArgs();
                 params = ObjectMapUtil.getParameterValue(args);
             }
-            operlog.setOperRequParam(params); // 请求参数
-//            operlog.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
-            operlog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
-            operlog.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
-            operlog.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
-            operlog.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
-            operlog.setOperUri(request.getRequestURI()); // 请求URI
-            operlog.setOperCreateTime(new Date()); // 创建时间
-            // 实际使用中因为查询操作太多 所以剔除部分无意义的查询日志  无参数查询不记录
-            if (!(operlog.getOperType().equals(AosContent.QUERY) && "{}".equals(operlog.getOperRequParam()))) {
-                tblOptLogService.insertLog(operlog);
+            log.setOperRequParam(params); // 请求参数
+//            log.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
+            log.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
+            log.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
+            log.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
+            log.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
+            log.setOperUri(request.getRequestURI()); // 请求URI
+            log.setOperCreateTime(new Date()); // 创建时间
+            // 修改为配置文件控制查询范围
+            List<String> types = Arrays.asList(logType.split(","));
+            if (types.contains(log.getOperType())) {
+                tblOptLogService.insertLog(log);
             }
         } catch (Exception e) {
-            logger.error("操作日志INSERT异常-->日志信息{}", operlog.toString());
+            logger.error("操作日志INSERT异常-->日志信息{}", log.toString());
         }
-    }
-
-    /**
-     * 异常返回通知，用于拦截异常日志信息 连接点抛出异常后执行
-     *
-     * @param joinPoint 切入点
-     * @param e         异常信息
-     */
-    @AfterThrowing(pointcut = "execution(* com.allinfinance..*Controller.*(..))", throwing = "e")
-    public void saveTblUserErrorLog(JoinPoint joinPoint, Throwable e) {
-        // 获取RequestAttributes
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        // 从获取RequestAttributes中获取HttpServletRequest的信息
-        HttpServletRequest request = (HttpServletRequest) requestAttributes
-                .resolveReference(RequestAttributes.REFERENCE_REQUEST);
-
-        TblUserErrorLog excepLog = new TblUserErrorLog();
-        try {
-            // 从切面织入点处通过反射机制获取织入点处的方法
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            // 获取切入点所在的方法
-            Method method = signature.getMethod();
-//            excepLog.setExcId(UuidUtil.get32UUID());
-            // 获取请求的类名
-            String className = joinPoint.getTarget().getClass().getName();
-            // 获取请求的方法名
-            String methodName = method.getName();
-            methodName = className + "." + methodName;
-            // 请求的参数
-            Map<String, String> rtnMap = converMap(request.getParameterMap());
-            // 将参数所在的数组转换成json
-            String params = JSON.toJSONString(rtnMap);
-            excepLog.setExcRequParam(params); // 请求参数
-            excepLog.setOperMethod(methodName); // 请求方法名
-            excepLog.setExcName(e.getClass().getName()); // 异常名称
-            excepLog.setExcMessage(stackTraceToString(e.getClass().getName(), e.getMessage(), e.getStackTrace())); // 异常信息
-            excepLog.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 操作员ID
-            excepLog.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 操作员名称
-            excepLog.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 操作员名称
-            excepLog.setOperUri(request.getRequestURI()); // 操作URI
-            excepLog.setOperIp(null); // 操作员IP
-            excepLog.setOperCreateTime(new Date()); // 发生异常时间
-
-//            exceptionLogService.insert(excepLog);
-
-        } catch (Exception e2) {
-            e2.printStackTrace();
-        }
-
     }
 
     /**
@@ -170,20 +118,5 @@ public class TblUserOptLogAspect {
             rtnMap.put(key, paramMap.get(key)[0]);
         }
         return rtnMap;
-    }
-
-    /**
-     * 转换异常信息为字符串
-     *
-     * @param exceptionName    异常名称
-     * @param exceptionMessage 异常信息
-     * @param elements         堆栈信息
-     */
-    public String stackTraceToString(String exceptionName, String exceptionMessage, StackTraceElement[] elements) {
-        StringBuilder strBuff = new StringBuilder();
-        for (StackTraceElement stet : elements) {
-            strBuff.append(stet).append("\n");
-        }
-        return exceptionName + ":" + exceptionMessage + "\n\t" + strBuff;
     }
 }

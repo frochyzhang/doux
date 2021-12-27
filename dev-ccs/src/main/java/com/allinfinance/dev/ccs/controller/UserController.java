@@ -21,7 +21,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -46,7 +48,7 @@ public class UserController {
     //Id查询用户
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    @OperLog(operModul = "用户管理-查询用户",operType = AosContent.QUERY,operDesc = "根据id查询用户")
+    @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
         try {
@@ -71,19 +73,10 @@ public class UserController {
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
         String token = request.getHeader(AosContent.AOS_TOKEN);
-        String org = JwtUtil.getOrg(token);
-        logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (userReqParam.getOrg() == null || "".equals(userReqParam.getOrg())) {
-            //当前的用户是超级管理员时显示所有列表
-            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
-                userReqParam.setOrg(null);
-            } else {
-                userReqParam.setOrg(org);
-            }
+        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+            userReqParam.setOrg(JwtUtil.getOrg(token));
         }
-//        剔除不可用的用户(20210804评审认为应当删除页面的删除按钮，改为显示所有用户通过update维护，所以显示所有的用户)
-//        userReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
-        PageInfo<TblUser> users = null;
+        PageInfo<TblUser> users;
         try {
             users = tblUserService.pageSelectUsers(userReqParam);
         } catch (Exception e) {
@@ -115,30 +108,26 @@ public class UserController {
         //设置初始密码
         tblUser.setInitPass(passwordEncoder.encode(userReqParam.getUserPass()));
         // 对密码进行加密
-        userReqParam.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
+        tblUser.setUserPass(passwordEncoder.encode(userReqParam.getUserPass()));
         //配置用户口令
+        //设置首次用户登录时显示绑定二维码，设置为未绑定状态
+        tblUser.setReservedField1(AosContent.NOT_BIND);
+        //设置用户的Issuer
+        tblUser.setReservedField2(GoogleAuthenticator.generateBase32Secret());
         BankManageReqParam bankReqParam = new BankManageReqParam();
         bankReqParam.setOrg(userReqParam.getOrg());
-        List<TblBankManage> tblBankManages = tblBankService.selectByBankInfo(bankReqParam);
-        tblUser.setReservedField2(tblBankManages.get(0).getBankNameEn());
+        // 查询用户所属机构的英文简称
+        tblBankService.selectBankInfo(bankReqParam).stream().findFirst().ifPresent(tblBankManage -> tblUser.setReservedField3(tblBankManage.getBankNameEn()));
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userName = JwtUtil.getUsername(token);
-        logger.info("获取当前系统用户姓名:userName-->{}", userName);
-        //设置首次用户登录时显示绑定二维码
-        tblUser.setReservedField1("0");
-        //查询bankmanage表设置用户的Issuer
-        TblBankManage tblBankManage = tblBankService.selectBankInfoByOrg(userReqParam.getOrg());
-        tblUser.setReservedField3(tblBankManage.getBankNameEn());
-        tblUser.setReservedField2(GoogleAuthenticator.generateBase32Secret());
-        //设置用户的Issuer
-
         tblUser.setCreateBy(userName);
+        tblUser.setCreateTime(new Date());
         //系统用户重名检查
-        TblUser isExitUser = tblUserService.selectByNameAndOrg(userReqParam);
+        TblUser isExitUser = tblUserService.selectByUserName(userReqParam);
         if (isExitUser != null) {
             return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
         }
-        int result = 0;
+        int result;
         try {
             result = tblUserService.insertSelective(tblUser);
         } catch (Exception e) {

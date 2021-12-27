@@ -28,7 +28,7 @@ public interface TblBankManageService {
 
     int insertSelective(TblBankManage record);
 
-    TblBankManage selectByPrimaryKey(Integer bankId);
+    TblBankManage selectByPrimaryKey(String bankId);
 
     int updateByPrimaryKeySelective(TblBankManage record);
 
@@ -36,7 +36,5 @@ public interface TblBankManageService {
 
     PageInfo<TblBankManage> pageSelectBanks(BankManageReqParam bankReqParam);
 
-    List<TblBankManage> selectByBankInfo(BankManageReqParam bankReqParam);
-
-    TblBankManage selectBankInfoByOrg(String org);
+    List<TblBankManage> selectBankInfo(BankManageReqParam bankReqParam);
 }

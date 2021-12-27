@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
@@ -10,6 +9,7 @@ import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
+import com.allinfinance.dev.ccs.dal.respdto.MenuDto;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
@@ -19,6 +19,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,19 +50,33 @@ public class TtblMenuServiceImpl implements TblMenuService {
     @Autowired
     TblUserMapper userMapper;
 
-    private ConcurrentHashMap<String, List<TblMenu>> menusMap = new ConcurrentHashMap<>();
-    private AtomicInteger intLevel = new AtomicInteger(0);
 
     @Override
-    public PageInfo<MenusReqParam> pageSelectOptMenus(MenusReqParam menusReqParam) {
+    public PageInfo<TblMenu> pageSelectOptMenus(MenusReqParam menusReqParam) {
         PageHelper.startPage(menusReqParam.getCurrent(), menusReqParam.getPageSize());
-        List<MenusReqParam> menusReqParams = tblMenuMapper.pageSelectOptMenus(menusReqParam);
-        return new PageInfo<MenusReqParam>(menusReqParams);
+        TblMenuExample example = new TblMenuExample();
+        TblMenuExample.Criteria criteria = example.createCriteria();
+        if (StringUtils.isNotBlank(menusReqParam.getIsAvailable())) {
+            criteria.andIsAvailableEqualTo(menusReqParam.getIsAvailable());
+        } else if (StringUtils.isNotBlank(menusReqParam.getMenuId())) {
+            criteria.andMenuIdEqualTo(menusReqParam.getMenuId());
+        } else if (StringUtils.isNotBlank(menusReqParam.getNodeType())) {
+            criteria.andNodeTypeEqualTo(menusReqParam.getNodeType());
+        } else if (StringUtils.isNotBlank(menusReqParam.getMenuName())) {
+            criteria.andMenuNameLike(menusReqParam.getMenuName());
+        }
+        List<TblMenu> menusReqParams = tblMenuMapper.selectByExample(example);
+        return new PageInfo<>(menusReqParams);
     }
 
     @Override
-    public void delMenuByIds(String[] ids) {
-        tblMenuMapper.delMenuBatch(ids);
+    public int delMenuByIds(String[] ids) {
+        TblMenuExample example = new TblMenuExample();
+        TblMenuExample.Criteria criteria = example.createCriteria();
+        criteria.andMenuIdIn(Arrays.asList(ids));
+        TblMenu tblMenu = new TblMenu();
+        tblMenu.setIsAvailable(AosContent.IS_AVAILABLE_FALSE);
+        return tblMenuMapper.updateByExampleSelective(tblMenu, example);
     }
 
     @Override
@@ -71,7 +86,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
     @Override
     public Result addMenu(TblMenu tblMenu, HttpServletRequest request) {
-        logger.info("**********************************菜单新增服务开始，接收参数-->{}*****************************", tblMenu.toString());
+        logger.info("菜单新增服务开始,{}: ", tblMenu.toString());
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String username = JwtUtil.getUsername(token);
         tblMenu.setCreateTime(new Date());
@@ -110,30 +125,31 @@ public class TtblMenuServiceImpl implements TblMenuService {
             if (tblMenu.getNodeType().equals(AosContent.MENU_BTN)) {
                 tblMenu.setPath(tblMenu.getParentMid() + ":" + tblMenu.getPath());
             }
-            tblMenuMapper.addMenu(tblMenu);
+            tblMenuMapper.insertSelective(tblMenu);
         } catch (RuntimeException e) {
             logger.error("新增菜单异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("*****************菜单新增服务结束***********");
+        logger.info("菜单新增服务结束！");
         return Result.success();
 
     }
 
     @Override
-    public Result updateMenuById(TblMenu tblMenu,HttpServletRequest request) {
-        logger.info("******************菜单更新服务开始，接收参数-->{}*******************", tblMenu.toString());
+    public Result updateMenuById(TblMenu tblMenu, HttpServletRequest request) {
+        logger.info("菜单更新服务开始，接收参数-->{}", tblMenu.toString());
         try {
             String token = request.getHeader(AosContent.AOS_TOKEN);
             String username = JwtUtil.getUsername(token);
             tblMenu.setUpdateTime(new Date());
             tblMenu.setUpdateBy(username);
-            tblMenuMapper.updateById(tblMenu);
+            tblMenuMapper.updateByPrimaryKeySelective(tblMenu);
+//            tblMenuMapper.updateById(tblMenu);
         } catch (RuntimeException e) {
             logger.error("更新菜单异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        logger.info("*************************菜单更新服务结束*******************");
+        logger.info("菜单更新服务结束!");
         return Result.success();
     }
 
@@ -162,7 +178,8 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     menuIds.add(authMenu.getMenuId());
                 });
                 // 先获取所有节点
-                List<TblMenu> allMenus = tblMenuMapper.selectAllMenus();
+                List<TblMenu> allMenus = tblMenuMapper.selectByExample(new TblMenuExample());
+//                List<TblMenu> allMenus = tblMenuMapper.selectAllMenus();
                 // 查询出所有的根节点
                 List<TblMenu> secondMenus = new ArrayList<>();
                 // 存储menuIds包含的节点
@@ -197,7 +214,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 resultMenu.addAll(secondMenus);
                 // 去除可能存在的重复
                 List<TblMenu> collectMenus = resultMenu.stream().distinct().collect(Collectors.toList());
-                List<TblMenu> tblMenusData = menusData(null, collectMenus);
+                List<MenuDto> tblMenusData = menusData(null, collectMenus);
                 List<CurrentMenusDto> getmenus = getmenus(tblMenusData, tblUser);
                 List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
                 getmenus.forEach((menusDto) -> {
@@ -234,7 +251,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     menuIds.add(authMenu.getMenuId());
                 });
                 // 先获取所有节点
-                List<TblMenu> allMenus = tblMenuMapper.selectAllMenus();
+                List<TblMenu> allMenus = tblMenuMapper.selectByExample(new TblMenuExample());
                 // 查询出所有的根节点
                 List<TblMenu> secondMenus = new ArrayList<>();
                 // 存储menuIds包含的节点
@@ -286,9 +303,9 @@ public class TtblMenuServiceImpl implements TblMenuService {
     }
 
 
-    public List<CurrentMenusDto> getmenus(List<TblMenu> tblMenusData, TblUser tblUser) {
+    public List<CurrentMenusDto> getmenus(List<MenuDto> tblMenusData, TblUser tblUser) {
         List<CurrentMenusDto> currentMenusDtos = new ArrayList<>();
-        for (TblMenu menusData : tblMenusData) {
+        for (MenuDto menusData : tblMenusData) {
             CurrentMenusDto currentMenusDto = new CurrentMenusDto();
             CurrentMenusDto menusDto = currentMenusDto;
             menusDto.setName(menusData.getMenuName());
@@ -302,12 +319,14 @@ public class TtblMenuServiceImpl implements TblMenuService {
     }
 
 
-    public List<TblMenu> menusData(String pId, List<TblMenu> tblMenus) {
-        ArrayList<TblMenu> menusDtos_0 = new ArrayList<>();
+    public List<MenuDto> menusData(String pId, List<TblMenu> tblMenus) {
+        ArrayList<MenuDto> menusDtos_0 = new ArrayList<>();
         for (TblMenu menu_0 : tblMenus) {
             if (StringUtils.equals(pId, menu_0.getParentMid())) {
-                menu_0.setChildMenus(menusData(menu_0.getMenuId(), tblMenus));
-                menusDtos_0.add(menu_0);
+                MenuDto menuDto = new MenuDto();
+                BeanUtils.copyProperties(menu_0, menuDto);
+                menuDto.setChildMenus(menusData(menuDto.getMenuId(), tblMenus));
+                menusDtos_0.add(menuDto);
             }
         }
         return menusDtos_0;

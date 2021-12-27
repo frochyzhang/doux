@@ -1,7 +1,9 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
+import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.model.TblUserExample;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
@@ -9,6 +11,7 @@ import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,17 +43,13 @@ public class TblUserServiceImpl implements TblUserService {
 
     @Override
     public int deleteByPrimaryKey(UserReqParam userReqParam) {
-        //逻辑删除，只是说将用户变为不可用
-        TblUserOptLog optLog = new TblUserOptLog();
-//        int res = tblUserOptLogMapper.insertSelective(optLog);
-//        assert res == 0;
-        int i = 1;
-        for (String userId : userReqParam.getUserIds()) {
-            i = deleteByPrimaryKey(userId);
-            //断言 如果存在更新失败，则抛出异常？？
-            assert i == 0;
-        }
-        return i;
+        //逻辑删除，将用户变为不可用
+        TblUserExample example = new TblUserExample();
+        TblUserExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdIn(Arrays.asList(userReqParam.getUserIds()));
+        TblUser tblUser = new TblUser();
+        tblUser.setIsAvailable(AosContent.IS_AVAILABLE_FALSE);
+        return tblUserMapper.updateByExampleSelective(tblUser, example);
     }
 
     @Override
@@ -60,15 +59,8 @@ public class TblUserServiceImpl implements TblUserService {
 
     @Override
     public int insertSelective(TblUser record) {
-        //添加当前系统时间为新增用户的创建时间
-        record.setCreateTime(new Date());
         record.setUserId(IdUtils.getId());
         return tblUserMapper.insertSelective(record);
-    }
-
-
-    public TblUser selectByPrimaryKey(Integer userId) {
-        return null;
     }
 
     @Override
@@ -90,24 +82,43 @@ public class TblUserServiceImpl implements TblUserService {
     @Override
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
-        List<TblUser> users = tblUserMapper.pageSelectUsers(userReqParam);
-        return new PageInfo<TblUser>(users);
+        TblUserExample example = new TblUserExample();
+        TblUserExample.Criteria criteria = example.createCriteria();
+        if (StringUtils.isNotBlank(userReqParam.getRoleId())) {
+            criteria.andRoleIdEqualTo(userReqParam.getRoleId());
+        } else if (StringUtils.isNotBlank(userReqParam.getOrg())) {
+            criteria.andOrgEqualTo(userReqParam.getOrg());
+        } else if (StringUtils.isNotBlank(userReqParam.getUserName())) {
+            criteria.andUserIdEqualTo(userReqParam.getUserName());
+        }
+        List<TblUser> users = tblUserMapper.selectByExample(example);
+        return new PageInfo<>(users);
     }
 
     @Override
-    public TblUser selectCurrentUser(String userNasme) {
-        return tblUserMapper.selectByUserName(userNasme);
+    public TblUser selectCurrentUser(String userName) {
+        TblUserExample example = new TblUserExample();
+        TblUserExample.Criteria criteria = example.createCriteria();
+        criteria.andUserNameEqualTo(userName);
+        return tblUserMapper.selectByExample(example).stream().findFirst().orElse(null);
     }
 
 
-
     @Override
-    public TblUser selectByNameAndOrg(UserReqParam userReqParam) {
-       return tblUserMapper.selectByNameAndOrg(userReqParam);
+    public TblUser selectByUserName(UserReqParam userReqParam) {
+        TblUserExample example = new TblUserExample();
+        TblUserExample.Criteria criteria = example.createCriteria();
+        criteria.andUserNameEqualTo(userReqParam.getUserName());
+        return tblUserMapper.selectByExample(example).stream().findFirst().orElse(null);
     }
 
     @Override
     public List<TblUser> selectOnUseRoles(RoleReqParam roleReqParam) {
-        return tblUserMapper.selectUsersByRoleIds(new ArrayList<>(Arrays.asList(roleReqParam.getRoleIds())));
+        TblUserExample example = new TblUserExample();
+        TblUserExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdIn(Arrays.asList(roleReqParam.getRoleIds()));
+        // 当前可用的用户
+        criteria.andIsAvailableEqualTo(AosContent.IS_AVAILABLE_TRUE);
+        return tblUserMapper.selectByExample(example);
     }
 }

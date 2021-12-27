@@ -44,14 +44,6 @@ public class AuthController {
     @Autowired
     private TblRoleAuthService tblRoleAuthService;
 
-    //查询所有符合条件的权限列表
-//    @GetMapping
-//    @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "条件查询权限列表")
-//    public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
-//
-//        return null;
-//    }
-
     //分页查询权限
     @GetMapping
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "分页查询权限列表")

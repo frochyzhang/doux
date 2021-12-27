@@ -19,25 +19,25 @@ import java.util.List;
 
 public interface TblUserService {
 
-    public int deleteByPrimaryKey(String userId) ;
+    int deleteByPrimaryKey(String userId);
 
-    public int deleteByPrimaryKey(UserReqParam userReqParam) ;
+    int deleteByPrimaryKey(UserReqParam userReqParam);
 
-    public int insert(TblUser record);
+    int insert(TblUser record);
 
-    public int insertSelective(TblUser record);
+    int insertSelective(TblUser record);
 
-    public TblUser selectByPrimaryKey(String userId) ;
+    TblUser selectByPrimaryKey(String userId);
 
-    public int updateByPrimaryKeySelective(TblUser record) ;
+    int updateByPrimaryKeySelective(TblUser record);
 
-    public int updateByPrimaryKey(TblUser record);
+    int updateByPrimaryKey(TblUser record);
 
-    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
+    PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam);
 
-    public TblUser selectCurrentUser(String  userName) ;
+    TblUser selectCurrentUser(String userName);
 
-    public TblUser selectByNameAndOrg(UserReqParam userReqParam) ;
+    TblUser selectByUserName(UserReqParam userReqParam);
 
     List<TblUser> selectOnUseRoles(RoleReqParam roleReqParam);
 }

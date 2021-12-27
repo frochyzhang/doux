@@ -1,10 +1,10 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper;
+import com.allinfinance.dev.ccs.dal.mapper.TblApiPermissionInfoMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
@@ -30,7 +30,7 @@ public class TblRoleServiceImpl implements TblRoleService {
     private TblRoleMapper tblRoleMapper;
 
     @Autowired
-    private TblPermissionInfoMapper tblPermissionInfoMapper;
+    private TblApiPermissionInfoMapper TblApiPermissionInfoMapper;
 
     @Autowired
     private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
@@ -90,8 +90,8 @@ public class TblRoleServiceImpl implements TblRoleService {
     }
 
     @Override
-    public List<TblPermissionInfo> selectPermissionInfos() {
-        return tblPermissionInfoMapper.selectPermissionInfos();
+    public List<TblApiPermissionInfo> selectPermissionInfos() {
+        return TblApiPermissionInfoMapper.selectPermissionInfos();
     }
 
     @Override

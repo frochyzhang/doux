@@ -42,39 +42,32 @@ public class OptLogController {
      * @param logReqParam
      * @return
      */
-    @RequestMapping(path = "/opts", method = RequestMethod.GET)
+    @GetMapping(path = "/opts")
     @ResponseBody
-    @OperLog(operModul = "操作日志-日志列表",operType = AosContent.QUERY,operDesc = "分页查询操作日志")
+    @OperLog(operModul = "操作日志-日志列表", operType = AosContent.QUERY, operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 //        处理未输入参数时默认的时间
-        if (logReqParam.getTime()!=null){
-            JSONObject ob= JSON.parseObject(logReqParam.getTime());
+        if (logReqParam.getTime() != null) {
+            JSONObject ob = JSON.parseObject(logReqParam.getTime());
             logReqParam.setBeginDate(ob.getString("beginDate"));
             logReqParam.setEndDate(ob.getString("endDate"));
         }
-        if (logReqParam.getEndDate()!=null){
+        if (logReqParam.getEndDate() != null) {
             Calendar cal = Calendar.getInstance();
             try {
                 cal.setTime(sf.parse(logReqParam.getEndDate()));
-                cal.add(Calendar.DATE,1);
- //             如果接受的直接有endDate直接处理
+                cal.add(Calendar.DATE, 1);
+                // 如果接受的直接有endDate直接处理
                 logReqParam.setEndDate(sf.format(cal.getTime()));
             } catch (ParseException e) {
                 logger.error("日志查询日期格式转换异常!", e);
             }
         }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
-        String token = request.getHeader( AosContent.AOS_TOKEN);
-        String org = JwtUtil.getOrg(token);
-        logger.info("获取当前操作用户的机构号:org-->{}", org);
-        if (org != null && org.length() != 0) {
-            //当当前的用户是超级管理员时显示所有列表
-            if (org.equals(AosContent.ALLINFINANCE_ORG)) {
-                logReqParam.setOrg(null);
-            } else {
-                logReqParam.setOrg(org);
-            }
+        String token = request.getHeader(AosContent.AOS_TOKEN);
+        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+            logReqParam.setOrg(JwtUtil.getOrg(token));
         }
         PageInfo<UserLogRespDto> optLogs;
         try {

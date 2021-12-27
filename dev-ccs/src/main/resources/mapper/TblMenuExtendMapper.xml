@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblMenu">
+        <constructor>
+            <idArg column="MENU_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="MENU_NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="PARENT_MID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="NODE_TYPE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="ICON" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="SORT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="PAGE_URL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="LEVEL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="PATH" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="IS_AVAILABLE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="CREATE_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="CREATE_BY" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="UPDATE_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="UPDATE_BY" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="RESERVED_FIELD1" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="RESERVED_FIELD2" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="RESERVED_FIELD3" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="ORG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+    <!--自定义SQL-->
+    <select id="selectMaxMenuIdByRoot" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu"
+            resultType="java.lang.String">
+    select max(MENU_ID) from TBL_MENU where PARENT_MID is NULL
+    </select>
+
+    <select id="selectMaxMenuId" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu"
+            resultType="java.lang.String">
+     select max(MENU_ID) from TBL_MENU where PARENT_MID = #{parentMid,jdbcType=VARCHAR}
+    </select>
+</mapper>

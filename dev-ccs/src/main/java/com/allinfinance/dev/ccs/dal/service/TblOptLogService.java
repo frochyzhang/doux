@@ -13,6 +13,6 @@ import com.github.pagehelper.PageInfo;
  */
 
 public interface TblOptLogService {
-    public PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) ;
+    PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) ;
     int insertLog(TblUserOptLog tblUserOptLog);
 }

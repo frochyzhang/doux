@@ -26,4 +26,6 @@ public interface TblRoleAuthMapper {
     int updateByPrimaryKeySelective(TblRoleAuth record);
 
     int updateByPrimaryKey(TblRoleAuth record);
+
+    List<TblRoleAuth> selectByRoleId(TblRoleAuthKey tblRoleAuthKey);
 }

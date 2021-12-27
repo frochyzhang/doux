@@ -2,6 +2,248 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
+    <constructor>
+      <idArg column="ROLE_ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <idArg column="AUTH_ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="UPDATE_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="UPDATE_BY" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="RESERVED_FIELD1" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="RESERVED_FIELD2" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="RESERVED_FIELD3" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ROLE_ID, AUTH_ID, UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3
+  </sql>
+  <select id="selectByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from tbl_role_auth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_role_auth
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey">
+    delete from tbl_role_auth
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample">
+    delete from tbl_role_auth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
+    insert into tbl_role_auth (ROLE_ID, AUTH_ID, UPDATE_TIME, 
+      UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
+      RESERVED_FIELD3)
+    values (#{roleId,jdbcType=VARCHAR}, #{authId,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{reservedField1,jdbcType=VARCHAR}, #{reservedField2,jdbcType=VARCHAR}, 
+      #{reservedField3,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
+    insert into tbl_role_auth
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        ROLE_ID,
+      </if>
+      <if test="authId != null">
+        AUTH_ID,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1,
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2,
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="authId != null">
+        #{authId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample" resultType="java.lang.Long">
+    select count(*) from tbl_role_auth
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tbl_role_auth
+    <set>
+      <if test="record.roleId != null">
+        ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authId != null">
+        AUTH_ID = #{record.authId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null">
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateBy != null">
+        UPDATE_BY = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reservedField1 != null">
+        RESERVED_FIELD1 = #{record.reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reservedField2 != null">
+        RESERVED_FIELD2 = #{record.reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reservedField3 != null">
+        RESERVED_FIELD3 = #{record.reservedField3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tbl_role_auth
+    set ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      AUTH_ID = #{record.authId,jdbcType=VARCHAR},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{record.updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{record.reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{record.reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{record.reservedField3,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
+    update tbl_role_auth
+    <set>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField1 != null">
+        RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField2 != null">
+        RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedField3 != null">
+        RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
+    update tbl_role_auth
+    set UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      RESERVED_FIELD1 = #{reservedField1,jdbcType=VARCHAR},
+      RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
+      RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblRoleAuth">
     <id column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
     <id column="AUTH_ID" jdbcType="VARCHAR" property="authId" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -126,13 +368,13 @@
       and AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
   <!--  **********以下为自定义SQL***********-->
-  <select id="selectRoleAuths"  resultMap="BaseResultMap">
+  <select id="selectRoleAuths" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from TBL_ROLE_AUTH
   </select>
 
-  <delete id="deleteByRoleId" >
+  <delete id="deleteByRoleId">
     delete from TBL_ROLE_AUTH
     where ROLE_ID = #{roleId,jdbcType=VARCHAR}
   </delete>
@@ -143,8 +385,7 @@
     WHERE
     us.ROLE_ID is not null
     AND AUTH_ID in
-    <foreach collection="authIds" item="authId" index="index"
-             open="(" close=")" separator=",">
+    <foreach close=")" collection="authIds" index="index" item="authId" open="(" separator=",">
       #{authId}
     </foreach>
   </select>
