@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+    <constructor>
+      <idArg column="ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ROLE_ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="PERMISSIONCODE" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ROLE_ID, PERMISSIONCODE
+  </sql>
+  <select id="selectByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from tbl_role_permission_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_role_permission_info
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tbl_role_permission_info
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+    insert into tbl_role_permission_info (ID, ROLE_ID, PERMISSIONCODE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{permissioncode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+    insert into tbl_role_permission_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="roleId != null">
+        ROLE_ID,
+      </if>
+      <if test="permissioncode != null">
+        PERMISSIONCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="permissioncode != null">
+        #{permissioncode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfoExample" resultType="java.lang.Long">
+    select count(*) from tbl_role_permission_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tbl_role_permission_info
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleId != null">
+        ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.permissioncode != null">
+        PERMISSIONCODE = #{record.permissioncode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tbl_role_permission_info
+    set ID = #{record.id,jdbcType=VARCHAR},
+      ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      PERMISSIONCODE = #{record.permissioncode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+    update tbl_role_permission_info
+    <set>
+      <if test="roleId != null">
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="permissioncode != null">
+        PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+    update tbl_role_permission_info
+    set ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
