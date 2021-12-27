@@ -2,9 +2,9 @@ package com.allinfinance.dev.ccs.dal.service;
 
 
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.model.TblUserExample;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
-
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -18,20 +18,25 @@ import java.util.List;
  */
 
 public interface TblUserService {
+    long countByExample(TblUserExample example);
 
-    public int deleteByPrimaryKey(String userId) ;
+    int deleteByPrimaryKey(String userId);
 
-    public int deleteByPrimaryKey(UserReqParam userReqParam) ;
+    int insert(TblUser record);
 
-    public int insert(TblUser record);
+    int insertSelective(TblUser record);
 
-    public int insertSelective(TblUser record);
+    List<TblUser> selectByExample(TblUserExample example);
 
-    public TblUser selectByPrimaryKey(String userId) ;
+    TblUser selectByPrimaryKey(String userId);
 
-    public int updateByPrimaryKeySelective(TblUser record) ;
+    int updateByExampleSelective(TblUser record, TblUserExample example);
 
-    public int updateByPrimaryKey(TblUser record);
+    int updateByExample(TblUser record, TblUserExample example);
+
+    int updateByPrimaryKeySelective(TblUser record);
+
+    int updateByPrimaryKey(TblUser record);
 
     public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) ;
 

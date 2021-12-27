@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.model.TblUserExample;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
@@ -30,27 +31,13 @@ public class TblUserServiceImpl implements TblUserService {
     private TblUserMapper tblUserMapper;
 
     @Override
-    public int deleteByPrimaryKey(String userId) {
-        return tblUserMapper.deleteByPrimaryKey(userId);
-    }
-
-    public int deleteByPrimaryKey(Integer userId) {
-        return 0;
+    public long countByExample(TblUserExample example) {
+        return tblUserMapper.countByExample(example);
     }
 
     @Override
-    public int deleteByPrimaryKey(UserReqParam userReqParam) {
-        //逻辑删除，只是说将用户变为不可用
-        TblUserOptLog optLog = new TblUserOptLog();
-//        int res = tblUserOptLogMapper.insertSelective(optLog);
-//        assert res == 0;
-        int i = 1;
-        for (String userId : userReqParam.getUserIds()) {
-            i = deleteByPrimaryKey(userId);
-            //断言 如果存在更新失败，则抛出异常？？
-            assert i == 0;
-        }
-        return i;
+    public int deleteByPrimaryKey(String userId) {
+        return tblUserMapper.deleteByPrimaryKey(userId);
     }
 
     @Override
@@ -60,15 +47,12 @@ public class TblUserServiceImpl implements TblUserService {
 
     @Override
     public int insertSelective(TblUser record) {
-        //添加当前系统时间为新增用户的创建时间
-        record.setCreateTime(new Date());
-        record.setUserId(IdUtils.getId());
         return tblUserMapper.insertSelective(record);
     }
 
-
-    public TblUser selectByPrimaryKey(Integer userId) {
-        return null;
+    @Override
+    public List<TblUser> selectByExample(TblUserExample example) {
+        return tblUserMapper.selectByExample(example);
     }
 
     @Override
@@ -77,8 +61,17 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
     @Override
+    public int updateByExampleSelective(TblUser record, TblUserExample example) {
+        return tblUserMapper.updateByExampleSelective(record, example);
+    }
+
+    @Override
+    public int updateByExample(TblUser record, TblUserExample example) {
+        return tblUserMapper.updateByExample(record, example);
+    }
+
+    @Override
     public int updateByPrimaryKeySelective(TblUser record) {
-        record.setUpdateTime(new Date());
         return tblUserMapper.updateByPrimaryKeySelective(record);
     }
 
@@ -98,8 +91,6 @@ public class TblUserServiceImpl implements TblUserService {
     public TblUser selectCurrentUser(String userNasme) {
         return tblUserMapper.selectByUserName(userNasme);
     }
-
-
 
     @Override
     public TblUser selectByNameAndOrg(UserReqParam userReqParam) {

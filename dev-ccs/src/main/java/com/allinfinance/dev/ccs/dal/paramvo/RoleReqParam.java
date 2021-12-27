@@ -12,29 +12,12 @@ import java.util.Arrays;
  */
 public class RoleReqParam extends BaseReqParam {
 
-    private String userId;
     private String roleName;
-    private String isAvailable;
     private String org;
+    private String isAvailable;
+    private String weight;
     private String roleId;
     private String[] roleIds;
-
-
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getRoleName() {
         return roleName;
@@ -42,6 +25,14 @@ public class RoleReqParam extends BaseReqParam {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 
     public String getIsAvailable() {
@@ -52,12 +43,20 @@ public class RoleReqParam extends BaseReqParam {
         this.isAvailable = isAvailable;
     }
 
-    public String getOrg() {
-        return org;
+    public String getWeight() {
+        return weight;
     }
 
-    public void setOrg(String org) {
-        this.org = org;
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     public String[] getRoleIds() {
@@ -71,10 +70,10 @@ public class RoleReqParam extends BaseReqParam {
     @Override
     public String toString() {
         return "RoleReqParam{" +
-                "userId='" + userId + '\'' +
-                ", roleName='" + roleName + '\'' +
-                ", isAvailable='" + isAvailable + '\'' +
+                "roleName='" + roleName + '\'' +
                 ", org='" + org + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
+                ", weight='" + weight + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", roleIds=" + Arrays.toString(roleIds) +
                 '}';

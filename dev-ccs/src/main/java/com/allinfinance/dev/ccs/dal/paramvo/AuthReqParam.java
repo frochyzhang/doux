@@ -1,7 +1,5 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
-import com.allinfinance.dev.ccs.dal.model.TblAuth;
-
 import java.util.Arrays;
 
 /**
@@ -11,11 +9,11 @@ import java.util.Arrays;
  * @create: 2021-05-18 11:19
  */
 public class AuthReqParam extends BaseReqParam {
-
-    private String[] authIds;
     private String authName;
     private String org;
     private String isAvailable;
+    private String weight;
+    private String[] authIds;
 
     public String getAuthName() {
         return authName;
@@ -41,6 +39,14 @@ public class AuthReqParam extends BaseReqParam {
         this.isAvailable = isAvailable;
     }
 
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
     public String[] getAuthIds() {
         return authIds;
     }
@@ -52,10 +58,11 @@ public class AuthReqParam extends BaseReqParam {
     @Override
     public String toString() {
         return "AuthReqParam{" +
-                "authIds=" + Arrays.toString(authIds) +
-                ", authName='" + authName + '\'' +
+                "authName='" + authName + '\'' +
                 ", org='" + org + '\'' +
                 ", isAvailable='" + isAvailable + '\'' +
+                ", weight='" + weight + '\'' +
+                ", authIds=" + Arrays.toString(authIds) +
                 '}';
     }
 }

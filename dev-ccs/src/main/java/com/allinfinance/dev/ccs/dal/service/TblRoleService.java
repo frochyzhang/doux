@@ -1,18 +1,11 @@
 package com.allinfinance.dev.ccs.dal.service;
 
-import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper;
-import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
-import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
-import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblRoleExample;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
-import com.allinfinance.dev.ccs.utils.IdUtils;
-import com.github.pagehelper.PageHelper;
+import com.allinfinance.dev.ccs.dto.PageableRolesQueryResponseDTO;
+import com.allinfinance.dev.ccs.dto.RolesQueryResponseDTO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,32 +16,29 @@ import java.util.List;
  * @create: 2021-05-13 16:16
  */
  public interface TblRoleService {
+    long countByExample(TblRoleExample example);
 
-     int deleteByPrimaryKey(String roleId);
+    int deleteByPrimaryKey(String roleId);
 
-     int insert(TblRole record);
+    int insert(TblRole record);
 
-     int insertSelective(TblRole record);
+    int insertSelective(TblRole record);
 
-     TblRole selectByPrimaryKey(String roleId);
+    List<TblRole> selectByExample(TblRoleExample example);
 
-     TblRole selectByRoleId(String roleId);
+    TblRole selectByPrimaryKey(String roleId);
 
-     int updateByPrimaryKeySelective(TblRole record);
+    int updateByExampleSelective(TblRole record, TblRoleExample example);
 
-     int updateByPrimaryKey(TblRole record);
+    int updateByExample(TblRole record, TblRoleExample example);
 
+    int updateByPrimaryKeySelective(TblRole record);
 
-     PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) ;
+    int updateByPrimaryKey(TblRole record);
 
-     List<TblRole> pageRoles(RoleReqParam roleReqParam);
+     PageInfo<PageableRolesQueryResponseDTO> pageSelectRoles(RoleReqParam roleReqParam) ;
 
-     int invalidateRole(String roleId) ;
+     List<RolesQueryResponseDTO> queryRoles(RoleReqParam roleReqParam);
 
-     List<TblPermissionInfo> selectPermissionInfos();
-
-     int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo);
-
-     int deleteRolePermissionInfoByRoleId(String roleId);
-
+    TblRole selectByRoleName(String roleName);
 }

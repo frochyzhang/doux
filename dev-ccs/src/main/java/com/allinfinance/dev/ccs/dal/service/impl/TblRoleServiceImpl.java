@@ -1,21 +1,24 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
-import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.mapper.TblPermissionInfoMapper;
+import com.allinfinance.dev.ccs.dal.converter.ResponseMapper;
+import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
-import com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper;
-import com.allinfinance.dev.ccs.dal.model.TblPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
-import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import com.allinfinance.dev.ccs.dal.model.TblRoleExample;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
-import com.allinfinance.dev.ccs.utils.IdUtils;
+import com.allinfinance.dev.ccs.dto.PageableRolesQueryResponseDTO;
+import com.allinfinance.dev.ccs.dto.RolesQueryResponseDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @project: dev-parent
@@ -30,79 +33,116 @@ public class TblRoleServiceImpl implements TblRoleService {
     private TblRoleMapper tblRoleMapper;
 
     @Autowired
-    private TblPermissionInfoMapper tblPermissionInfoMapper;
-
-    @Autowired
-    private TblRolePermissionInfoMapper tblRolePermissionInfoMapper;
+    private TblRoleAuthMapper tblRoleAuthMapper;
 
     @Override
-    public int deleteByPrimaryKey(String roleId){
+    public long countByExample(TblRoleExample example) {
+        return tblRoleMapper.countByExample(example);
+    }
+
+    @Override
+    public int deleteByPrimaryKey(String roleId) {
         return tblRoleMapper.deleteByPrimaryKey(roleId);
     }
 
     @Override
-    public int insert(TblRole record){
+    public int insert(TblRole record) {
         return tblRoleMapper.insert(record);
     }
 
     @Override
-    public int insertSelective(TblRole record){
-        record.setRoleId(IdUtils.getId());
+    public int insertSelective(TblRole record) {
         return tblRoleMapper.insertSelective(record);
     }
 
     @Override
-    public TblRole selectByPrimaryKey(String roleId){
+    public List<TblRole> selectByExample(TblRoleExample example) {
+        return tblRoleMapper.selectByExample(example);
+    }
+
+    @Override
+    public TblRole selectByPrimaryKey(String roleId) {
         return tblRoleMapper.selectByPrimaryKey(roleId);
     }
 
     @Override
-    public TblRole selectByRoleId(String roleId){
-        return tblRoleMapper.selectByRoleId(roleId);
+    public int updateByExampleSelective(TblRole record, TblRoleExample example) {
+        return tblRoleMapper.updateByExampleSelective(record, example);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(TblRole record){
+    public int updateByExample(TblRole record, TblRoleExample example) {
+        return tblRoleMapper.updateByExample(record, example);
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(TblRole record) {
         return tblRoleMapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
-    public int updateByPrimaryKey(TblRole record){
+    public int updateByPrimaryKey(TblRole record) {
         return tblRoleMapper.updateByPrimaryKey(record);
     }
 
     @Override
-    public PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam) {
-        PageHelper.startPage(roleReqParam.getCurrent(),roleReqParam.getPageSize());
-        List<TblRole> users = tblRoleMapper.pageSelectRoles(roleReqParam);
-        return new PageInfo<>(users);
+    public PageInfo<PageableRolesQueryResponseDTO> pageSelectRoles(RoleReqParam roleReqParam) {
+        PageHelper.startPage(roleReqParam.getCurrent(), roleReqParam.getPageSize());
+        TblRoleExample tblRoleExample = new TblRoleExample();
+        TblRoleExample.Criteria criteria = tblRoleExample.createCriteria();
+        if (StringUtils.isNotBlank(roleReqParam.getRoleName())) {
+            criteria.andRoleNameLike("%" + roleReqParam.getRoleName() + "%");
+        }
+        if (StringUtils.isNotBlank(roleReqParam.getOrg())) {
+            criteria.andOrgEqualTo(roleReqParam.getOrg());
+        }
+        if (StringUtils.isNotBlank(roleReqParam.getIsAvailable())) {
+            criteria.andIsAvailableEqualTo(roleReqParam.getIsAvailable());
+        }
+        criteria.andWeightLessThan(roleReqParam.getWeight());
+        List<PageableRolesQueryResponseDTO> pageableRolesQueryResponseDTOList = tblRoleMapper.selectByExample(tblRoleExample)
+                .stream()
+                .map(tblRole -> {
+                    TblRoleAuthExample tblRoleAuthExample = new TblRoleAuthExample();
+                    tblRoleAuthExample.createCriteria()
+                            .andRoleIdEqualTo(tblRole.getRoleId());
+                    List<String> authIdList = tblRoleAuthMapper.selectByExample(tblRoleAuthExample)
+                            .stream()
+                            .map(TblRoleAuthKey::getAuthId)
+                            .collect(Collectors.toList());
+                    return ResponseMapper.INSTANCE.convertToPageableRolesQueryResponseDTO(tblRole, authIdList);
+                }).collect(Collectors.toList());
+        return new PageInfo<>(pageableRolesQueryResponseDTOList);
     }
 
     @Override
-    public List<TblRole> pageRoles(RoleReqParam roleReqParam) {
-        return tblRoleMapper.selectRoles(roleReqParam);
+    public List<RolesQueryResponseDTO> queryRoles(RoleReqParam roleReqParam) {
+        TblRoleExample tblRoleExample = new TblRoleExample();
+        TblRoleExample.Criteria criteria = tblRoleExample.createCriteria();
+        if (StringUtils.isNotBlank(roleReqParam.getRoleName())) {
+            criteria.andRoleNameLike("%" + roleReqParam.getRoleName() + "%");
+        }
+        if (StringUtils.isNotBlank(roleReqParam.getOrg())) {
+            criteria.andOrgEqualTo(roleReqParam.getOrg());
+        }
+        if (StringUtils.isNotBlank(roleReqParam.getIsAvailable())) {
+            criteria.andIsAvailableEqualTo(roleReqParam.getIsAvailable());
+        }
+        criteria.andWeightLessThan(roleReqParam.getWeight());
+        return tblRoleMapper.selectByExample(tblRoleExample)
+                .stream()
+                .map(ResponseMapper.INSTANCE::convertToRolesQueryResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public int invalidateRole(String roleId) {
-        String isAvailable = AosContent.IS_AVAILABLE_FALSE;
-        return tblRoleMapper.invalidateRole(roleId, isAvailable);
+    public TblRole selectByRoleName(String roleName) {
+        TblRoleExample tblRoleExample = new TblRoleExample();
+        tblRoleExample.createCriteria()
+                .andRoleNameEqualTo(roleName);
+        return tblRoleMapper.selectByExample(tblRoleExample)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
-
-    @Override
-    public List<TblPermissionInfo> selectPermissionInfos() {
-        return tblPermissionInfoMapper.selectPermissionInfos();
-    }
-
-    @Override
-    public int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo){
-        tblRolePermissionInfo.setId(IdUtils.getId());
-        return tblRolePermissionInfoMapper.insertSelective(tblRolePermissionInfo);
-    }
-
-    @Override
-    public int deleteRolePermissionInfoByRoleId(String roleId) {
-        return tblRolePermissionInfoMapper.deleteRolePermissionInfoByRoleId(roleId);
-    }
-
 }

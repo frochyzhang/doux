@@ -63,47 +63,47 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table tableName="tbl_api_permission_info"
-               domainObjectName="TblApiPermissionInfo"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_auth"
-               domainObjectName="TblAuth"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_bank_manage"
-               domainObjectName="TblBankManage"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
+        <!--<table tableName="tbl_api_permission_info"-->
+        <!--       domainObjectName="TblApiPermissionInfo"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_auth"-->
+        <!--       domainObjectName="TblAuth"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_bank_manage"-->
+        <!--       domainObjectName="TblBankManage"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
         <table tableName="tbl_menu_auth"
                domainObjectName="TblMenuAuth"
                enableCountByExample="true"
                enableUpdateByExample="true"
-               enableDeleteByExample="false"
+               enableDeleteByExample="true"
                enableSelectByExample="true"
                selectByExampleQueryId="true"
                enableDeleteByPrimaryKey="true"
@@ -111,90 +111,90 @@
                enableUpdateByPrimaryKey="true"
                enableInsert="true">
         </table>
-        <table tableName="tbl_menu"
-               domainObjectName="TblMenu"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_role_auth"
-               domainObjectName="TblRoleAuth"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_role"
-               domainObjectName="TblRole"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_role_permission_info"
-               domainObjectName="TblRolePermissionInfo"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_user_error_log"
-               domainObjectName="TblUserErrorLog"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_user"
-               domainObjectName="TblUser"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
-        <table tableName="tbl_user_opt_log"
-               domainObjectName="TblUserOptLog"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="false"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"
-               enableDeleteByPrimaryKey="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByPrimaryKey="true"
-               enableInsert="true">
-        </table>
+        <!--<table tableName="tbl_menu"-->
+        <!--       domainObjectName="TblMenu"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_role_auth"-->
+        <!--       domainObjectName="TblRoleAuth"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="true"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_role"-->
+        <!--       domainObjectName="TblRole"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_role_permission_info"-->
+        <!--       domainObjectName="TblRolePermissionInfo"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_user_error_log"-->
+        <!--       domainObjectName="TblUserErrorLog"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_user"-->
+        <!--       domainObjectName="TblUser"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
+        <!--<table tableName="tbl_user_opt_log"-->
+        <!--       domainObjectName="TblUserOptLog"-->
+        <!--       enableCountByExample="true"-->
+        <!--       enableUpdateByExample="true"-->
+        <!--       enableDeleteByExample="false"-->
+        <!--       enableSelectByExample="true"-->
+        <!--       selectByExampleQueryId="true"-->
+        <!--       enableDeleteByPrimaryKey="true"-->
+        <!--       enableSelectByPrimaryKey="true"-->
+        <!--       enableUpdateByPrimaryKey="true"-->
+        <!--       enableInsert="true">-->
+        <!--</table>-->
 
     </context>
 </generatorConfiguration>

@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface TblRoleAuthMapper {
     long countByExample(TblRoleAuthExample example);
 
+    int deleteByExample(TblRoleAuthExample example);
+
     int deleteByPrimaryKey(TblRoleAuthKey key);
 
     int insert(TblRoleAuth record);

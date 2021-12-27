@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface TblMenuAuthMapper {
     long countByExample(TblMenuAuthExample example);
 
+    int deleteByExample(TblMenuAuthExample example);
+
     int deleteByPrimaryKey(TblMenuAuthKey key);
 
     int insert(TblMenuAuth record);
