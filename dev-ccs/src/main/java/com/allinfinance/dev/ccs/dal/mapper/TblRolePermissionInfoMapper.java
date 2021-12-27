@@ -25,4 +25,8 @@ public interface TblRolePermissionInfoMapper {
     int updateByPrimaryKeySelective(TblRolePermissionInfo record);
 
     int updateByPrimaryKey(TblRolePermissionInfo record);
+
+    List<TblRolePermissionInfo> getRolePermissionInfByRoleId(String roleId);
+
+    List<TblRolePermissionInfo> getRoleIdByPermissionCode(String permissionCode);
 }

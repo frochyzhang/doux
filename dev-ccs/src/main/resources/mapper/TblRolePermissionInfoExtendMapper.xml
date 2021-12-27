@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblRolePermissionInfoMapper">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo">
+        <constructor>
+            <idArg column="ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="ROLE_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="PERMISSIONCODE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+    <select id="getRolePermissionInfByRoleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_ROLE_PERMISSION_INFO
+        where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    </select>
+    <select id="getRoleIdByPermissionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select ROLE_ID
+        from TBL_ROLE_PERMISSION_INFO
+        where PERMISSIONCODE = #{permissioncode,jdbcType=VARCHAR}
+        group by ROLE_ID
+    </select>
+</mapper>

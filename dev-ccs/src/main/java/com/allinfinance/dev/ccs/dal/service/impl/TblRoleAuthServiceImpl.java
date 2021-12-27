@@ -2,6 +2,7 @@ package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
@@ -25,38 +26,38 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
     TblRoleAuthMapper tblRoleAuthMapper;
 
     @Override
-    public int deleteByPrimaryKey(TblRoleAuthKey key){
+    public int deleteByPrimaryKey(TblRoleAuthKey key) {
         return tblRoleAuthMapper.deleteByPrimaryKey(key);
     }
 
     @Override
-    public int insert(TblRoleAuth record){
+    public int insert(TblRoleAuth record) {
         return tblRoleAuthMapper.deleteByPrimaryKey(record);
     }
 
     @Override
-    public int insertSelective(TblRoleAuth record){
+    public int insertSelective(TblRoleAuth record) {
         return tblRoleAuthMapper.insertSelective(record);
     }
 
     @Override
-    public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key){
+    public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key) {
         return tblRoleAuthMapper.selectByPrimaryKey(key);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(TblRoleAuth record){
+    public int updateByPrimaryKeySelective(TblRoleAuth record) {
         return tblRoleAuthMapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
-    public int updateByPrimaryKey(TblRoleAuth record){
+    public int updateByPrimaryKey(TblRoleAuth record) {
         return tblRoleAuthMapper.updateByPrimaryKey(record);
     }
 
     @Override
-    public List<TblRoleAuth> selectRoleAuths(){
-        return tblRoleAuthMapper.selectRoleAuths();
+    public List<TblRoleAuth> selectRoleAuths() {
+        return tblRoleAuthMapper.selectByExample(new TblRoleAuthExample());
     }
 
     @Override

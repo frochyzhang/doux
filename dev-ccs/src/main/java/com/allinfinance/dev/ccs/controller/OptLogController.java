@@ -6,8 +6,6 @@ import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.allinfinance.dev.core.util.result.Result;
