@@ -2,8 +2,8 @@ package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
-import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
+import com.allinfinance.dev.ccs.dto.AuthsQueryResponseDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -14,33 +14,24 @@ import java.util.List;
  * @author: Lum Wang
  * @create: 2021-05-14 10:50
  */
- public interface TblAuthService {
+public interface TblAuthService {
+    int deleteByPrimaryKey(String authId);
 
+    int insert(TblAuth record);
 
+    int insertSelective(TblAuth record);
 
-     int deleteByPrimaryKey(String authId);
+    TblAuth selectByPrimaryKey(String authId);
 
-     int insert(TblAuth record);
+    int updateByPrimaryKeySelective(TblAuth record);
 
-     int insertSelective(TblAuth record);
+    int updateByPrimaryKey(TblAuth record);
 
-     TblAuth selectByPrimaryKey(String authId);
+    PageInfo<AuthsQueryResponseDTO> pageSelectAuths(AuthReqParam authReqParam);
 
-     int updateByPrimaryKeySelective(TblAuth record);
+    List<AuthsQueryResponseDTO> selectAuths(AuthReqParam authReqParam);
 
-     int updateByPrimaryKey(TblAuth record);
+    List<TblMenu> selectMenus(String authId);
 
-     PageInfo<TblAuth> pageSelectAuths(AuthReqParam authReqParam);
-
-     List<TblAuth> selectAuths(AuthReqParam authReqParam);
-
-     List<TblMenuAuth> selectMenuAuths();
-
-     List<TblMenu> selectMenus(String authId);
-
-     int deleteMenuAuths(String authId);
-
-     int insertMenuAuth(TblMenuAuth record);
-
-     int invalidateAuth(String authId);
+    TblAuth selectByAuthName(String authName);
 }

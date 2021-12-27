@@ -1,16 +1,14 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
+import com.allinfinance.dev.ccs.dal.converter.PoMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
-import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +21,17 @@ import java.util.List;
 public class TblRoleAuthServiceImpl implements TblRoleAuthService {
 
     @Autowired
-    TblRoleAuthMapper tblRoleAuthMapper;
+    private TblRoleAuthMapper tblRoleAuthMapper;
+
+    @Override
+    public long countByExample(TblRoleAuthExample example) {
+        return tblRoleAuthMapper.countByExample(example);
+    }
+
+    @Override
+    public int deleteByExample(TblRoleAuthExample example) {
+        return tblRoleAuthMapper.deleteByExample(example);
+    }
 
     @Override
     public int deleteByPrimaryKey(TblRoleAuthKey key) {
@@ -32,7 +40,7 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
 
     @Override
     public int insert(TblRoleAuth record) {
-        return tblRoleAuthMapper.deleteByPrimaryKey(record);
+        return tblRoleAuthMapper.insert(record);
     }
 
     @Override
@@ -41,8 +49,23 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
     }
 
     @Override
+    public List<TblRoleAuth> selectByExample(TblRoleAuthExample example) {
+        return tblRoleAuthMapper.selectByExample(example);
+    }
+
+    @Override
     public TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key) {
         return tblRoleAuthMapper.selectByPrimaryKey(key);
+    }
+
+    @Override
+    public int updateByExampleSelective(TblRoleAuth record, TblRoleAuthExample example) {
+        return tblRoleAuthMapper.updateByExampleSelective(record, example);
+    }
+
+    @Override
+    public int updateByExample(TblRoleAuth record, TblRoleAuthExample example) {
+        return tblRoleAuthMapper.updateByExample(record, example);
     }
 
     @Override
@@ -56,18 +79,18 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
     }
 
     @Override
-    public List<TblRoleAuth> selectRoleAuths() {
-        return tblRoleAuthMapper.selectByExample(new TblRoleAuthExample());
+    public void deleteByRoleId(String roleId) {
+        TblRoleAuthExample tblRoleAuthExample = new TblRoleAuthExample();
+        tblRoleAuthExample.createCriteria()
+                .andRoleIdEqualTo(roleId);
+        tblRoleAuthMapper.deleteByExample(tblRoleAuthExample);
     }
 
     @Override
-    public int deleteByRoleId(String roleId) {
-        return tblRoleAuthMapper.deleteByRoleId(roleId);
+    public void createRoleAuthMapping(String roleId, List<String> authIdList) {
+        authIdList.forEach(authId -> {
+            TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
+            tblRoleAuthMapper.insertSelective(tblRoleAuth);
+        });
     }
-
-    @Override
-    public List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam) {
-        return tblRoleAuthMapper.selectOnUseAuth(new ArrayList<>(Arrays.asList(authReqParam.getAuthIds())));
-    }
-
 }

@@ -1,10 +1,10 @@
 package com.allinfinance.dev.ccs.dal.service;
 
-
-import com.allinfinance.dev.ccs.dal.model.TblApiPermissionInfo;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
-import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblRoleExample;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
+import com.allinfinance.dev.ccs.dto.PageableRolesQueryResponseDTO;
+import com.allinfinance.dev.ccs.dto.RolesQueryResponseDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -15,7 +15,8 @@ import java.util.List;
  * @author: Lum Wang
  * @create: 2021-05-13 16:16
  */
-public interface TblRoleService {
+ public interface TblRoleService {
+    long countByExample(TblRoleExample example);
 
     int deleteByPrimaryKey(String roleId);
 
@@ -23,25 +24,21 @@ public interface TblRoleService {
 
     int insertSelective(TblRole record);
 
+    List<TblRole> selectByExample(TblRoleExample example);
+
     TblRole selectByPrimaryKey(String roleId);
 
-    TblRole selectByRoleId(String roleId);
+    int updateByExampleSelective(TblRole record, TblRoleExample example);
+
+    int updateByExample(TblRole record, TblRoleExample example);
 
     int updateByPrimaryKeySelective(TblRole record);
 
     int updateByPrimaryKey(TblRole record);
 
+     PageInfo<PageableRolesQueryResponseDTO> pageSelectRoles(RoleReqParam roleReqParam) ;
 
-    PageInfo<TblRole> pageSelectRoles(RoleReqParam roleReqParam);
+     List<RolesQueryResponseDTO> queryRoles(RoleReqParam roleReqParam);
 
-    List<TblRole> pageRoles(RoleReqParam roleReqParam);
-
-    int invalidateRole(String roleId);
-
-    List<TblApiPermissionInfo> selectPermissionInfos();
-
-    int insertRolePermissionInfoSelective(TblRolePermissionInfo tblRolePermissionInfo);
-
-    int deleteRolePermissionInfoByRoleId(String roleId);
-
+    TblRole selectByRoleName(String roleName);
 }

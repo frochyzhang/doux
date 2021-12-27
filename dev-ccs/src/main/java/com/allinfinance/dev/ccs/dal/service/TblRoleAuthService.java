@@ -1,15 +1,9 @@
 package com.allinfinance.dev.ccs.dal.service;
 
-import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
-import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
-import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,25 +13,29 @@ import java.util.List;
  * @create: 2021-05-14 11:50
  */
  public interface TblRoleAuthService {
+    long countByExample(TblRoleAuthExample example);
 
+    int deleteByExample(TblRoleAuthExample example);
 
-     int deleteByPrimaryKey(TblRoleAuthKey key) ;
+    int deleteByPrimaryKey(TblRoleAuthKey key);
 
-     int insert(TblRoleAuth record) ;
+    int insert(TblRoleAuth record);
 
-     int insertSelective(TblRoleAuth record) ;
+    int insertSelective(TblRoleAuth record);
 
-     TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key) ;
+    List<TblRoleAuth> selectByExample(TblRoleAuthExample example);
 
-     int updateByPrimaryKeySelective(TblRoleAuth record) ;
+    TblRoleAuth selectByPrimaryKey(TblRoleAuthKey key);
 
-     int updateByPrimaryKey(TblRoleAuth record) ;
+    int updateByExampleSelective(TblRoleAuth record, TblRoleAuthExample example);
 
+    int updateByExample(TblRoleAuth record, TblRoleAuthExample example);
 
-     List<TblRoleAuth> selectRoleAuths() ;
+    int updateByPrimaryKeySelective(TblRoleAuth record);
 
-     int deleteByRoleId(String roleId);
+    int updateByPrimaryKey(TblRoleAuth record);
 
-     List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam);
+     void deleteByRoleId(String roleId);
 
+    void createRoleAuthMapping(String roleId, List<String> authIdList);
 }

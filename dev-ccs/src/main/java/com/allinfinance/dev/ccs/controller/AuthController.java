@@ -1,32 +1,32 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.converter.PoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
-import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
-import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.AuthMenusDto;
-import com.allinfinance.dev.ccs.dal.service.TblAuthService;
-import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
+import com.allinfinance.dev.ccs.dal.service.*;
+import com.allinfinance.dev.ccs.dto.AuthCreateRequestDTO;
+import com.allinfinance.dev.ccs.dto.AuthInfoUpdateRequestDTO;
+import com.allinfinance.dev.ccs.dto.AuthsQueryResponseDTO;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.allinfinance.dev.core.util.result.Result;
-import org.apache.commons.lang3.StringUtils;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
+import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,93 +47,148 @@ public class AuthController {
     @Autowired
     private TblRoleAuthService tblRoleAuthService;
 
+    @Autowired
+    private TblUserService tblUserService;
+
+    @Autowired
+    private TblRoleService tblRoleService;
+
+    @Autowired
+    private TblMenuAuthService tblMenuAuthService;
+
     //分页查询权限
     @GetMapping
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "分页查询权限列表")
     public Result selectPageAuths(AuthReqParam authReqParam, HttpServletRequest request) {
-        logger.info("分页查询权限列表请求参数 AuthReqParam: {}", authReqParam);
-        //获取用户的机构号
+        logger.info("分页查询权限列表请求参数, AuthReqParam: {}", authReqParam);
+        // 获取当前用户的id
         String token = request.getHeader(AosContent.AOS_TOKEN);
-        String org = JwtUtil.getOrg(token);
-        String weight = JwtUtil.getWeight(token);
-        //先判断页面是否有传机构参数，如果没传参数就只
-        if (StringUtils.isBlank(authReqParam.getOrg()))
-            //判断当前操作员是否是超级管理员
-            if (weight.equals(AosContent.SUPERADMIN)){}
-                return null;
+        String userId = JwtUtil.getUserId(token);
+
+        //机构隔离
+        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+            authReqParam.setOrg(JwtUtil.getOrg(token));
+        }
+
+        TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
+        logger.info("用户信息: {}", tblUser);
+        if (tblUser == null || !AosContent.IS_AVAILABLE_TRUE.equals(tblUser.getIsAvailable())) {
+            logger.error("用户不存在或者不可用, userId: {}", userId);
+            return Result.failure(ResultCodeEnum.USER_NOT_EXIST);
+        }
+
+        TblRole tblRole = tblRoleService.selectByPrimaryKey(tblUser.getRoleId());
+        logger.info("用户对应角色信息: {}", tblRole);
+        if (tblRole == null) {
+            logger.error("未查询到用户对应角色信息, roleId: {}", tblUser.getRoleId());
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        authReqParam.setWeight(tblRole.getWeight());
+
+        PageInfo<AuthsQueryResponseDTO> auths;
+        try {
+            auths = tblAuthService.pageSelectAuths(authReqParam);
+            logger.debug("权限列表: {}", auths);
+        } catch (Exception e) {
+            logger.error("查询权限列表异常", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        return Result.success(auths);
+    }
+
+    @GetMapping("/")
+    @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "无分页查询权限列表")
+    public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
+        logger.info("开始查询所有权限列表, authReqParam: {}", authReqParam);
+        // 获取当前用户的id
+        String token = request.getHeader(AosContent.AOS_TOKEN);
+        String userId = JwtUtil.getUserId(token);
+
+        //机构隔离
+        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+            authReqParam.setOrg(JwtUtil.getOrg(token));
+        }
+
+        TblUser tblUser = tblUserService.selectByPrimaryKey(userId);
+        logger.info("用户信息: {}", tblUser);
+        if (tblUser == null || !AosContent.IS_AVAILABLE_TRUE.equals(tblUser.getIsAvailable())) {
+            logger.error("用户不存在或者不可用, userId: {}", userId);
+            return Result.failure(ResultCodeEnum.USER_NOT_EXIST);
+        }
+
+        TblRole tblRole = tblRoleService.selectByPrimaryKey(tblUser.getRoleId());
+        logger.info("用户对应角色信息: {}", tblRole);
+        if (tblRole == null) {
+            logger.error("未查询到用户对应角色信息, roleId: {}", tblUser.getRoleId());
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        //排除不可用的权限
+        authReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
+
+        List<AuthsQueryResponseDTO> auths;
+        try {
+            auths = tblAuthService.selectAuths(authReqParam);
+            logger.debug("权限列表: {}", auths);
+        } catch (Exception e) {
+            logger.error("查询权限列表异常", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        return Result.success(auths);
     }
 
     //更新权限
     @PostMapping
     @OperLog(operModul = "权限管理-更新权限", operType = AosContent.UPDATE, operDesc = "更新权限信息")
-    public Result modifyAuth(@RequestBody TblAuth tblAuth) {
+    public Result modifyAuth(@RequestBody AuthInfoUpdateRequestDTO authInfoUpdateRequestDTO, HttpServletRequest request) {
         logger.info("-----------------更新权限-------------------");
-        logger.info("权限更新接收到的请求参数: tblAuth-{}", tblAuth);
-        int result;
-        try {
-            //更新权限和菜单项映射
-            tblAuthService.deleteMenuAuths(tblAuth.getAuthId());
-            ArrayList<String> menus = tblAuth.getMenus();
-            if (menus != null && menus.size() > 0) {
-                for (String menu : menus) {
-                    TblMenuAuth record = new TblMenuAuth();
-                    record.setAuthId(tblAuth.getAuthId());
-                    record.setMenuId(menu);
-                    tblAuthService.insertMenuAuth(record);
-                }
-            }
-            result = tblAuthService.updateByPrimaryKeySelective(tblAuth);
-        } catch (Exception e) {
-            logger.error("更新权限发生异常", e);
-            return Result.failure();
-        }
-        logger.info("result: {}", result);
-        if (result == 1) {
-            return Result.success();
-        } else {
-            return Result.failure();
-        }
+        logger.info("权限更新接收到的请求参数: authInfoUpdateRequestDTO-{}", authInfoUpdateRequestDTO);
+        String username = JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN));
+        logger.info("用户名: {}", username);
+
+        //删除权限和菜单映射
+        tblMenuAuthService.deleteByAuthId(authInfoUpdateRequestDTO.getAuthId());
+        //创建权限和菜单映射
+        tblMenuAuthService.createMenuAuthMapping(authInfoUpdateRequestDTO.getAuthId(), authInfoUpdateRequestDTO.getMenus());
+        //更新权限信息
+        TblAuth tblAuth = PoMapper.INSTANCE.convertToTblAuth(authInfoUpdateRequestDTO, new Date(), username);
+        tblAuthService.updateByPrimaryKeySelective(tblAuth);
+
+        logger.info("权限信息更新完成");
+        return Result.success();
     }
 
     //新增权限
     @PutMapping
     @OperLog(operModul = "权限管理-新增权限", operType = AosContent.INSERT, operDesc = "新增权限信息")
-    public Result createAuth(@RequestBody TblAuth tblAuth) {
+    public Result createAuth(@RequestBody AuthCreateRequestDTO authCreateRequestDTO, HttpServletRequest request) {
         logger.info("-------------------新增权限---------------------------");
-        logger.info("将新增的权限: {}", tblAuth);
-        int result;
-        try {
-            //插入权限
-            result = tblAuthService.insertSelective(tblAuth);
-            logger.info("插入权限result: {}", result);
+        logger.info("将新增的权限, authCreateRequestDTO: {}", authCreateRequestDTO);
+        String username = JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN));
+        logger.info("用户名: {}", username);
 
-            //插入权限和菜单映射
-            ArrayList<String> menus = tblAuth.getMenus();
-            logger.info("menus:  {}", menus);
-            if (menus != null && menus.size() > 0) {
-                for (String menu : menus) {
-                    logger.info("开始插入权限和菜单映射");
-                    TblMenuAuth record = new TblMenuAuth();
-                    record.setAuthId(tblAuth.getAuthId());
-                    record.setMenuId(menu);
-                    int i = tblAuthService.insertMenuAuth(record);
-                    logger.info("新增权限菜单结果: {}", i);
-                }
-            }
+        //判断权限信息是否重复
+        TblAuth tblAuth = tblAuthService.selectByAuthName(authCreateRequestDTO.getAuthName());
+        if (tblAuth != null) {
+            logger.error("权限名称已存在, authName: {}", authCreateRequestDTO.getAuthName());
+            return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
+        }
+        tblAuth = PoMapper.INSTANCE.convertToTblAuth(authCreateRequestDTO, new Date(), username);
+        tblAuth.setAuthId(IdUtils.getId());
+        //插入权限信息
+        tblAuthService.insertSelective(tblAuth);
 
-        } catch (Exception e) {
-            logger.error("新增权限发生异常", e);
-            return Result.failure();
-        }
-        logger.info("新增结果: {}", result);
-        if (result == 1) {
-            return Result.success();
-        } else {
-            return Result.failure();
-        }
+        //创建权限和菜单的映射
+        tblMenuAuthService.createMenuAuthMapping(tblAuth.getAuthId(), authCreateRequestDTO.getMenus());
+        logger.info("新增权限信息完成");
+        return Result.success();
     }
 
-    @RequestMapping(path = "/menus", method = RequestMethod.GET)
+    /**
+     * 更新权限时查询权限对应的menu列表
+     * @param authId 权限ID
+     * @return menu列表
+     */
+    @GetMapping("/menus")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "获取权限对应下的列表信息")
     public Result getAuthMenus(@Param("authId") String authId) {
         ArrayList<AuthMenusDto> authMenus;
@@ -179,35 +234,5 @@ public class AuthController {
             }
         }
         return authMenusDto;
-    }
-
-    //删除一个或多个权限
-    @RequestMapping(method = RequestMethod.DELETE)
-    @OperLog(operModul = "权限管理-删除权限", operType = AosContent.DELETE, operDesc = "删除权限信息")
-    public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
-        logger.info("authReqParam: {}", authReqParam);
-        String[] authIds = authReqParam.getAuthIds();
-        // 为避免配置给用户的权限被删除 在删除之前先检查删除的权中是否有当前正在被使用的权限 有则当前的删除操作不执行并提示
-        List<TblRoleAuth> tblRoleAuths = tblRoleAuthService.selectOnUseAuths(authReqParam);
-        if (tblRoleAuths.size() != 0) {
-            return Result.success(5008);
-        }
-        int result = 0;
-        try {
-            if (authIds != null && authIds.length > 0) {
-                for (String authId : authIds) {
-                    result = tblAuthService.invalidateAuth(authId);
-                    logger.info("result={}", result);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("删除权限发生异常", e);
-            return Result.failure();
-        }
-        if (result == 1) {
-            return Result.success();
-        } else {
-            return Result.failure();
-        }
     }
 }

@@ -60,5 +60,10 @@ public class AosContent {
     // 普通用户
     public static final String COMM0N = "1";
 
-
+    //超级管理员
+    public static final String ROLE_WEIGHT_1 = "1";
+    //管理员
+    public static final String ROLE_WEIGHT_2 = "2";
+    //普通用户
+    public static final String ROLE_WEIGHT_3 = "3";
 }
