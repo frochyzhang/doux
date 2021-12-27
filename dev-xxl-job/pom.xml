@@ -39,6 +39,10 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-dal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-core</artifactId>
+        </dependency>
         <!-- mysql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -56,6 +60,5 @@
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
         </dependency>
-
     </dependencies>
 </project>
