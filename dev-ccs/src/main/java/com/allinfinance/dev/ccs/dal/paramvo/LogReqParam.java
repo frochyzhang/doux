@@ -1,6 +1,8 @@
 package com.allinfinance.dev.ccs.dal.paramvo;
 
 
+import java.util.Date;
+
 /**
  * @author ：Lucas Li
  * @project :dev-parent
@@ -11,10 +13,11 @@ public class LogReqParam extends BaseReqParam {
 
     private String time;
     private String org;
+    private String operUserName;
     private String operType;
     private String operDesc;
-    private String beginDate;
-    private String endDate;
+    private Date beginDate;
+    private Date endDate;
 
 
     public String getOrg() {
@@ -23,6 +26,14 @@ public class LogReqParam extends BaseReqParam {
 
     public void setOrg(String org) {
         this.org = org;
+    }
+
+    public String getOperUserName() {
+        return operUserName;
+    }
+
+    public void setOperUserName(String operUserName) {
+        this.operUserName = operUserName;
     }
 
     public String getTime() {
@@ -49,19 +60,19 @@ public class LogReqParam extends BaseReqParam {
         this.operDesc = operDesc;
     }
 
-    public String getBeginDate() {
+    public Date getBeginDate() {
         return beginDate;
     }
 
-    public void setBeginDate(String beginDate) {
+    public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -70,6 +81,7 @@ public class LogReqParam extends BaseReqParam {
         return "LogReqParam{" +
                 "time='" + time + '\'' +
                 ", org='" + org + '\'' +
+                ", operUserName='" + operUserName + '\'' +
                 ", operType='" + operType + '\'' +
                 ", operDesc='" + operDesc + '\'' +
                 ", beginDate='" + beginDate + '\'' +

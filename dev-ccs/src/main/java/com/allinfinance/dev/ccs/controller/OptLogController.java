@@ -3,8 +3,8 @@ package com.allinfinance.dev.ccs.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
-import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
@@ -50,26 +50,26 @@ public class OptLogController {
 //        处理未输入参数时默认的时间
         if (logReqParam.getTime() != null) {
             JSONObject ob = JSON.parseObject(logReqParam.getTime());
-            logReqParam.setBeginDate(ob.getString("beginDate"));
-            logReqParam.setEndDate(ob.getString("endDate"));
-        }
-        if (logReqParam.getEndDate() != null) {
-            Calendar cal = Calendar.getInstance();
             try {
-                cal.setTime(sf.parse(logReqParam.getEndDate()));
-                cal.add(Calendar.DATE, 1);
-                // 如果接受的直接有endDate直接处理
-                logReqParam.setEndDate(sf.format(cal.getTime()));
+                logReqParam.setBeginDate(sf.parse(ob.getString("beginDate")));
+                logReqParam.setEndDate(sf.parse(ob.getString("endDate")));
             } catch (ParseException e) {
                 logger.error("日志查询日期格式转换异常!", e);
             }
+        }
+        if (logReqParam.getEndDate() != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(logReqParam.getEndDate());
+            cal.add(Calendar.DATE, 1);
+            // 如果接受的直接有endDate直接处理
+            logReqParam.setEndDate(cal.getTime());
         }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader(AosContent.AOS_TOKEN);
         if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
             logReqParam.setOrg(JwtUtil.getOrg(token));
         }
-        PageInfo<UserLogRespDto> optLogs;
+        PageInfo<TblUserOptLog> optLogs;
         try {
             optLogs = tblOptLogService.pageSelectOptLogs(logReqParam);
         } catch (Exception e) {

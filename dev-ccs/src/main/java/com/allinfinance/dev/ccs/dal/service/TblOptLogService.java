@@ -2,7 +2,6 @@ package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.LogReqParam;
-import com.allinfinance.dev.ccs.dal.respdto.UserLogRespDto;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -13,6 +12,7 @@ import com.github.pagehelper.PageInfo;
  */
 
 public interface TblOptLogService {
-    PageInfo<UserLogRespDto> pageSelectOptLogs(LogReqParam logReqParam) ;
+    PageInfo<TblUserOptLog> pageSelectOptLogs(LogReqParam logReqParam);
+
     int insertLog(TblUserOptLog tblUserOptLog);
 }

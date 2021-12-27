@@ -25,4 +25,6 @@ public interface TblApiPermissionInfoMapper {
     int updateByPrimaryKeySelective(TblApiPermissionInfo record);
 
     int updateByPrimaryKey(TblApiPermissionInfo record);
+
+    TblApiPermissionInfo selectByRequestUrl(String requestUrl);
 }
