@@ -6,6 +6,7 @@ import com.allinfinance.dev.ccs.dal.model.TblUserErrorLog;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
+import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.allinfinance.dev.ccs.utils.IpAddressUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.lang3.StringUtils;
@@ -91,9 +92,13 @@ public class TblUserOptLogAspect {
             }
             log.setOperRequParam(params); // 请求参数
 //            log.setOperRespParam(JSON.toJSONString(keys)); // 返回结果
-            log.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
-            log.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
-            log.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
+            log.setOperId(IdUtils.getId());
+            String token = request.getHeader(AosContent.AOS_TOKEN);
+            if (StringUtils.isNotBlank(token)) {
+                log.setOperUserId(JwtUtil.getUserId(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户ID
+                log.setOperUserName(JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户名称
+                log.setOrg(JwtUtil.getOrg(request.getHeader(AosContent.AOS_TOKEN))); // 请求用户机构
+            }
             log.setOperIp(IpAddressUtil.getIpAddress(request)); // 请求IP
             log.setOperUri(request.getRequestURI()); // 请求URI
             log.setOperCreateTime(new Date()); // 创建时间

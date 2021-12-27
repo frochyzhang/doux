@@ -3,7 +3,7 @@ package com.allinfinance.dev.ccs.dal.model;
 import java.util.Date;
 
 public class TblUserOptLog {
-    private Integer operId;
+    private String operId;
 
     private String operModule;
 
@@ -35,7 +35,7 @@ public class TblUserOptLog {
 
     private String org;
 
-    public TblUserOptLog(Integer operId, String operModule, String operType, String operDesc, String operRequParam, String operRespParam, String operUserId, String operUserName, String operMethod, String operUri, String operIp, Date operCreateTime, String reservedField1, String reservedField2, String reservedField3, String org) {
+    public TblUserOptLog(String operId, String operModule, String operType, String operDesc, String operRequParam, String operRespParam, String operUserId, String operUserName, String operMethod, String operUri, String operIp, Date operCreateTime, String reservedField1, String reservedField2, String reservedField3, String org) {
         this.operId = operId;
         this.operModule = operModule;
         this.operType = operType;
@@ -58,11 +58,11 @@ public class TblUserOptLog {
         super();
     }
 
-    public Integer getOperId() {
+    public String getOperId() {
         return operId;
     }
 
-    public void setOperId(Integer operId) {
+    public void setOperId(String operId) {
         this.operId = operId;
     }
 
@@ -184,5 +184,27 @@ public class TblUserOptLog {
 
     public void setOrg(String org) {
         this.org = org == null ? null : org.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "TblUserOptLog{" +
+                "operId=" + operId +
+                ", operModule='" + operModule + '\'' +
+                ", operType='" + operType + '\'' +
+                ", operDesc='" + operDesc + '\'' +
+                ", operRequParam='" + operRequParam + '\'' +
+                ", operRespParam='" + operRespParam + '\'' +
+                ", operUserId='" + operUserId + '\'' +
+                ", operUserName='" + operUserName + '\'' +
+                ", operMethod='" + operMethod + '\'' +
+                ", operUri='" + operUri + '\'' +
+                ", operIp='" + operIp + '\'' +
+                ", operCreateTime=" + operCreateTime +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", reservedField2='" + reservedField2 + '\'' +
+                ", reservedField3='" + reservedField3 + '\'' +
+                ", org='" + org + '\'' +
+                '}';
     }
 }

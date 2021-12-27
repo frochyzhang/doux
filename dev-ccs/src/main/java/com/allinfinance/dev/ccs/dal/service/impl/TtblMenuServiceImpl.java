@@ -66,7 +66,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
         } else if (StringUtils.isNotBlank(menusReqParam.getNodeType())) {
             criteria.andNodeTypeEqualTo(menusReqParam.getNodeType());
         } else if (StringUtils.isNotBlank(menusReqParam.getMenuName())) {
-            criteria.andMenuNameLike(menusReqParam.getMenuName());
+            criteria.andMenuNameLike("%" + menusReqParam.getMenuName() + "%");
         }
         List<TblMenu> menusReqParams = tblMenuMapper.selectByExample(example);
         return new PageInfo<>(menusReqParams);

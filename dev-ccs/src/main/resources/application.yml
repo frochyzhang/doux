@@ -11,7 +11,7 @@ token.token_secret: f26e587c28064d0e855e72c0a6a0e618
 # OTP 二维码生成保存路径
 qrCode.path: C:\home\aos\qrcode
 
-# 日志查询范围（query,insert,update,delete）
+# 日志查询配置范围（query,insert,update,delete）
 logType: query,insert,update,delete
 
 

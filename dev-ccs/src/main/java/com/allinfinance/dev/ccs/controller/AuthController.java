@@ -96,14 +96,13 @@ public class AuthController {
         return Result.success(auths);
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "无分页查询权限列表")
     public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
         logger.info("开始查询所有权限列表, authReqParam: {}", authReqParam);
         // 获取当前用户的id
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
-
         //机构隔离
         if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
             authReqParam.setOrg(JwtUtil.getOrg(token));

@@ -86,9 +86,11 @@ public class TblUserServiceImpl implements TblUserService {
         TblUserExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotBlank(userReqParam.getRoleId())) {
             criteria.andRoleIdEqualTo(userReqParam.getRoleId());
-        } else if (StringUtils.isNotBlank(userReqParam.getOrg())) {
+        }
+        if (StringUtils.isNotBlank(userReqParam.getOrg())) {
             criteria.andOrgEqualTo(userReqParam.getOrg());
-        } else if (StringUtils.isNotBlank(userReqParam.getUserName())) {
+        }
+        if (StringUtils.isNotBlank(userReqParam.getUserName())) {
             criteria.andUserIdEqualTo(userReqParam.getUserName());
         }
         List<TblUser> users = tblUserMapper.selectByExample(example);
