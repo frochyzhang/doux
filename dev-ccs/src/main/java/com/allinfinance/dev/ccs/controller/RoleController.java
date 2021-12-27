@@ -1,20 +1,26 @@
 package com.allinfinance.dev.ccs.controller;
 
-import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
+import com.allinfinance.dev.ccs.dal.model.TblRolePermissionInfo;
+import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

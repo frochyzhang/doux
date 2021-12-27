@@ -1,9 +1,9 @@
 package com.allinfinance.dev.ccs.security.handler;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

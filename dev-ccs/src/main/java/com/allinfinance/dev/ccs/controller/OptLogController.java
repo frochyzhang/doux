@@ -10,6 +10,8 @@ import com.allinfinance.dev.ccs.result.Result;
 import com.allinfinance.dev.ccs.result.ResultCodeEnum;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

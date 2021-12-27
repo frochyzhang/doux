@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.exception;
 
-import com.allinfinance.dev.ccs.result.Result;
-import com.allinfinance.dev.ccs.result.ResultCodeEnum;
+import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
