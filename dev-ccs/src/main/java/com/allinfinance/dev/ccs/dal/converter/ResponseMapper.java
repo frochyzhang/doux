@@ -6,6 +6,7 @@ import com.allinfinance.dev.ccs.dto.AuthsQueryResponseDTO;
 import com.allinfinance.dev.ccs.dto.PageableRolesQueryResponseDTO;
 import com.allinfinance.dev.ccs.dto.RolesQueryResponseDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public interface ResponseMapper {
     ResponseMapper INSTANCE = Mappers.getMapper(ResponseMapper.class);
 
+    @Mapping(source = "authIdList", target = "auth")
     PageableRolesQueryResponseDTO convertToPageableRolesQueryResponseDTO(TblRole tblRole, List<String> authIdList);
 
     RolesQueryResponseDTO convertToRolesQueryResponseDTO(TblRole tblRole);

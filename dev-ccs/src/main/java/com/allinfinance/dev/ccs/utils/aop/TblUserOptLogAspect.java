@@ -108,7 +108,7 @@ public class TblUserOptLogAspect {
                 tblOptLogService.insertLog(log);
             }
         } catch (Exception e) {
-            logger.error("操作日志INSERT异常-->日志信息{}", log.toString());
+            logger.error("操作日志INSERT异常-->日志信息{}", log.toString(), e);
         }
     }
 

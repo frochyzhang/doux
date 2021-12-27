@@ -110,13 +110,24 @@ public class TblAuthServiceImpl implements TblAuthService {
 
     @Override
     public List<TblMenu> selectMenus(String authId) {
-        TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
-        tblMenuAuthExample.createCriteria()
-                .andAuthIdEqualTo(authId);
-        return tblMenuAuthMapper.selectByExample(tblMenuAuthExample)
+        return tblMenuMapper.selectByExample(new TblMenuExample())
                 .stream()
-                .map(tblMenuAuth -> tblMenuMapper.selectByPrimaryKey(tblMenuAuth.getMenuId()))
-                .collect(Collectors.toList());
+                .map(tblMenu -> {
+                    TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
+                    tblMenuAuthExample.createCriteria()
+                            .andAuthIdEqualTo(authId)
+                            .andMenuIdEqualTo(tblMenu.getMenuId());
+                    TblMenuAuth tblMenuAuth = tblMenuAuthMapper.selectByExample(tblMenuAuthExample)
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
+                    if (tblMenuAuth == null) {
+                        tblMenu.setReservedField1(AosContent.IS_USE_N);
+                    } else {
+                        tblMenu.setReservedField1(AosContent.IS_USE_Y);
+                    }
+                    return tblMenu;
+                }).collect(Collectors.toList());
     }
 
     @Override

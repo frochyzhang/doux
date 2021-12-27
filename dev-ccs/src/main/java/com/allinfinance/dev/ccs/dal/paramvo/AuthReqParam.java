@@ -12,7 +12,6 @@ public class AuthReqParam extends BaseReqParam {
     private String authName;
     private String org;
     private String isAvailable;
-    private String weight;
     private String[] authIds;
 
     public String getAuthName() {
@@ -39,14 +38,6 @@ public class AuthReqParam extends BaseReqParam {
         this.isAvailable = isAvailable;
     }
 
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
     public String[] getAuthIds() {
         return authIds;
     }
@@ -61,7 +52,6 @@ public class AuthReqParam extends BaseReqParam {
                 "authName='" + authName + '\'' +
                 ", org='" + org + '\'' +
                 ", isAvailable='" + isAvailable + '\'' +
-                ", weight='" + weight + '\'' +
                 ", authIds=" + Arrays.toString(authIds) +
                 '}';
     }

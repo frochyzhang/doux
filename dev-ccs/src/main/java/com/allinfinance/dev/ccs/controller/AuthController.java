@@ -45,9 +45,6 @@ public class AuthController {
     private TblAuthService tblAuthService;
 
     @Autowired
-    private TblRoleAuthService tblRoleAuthService;
-
-    @Autowired
     private TblUserService tblUserService;
 
     @Autowired
@@ -56,7 +53,13 @@ public class AuthController {
     @Autowired
     private TblMenuAuthService tblMenuAuthService;
 
-    //分页查询权限
+    /**
+     * 分页查询用户角色对应的权限列表
+     *
+     * @param authReqParam 查询参数
+     * @param request HttpServletRequest
+     * @return 分页权限列表
+     */
     @GetMapping
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "分页查询权限列表")
     public Result selectPageAuths(AuthReqParam authReqParam, HttpServletRequest request) {
@@ -83,7 +86,6 @@ public class AuthController {
             logger.error("未查询到用户对应角色信息, roleId: {}", tblUser.getRoleId());
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        authReqParam.setWeight(tblRole.getWeight());
 
         PageInfo<AuthsQueryResponseDTO> auths;
         try {
@@ -96,6 +98,13 @@ public class AuthController {
         return Result.success(auths);
     }
 
+    /**
+     * 获取用户角色对应的所有权限列表
+     *
+     * @param authReqParam 查询参数
+     * @param request HttpServletRequest
+     * @return 权限列表
+     */
     @GetMapping("/all")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "无分页查询权限列表")
     public Result selectAuths(AuthReqParam authReqParam, HttpServletRequest request) {
@@ -135,7 +144,13 @@ public class AuthController {
         return Result.success(auths);
     }
 
-    //更新权限
+    /**
+     * 更新权限
+     *
+     * @param authInfoUpdateRequestDTO 更新权限信息
+     * @param request HttpServletRequest
+     * @return 更新是否成功
+     */
     @PostMapping
     @OperLog(operModul = "权限管理-更新权限", operType = AosContent.UPDATE, operDesc = "更新权限信息")
     public Result modifyAuth(@RequestBody AuthInfoUpdateRequestDTO authInfoUpdateRequestDTO, HttpServletRequest request) {
@@ -156,7 +171,13 @@ public class AuthController {
         return Result.success();
     }
 
-    //新增权限
+    /**
+     * 新增权限
+     *
+     * @param authCreateRequestDTO 新增权限信息
+     * @param request HttpServletRequest
+     * @return 新增是否成功
+     */
     @PutMapping
     @OperLog(operModul = "权限管理-新增权限", operType = AosContent.INSERT, operDesc = "新增权限信息")
     public Result createAuth(@RequestBody AuthCreateRequestDTO authCreateRequestDTO, HttpServletRequest request) {
@@ -184,12 +205,14 @@ public class AuthController {
 
     /**
      * 更新权限时查询权限对应的menu列表
+     *
      * @param authId 权限ID
      * @return menu列表
      */
     @GetMapping("/menus")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "获取权限对应下的列表信息")
     public Result getAuthMenus(@Param("authId") String authId) {
+        logger.info("开始获取用户权限对应的menu列表");
         ArrayList<AuthMenusDto> authMenus;
         try {
             //获取所有的菜单项
@@ -197,8 +220,6 @@ public class AuthController {
             logger.info("tblMenus: {}", tblMenus);
             //获取权限菜单树
             authMenus = generateAuthMenuTree(tblMenus);
-
-
         } catch (Exception e) {
             logger.error("获取权限列表树异常", e);
             return Result.failure();

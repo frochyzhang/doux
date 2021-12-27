@@ -34,6 +34,11 @@ public class AosContent {
     //无效
     public static final String IS_AVAILABLE_FALSE = "N";
 
+    //已使用
+    public static final String IS_USE_Y = "Y";
+    //未使用
+    public static final String IS_USE_N = "N";
+
     //根节点初始化值
     public static final String MENU_ID_ROOT = "001";
 

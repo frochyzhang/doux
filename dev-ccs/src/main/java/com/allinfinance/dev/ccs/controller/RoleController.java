@@ -48,11 +48,16 @@ public class RoleController {
     @Autowired
     private TblRoleAuthService tblRoleAuthService;
 
-    //分页查询角色
+    /**
+     * 根据用户权限分页查询角色列表
+     * @param roleReqParam 查询参数
+     * @param request HttpServletRequest
+     * @return 分页角色列表
+     */
     @GetMapping
     @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "分页查询角色列表")
     public Result selectPageRoles(RoleReqParam roleReqParam, HttpServletRequest request) {
-        logger.info("roleReqParam:-{}", roleReqParam);
+        logger.info("开始查询分页查询角色列表, roleReqParam: {}", roleReqParam);
         // 获取当前用户的id
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
@@ -91,9 +96,9 @@ public class RoleController {
     /**
      * 无分页查询角色
      *
-     * @param roleReqParam
-     * @param request
-     * @return
+     * @param roleReqParam 查询参数
+     * @param request HttpServletRequest
+     * @return 角色列表
      */
     @GetMapping("/currLists")
     @OperLog(operModul = "角色管理-角色列表", operType = AosContent.QUERY, operDesc = "无分页角色列表")
@@ -136,7 +141,12 @@ public class RoleController {
         return Result.success(roles);
     }
 
-    //更新角色
+    /**
+     * 更新角色信息
+     * @param roleInfoUpdateRequestDTO 角色信息
+     * @param request HttpServletRequest
+     * @return 是否更新成功
+     */
     @PostMapping
     @OperLog(operModul = "角色管理-更新角色", operType = AosContent.UPDATE, operDesc = "更新角色信息")
     public Result modifyRole(@RequestBody RoleInfoUpdateRequestDTO roleInfoUpdateRequestDTO, HttpServletRequest request) {
@@ -156,7 +166,12 @@ public class RoleController {
         return Result.success();
     }
 
-    //新增角色
+    /**
+     * 新增角色
+     * @param roleCreateRequestDTO 新增角色信息
+     * @param request HttpServletRequest
+     * @return 是否新增成功
+     */
     @PutMapping
     @OperLog(operModul = "角色管理-新增角色", operType = AosContent.INSERT, operDesc = "新增角色信息")
     public Result createRole(@RequestBody RoleCreateRequestDTO roleCreateRequestDTO, HttpServletRequest request) {
