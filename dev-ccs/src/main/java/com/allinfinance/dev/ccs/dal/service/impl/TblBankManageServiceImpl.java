@@ -68,7 +68,8 @@ public class TblBankManageServiceImpl implements TblBankManageService {
         TblBankManageExample.Criteria criteria = tblBankManageExample.createCriteria();
         if (StringUtils.isNotBlank(bankReqParam.getBankName())) {
             criteria.andBankNameLike("%" + bankReqParam.getBankName() + "%");
-        } else if (StringUtils.isNotBlank(bankReqParam.getOrg())) {
+        }
+        if (StringUtils.isNotBlank(bankReqParam.getOrg())) {
             criteria.andOrgLike("%" + bankReqParam.getOrg() + "%");
         }
         List<TblBankManage> banks = tblBankManageMapper.selectByExample(tblBankManageExample);
@@ -80,8 +81,9 @@ public class TblBankManageServiceImpl implements TblBankManageService {
         TblBankManageExample tblBankManageExample = new TblBankManageExample();
         TblBankManageExample.Criteria criteria = tblBankManageExample.createCriteria();
         if (StringUtils.isNotBlank(bankReqParam.getBankName())) {
-            criteria.andBankNameEnEqualTo(bankReqParam.getBankName());
-        } else if (StringUtils.isNotBlank(bankReqParam.getOrg())) {
+            criteria.andBankNameLike("%" + bankReqParam.getBankName() + "%");
+        }
+        if (StringUtils.isNotBlank(bankReqParam.getOrg())) {
             criteria.andOrgEqualTo(bankReqParam.getOrg());
         }
         return tblBankManageMapper.selectByExample(tblBankManageExample);

@@ -32,13 +32,17 @@ public class TblOptLogServiceImpl implements TblOptLogService {
         TblUserOptLogExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotBlank(logReqParam.getOperUserName())) {
             criteria.andOperUserNameLike("%" + logReqParam.getOperUserName() + "%");
-        } else if (StringUtils.isNotBlank(logReqParam.getOrg())) {
+        }
+        if (StringUtils.isNotBlank(logReqParam.getOrg())) {
             criteria.andOrgEqualTo(logReqParam.getOrg());
-        } else if (StringUtils.isNotBlank(logReqParam.getOperType())) {
+        }
+        if (StringUtils.isNotBlank(logReqParam.getOperType())) {
             criteria.andOperTypeEqualTo(logReqParam.getOperType());
-        } else if (StringUtils.isNotBlank(logReqParam.getOperDesc())) {
+        }
+        if (StringUtils.isNotBlank(logReqParam.getOperDesc())) {
             criteria.andOperDescLike("%" + logReqParam.getOperDesc() + "%");
-        } else if (StringUtils.isNotBlank(logReqParam.getBeginDate().toString()) && StringUtils.isNotBlank(logReqParam.getEndDate().toString())) {
+        }
+        if (StringUtils.isNotBlank(logReqParam.getBeginDate().toString()) && StringUtils.isNotBlank(logReqParam.getEndDate().toString())) {
             criteria.andOperCreateTimeBetween(logReqParam.getBeginDate(), logReqParam.getEndDate());
         }
         List<TblUserOptLog> optLogs = tblUserOptLogMapper.selectByExample(example);

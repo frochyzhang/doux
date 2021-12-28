@@ -61,11 +61,14 @@ public class TtblMenuServiceImpl implements TblMenuService {
         TblMenuExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotBlank(menusReqParam.getIsAvailable())) {
             criteria.andIsAvailableEqualTo(menusReqParam.getIsAvailable());
-        } else if (StringUtils.isNotBlank(menusReqParam.getMenuId())) {
-            criteria.andMenuIdEqualTo(menusReqParam.getMenuId());
-        } else if (StringUtils.isNotBlank(menusReqParam.getNodeType())) {
+        }
+        if (StringUtils.isNotBlank(menusReqParam.getMenuId())) {
+            criteria.andMenuIdLike("%" + menusReqParam.getMenuId() + "%");
+        }
+        if (StringUtils.isNotBlank(menusReqParam.getNodeType())) {
             criteria.andNodeTypeEqualTo(menusReqParam.getNodeType());
-        } else if (StringUtils.isNotBlank(menusReqParam.getMenuName())) {
+        }
+        if (StringUtils.isNotBlank(menusReqParam.getMenuName())) {
             criteria.andMenuNameLike("%" + menusReqParam.getMenuName() + "%");
         }
         List<TblMenu> menusReqParams = tblMenuMapper.selectByExample(example);

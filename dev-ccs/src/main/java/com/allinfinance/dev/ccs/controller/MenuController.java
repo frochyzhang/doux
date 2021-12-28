@@ -36,8 +36,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/platform/menus")
-public class TtblMenuController {
-    private static final Logger logger = LoggerFactory.getLogger(TtblMenuController.class);
+public class MenuController {
+    private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
     @Autowired
     TblMenuService tblMenuService;
 
