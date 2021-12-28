@@ -211,7 +211,7 @@ public class AuthController {
     @GetMapping("/menus")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "获取权限对应下的列表信息")
     public Result getAuthMenus(@Param("authId") String authId) {
-        logger.info("开始获取用户权限对应的menu列表");
+        logger.info("开始获取用户权限对应的menu列表, authId: {}", authId);
         ArrayList<AuthMenusDto> authMenus;
         List<String> menuIds;
         try {

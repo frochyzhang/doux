@@ -112,7 +112,7 @@ public class TblAuthServiceImpl implements TblAuthService {
     public List<TblMenu> selectMenus(String authId) {
         return tblMenuMapper.selectByExample(new TblMenuExample())
                 .stream()
-                .map(tblMenu -> {
+                .peek(tblMenu -> {
                     TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
                     tblMenuAuthExample.createCriteria()
                             .andAuthIdEqualTo(authId)
@@ -126,7 +126,6 @@ public class TblAuthServiceImpl implements TblAuthService {
                     } else {
                         tblMenu.setReservedField1(AosContent.IS_USE_Y);
                     }
-                    return tblMenu;
                 }).collect(Collectors.toList());
     }
 

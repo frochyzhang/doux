@@ -63,7 +63,7 @@ public class TblUserOptLog {
     }
 
     public void setOperId(String operId) {
-        this.operId = operId;
+        this.operId = operId == null ? null : operId.trim();
     }
 
     public String getOperModule() {
@@ -184,27 +184,5 @@ public class TblUserOptLog {
 
     public void setOrg(String org) {
         this.org = org == null ? null : org.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "TblUserOptLog{" +
-                "operId=" + operId +
-                ", operModule='" + operModule + '\'' +
-                ", operType='" + operType + '\'' +
-                ", operDesc='" + operDesc + '\'' +
-                ", operRequParam='" + operRequParam + '\'' +
-                ", operRespParam='" + operRespParam + '\'' +
-                ", operUserId='" + operUserId + '\'' +
-                ", operUserName='" + operUserName + '\'' +
-                ", operMethod='" + operMethod + '\'' +
-                ", operUri='" + operUri + '\'' +
-                ", operIp='" + operIp + '\'' +
-                ", operCreateTime=" + operCreateTime +
-                ", reservedField1='" + reservedField1 + '\'' +
-                ", reservedField2='" + reservedField2 + '\'' +
-                ", reservedField3='" + reservedField3 + '\'' +
-                ", org='" + org + '\'' +
-                '}';
     }
 }

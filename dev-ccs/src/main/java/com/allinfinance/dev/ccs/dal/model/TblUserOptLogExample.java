@@ -115,52 +115,62 @@ public class TblUserOptLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andOperIdEqualTo(Integer value) {
+        public Criteria andOperIdEqualTo(String value) {
             addCriterion("OPER_ID =", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdNotEqualTo(Integer value) {
+        public Criteria andOperIdNotEqualTo(String value) {
             addCriterion("OPER_ID <>", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdGreaterThan(Integer value) {
+        public Criteria andOperIdGreaterThan(String value) {
             addCriterion("OPER_ID >", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andOperIdGreaterThanOrEqualTo(String value) {
             addCriterion("OPER_ID >=", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdLessThan(Integer value) {
+        public Criteria andOperIdLessThan(String value) {
             addCriterion("OPER_ID <", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdLessThanOrEqualTo(Integer value) {
+        public Criteria andOperIdLessThanOrEqualTo(String value) {
             addCriterion("OPER_ID <=", value, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdIn(List<Integer> values) {
+        public Criteria andOperIdLike(String value) {
+            addCriterion("OPER_ID like", value, "operId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperIdNotLike(String value) {
+            addCriterion("OPER_ID not like", value, "operId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperIdIn(List<String> values) {
             addCriterion("OPER_ID in", values, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdNotIn(List<Integer> values) {
+        public Criteria andOperIdNotIn(List<String> values) {
             addCriterion("OPER_ID not in", values, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdBetween(Integer value1, Integer value2) {
+        public Criteria andOperIdBetween(String value1, String value2) {
             addCriterion("OPER_ID between", value1, value2, "operId");
             return (Criteria) this;
         }
 
-        public Criteria andOperIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andOperIdNotBetween(String value1, String value2) {
             addCriterion("OPER_ID not between", value1, value2, "operId");
             return (Criteria) this;
         }

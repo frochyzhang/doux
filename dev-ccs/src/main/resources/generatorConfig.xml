@@ -8,8 +8,10 @@
     <!-- id：起个名字 -->
     <!-- targetRuntime：设置生成的文件适用于那个 mybatis 版本 -->
     <classPathEntry
-            location="C:\localresponsity\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar"/>
+            location="C:\Users\huanghf\.m2\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar"/>
     <context id="default" targetRuntime="MyBatis3">
+
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
 
         <!--optional,旨在创建class时，对注释进行控制-->
         <commentGenerator>
