@@ -25,9 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @project: dev-parent
@@ -57,7 +56,7 @@ public class AuthController {
      * 分页查询用户角色对应的权限列表
      *
      * @param authReqParam 查询参数
-     * @param request HttpServletRequest
+     * @param request      HttpServletRequest
      * @return 分页权限列表
      */
     @GetMapping
@@ -102,7 +101,7 @@ public class AuthController {
      * 获取用户角色对应的所有权限列表
      *
      * @param authReqParam 查询参数
-     * @param request HttpServletRequest
+     * @param request      HttpServletRequest
      * @return 权限列表
      */
     @GetMapping("/all")
@@ -148,7 +147,7 @@ public class AuthController {
      * 更新权限
      *
      * @param authInfoUpdateRequestDTO 更新权限信息
-     * @param request HttpServletRequest
+     * @param request                  HttpServletRequest
      * @return 更新是否成功
      */
     @PostMapping
@@ -175,7 +174,7 @@ public class AuthController {
      * 新增权限
      *
      * @param authCreateRequestDTO 新增权限信息
-     * @param request HttpServletRequest
+     * @param request              HttpServletRequest
      * @return 新增是否成功
      */
     @PutMapping
@@ -214,9 +213,12 @@ public class AuthController {
     public Result getAuthMenus(@Param("authId") String authId) {
         logger.info("开始获取用户权限对应的menu列表");
         ArrayList<AuthMenusDto> authMenus;
+        List<String> menuIds;
         try {
             //获取所有的菜单项
             List<TblMenu> tblMenus = tblAuthService.selectMenus(authId);
+            // 将获取的所有的菜单项中将使用标记为Y的Id找出
+            menuIds = tblMenus.stream().filter(tblMenu -> tblMenu.getReservedField1().equals(AosContent.IS_USE_Y)).collect(Collectors.toList()).stream().map(TblMenu::getMenuId).collect(Collectors.toList());
             logger.info("tblMenus: {}", tblMenus);
             //获取权限菜单树
             authMenus = generateAuthMenuTree(tblMenus);
@@ -224,7 +226,10 @@ public class AuthController {
             logger.error("获取权限列表树异常", e);
             return Result.failure();
         }
-        return Result.success(authMenus);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("menuData", authMenus);
+        map.put("menuIds", menuIds.toArray());
+        return Result.success(map);
     }
 
     private ArrayList<AuthMenusDto> generateAuthMenuTree(List<TblMenu> tblMenus) {
