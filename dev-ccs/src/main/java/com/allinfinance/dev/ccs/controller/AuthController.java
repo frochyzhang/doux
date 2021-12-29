@@ -8,7 +8,10 @@ import com.allinfinance.dev.ccs.dal.model.TblRole;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.AuthMenusDto;
-import com.allinfinance.dev.ccs.dal.service.*;
+import com.allinfinance.dev.ccs.dal.service.TblAuthService;
+import com.allinfinance.dev.ccs.dal.service.TblMenuAuthService;
+import com.allinfinance.dev.ccs.dal.service.TblRoleService;
+import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.dto.AuthCreateRequestDTO;
 import com.allinfinance.dev.ccs.dto.AuthInfoUpdateRequestDTO;
 import com.allinfinance.dev.ccs.dto.AuthsQueryResponseDTO;
@@ -25,7 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -68,7 +74,7 @@ public class AuthController {
         String userId = JwtUtil.getUserId(token);
 
         //机构隔离
-        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             authReqParam.setOrg(JwtUtil.getOrg(token));
         }
 
@@ -112,7 +118,7 @@ public class AuthController {
         String token = request.getHeader(AosContent.AOS_TOKEN);
         String userId = JwtUtil.getUserId(token);
         //机构隔离
-        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             authReqParam.setOrg(JwtUtil.getOrg(token));
         }
 

@@ -9,7 +9,10 @@ import com.allinfinance.dev.core.util.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,9 +31,8 @@ public class AccountController {
     @Autowired
     TblAccountAervice accountAervice;
 
-    @RequestMapping(path = "/updateNewPass", method = RequestMethod.POST)
-    @ResponseBody
-    @OperLog(operModul = "账户管理-更新密码",operType = AosContent.UPDATE,operDesc = "更新账户密码")
+    @PostMapping("/updateNewPass")
+    @OperLog(operModul = "账户管理-更新密码", operType = AosContent.UPDATE, operDesc = "更新账户密码")
     public Result updateNewPass(@RequestBody UpdatePasswordParam passwordParam, HttpServletRequest request) {
         logger.info("************更新账户密码Controller开始*************");
         Result result = accountAervice.updateNewPass(passwordParam);

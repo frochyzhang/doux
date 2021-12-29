@@ -14,14 +14,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -41,8 +34,7 @@ public class MenuController {
     @Autowired
     TblMenuService tblMenuService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
+    @GetMapping
     @OperLog(operModul = "菜单管理-查询菜单", operType = AosContent.QUERY, operDesc = "分页查询菜单列表")
     public Result getMenusList(MenusReqParam menusReqParam) {
         logger.info("菜单查询开始，接受到的参数:currentPage-->{},pageSize-->{}", menusReqParam.getCurrent(), menusReqParam.getPageSize());
@@ -59,7 +51,6 @@ public class MenuController {
 
 
     @GetMapping(value = "/getCurrMenus")
-    @ResponseBody
     @OperLog(operModul = "菜单管理-当前菜单", operType = AosContent.QUERY, operDesc = "获取当前用户可访问菜单列表")
     public Result getCurrMenus(HttpServletRequest request) {
         String token = request.getHeader(AosContent.AOS_TOKEN);
@@ -79,7 +70,6 @@ public class MenuController {
 
 
     @GetMapping(value = "/getCurrPowers")
-    @ResponseBody
     @OperLog(operModul = "菜单管理-当前权限", operType = AosContent.QUERY, operDesc = "获取当前用户拥有的按钮权限")
     public Result getCurrPowers(HttpServletRequest request) {
         String token = request.getHeader(AosContent.AOS_TOKEN);
@@ -97,7 +87,6 @@ public class MenuController {
 
 
     @PostMapping
-    @ResponseBody
     @OperLog(operModul = "菜单管理-新增菜单", operType = AosContent.INSERT, operDesc = "新增菜单信息")
     public Result addMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
         Result result = tblMenuService.addMenu(tblMenu, request);
@@ -106,15 +95,13 @@ public class MenuController {
 
 
     @PutMapping
-    @ResponseBody
     @OperLog(operModul = "菜单管理-更新菜单", operType = AosContent.UPDATE, operDesc = "更新菜单信息")
     public Result updateMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
         return tblMenuService.updateMenuById(tblMenu, request);
     }
 
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    @ResponseBody
+    @DeleteMapping
     @OperLog(operModul = "菜单管理-删除菜单", operType = AosContent.DELETE, operDesc = "删除菜单信息")
     public Result delMenu(@RequestBody MenusReqParam menusReqParam) {
         String[] menusId = menusReqParam.getMenusId();

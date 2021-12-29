@@ -5,8 +5,6 @@ import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 
-import com.github.pagehelper.PageInfo;
-
 import java.util.List;
 
 
@@ -33,7 +31,7 @@ public interface TblUserService {
 
     int updateByPrimaryKey(TblUser record);
 
-    PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam);
+    List<TblUser> pageSelectUsers(UserReqParam userReqParam);
 
     TblUser selectCurrentUser(String userName);
 

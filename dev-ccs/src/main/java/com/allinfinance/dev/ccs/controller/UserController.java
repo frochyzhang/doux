@@ -1,7 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
@@ -14,21 +13,17 @@ import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.allinfinance.dev.core.util.result.Result;
 import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -51,8 +46,7 @@ public class UserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     //Id查询用户
-    @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-    @ResponseBody
+    @GetMapping("/{userId}")
     @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "根据id查询用户")
     public Result selectUser(@PathVariable("userId") String userId) {
         TblUser tblUser;
@@ -72,18 +66,22 @@ public class UserController {
      * @param userReqParam
      * @return
      */
+    @GetMapping
     @OperLog(operModul = "用户管理-查询用户", operType = AosContent.QUERY, operDesc = "查询用户列表")
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
     public Result selectUsers(UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接受到的参数:currentPage-->{},pageSize-->{}", userReqParam.getCurrent(), userReqParam.getPageSize());
         String token = request.getHeader(AosContent.AOS_TOKEN);
-        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             userReqParam.setOrg(JwtUtil.getOrg(token));
         }
+        String userId = JwtUtil.getUserId(token);
         PageInfo<TblUser> users;
         try {
-            users = tblUserService.pageSelectUsers(userReqParam);
+            List<TblUser> tblUserList = tblUserService.pageSelectUsers(userReqParam)
+                    .stream()
+                    .filter(tblUser -> !tblUser.getUserId().equals(userId))
+                    .collect(Collectors.toList());
+            users = new PageInfo<>(tblUserList);
         } catch (Exception e) {
             logger.error("查询用户列表异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
@@ -98,8 +96,7 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping
     @OperLog(operModul = "用户管理-新增用户", operType = AosContent.INSERT, operDesc = "新增用户信息")
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
@@ -149,13 +146,12 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(method = RequestMethod.PUT)
-    @ResponseBody
+    @PutMapping
     @OperLog(operModul = "用户管理-更新用户", operType = AosContent.UPDATE, operDesc = "更新用户信息")
     public Result updateUserInfo(@RequestBody TblUser userReqParam) {
         logger.info("接收到的更新用户信息: {}", userReqParam);
         //当接收到的密码字段不为空时先解密再加密
-        if (userReqParam.getUserPass() != null && (!"".equals(userReqParam.getUserPass()))) {
+        if (StringUtils.isNotEmpty(userReqParam.getUserPass())) {
             String decryptPass = null;
             try {
                 decryptPass = RSAUtils.decrypt(userReqParam.getUserPass());
@@ -164,6 +160,8 @@ public class UserController {
                 return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
             }
             userReqParam.setUserPass(passwordEncoder.encode(decryptPass));
+        } else {
+            userReqParam.setUserPass(null);
         }
         int result = 0;
         try {
@@ -182,8 +180,7 @@ public class UserController {
      * @param userReqParam
      * @return
      */
-    @RequestMapping(method = RequestMethod.DELETE)
-    @ResponseBody
+    @DeleteMapping
     @OperLog(operModul = "用户管理-删除用户", operType = AosContent.DELETE, operDesc = "删除用户")
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestUri = request.getRequestURI();
@@ -200,5 +197,4 @@ public class UserController {
         logger.info("删除用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
         return Result.success(result);
     }
-
 }

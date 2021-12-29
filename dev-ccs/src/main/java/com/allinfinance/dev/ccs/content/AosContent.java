@@ -59,16 +59,9 @@ public class AosContent {
     public static String[] MATCHERS={"/getPublicKey", "/login/account", "/login/reLogin","/account/updateNewPass","/getQRCodeUrl"};
 
     // 系统超级管理员
-    public static final String SUPERADMIN = "3";
+    public static final String ROLE_WEIGHT_SUPER_ADMIN = "3";
     // 普通管理员
-    public static final String ADMIN = "2";
+    public static final String ROLE_WEIGHT_ADMIN = "2";
     // 普通用户
-    public static final String COMM0N = "1";
-
-    //超级管理员
-    public static final String ROLE_WEIGHT_1 = "1";
-    //管理员
-    public static final String ROLE_WEIGHT_2 = "2";
-    //普通用户
-    public static final String ROLE_WEIGHT_3 = "3";
+    public static final String ROLE_WEIGHT_COMM0N = "1";
 }

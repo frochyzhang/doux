@@ -63,7 +63,7 @@ public class RoleController {
         String userId = JwtUtil.getUserId(token);
 
         //机构隔离
-        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             roleReqParam.setOrg(JwtUtil.getOrg(token));
         }
 
@@ -109,7 +109,7 @@ public class RoleController {
         String userId = JwtUtil.getUserId(token);
 
         //机构隔离
-        if (!AosContent.ROLE_WEIGHT_3.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             roleReqParam.setOrg(JwtUtil.getOrg(token));
         }
 

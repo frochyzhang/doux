@@ -1,21 +1,19 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.mapper.TblRoleMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblUserMapper;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.model.TblUserExample;
-import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.paramvo.RoleReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.utils.IdUtils;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +29,9 @@ public class TblUserServiceImpl implements TblUserService {
 
     @Autowired
     private TblUserMapper tblUserMapper;
+
+    @Autowired
+    private TblRoleMapper tblRoleMapper;
 
     @Override
     public int deleteByPrimaryKey(String userId) {
@@ -80,21 +81,20 @@ public class TblUserServiceImpl implements TblUserService {
     }
 
     @Override
-    public PageInfo<TblUser> pageSelectUsers(UserReqParam userReqParam) {
+    public List<TblUser> pageSelectUsers(UserReqParam userReqParam) {
         PageHelper.startPage(userReqParam.getCurrent(), userReqParam.getPageSize());
         TblUserExample example = new TblUserExample();
         TblUserExample.Criteria criteria = example.createCriteria();
+        if (StringUtils.isNotBlank(userReqParam.getUserName())) {
+            criteria.andUserNameLike("%" + userReqParam.getUserName() + "%");
+        }
         if (StringUtils.isNotBlank(userReqParam.getRoleId())) {
             criteria.andRoleIdEqualTo(userReqParam.getRoleId());
         }
         if (StringUtils.isNotBlank(userReqParam.getOrg())) {
             criteria.andOrgEqualTo(userReqParam.getOrg());
         }
-        if (StringUtils.isNotBlank(userReqParam.getUserName())) {
-            criteria.andUserIdEqualTo(userReqParam.getUserName());
-        }
-        List<TblUser> users = tblUserMapper.selectByExample(example);
-        return new PageInfo<>(users);
+        return tblUserMapper.selectByExample(example);
     }
 
     @Override

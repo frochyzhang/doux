@@ -36,14 +36,13 @@ public class BankManageController {
 
     //查询所有银行列表 无分页
     @GetMapping(path = "/all")
-    @ResponseBody
     @OperLog(operModul = "银行管理-银行列表", operType = AosContent.QUERY, operDesc = "无分页查询所有银行列表")
     public Result selectAllBanks(BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("查询所有银行列表参数: {}", bankManageReqParam);
         // 判断当前操作人员等级 是否为超级管理员
         String token = request.getHeader(AosContent.AOS_TOKEN);
         // 不是超级管理员只能查询本机构的信息
-        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             bankManageReqParam.setOrg(JwtUtil.getOrg(token));
         }
         List<TblBankManage> tblBankManages = tblBankManageService.selectBankInfo(bankManageReqParam);
@@ -52,13 +51,12 @@ public class BankManageController {
 
     //分页查询银行
     @GetMapping
-    @ResponseBody
     @OperLog(operModul = "银行管理-银行列表", operType = AosContent.QUERY, operDesc = "分页查询银行列表")
     public Result selectPageBanks(BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("分页查询银行列表参数: {}", bankManageReqParam);
         String token = request.getHeader(AosContent.AOS_TOKEN);
         // 不是超级管理员只能查询本机构的信息，添加机构号查询条件作为限制
-        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             bankManageReqParam.setOrg(JwtUtil.getOrg(token));
         }
         PageInfo<TblBankManage> banks;
@@ -74,7 +72,6 @@ public class BankManageController {
 
     //更新银行
     @PutMapping(path = "/{BankId}")
-    @ResponseBody
     @OperLog(operModul = "银行管理-更新银行", operType = AosContent.UPDATE, operDesc = "根据id更新银行信息")
     public Result modifyUser(@RequestBody BankManageReqParam bankManageReqParam, @PathVariable("BankId") String bankId, HttpServletRequest request) {
         logger.debug("更新操作接收到的请求参数: {},bankId:{}", bankManageReqParam, bankId);
@@ -103,7 +100,6 @@ public class BankManageController {
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
-    @ResponseBody
     @OperLog(operModul = "银行管理-更新银行", operType = AosContent.UPDATE, operDesc = "更新银行信息")
     public Result updateBankManage(@RequestBody BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("接收到的更新银行信息: {}", bankManageReqParam);
@@ -133,7 +129,6 @@ public class BankManageController {
      * @return
      */
     @DeleteMapping
-    @ResponseBody
     @OperLog(operModul = "银行管理-删除银行", operType = AosContent.DELETE, operDesc = "删除银行信息")
     public Result delBankManage(@RequestBody BankManageReqParam bankManageReqParam) {
         logger.info("删除的银行信息: {}", bankManageReqParam);
@@ -148,7 +143,6 @@ public class BankManageController {
     }
 
     @PostMapping
-    @ResponseBody
     @OperLog(operModul = "银行管理-新增银行", operType = AosContent.INSERT, operDesc = "新增银行信息")
     public Result addBank(@RequestBody BankManageReqParam bankManageReqParam, HttpServletRequest request) {
         logger.info("新增银行信息参数: {}", bankManageReqParam);

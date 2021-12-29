@@ -14,7 +14,9 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -43,7 +45,6 @@ public class OptLogController {
      * @return
      */
     @GetMapping(path = "/opts")
-    @ResponseBody
     @OperLog(operModul = "操作日志-日志列表", operType = AosContent.QUERY, operDesc = "分页查询操作日志")
     public Result selectOptLogs(LogReqParam logReqParam, HttpServletRequest request) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,7 +67,7 @@ public class OptLogController {
         }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader(AosContent.AOS_TOKEN);
-        if (!AosContent.SUPERADMIN.equals(JwtUtil.getWeight(token))) {
+        if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             logReqParam.setOrg(JwtUtil.getOrg(token));
         }
         PageInfo<TblUserOptLog> optLogs;
