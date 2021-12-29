@@ -8,7 +8,6 @@ import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
 import com.allinfinance.dev.ccs.dal.service.LoginService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
-import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import com.allinfinance.dev.core.util.result.Result;
@@ -36,8 +35,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
     @Autowired
-    private TblUserService tblUserService;
-    @Autowired
     private TblRoleService tblRoleService;
 
     @Autowired
@@ -48,12 +45,11 @@ public class LoginController {
     @OperLog(operModul = "系统登录-OTP二次验证", operType = AosContent.QUERY, operDesc = "OTP二次验证")
     public Result reLogin(@RequestBody SecondCheckPassVo checkPassVo, HttpServletResponse httpServletResponse) {
         logger.info("**********OTP二次验证Controller开始，接受到的参数:userName-->{},checkCode-->{}**********", checkPassVo.getUserName(), checkPassVo.getCheckCode());
-        //Result result = loginService.reLogin(checkPassVo);
-        //if(!result.getSuccess()){
-        //    return result;
-        //}
-        //TblUser currentUser = (TblUser) result.getData();
-        TblUser currentUser = tblUserService.selectByPrimaryKey(checkPassVo.getUserId());
+        Result result = loginService.reLogin(checkPassVo);
+        if (!result.getSuccess()) {
+            return result;
+        }
+        TblUser currentUser = (TblUser) result.getData();
         TblRole tblRole = tblRoleService.selectByPrimaryKey(currentUser.getRoleId());
         String sign = JwtUtil.sign(currentUser.getUserName(), String.valueOf(currentUser.getUserId()), currentUser.getRoleId(), currentUser.getOrg(), tblRole.getWeight());
         httpServletResponse.setHeader("Access-control-Expose-Headers", AosContent.AOS_TOKEN);
@@ -62,7 +58,7 @@ public class LoginController {
         logger.debug("OTP二次验证成功，返回签名：【{}】", sign);
         logger.info("**********OTP二次验证Controller结束**************");
 
-        return Result.success(currentUser);
+        return result;
     }
 
 
