@@ -58,13 +58,6 @@ public class OptLogController {
                 logger.error("日志查询日期格式转换异常!", e);
             }
         }
-        if (logReqParam.getEndDate() != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(logReqParam.getEndDate());
-            cal.add(Calendar.DATE, 1);
-            // 如果接受的直接有endDate直接处理
-            logReqParam.setEndDate(cal.getTime());
-        }
         logger.info("接受到的分页参数:currentPage-->{},pageSize-->{}", logReqParam.getCurrent(), logReqParam.getPageSize());
         String token = request.getHeader(AosContent.AOS_TOKEN);
         if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {

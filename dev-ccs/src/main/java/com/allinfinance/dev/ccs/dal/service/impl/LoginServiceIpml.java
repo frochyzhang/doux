@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Date;
+
 @Service
 public class LoginServiceIpml implements LoginService {
     private static final Logger logger = LoggerFactory.getLogger(LoginServiceIpml.class);
@@ -42,6 +43,9 @@ public class LoginServiceIpml implements LoginService {
     private BCryptPasswordEncoder passwordEncoder;
 
     private static String DEST_PATH;
+
+    @Value("${optValue}")
+    private boolean optValue;
 
     @Value("${qrCode.path:/home/aos/qrcode/}")
     public void setDesePath(String desePath) {
@@ -57,17 +61,19 @@ public class LoginServiceIpml implements LoginService {
             logger.debug("OTP验证码不能为空！");
             return Result.failure(ResultCodeEnum.PARAM_IS_INVALID);
         }
-        try {
-            String secret = currentUser.getReservedField2();
-            int code = Integer.valueOf(checkPassVo.getCheckCode());
-            boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
-            if (!validate) {
-                logger.debug("OTP验证码无效！");
-                return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
+        if (optValue) {
+            try {
+                String secret = currentUser.getReservedField2();
+                int code = Integer.valueOf(checkPassVo.getCheckCode());
+                boolean validate = GoogleAuthenticator.validateCurrentNumber(secret, code, -1);
+                if (!validate) {
+                    logger.debug("OTP验证码无效！");
+                    return Result.failure(ResultCodeEnum.USER_ACCOUNT_ODEERROR);
+                }
+            } catch (GeneralSecurityException e) {
+                logger.error("OTP验证码验证异常！", e);
+                return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
             }
-        } catch (GeneralSecurityException e) {
-            logger.error("OTP验证码验证异常！", e);
-            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         currentUser.setReservedField1(AosContent.IS_BIND);
         currentUser.setUpdateTime(new Date());
