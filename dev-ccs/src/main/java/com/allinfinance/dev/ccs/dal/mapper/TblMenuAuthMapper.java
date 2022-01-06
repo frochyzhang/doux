@@ -32,5 +32,4 @@ public interface TblMenuAuthMapper {
 
     int updateByPrimaryKey(TblMenuAuth record);
 
-    List<TblMenuAuth> selectBatchIds(@Param("authIds") ArrayList<String> authIds);
 }

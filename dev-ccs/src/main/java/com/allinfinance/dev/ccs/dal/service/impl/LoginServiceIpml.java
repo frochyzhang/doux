@@ -1,10 +1,14 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblBankManage;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
 import com.allinfinance.dev.ccs.dal.respdto.QrCodeResDto;
+import com.allinfinance.dev.ccs.dal.respdto.UserDto;
 import com.allinfinance.dev.ccs.dal.service.LoginService;
+import com.allinfinance.dev.ccs.dal.service.TblBankManageService;
 import com.allinfinance.dev.ccs.dal.service.TblMenuService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
@@ -15,6 +19,7 @@ import com.allinfinance.dev.core.util.result.ResultCodeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +34,7 @@ import java.io.FileInputStream;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class LoginServiceIpml implements LoginService {
@@ -37,10 +43,7 @@ public class LoginServiceIpml implements LoginService {
     TblUserService userService;
 
     @Autowired
-    private TblMenuService tblMenuService;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    TblBankManageService bankManageService;
 
     private static String DEST_PATH;
 
@@ -95,8 +98,13 @@ public class LoginServiceIpml implements LoginService {
         logger.info("获取当前用户信息:userName-->{},userId-->{}", username, userId);
         TblUser currentUser = userService.selectByPrimaryKey(userId);
         currentUser.setUserPass("[PROTOC]");
-        logger.info("获取当前用户信息:currentUser-->{}", currentUser.toString());
-        return Result.success(currentUser);
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(currentUser, userDto);
+        BankManageReqParam bankManageReqParam = new BankManageReqParam();
+        bankManageReqParam.setOrg(currentUser.getOrg());
+        bankManageService.selectBankInfo(bankManageReqParam).stream().findFirst().ifPresent(tblBankManage -> userDto.setOrgName(tblBankManage.getBankName()));
+        logger.info("获取当前用户信息:currentUser-->{}", userDto.toString());
+        return Result.success(userDto);
     }
 
     @Override

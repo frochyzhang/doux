@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccs.dal.service.impl;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuAuthMapper;
 import com.allinfinance.dev.ccs.dal.mapper.TblMenuMapper;
@@ -24,12 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -99,7 +95,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
         tblMenu.setCreateBy(username);
         try {
             if (tblMenu.getParentMid() == null) {
-                String maxMenuId = tblMenuMapper.selectMaxMenuIdByRoot(tblMenu);
+                String maxMenuId = selectMaxMenuIdByRoot(tblMenu);
                 if (maxMenuId == null) {
                     tblMenu.setMenuId(AosContent.MENU_ID_ROOT);
                 } else {
@@ -111,7 +107,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     tblMenu.setMenuId(nextMenuId);
                 }
             } else {
-                String maxMenuId = tblMenuMapper.selectMaxMenuId(tblMenu);
+                String maxMenuId = selectMaxMenuId(tblMenu);
                 if (maxMenuId == null) {
                     String nextMenuId = tblMenu.getParentMid() + "01";
                     tblMenu.setMenuId(nextMenuId);
@@ -169,8 +165,8 @@ public class TtblMenuServiceImpl implements TblMenuService {
             TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
             tblRoleAuthKey.setRoleId(tblUser.getRoleId());
             // 获取的role和Auth的关联表
-            List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
-            if (tblRoleAuths.size() > 0) {
+            List<TblRoleAuth> tblRoleAuths = selectByRoleId(tblRoleAuthKey);
+            if (CollectionUtil.isNotEmpty(tblRoleAuths)) {
                 // 获取的角色的权限列表
                 ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
                 tblRoleAuths.forEach(roleAuth -> {
@@ -178,7 +174,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                 });
 
                 // 通过权限id查询菜单
-                List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
+                List<TblMenuAuth> tblMenuAuths = selectBatchIds(authIds);
                 ArrayList<String> menuIds = new ArrayList<>();
                 tblMenuAuths.forEach((authMenu) -> {
                     menuIds.add(authMenu.getMenuId());
@@ -234,6 +230,20 @@ public class TtblMenuServiceImpl implements TblMenuService {
         return new ArrayList<>();
     }
 
+    private List<TblRoleAuth> selectByRoleId(TblRoleAuthKey tblRoleAuthKey) {
+        TblRoleAuthExample example = new TblRoleAuthExample();
+        TblRoleAuthExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdEqualTo(tblRoleAuthKey.getRoleId());
+        return roleAuthMapper.selectByExample(example);
+    }
+
+    private List<TblMenuAuth> selectBatchIds(ArrayList<String> authIds) {
+        TblMenuAuthExample example = new TblMenuAuthExample();
+        TblMenuAuthExample.Criteria criteria = example.createCriteria();
+        criteria.andAuthIdIn(authIds);
+        return tblMenuAuthMapper.selectByExample(example);
+    }
+
     @Override
     public String[] getCurrPowers(String userId) {
         // 查询当前用户
@@ -243,7 +253,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
             TblRoleAuthKey tblRoleAuthKey = new TblRoleAuthKey();
             tblRoleAuthKey.setRoleId(tblUser.getRoleId());
             // 获取的role和Auth的关联表
-            List<TblRoleAuth> tblRoleAuths = roleAuthMapper.selectByRoleId(tblRoleAuthKey);
+            List<TblRoleAuth> tblRoleAuths = selectByRoleId(tblRoleAuthKey);
             if (tblRoleAuths.size() > 0) {
                 // 获取的角色的权限列表信息
                 ArrayList<String> authIds = new ArrayList<>(tblRoleAuths.size());
@@ -251,7 +261,7 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     authIds.add(roleAuth.getAuthId());
                 });
                 // 通过权限id查询菜单
-                List<TblMenuAuth> tblMenuAuths = tblMenuAuthMapper.selectBatchIds(authIds);
+                List<TblMenuAuth> tblMenuAuths = selectBatchIds(authIds);
                 ArrayList<String> menuIds = new ArrayList<>();
                 tblMenuAuths.forEach((authMenu) -> {
                     menuIds.add(authMenu.getMenuId());
@@ -300,12 +310,22 @@ public class TtblMenuServiceImpl implements TblMenuService {
 
     @Override
     public String selectMaxMenuIdByRoot(TblMenu tblMenu) {
-        return tblMenuMapper.selectMaxMenuIdByRoot(tblMenu);
+        TblMenuExample example = new TblMenuExample();
+        TblMenuExample.Criteria criteria = example.createCriteria();
+        criteria.andParentMidIsNull();
+        List<TblMenu> menus = tblMenuMapper.selectByExample(example);
+        OptionalInt max = menus.stream().mapToInt(menu -> Integer.parseInt(menu.getMenuId())).max();
+        return max.toString();
     }
 
     @Override
     public String selectMaxMenuId(TblMenu tblMenu) {
-        return tblMenuMapper.selectMaxMenuId(tblMenu);
+        TblMenuExample tblMenuExample = new TblMenuExample();
+        TblMenuExample.Criteria criteria = tblMenuExample.createCriteria();
+        criteria.andParentMidEqualTo(tblMenu.getMenuId());
+        List<TblMenu> menus = tblMenuMapper.selectByExample(tblMenuExample);
+        OptionalInt max = menus.stream().mapToInt(menu -> Integer.parseInt(menu.getMenuId())).max();
+        return max.toString();
     }
 
 
