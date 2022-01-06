@@ -57,7 +57,6 @@ public class LoginController {
         httpServletResponse.setContentType("text/json;charset=utf-8");
         logger.debug("OTP二次验证成功，返回签名：【{}】", sign);
         logger.info("**********OTP二次验证Controller结束**************");
-
         return result;
     }
 

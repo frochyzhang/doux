@@ -3,6 +3,7 @@ package com.allinfinance.dev.ccs.dal.service;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 
 import java.util.List;
 
@@ -38,4 +39,6 @@ import java.util.List;
      void deleteByRoleId(String roleId);
 
     void createRoleAuthMapping(String roleId, List<String> authIdList);
+
+    List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam);
 }

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccs.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.converter.PoMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRole;
@@ -50,8 +51,9 @@ public class RoleController {
 
     /**
      * 根据用户权限分页查询角色列表
+     *
      * @param roleReqParam 查询参数
-     * @param request HttpServletRequest
+     * @param request      HttpServletRequest
      * @return 分页角色列表
      */
     @GetMapping
@@ -97,7 +99,7 @@ public class RoleController {
      * 无分页查询角色
      *
      * @param roleReqParam 查询参数
-     * @param request HttpServletRequest
+     * @param request      HttpServletRequest
      * @return 角色列表
      */
     @GetMapping("/currLists")
@@ -143,8 +145,9 @@ public class RoleController {
 
     /**
      * 更新角色信息
+     *
      * @param roleInfoUpdateRequestDTO 角色信息
-     * @param request HttpServletRequest
+     * @param request                  HttpServletRequest
      * @return 是否更新成功
      */
     @PostMapping
@@ -168,8 +171,9 @@ public class RoleController {
 
     /**
      * 新增角色
+     *
      * @param roleCreateRequestDTO 新增角色信息
-     * @param request HttpServletRequest
+     * @param request              HttpServletRequest
      * @return 是否新增成功
      */
     @PutMapping
@@ -193,6 +197,34 @@ public class RoleController {
         //创建角色和权限的映射
         tblRoleAuthService.createRoleAuthMapping(tblRole.getRoleId(), roleCreateRequestDTO.getAuth());
         logger.info("新增角色信息完成");
+        return Result.success();
+    }
+
+    //删除一个或多个角色
+    @RequestMapping(method = RequestMethod.DELETE)
+    @OperLog(operModul = "角色管理-删除角色", operType = AosContent.DELETE, operDesc = "删除菜单信息")
+    public Result deleteRoles(@RequestBody RoleReqParam roleReqParam) {
+        logger.info("roleReqParam: {}", roleReqParam);
+        String[] roleIds = roleReqParam.getRoleIds();
+        logger.info("待删除的角色-roleIds: {}", roleIds);
+        // 执行删除角色操作之前 先检查是否有正在使用的权限，如果有则不允许删除，要先删除用户才行
+        List<TblUser> users = tblUserService.selectOnUseRoles(roleReqParam);
+        if (CollectionUtil.isNotEmpty(users)) {
+            return Result.success(ResultCodeEnum.DELETE_ERROR.code());
+        }
+        try {
+            if (roleIds != null && roleIds.length > 0) {
+                for (String roleId : roleIds) {
+                    TblRole tblRole = new TblRole();
+                    tblRole.setRoleId(roleId);
+                    tblRole.setIsAvailable(AosContent.IS_AVAILABLE_FALSE);
+                    tblRoleService.updateByPrimaryKey(tblRole);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("删除角色发生异常", e);
+            return Result.failure();
+        }
         return Result.success();
     }
 }

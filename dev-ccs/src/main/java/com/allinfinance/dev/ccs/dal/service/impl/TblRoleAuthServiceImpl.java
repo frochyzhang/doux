@@ -5,10 +5,12 @@ import com.allinfinance.dev.ccs.dal.mapper.TblRoleAuthMapper;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
+import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -92,5 +94,13 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
             TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
             tblRoleAuthMapper.insertSelective(tblRoleAuth);
         });
+    }
+
+    @Override
+    public List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam) {
+        TblRoleAuthExample example = new TblRoleAuthExample();
+        TblRoleAuthExample.Criteria criteria = example.createCriteria();
+        criteria.andAuthIdIn(Arrays.asList(authReqParam.getAuthIds()));
+        return tblRoleAuthMapper.selectByExample(example);
     }
 }

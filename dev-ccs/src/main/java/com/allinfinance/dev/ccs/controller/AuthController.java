@@ -1,17 +1,12 @@
 package com.allinfinance.dev.ccs.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.ccs.content.AosContent;
 import com.allinfinance.dev.ccs.dal.converter.PoMapper;
-import com.allinfinance.dev.ccs.dal.model.TblAuth;
-import com.allinfinance.dev.ccs.dal.model.TblMenu;
-import com.allinfinance.dev.ccs.dal.model.TblRole;
-import com.allinfinance.dev.ccs.dal.model.TblUser;
+import com.allinfinance.dev.ccs.dal.model.*;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.AuthMenusDto;
-import com.allinfinance.dev.ccs.dal.service.TblAuthService;
-import com.allinfinance.dev.ccs.dal.service.TblMenuAuthService;
-import com.allinfinance.dev.ccs.dal.service.TblRoleService;
-import com.allinfinance.dev.ccs.dal.service.TblUserService;
+import com.allinfinance.dev.ccs.dal.service.*;
 import com.allinfinance.dev.ccs.dto.AuthCreateRequestDTO;
 import com.allinfinance.dev.ccs.dto.AuthInfoUpdateRequestDTO;
 import com.allinfinance.dev.ccs.dto.AuthsQueryResponseDTO;
@@ -51,6 +46,9 @@ public class AuthController {
 
     @Autowired
     private TblUserService tblUserService;
+
+    @Autowired
+    private TblRoleAuthService tblRoleAuthService;
 
     @Autowired
     private TblRoleService tblRoleService;
@@ -265,5 +263,33 @@ public class AuthController {
             }
         }
         return authMenusDto;
+    }
+
+    //删除一个或多个权限
+    @RequestMapping(method = RequestMethod.DELETE)
+    @OperLog(operModul = "权限管理-删除权限", operType = AosContent.DELETE, operDesc = "删除权限信息")
+    public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
+        logger.info("authReqParam: {}", authReqParam);
+        String[] authIds = authReqParam.getAuthIds();
+        logger.info("待删除的权限-authIds: {}", authIds);
+        // 为避免配置给用户的权限被删除 在删除之前先检查删除的权中是否有当前正在被使用的权限 有则当前的删除操作不执行并提示
+        List<TblRoleAuth> tblRoleAuths = tblRoleAuthService.selectOnUseAuths(authReqParam);
+        if (CollectionUtil.isNotEmpty(tblRoleAuths)) {
+            return Result.success(ResultCodeEnum.DELETE_ERROR.code());
+        }
+        try {
+            if (authIds != null && authIds.length > 0) {
+                for (String authId : authIds) {
+                    TblAuth tblAuth = new TblAuth();
+                    tblAuth.setAuthId(authId);
+                    tblAuth.setIsAvailable(AosContent.IS_AVAILABLE_FALSE);
+                    tblAuthService.updateByPrimaryKey(tblAuth);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("删除权限发生异常", e);
+            return Result.failure();
+        }
+        return Result.success();
     }
 }
