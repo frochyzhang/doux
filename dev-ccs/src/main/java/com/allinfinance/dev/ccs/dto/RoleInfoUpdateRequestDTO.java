@@ -12,7 +12,7 @@ public class RoleInfoUpdateRequestDTO {
     private String isAvailable;
     private String org;
     private String weight;
-    private List<String> auth;
+    private String auth;
 
     public String getRoleId() {
         return roleId;
@@ -54,11 +54,11 @@ public class RoleInfoUpdateRequestDTO {
         this.weight = weight;
     }
 
-    public List<String> getAuth() {
+    public String getAuth() {
         return auth;
     }
 
-    public void setAuth(List<String> auth) {
+    public void setAuth(String auth) {
         this.auth = auth;
     }
 

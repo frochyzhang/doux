@@ -38,7 +38,7 @@ import java.util.List;
 
      void deleteByRoleId(String roleId);
 
-    void createRoleAuthMapping(String roleId, List<String> authIdList);
+    void createRoleAuthMapping(String roleId, String authId);
 
     List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam);
 }

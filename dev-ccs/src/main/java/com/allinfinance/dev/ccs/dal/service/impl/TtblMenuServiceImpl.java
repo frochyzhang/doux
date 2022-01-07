@@ -314,17 +314,17 @@ public class TtblMenuServiceImpl implements TblMenuService {
         criteria.andParentMidIsNull();
         List<TblMenu> menus = tblMenuMapper.selectByExample(example);
         OptionalInt max = menus.stream().mapToInt(menu -> Integer.parseInt(menu.getMenuId())).max();
-        return max.toString();
+        return Integer.toString(max.getAsInt());
     }
 
     @Override
     public String selectMaxMenuId(TblMenu tblMenu) {
         TblMenuExample tblMenuExample = new TblMenuExample();
         TblMenuExample.Criteria criteria = tblMenuExample.createCriteria();
-        criteria.andParentMidEqualTo(tblMenu.getMenuId());
+        criteria.andParentMidEqualTo(tblMenu.getParentMid());
         List<TblMenu> menus = tblMenuMapper.selectByExample(tblMenuExample);
         OptionalInt max = menus.stream().mapToInt(menu -> Integer.parseInt(menu.getMenuId())).max();
-        return max.toString();
+        return Integer.toString(max.getAsInt());
     }
 
     @Override

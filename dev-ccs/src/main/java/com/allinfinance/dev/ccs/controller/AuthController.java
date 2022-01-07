@@ -271,7 +271,6 @@ public class AuthController {
     public Result deleteAuths(@RequestBody AuthReqParam authReqParam) {
         logger.info("authReqParam: {}", authReqParam);
         String[] authIds = authReqParam.getAuthIds();
-        logger.info("待删除的权限-authIds: {}", authIds);
         // 为避免配置给用户的权限被删除 在删除之前先检查删除的权中是否有当前正在被使用的权限 有则当前的删除操作不执行并提示
         List<TblRoleAuth> tblRoleAuths = tblRoleAuthService.selectOnUseAuths(authReqParam);
         if (CollectionUtil.isNotEmpty(tblRoleAuths)) {

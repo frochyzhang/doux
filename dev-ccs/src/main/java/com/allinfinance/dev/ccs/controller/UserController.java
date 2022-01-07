@@ -1,10 +1,13 @@
 package com.allinfinance.dev.ccs.controller;
 
 import com.allinfinance.dev.ccs.content.AosContent;
+import com.allinfinance.dev.ccs.dal.model.TblRole;
+import com.allinfinance.dev.ccs.dal.model.TblRoleExample;
 import com.allinfinance.dev.ccs.dal.model.TblUser;
 import com.allinfinance.dev.ccs.dal.paramvo.BankManageReqParam;
 import com.allinfinance.dev.ccs.dal.paramvo.UserReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblBankManageService;
+import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.GoogleAuthenticator;
@@ -21,8 +24,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -42,6 +47,10 @@ public class UserController {
 
     @Autowired
     private TblBankManageService tblBankService;
+
+    @Autowired
+    private TblRoleService tblRoleService;
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -75,11 +84,21 @@ public class UserController {
             userReqParam.setOrg(JwtUtil.getOrg(token));
         }
         String userId = JwtUtil.getUserId(token);
+        // 查询出所有的role信息
+        Map<String, List<TblRole>> roleMap = tblRoleService.selectByExample(new TblRoleExample()).stream().collect(Collectors.groupingBy(TblRole::getWeight));
+        // 遍历map找出比自己权重小的userId
+        List<String> roleIds = new ArrayList<>();
+        roleMap.forEach((key, value) -> {
+            if (Integer.parseInt(key) < Integer.parseInt(JwtUtil.getWeight(token))) {
+                roleIds.addAll(value.stream().map(TblRole::getRoleId).collect(Collectors.toList()));
+            }
+        });
         PageInfo<TblUser> users;
+        // 查询出来的用户列表排除自己
         try {
             List<TblUser> tblUserList = tblUserService.pageSelectUsers(userReqParam)
                     .stream()
-                    .filter(tblUser -> !tblUser.getUserId().equals(userId))
+                    .filter(tblUser -> roleIds.contains(tblUser.getRoleId()))
                     .collect(Collectors.toList());
             users = new PageInfo<>(tblUserList);
         } catch (Exception e) {

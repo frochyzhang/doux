@@ -107,6 +107,7 @@ public class MenuController {
     @PostMapping
     @OperLog(operModul = "菜单管理-新增菜单", operType = AosContent.INSERT, operDesc = "新增菜单信息")
     public Result addMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
+        logger.info("新增菜单请求开始:请求参数-->{}", tblMenu);
         return tblMenuService.addMenu(tblMenu, request);
     }
 

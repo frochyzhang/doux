@@ -89,11 +89,9 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
     }
 
     @Override
-    public void createRoleAuthMapping(String roleId, List<String> authIdList) {
-        authIdList.forEach(authId -> {
-            TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
-            tblRoleAuthMapper.insertSelective(tblRoleAuth);
-        });
+    public void createRoleAuthMapping(String roleId, String authId) {
+        TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
+        tblRoleAuthMapper.insertSelective(tblRoleAuth);
     }
 
     @Override

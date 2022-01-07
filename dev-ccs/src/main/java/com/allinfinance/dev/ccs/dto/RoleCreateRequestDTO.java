@@ -1,6 +1,5 @@
 package com.allinfinance.dev.ccs.dto;
 
-import java.util.List;
 
 /**
  * @author huanghf
@@ -11,7 +10,7 @@ public class RoleCreateRequestDTO {
     private String isAvailable;
     private String org;
     private String weight;
-    private List<String> auth;
+    private String auth;
 
     public String getRoleName() {
         return roleName;
@@ -45,11 +44,11 @@ public class RoleCreateRequestDTO {
         this.weight = weight;
     }
 
-    public List<String> getAuth() {
+    public String getAuth() {
         return auth;
     }
 
-    public void setAuth(List<String> auth) {
+    public void setAuth(String auth) {
         this.auth = auth;
     }
 
