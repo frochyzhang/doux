@@ -20,9 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * <p>
  * 菜单表 前端控制器
- * </p>
  *
  * @author liuqi
  * @since 2021-05-14
@@ -46,6 +44,26 @@ public class MenuController {
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         logger.info("查询到的菜单列表: {}", menus);
+        return Result.success(menus);
+    }
+
+    /**
+     * 获取的所有的menu列表
+     *
+     * @return
+     */
+    @GetMapping("/all")
+    @OperLog(operModul = "菜单管理-查询菜单", operType = AosContent.QUERY, operDesc = "查询所有菜单列表")
+    public Result getAllMenusList() {
+        logger.info("查询所有菜单开始!");
+        List<TblMenu> menus;
+        try {
+            menus = tblMenuService.selectAllMenus();
+        } catch (Exception e) {
+            logger.error("查询所有菜单异常!", e);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
+        logger.info("查询所有菜单结束!");
         return Result.success(menus);
     }
 
@@ -89,8 +107,7 @@ public class MenuController {
     @PostMapping
     @OperLog(operModul = "菜单管理-新增菜单", operType = AosContent.INSERT, operDesc = "新增菜单信息")
     public Result addMenu(@RequestBody TblMenu tblMenu, HttpServletRequest request) {
-        Result result = tblMenuService.addMenu(tblMenu, request);
-        return result;
+        return tblMenuService.addMenu(tblMenu, request);
     }
 
 

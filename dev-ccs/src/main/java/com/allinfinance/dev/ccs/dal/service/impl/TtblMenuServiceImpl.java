@@ -134,7 +134,6 @@ public class TtblMenuServiceImpl implements TblMenuService {
         }
         logger.info("菜单新增服务结束！");
         return Result.success();
-
     }
 
     @Override
@@ -326,6 +325,12 @@ public class TtblMenuServiceImpl implements TblMenuService {
         List<TblMenu> menus = tblMenuMapper.selectByExample(tblMenuExample);
         OptionalInt max = menus.stream().mapToInt(menu -> Integer.parseInt(menu.getMenuId())).max();
         return max.toString();
+    }
+
+    @Override
+    public List<TblMenu> selectAllMenus() {
+        TblMenuExample tblMenuExample = new TblMenuExample();
+        return tblMenuMapper.selectByExample(tblMenuExample);
     }
 
 

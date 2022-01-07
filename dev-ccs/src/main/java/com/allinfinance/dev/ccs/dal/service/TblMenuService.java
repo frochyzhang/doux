@@ -27,13 +27,15 @@ public interface TblMenuService {
 
     Result addMenu(TblMenu tblMenu, HttpServletRequest request);
 
-    Result updateMenuById(TblMenu tblMenu,HttpServletRequest request);
+    Result updateMenuById(TblMenu tblMenu, HttpServletRequest request);
 
-    List<CurrentMenusDto> getCurrMenus(String  userId);
+    List<CurrentMenusDto> getCurrMenus(String userId);
 
-    String[] getCurrPowers(String  userId);
+    String[] getCurrPowers(String userId);
 
     String selectMaxMenuIdByRoot(TblMenu tblMenu);
 
     String selectMaxMenuId(TblMenu tblMenu);
+
+    List<TblMenu> selectAllMenus();
 }
