@@ -69,11 +69,6 @@ public class TblAuthServiceImpl implements TblAuthService {
 
     @Override
     public int updateByPrimaryKey(TblAuth record) {
-        // 需要将权限和菜单对应关系的中间表也删除
-        TblMenuAuthExample example = new TblMenuAuthExample();
-        example.createCriteria().andAuthIdEqualTo(record.getAuthId());
-        tblMenuAuthMapper.deleteByExample(example);
-        // 将权限置为不可用
         return tblAuthMapper.updateByPrimaryKeySelective(record);
     }
 
