@@ -106,11 +106,11 @@ public class TblRoleServiceImpl implements TblRoleService {
                     TblRoleAuthExample tblRoleAuthExample = new TblRoleAuthExample();
                     tblRoleAuthExample.createCriteria()
                             .andRoleIdEqualTo(tblRole.getRoleId());
-                    List<String> authIdList = tblRoleAuthMapper.selectByExample(tblRoleAuthExample)
+                    String authId = tblRoleAuthMapper.selectByExample(tblRoleAuthExample)
                             .stream()
                             .map(TblRoleAuthKey::getAuthId)
-                            .collect(Collectors.toList());
-                    return ResponseMapper.INSTANCE.convertToPageableRolesQueryResponseDTO(tblRole, authIdList);
+                            .collect(Collectors.toList()).stream().findFirst().orElse("");
+                    return ResponseMapper.INSTANCE.convertToPageableRolesQueryResponseDTO(tblRole, authId);
                 }).collect(Collectors.toList());
         return new PageInfo<>(pageableRolesQueryResponseDTOList);
     }

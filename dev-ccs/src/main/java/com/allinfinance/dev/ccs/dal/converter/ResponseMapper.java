@@ -20,7 +20,7 @@ public interface ResponseMapper {
     ResponseMapper INSTANCE = Mappers.getMapper(ResponseMapper.class);
 
     @Mapping(source = "authIdList", target = "auth")
-    PageableRolesQueryResponseDTO convertToPageableRolesQueryResponseDTO(TblRole tblRole, List<String> authIdList);
+    PageableRolesQueryResponseDTO convertToPageableRolesQueryResponseDTO(TblRole tblRole, String authIdList);
 
     RolesQueryResponseDTO convertToRolesQueryResponseDTO(TblRole tblRole);
 

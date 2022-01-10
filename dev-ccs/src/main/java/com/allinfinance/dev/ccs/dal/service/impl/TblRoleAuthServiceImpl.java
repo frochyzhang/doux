@@ -90,6 +90,7 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
 
     @Override
     public void createRoleAuthMapping(String roleId, String authId) {
+        System.out.println(roleId);
         TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
         tblRoleAuthMapper.insertSelective(tblRoleAuth);
     }

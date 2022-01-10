@@ -65,6 +65,11 @@ public class TblAuthServiceImpl implements TblAuthService {
 
     @Override
     public int updateByPrimaryKey(TblAuth record) {
+        // 需要将权限和菜单对应关系的中间表也删除
+        TblMenuAuthExample example = new TblMenuAuthExample();
+        example.createCriteria().andAuthIdEqualTo(record.getAuthId());
+        tblMenuAuthMapper.deleteByExample(example);
+        // 将权限置为不可用
         return tblAuthMapper.updateByPrimaryKeySelective(record);
     }
 
@@ -73,7 +78,7 @@ public class TblAuthServiceImpl implements TblAuthService {
         PageHelper.startPage(authReqParam.getCurrent(), authReqParam.getPageSize());
         TblAuthExample tblAuthExample = new TblAuthExample();
         TblAuthExample.Criteria criteria = tblAuthExample.createCriteria();
-        if (StringUtils.isNotBlank(authReqParam.getAuthName())){
+        if (StringUtils.isNotBlank(authReqParam.getAuthName())) {
             criteria.andAuthNameLike("%" + authReqParam.getAuthName() + "%");
         }
         if (StringUtils.isNotBlank(authReqParam.getOrg())) {
@@ -93,7 +98,7 @@ public class TblAuthServiceImpl implements TblAuthService {
     public List<AuthsQueryResponseDTO> selectAuths(AuthReqParam authReqParam) {
         TblAuthExample tblAuthExample = new TblAuthExample();
         TblAuthExample.Criteria criteria = tblAuthExample.createCriteria();
-        if (StringUtils.isNotBlank(authReqParam.getAuthName())){
+        if (StringUtils.isNotBlank(authReqParam.getAuthName())) {
             criteria.andAuthNameLike("%" + authReqParam.getAuthName() + "%");
         }
         if (StringUtils.isNotBlank(authReqParam.getOrg())) {

@@ -129,8 +129,8 @@ public class RoleController {
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         roleReqParam.setWeight(tblRole.getWeight());
-        // 排除不可用的角色
-        roleReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
+//        // 排除不可用的角色
+//        roleReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
 
         List<RolesQueryResponseDTO> roles;
         try {
@@ -156,7 +156,6 @@ public class RoleController {
         logger.info("更新角色, 接收到的请求参数: {}", roleInfoUpdateRequestDTO);
         String username = JwtUtil.getUsername(request.getHeader(AosContent.AOS_TOKEN));
         logger.info("用户名: {}", username);
-
         //删除角色和权限映射
         tblRoleAuthService.deleteByRoleId(roleInfoUpdateRequestDTO.getRoleId());
         //创建角色和权限的映射
@@ -218,7 +217,7 @@ public class RoleController {
                     TblRole tblRole = new TblRole();
                     tblRole.setRoleId(roleId);
                     tblRole.setIsAvailable(AosContent.IS_AVAILABLE_FALSE);
-                    tblRoleService.updateByPrimaryKey(tblRole);
+                    tblRoleService.updateByPrimaryKeySelective(tblRole);
                 }
             }
         } catch (Exception e) {

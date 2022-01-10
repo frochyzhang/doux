@@ -17,7 +17,7 @@ public class PageableRolesQueryResponseDTO {
 
     private String org;
 
-    private List<String> auth;
+    private String auth;
 
     public String getRoleId() {
         return roleId;
@@ -59,11 +59,11 @@ public class PageableRolesQueryResponseDTO {
         this.org = org;
     }
 
-    public List<String> getAuth() {
+    public String getAuth() {
         return auth;
     }
 
-    public void setAuth(List<String> auth) {
+    public void setAuth(String auth) {
         this.auth = auth;
     }
 

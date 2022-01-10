@@ -133,9 +133,6 @@ public class AuthController {
             logger.error("未查询到用户对应角色信息, roleId: {}", tblUser.getRoleId());
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
-        //排除不可用的权限
-        authReqParam.setIsAvailable(AosContent.IS_AVAILABLE_TRUE);
-
         List<AuthsQueryResponseDTO> auths;
         try {
             auths = tblAuthService.selectAuths(authReqParam);

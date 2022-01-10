@@ -2,7 +2,6 @@ package com.allinfinance.dev.ccs.utils.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.allinfinance.dev.ccs.content.AosContent;
-import com.allinfinance.dev.ccs.dal.model.TblUserErrorLog;
 import com.allinfinance.dev.ccs.dal.model.TblUserOptLog;
 import com.allinfinance.dev.ccs.dal.service.TblOptLogService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
@@ -12,7 +11,6 @@ import com.allinfinance.dev.ccs.utils.annotation.OperLog;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
