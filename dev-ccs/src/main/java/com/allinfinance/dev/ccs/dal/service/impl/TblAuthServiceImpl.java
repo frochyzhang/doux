@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -115,23 +119,52 @@ public class TblAuthServiceImpl implements TblAuthService {
 
     @Override
     public List<TblMenu> selectMenus(String authId) {
-        return tblMenuMapper.selectByExample(new TblMenuExample())
+        TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
+        tblMenuAuthExample.createCriteria()
+                .andAuthIdEqualTo(authId);
+        List<String> menuIdList = tblMenuAuthMapper.selectByExample(tblMenuAuthExample)
                 .stream()
-                .peek(tblMenu -> {
-                    TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
-                    tblMenuAuthExample.createCriteria()
-                            .andAuthIdEqualTo(authId)
-                            .andMenuIdEqualTo(tblMenu.getMenuId());
-                    TblMenuAuth tblMenuAuth = tblMenuAuthMapper.selectByExample(tblMenuAuthExample)
-                            .stream()
-                            .findFirst()
-                            .orElse(null);
-                    if (tblMenuAuth == null) {
-                        tblMenu.setReservedField1(AosContent.IS_USE_N);
+                .map(TblMenuAuthKey::getMenuId)
+                .collect(Collectors.toList());
+        TblMenuExample tblMenuExample = new TblMenuExample();
+        tblMenuExample.createCriteria()
+                .andMenuIdIn(menuIdList);
+        return tblMenuMapper.selectByExample(tblMenuExample)
+                .stream()
+                .flatMap(tblMenu -> {
+                    if (AosContent.LEVEL_1.equals(tblMenu.getNodeType())) {
+                        tblMenuExample.clear();
+                        tblMenuExample.createCriteria()
+                                .andParentMidLike(tblMenu.getMenuId() + "%");
+                        List<TblMenu> tblMenuList = tblMenuMapper.selectByExample(tblMenuExample);
+                        tblMenuList.add(tblMenu);
+                        return tblMenuList.stream();
+                    } else if (AosContent.LEVEL_2.equals(tblMenu.getNodeType())) {
+                        tblMenuExample.clear();
+                        tblMenuExample.createCriteria()
+                                .andMenuIdEqualTo(tblMenu.getMenuId().substring(0, 4));
+                        tblMenuExample.or()
+                                .andParentMidEqualTo(tblMenu.getMenuId());
+                        List<TblMenu> tblMenuList = tblMenuMapper.selectByExample(tblMenuExample);
+                        tblMenuList.add(tblMenu);
+                        return tblMenuList.stream();
                     } else {
-                        tblMenu.setReservedField1(AosContent.IS_USE_Y);
+                        tblMenuExample.clear();
+                        tblMenuExample.createCriteria()
+                                .andMenuIdEqualTo(tblMenu.getMenuId().substring(0, 4));
+                        tblMenuExample.or()
+                                .andMenuIdEqualTo(tblMenu.getMenuId().substring(0, 6));
+                        List<TblMenu> tblMenuList = tblMenuMapper.selectByExample(tblMenuExample);
+                        tblMenuList.add(tblMenu);
+                        return tblMenuList.stream();
                     }
-                }).collect(Collectors.toList());
+                }).filter(distinctByKey(TblMenu::getMenuId))
+                .collect(Collectors.toList());
+    }
+
+    static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
     @Override
