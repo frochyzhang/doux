@@ -14,8 +14,6 @@ qrCode.path: C:\home\aos\qrcode
 # 日志查询配置范围（query,insert,update,delete）
 logType: query,insert,update,delete
 
-#OPT 验证开启标志: true 开启; false 不开启 输入任意值均可
-optValue: false
 
 # rsa配置
 rsa.key.privateKeyFile: C:\\test\\auth\\priKey.key
