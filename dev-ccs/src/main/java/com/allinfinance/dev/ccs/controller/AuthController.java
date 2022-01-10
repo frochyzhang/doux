@@ -214,15 +214,33 @@ public class AuthController {
      */
     @GetMapping("/menus")
     @OperLog(operModul = "权限管理-权限列表", operType = AosContent.QUERY, operDesc = "获取权限对应下的列表信息")
-    public Result getAuthMenus(@Param("authId") String authId) {
+    public Result getAuthMenus(@Param("authId") String authId, HttpServletRequest request) {
         logger.info("开始获取用户权限对应的menu列表, authId: {}", authId);
+        String roleId = JwtUtil.getRole(request.getHeader(AosContent.AOS_TOKEN));
+        TblRoleAuth tblRoleAuth = tblRoleAuthService.selectByRoleId(roleId);
+        if (tblRoleAuth == null) {
+            logger.error("根据用户角色ID未查询到对应权限映射, roleId: {}", roleId);
+            return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
+        }
         ArrayList<AuthMenusDto> authMenus;
         List<String> menuIds;
         try {
             //获取所有的菜单项
-            List<TblMenu> tblMenus = tblAuthService.selectMenus(authId);
-            // 将获取的所有的菜单项中将使用标记为Y的Id找出
-            menuIds = tblMenus.stream().filter(tblMenu -> tblMenu.getReservedField1().equals(AosContent.IS_USE_Y)).collect(Collectors.toList()).stream().map(TblMenu::getMenuId).collect(Collectors.toList());
+            List<TblMenu> tblMenus = tblAuthService.selectMenus(tblRoleAuth.getAuthId());
+            // 将获取的所有的菜单项中将使用的Id找出
+            menuIds = tblMenus.stream()
+                    .filter(tblMenu -> {
+                        TblMenuAuthExample tblMenuAuthExample = new TblMenuAuthExample();
+                        tblMenuAuthExample.createCriteria()
+                                .andAuthIdEqualTo(authId)
+                                .andMenuIdEqualTo(tblMenu.getMenuId());
+                        TblMenuAuth tblMenuAuth = tblMenuAuthService.selectByExample(tblMenuAuthExample)
+                                .stream()
+                                .findFirst()
+                                .orElse(null);
+                        return tblMenuAuth != null;
+                    }).map(TblMenu::getMenuId)
+                    .collect(Collectors.toList());
             logger.info("tblMenus: {}", tblMenus);
             //获取权限菜单树
             authMenus = generateAuthMenuTree(tblMenus);

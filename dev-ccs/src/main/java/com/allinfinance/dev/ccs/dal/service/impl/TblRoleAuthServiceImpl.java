@@ -101,4 +101,15 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
         criteria.andAuthIdIn(Arrays.asList(authReqParam.getAuthIds()));
         return tblRoleAuthMapper.selectByExample(example);
     }
+
+    @Override
+    public TblRoleAuth selectByRoleId(String roleId) {
+        TblRoleAuthExample tblRoleAuthExample = new TblRoleAuthExample();
+        tblRoleAuthExample.createCriteria()
+                .andRoleIdEqualTo(roleId);
+        return tblRoleAuthMapper.selectByExample(tblRoleAuthExample)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 }

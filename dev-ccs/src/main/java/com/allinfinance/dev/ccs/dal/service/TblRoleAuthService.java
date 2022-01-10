@@ -36,9 +36,11 @@ import java.util.List;
 
     int updateByPrimaryKey(TblRoleAuth record);
 
-     void deleteByRoleId(String roleId);
+    void deleteByRoleId(String roleId);
 
     void createRoleAuthMapping(String roleId, String authId);
 
     List<TblRoleAuth> selectOnUseAuths(AuthReqParam authReqParam);
+
+    TblRoleAuth selectByRoleId(String roleId);
 }
