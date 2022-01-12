@@ -3,10 +3,7 @@ package com.allinfinance.dev.ccs.dal.mapper;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuth;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface TblMenuAuthMapper {
@@ -31,5 +28,4 @@ public interface TblMenuAuthMapper {
     int updateByPrimaryKeySelective(TblMenuAuth record);
 
     int updateByPrimaryKey(TblMenuAuth record);
-
 }

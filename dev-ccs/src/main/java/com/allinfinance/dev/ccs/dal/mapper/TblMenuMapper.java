@@ -2,9 +2,7 @@ package com.allinfinance.dev.ccs.dal.mapper;
 
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.model.TblMenuExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface TblMenuMapper {
@@ -27,5 +25,4 @@ public interface TblMenuMapper {
     int updateByPrimaryKeySelective(TblMenu record);
 
     int updateByPrimaryKey(TblMenu record);
-
 }

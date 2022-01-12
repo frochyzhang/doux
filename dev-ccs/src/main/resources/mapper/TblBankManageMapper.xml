@@ -86,7 +86,7 @@
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from tbl_bank_manage
+    from TBL_BANK_MANAGE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,15 +97,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from tbl_bank_manage
+    from TBL_BANK_MANAGE
     where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from tbl_bank_manage
+    delete from TBL_BANK_MANAGE
     where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    insert into tbl_bank_manage (BANK_ID, ORG, BANK_NAME, 
+    insert into TBL_BANK_MANAGE (BANK_ID, ORG, BANK_NAME, 
       IS_AVAILABLE, CREATE_TIME, CREATE_BY, 
       UPDATE_TIME, UPDATE_BY, RESERVED_FIELD1, 
       RESERVED_FIELD2, RESERVED_FIELD3, BANK_NAME_EN
@@ -117,7 +117,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    insert into tbl_bank_manage
+    insert into TBL_BANK_MANAGE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="bankId != null">
         BANK_ID,
@@ -196,13 +196,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManageExample" resultType="java.lang.Long">
-    select count(*) from tbl_bank_manage
+    select count(*) from TBL_BANK_MANAGE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update tbl_bank_manage
+    update TBL_BANK_MANAGE
     <set>
       <if test="record.bankId != null">
         BANK_ID = #{record.bankId,jdbcType=VARCHAR},
@@ -246,7 +246,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update tbl_bank_manage
+    update TBL_BANK_MANAGE
     set BANK_ID = #{record.bankId,jdbcType=VARCHAR},
       ORG = #{record.org,jdbcType=VARCHAR},
       BANK_NAME = #{record.bankName,jdbcType=VARCHAR},
@@ -264,7 +264,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    update tbl_bank_manage
+    update TBL_BANK_MANAGE
     <set>
       <if test="org != null">
         ORG = #{org,jdbcType=VARCHAR},
@@ -303,7 +303,7 @@
     where BANK_ID = #{bankId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblBankManage">
-    update tbl_bank_manage
+    update TBL_BANK_MANAGE
     set ORG = #{org,jdbcType=VARCHAR},
       BANK_NAME = #{bankName,jdbcType=VARCHAR},
       IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},

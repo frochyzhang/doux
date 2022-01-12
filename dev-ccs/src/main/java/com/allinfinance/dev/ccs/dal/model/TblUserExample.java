@@ -1884,6 +1884,76 @@ public class TblUserExample {
             addCriterion("MOBILE_NO not between", value1, value2, "mobileNo");
             return (Criteria) this;
         }
+
+        public Criteria andOptFlagIsNull() {
+            addCriterion("opt_flag is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagIsNotNull() {
+            addCriterion("opt_flag is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagEqualTo(String value) {
+            addCriterion("opt_flag =", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagNotEqualTo(String value) {
+            addCriterion("opt_flag <>", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagGreaterThan(String value) {
+            addCriterion("opt_flag >", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagGreaterThanOrEqualTo(String value) {
+            addCriterion("opt_flag >=", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagLessThan(String value) {
+            addCriterion("opt_flag <", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagLessThanOrEqualTo(String value) {
+            addCriterion("opt_flag <=", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagLike(String value) {
+            addCriterion("opt_flag like", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagNotLike(String value) {
+            addCriterion("opt_flag not like", value, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagIn(List<String> values) {
+            addCriterion("opt_flag in", values, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagNotIn(List<String> values) {
+            addCriterion("opt_flag not in", values, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagBetween(String value1, String value2) {
+            addCriterion("opt_flag between", value1, value2, "optFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptFlagNotBetween(String value1, String value2) {
+            addCriterion("opt_flag not between", value1, value2, "optFlag");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

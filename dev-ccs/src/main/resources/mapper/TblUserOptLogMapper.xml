@@ -3,7 +3,7 @@
 <mapper namespace="com.allinfinance.dev.ccs.dal.mapper.TblUserOptLogMapper">
   <resultMap id="BaseResultMap" type="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
     <constructor>
-      <idArg column="OPER_ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <idArg column="OPER_ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="OPER_MODULE" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="OPER_TYPE" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="OPER_DESC" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -91,7 +91,7 @@
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from tbl_user_opt_log
+    from TBL_USER_OPT_LOG
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -99,24 +99,24 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from tbl_user_opt_log
-    where OPER_ID = #{operId,jdbcType=VARCHAR}
+    from TBL_USER_OPT_LOG
+    where OPER_ID = #{operId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from tbl_user_opt_log
-    where OPER_ID = #{operId,jdbcType=VARCHAR}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TBL_USER_OPT_LOG
+    where OPER_ID = #{operId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    insert into tbl_user_opt_log (OPER_ID, OPER_MODULE, OPER_TYPE, 
+    insert into TBL_USER_OPT_LOG (OPER_ID, OPER_MODULE, OPER_TYPE, 
       OPER_DESC, OPER_REQU_PARAM, OPER_RESP_PARAM, 
       OPER_USER_ID, OPER_USER_NAME, OPER_METHOD, 
       OPER_URI, OPER_IP, OPER_CREATE_TIME, 
       RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3, 
       ORG)
-    values (#{operId,jdbcType=VARCHAR}, #{operModule,jdbcType=VARCHAR}, #{operType,jdbcType=VARCHAR}, 
+    values (#{operId,jdbcType=INTEGER}, #{operModule,jdbcType=VARCHAR}, #{operType,jdbcType=VARCHAR}, 
       #{operDesc,jdbcType=VARCHAR}, #{operRequParam,jdbcType=VARCHAR}, #{operRespParam,jdbcType=VARCHAR}, 
       #{operUserId,jdbcType=VARCHAR}, #{operUserName,jdbcType=VARCHAR}, #{operMethod,jdbcType=VARCHAR}, 
       #{operUri,jdbcType=VARCHAR}, #{operIp,jdbcType=VARCHAR}, #{operCreateTime,jdbcType=TIMESTAMP}, 
@@ -124,7 +124,7 @@
       #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    insert into tbl_user_opt_log
+    insert into TBL_USER_OPT_LOG
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="operId != null">
         OPER_ID,
@@ -177,7 +177,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="operId != null">
-        #{operId,jdbcType=VARCHAR},
+        #{operId,jdbcType=INTEGER},
       </if>
       <if test="operModule != null">
         #{operModule,jdbcType=VARCHAR},
@@ -227,16 +227,16 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLogExample" resultType="java.lang.Long">
-    select count(*) from tbl_user_opt_log
+    select count(*) from TBL_USER_OPT_LOG
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update tbl_user_opt_log
+    update TBL_USER_OPT_LOG
     <set>
       <if test="record.operId != null">
-        OPER_ID = #{record.operId,jdbcType=VARCHAR},
+        OPER_ID = #{record.operId,jdbcType=INTEGER},
       </if>
       <if test="record.operModule != null">
         OPER_MODULE = #{record.operModule,jdbcType=VARCHAR},
@@ -289,8 +289,8 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update tbl_user_opt_log
-    set OPER_ID = #{record.operId,jdbcType=VARCHAR},
+    update TBL_USER_OPT_LOG
+    set OPER_ID = #{record.operId,jdbcType=INTEGER},
       OPER_MODULE = #{record.operModule,jdbcType=VARCHAR},
       OPER_TYPE = #{record.operType,jdbcType=VARCHAR},
       OPER_DESC = #{record.operDesc,jdbcType=VARCHAR},
@@ -311,7 +311,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    update tbl_user_opt_log
+    update TBL_USER_OPT_LOG
     <set>
       <if test="operModule != null">
         OPER_MODULE = #{operModule,jdbcType=VARCHAR},
@@ -359,10 +359,10 @@
         ORG = #{org,jdbcType=VARCHAR},
       </if>
     </set>
-    where OPER_ID = #{operId,jdbcType=VARCHAR}
+    where OPER_ID = #{operId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserOptLog">
-    update tbl_user_opt_log
+    update TBL_USER_OPT_LOG
     set OPER_MODULE = #{operModule,jdbcType=VARCHAR},
       OPER_TYPE = #{operType,jdbcType=VARCHAR},
       OPER_DESC = #{operDesc,jdbcType=VARCHAR},
@@ -378,6 +378,6 @@
       RESERVED_FIELD2 = #{reservedField2,jdbcType=VARCHAR},
       RESERVED_FIELD3 = #{reservedField3,jdbcType=VARCHAR},
       ORG = #{org,jdbcType=VARCHAR}
-    where OPER_ID = #{operId,jdbcType=VARCHAR}
+    where OPER_ID = #{operId,jdbcType=INTEGER}
   </update>
 </mapper>

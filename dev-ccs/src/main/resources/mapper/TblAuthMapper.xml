@@ -85,7 +85,7 @@
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from tbl_auth
+    from TBL_AUTH
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -96,15 +96,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from tbl_auth
+    from TBL_AUTH
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from tbl_auth
+    delete from TBL_AUTH
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-    insert into tbl_auth (AUTH_ID, AUTH_NAME, IS_AVAILABLE, 
+    insert into TBL_AUTH (AUTH_ID, AUTH_NAME, IS_AVAILABLE, 
       CREATE_TIME, CREATE_BY, UPDATE_TIME, 
       UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
       RESERVED_FIELD3, ORG)
@@ -114,7 +114,7 @@
       #{reservedField3,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-    insert into tbl_auth
+    insert into TBL_AUTH
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="authId != null">
         AUTH_ID,
@@ -187,13 +187,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuthExample" resultType="java.lang.Long">
-    select count(*) from tbl_auth
+    select count(*) from TBL_AUTH
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update tbl_auth
+    update TBL_AUTH
     <set>
       <if test="record.authId != null">
         AUTH_ID = #{record.authId,jdbcType=VARCHAR},
@@ -234,7 +234,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update tbl_auth
+    update TBL_AUTH
     set AUTH_ID = #{record.authId,jdbcType=VARCHAR},
       AUTH_NAME = #{record.authName,jdbcType=VARCHAR},
       IS_AVAILABLE = #{record.isAvailable,jdbcType=VARCHAR},
@@ -251,7 +251,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-    update tbl_auth
+    update TBL_AUTH
     <set>
       <if test="authName != null">
         AUTH_NAME = #{authName,jdbcType=VARCHAR},
@@ -287,7 +287,7 @@
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblAuth">
-    update tbl_auth
+    update TBL_AUTH
     set AUTH_NAME = #{authName,jdbcType=VARCHAR},
       IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},

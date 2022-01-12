@@ -84,7 +84,7 @@
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from tbl_menu_auth
+    from TBL_MENU_AUTH
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,23 +95,23 @@
   <select id="selectByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from tbl_menu_auth
+    from TBL_MENU_AUTH
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
       and MENU_ID = #{menuId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthKey">
-    delete from tbl_menu_auth
+    delete from TBL_MENU_AUTH
     where AUTH_ID = #{authId,jdbcType=VARCHAR}
       and MENU_ID = #{menuId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthExample">
-    delete from tbl_menu_auth
+    delete from TBL_MENU_AUTH
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    insert into tbl_menu_auth (AUTH_ID, MENU_ID, IS_AVAILABLE, 
+    insert into TBL_MENU_AUTH (AUTH_ID, MENU_ID, IS_AVAILABLE, 
       CREATE_TIME, CREATE_BY, UPDATE_TIME, 
       UPDATE_BY, RESERVED_FIELD1, RESERVED_FIELD2, 
       RESERVED_FIELD3)
@@ -121,7 +121,7 @@
       #{reservedField3,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    insert into tbl_menu_auth
+    insert into TBL_MENU_AUTH
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="authId != null">
         AUTH_ID,
@@ -188,13 +188,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuthExample" resultType="java.lang.Long">
-    select count(*) from tbl_menu_auth
+    select count(*) from TBL_MENU_AUTH
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update tbl_menu_auth
+    update TBL_MENU_AUTH
     <set>
       <if test="record.authId != null">
         AUTH_ID = #{record.authId,jdbcType=VARCHAR},
@@ -232,7 +232,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update tbl_menu_auth
+    update TBL_MENU_AUTH
     set AUTH_ID = #{record.authId,jdbcType=VARCHAR},
       MENU_ID = #{record.menuId,jdbcType=VARCHAR},
       IS_AVAILABLE = #{record.isAvailable,jdbcType=VARCHAR},
@@ -248,7 +248,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    update tbl_menu_auth
+    update TBL_MENU_AUTH
     <set>
       <if test="isAvailable != null">
         IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
@@ -279,7 +279,7 @@
       and MENU_ID = #{menuId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuAuth">
-    update tbl_menu_auth
+    update TBL_MENU_AUTH
     set IS_AVAILABLE = #{isAvailable,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       CREATE_BY = #{createBy,jdbcType=VARCHAR},

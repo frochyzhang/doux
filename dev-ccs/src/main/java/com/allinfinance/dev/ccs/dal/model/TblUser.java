@@ -55,7 +55,9 @@ public class TblUser {
 
     private String mobileNo;
 
-    public TblUser(String userId, String userName, String userPass, String roleId, String org, String isAvailable, String initPass, String errorNum, String passStatus, Date lastPassUpdateTime, String createBy, Date createTime, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String reservedField4, String reservedField5, String reservedField6, String reservedField7, Date lastLoginTime, String notExpired, String accountNotLocked, String credentialsNotExpired, String mobileNo) {
+    private String optFlag;
+
+    public TblUser(String userId, String userName, String userPass, String roleId, String org, String isAvailable, String initPass, String errorNum, String passStatus, Date lastPassUpdateTime, String createBy, Date createTime, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String reservedField4, String reservedField5, String reservedField6, String reservedField7, Date lastLoginTime, String notExpired, String accountNotLocked, String credentialsNotExpired, String mobileNo, String optFlag) {
         this.userId = userId;
         this.userName = userName;
         this.userPass = userPass;
@@ -82,6 +84,7 @@ public class TblUser {
         this.accountNotLocked = accountNotLocked;
         this.credentialsNotExpired = credentialsNotExpired;
         this.mobileNo = mobileNo;
+        this.optFlag = optFlag;
     }
 
     public TblUser() {
@@ -294,5 +297,13 @@ public class TblUser {
 
     public void setMobileNo(String mobileNo) {
         this.mobileNo = mobileNo == null ? null : mobileNo.trim();
+    }
+
+    public String getOptFlag() {
+        return optFlag;
+    }
+
+    public void setOptFlag(String optFlag) {
+        this.optFlag = optFlag == null ? null : optFlag.trim();
     }
 }

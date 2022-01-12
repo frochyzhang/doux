@@ -93,7 +93,7 @@
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from tbl_menu
+    from TBL_MENU
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -104,15 +104,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from tbl_menu
+    from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from tbl_menu
+    delete from TBL_MENU
     where MENU_ID = #{menuId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    insert into tbl_menu (MENU_ID, MENU_NAME, PARENT_MID, 
+    insert into TBL_MENU (MENU_ID, MENU_NAME, PARENT_MID, 
       NODE_TYPE, ICON, SORT, 
       PAGE_URL, LEVEL, PATH, 
       IS_AVAILABLE, CREATE_TIME, CREATE_BY, 
@@ -128,7 +128,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    insert into tbl_menu
+    insert into TBL_MENU
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="menuId != null">
         MENU_ID,
@@ -243,13 +243,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenuExample" resultType="java.lang.Long">
-    select count(*) from tbl_menu
+    select count(*) from TBL_MENU
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update tbl_menu
+    update TBL_MENU
     <set>
       <if test="record.menuId != null">
         MENU_ID = #{record.menuId,jdbcType=VARCHAR},
@@ -311,7 +311,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update tbl_menu
+    update TBL_MENU
     set MENU_ID = #{record.menuId,jdbcType=VARCHAR},
       MENU_NAME = #{record.menuName,jdbcType=VARCHAR},
       PARENT_MID = #{record.parentMid,jdbcType=VARCHAR},
@@ -335,7 +335,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    update tbl_menu
+    update TBL_MENU
     <set>
       <if test="menuName != null">
         MENU_NAME = #{menuName,jdbcType=VARCHAR},
@@ -392,7 +392,7 @@
     where MENU_ID = #{menuId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.ccs.dal.model.TblMenu">
-    update tbl_menu
+    update TBL_MENU
     set MENU_NAME = #{menuName,jdbcType=VARCHAR},
       PARENT_MID = #{parentMid,jdbcType=VARCHAR},
       NODE_TYPE = #{nodeType,jdbcType=VARCHAR},

@@ -3,9 +3,7 @@ package com.allinfinance.dev.ccs.dal.mapper;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuth;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface TblRoleAuthMapper {
@@ -30,5 +28,4 @@ public interface TblRoleAuthMapper {
     int updateByPrimaryKeySelective(TblRoleAuth record);
 
     int updateByPrimaryKey(TblRoleAuth record);
-
 }
