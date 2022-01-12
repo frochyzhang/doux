@@ -179,7 +179,9 @@ public class TtblMenuServiceImpl implements TblMenuService {
                     menuIds.add(authMenu.getMenuId());
                 });
                 // 先获取所有节点
-                List<TblMenu> allMenus = tblMenuMapper.selectByExample(new TblMenuExample());
+                TblMenuExample example = new TblMenuExample();
+                example.setOrderByClause("MENU_ID ASC");
+                List<TblMenu> allMenus = tblMenuMapper.selectByExample(example);
 //                List<TblMenu> allMenus = tblMenuMapper.selectAllMenus();
                 // 查询出所有的根节点
                 List<TblMenu> secondMenus = new ArrayList<>();
