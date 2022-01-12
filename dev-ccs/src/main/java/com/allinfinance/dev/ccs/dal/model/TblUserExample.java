@@ -1885,73 +1885,73 @@ public class TblUserExample {
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagIsNull() {
-            addCriterion("opt_flag is null");
+        public Criteria andOtpFlagIsNull() {
+            addCriterion("OTP_FLAG is null");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagIsNotNull() {
-            addCriterion("opt_flag is not null");
+        public Criteria andOtpFlagIsNotNull() {
+            addCriterion("OTP_FLAG is not null");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagEqualTo(String value) {
-            addCriterion("opt_flag =", value, "optFlag");
+        public Criteria andOtpFlagEqualTo(String value) {
+            addCriterion("OTP_FLAG =", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagNotEqualTo(String value) {
-            addCriterion("opt_flag <>", value, "optFlag");
+        public Criteria andOtpFlagNotEqualTo(String value) {
+            addCriterion("OTP_FLAG <>", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagGreaterThan(String value) {
-            addCriterion("opt_flag >", value, "optFlag");
+        public Criteria andOtpFlagGreaterThan(String value) {
+            addCriterion("OTP_FLAG >", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagGreaterThanOrEqualTo(String value) {
-            addCriterion("opt_flag >=", value, "optFlag");
+        public Criteria andOtpFlagGreaterThanOrEqualTo(String value) {
+            addCriterion("OTP_FLAG >=", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagLessThan(String value) {
-            addCriterion("opt_flag <", value, "optFlag");
+        public Criteria andOtpFlagLessThan(String value) {
+            addCriterion("OTP_FLAG <", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagLessThanOrEqualTo(String value) {
-            addCriterion("opt_flag <=", value, "optFlag");
+        public Criteria andOtpFlagLessThanOrEqualTo(String value) {
+            addCriterion("OTP_FLAG <=", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagLike(String value) {
-            addCriterion("opt_flag like", value, "optFlag");
+        public Criteria andOtpFlagLike(String value) {
+            addCriterion("OTP_FLAG like", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagNotLike(String value) {
-            addCriterion("opt_flag not like", value, "optFlag");
+        public Criteria andOtpFlagNotLike(String value) {
+            addCriterion("OTP_FLAG not like", value, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagIn(List<String> values) {
-            addCriterion("opt_flag in", values, "optFlag");
+        public Criteria andOtpFlagIn(List<String> values) {
+            addCriterion("OTP_FLAG in", values, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagNotIn(List<String> values) {
-            addCriterion("opt_flag not in", values, "optFlag");
+        public Criteria andOtpFlagNotIn(List<String> values) {
+            addCriterion("OTP_FLAG not in", values, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagBetween(String value1, String value2) {
-            addCriterion("opt_flag between", value1, value2, "optFlag");
+        public Criteria andOtpFlagBetween(String value1, String value2) {
+            addCriterion("OTP_FLAG between", value1, value2, "otpFlag");
             return (Criteria) this;
         }
 
-        public Criteria andOptFlagNotBetween(String value1, String value2) {
-            addCriterion("opt_flag not between", value1, value2, "optFlag");
+        public Criteria andOtpFlagNotBetween(String value1, String value2) {
+            addCriterion("OTP_FLAG not between", value1, value2, "otpFlag");
             return (Criteria) this;
         }
     }

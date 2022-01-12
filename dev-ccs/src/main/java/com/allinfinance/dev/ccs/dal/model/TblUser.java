@@ -55,9 +55,9 @@ public class TblUser {
 
     private String mobileNo;
 
-    private String optFlag;
+    private String otpFlag;
 
-    public TblUser(String userId, String userName, String userPass, String roleId, String org, String isAvailable, String initPass, String errorNum, String passStatus, Date lastPassUpdateTime, String createBy, Date createTime, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String reservedField4, String reservedField5, String reservedField6, String reservedField7, Date lastLoginTime, String notExpired, String accountNotLocked, String credentialsNotExpired, String mobileNo, String optFlag) {
+    public TblUser(String userId, String userName, String userPass, String roleId, String org, String isAvailable, String initPass, String errorNum, String passStatus, Date lastPassUpdateTime, String createBy, Date createTime, Date updateTime, String updateBy, String reservedField1, String reservedField2, String reservedField3, String reservedField4, String reservedField5, String reservedField6, String reservedField7, Date lastLoginTime, String notExpired, String accountNotLocked, String credentialsNotExpired, String mobileNo, String otpFlag) {
         this.userId = userId;
         this.userName = userName;
         this.userPass = userPass;
@@ -84,7 +84,7 @@ public class TblUser {
         this.accountNotLocked = accountNotLocked;
         this.credentialsNotExpired = credentialsNotExpired;
         this.mobileNo = mobileNo;
-        this.optFlag = optFlag;
+        this.otpFlag = otpFlag;
     }
 
     public TblUser() {
@@ -299,11 +299,11 @@ public class TblUser {
         this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 
-    public String getOptFlag() {
-        return optFlag;
+    public String getOtpFlag() {
+        return otpFlag;
     }
 
-    public void setOptFlag(String optFlag) {
-        this.optFlag = optFlag == null ? null : optFlag.trim();
+    public void setOtpFlag(String otpFlag) {
+        this.otpFlag = otpFlag == null ? null : otpFlag.trim();
     }
 }

@@ -29,7 +29,7 @@
       <arg column="ACCOUNT_NOT_LOCKED" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="CREDENTIALS_NOT_EXPIRED" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="MOBILE_NO" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="opt_flag" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="OTP_FLAG" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -95,7 +95,7 @@
     PASS_STATUS, LAST_PASS_UPDATE_TIME, CREATE_BY, CREATE_TIME, UPDATE_TIME, UPDATE_BY, 
     RESERVED_FIELD1, RESERVED_FIELD2, RESERVED_FIELD3, RESERVED_FIELD4, RESERVED_FIELD5, 
     RESERVED_FIELD6, RESERVED_FIELD7, LAST_LOGIN_TIME, NOT_EXPIRED, ACCOUNT_NOT_LOCKED, 
-    CREDENTIALS_NOT_EXPIRED, MOBILE_NO, opt_flag
+    CREDENTIALS_NOT_EXPIRED, MOBILE_NO, OTP_FLAG
   </sql>
   <select id="selectByExample" parameterType="com.allinfinance.dev.ccs.dal.model.TblUserExample" resultMap="BaseResultMap">
     select
@@ -131,7 +131,7 @@
       RESERVED_FIELD2, RESERVED_FIELD3, RESERVED_FIELD4, 
       RESERVED_FIELD5, RESERVED_FIELD6, RESERVED_FIELD7, 
       LAST_LOGIN_TIME, NOT_EXPIRED, ACCOUNT_NOT_LOCKED, 
-      CREDENTIALS_NOT_EXPIRED, MOBILE_NO, opt_flag
+      CREDENTIALS_NOT_EXPIRED, MOBILE_NO, OTP_FLAG
       )
     values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR}, 
       #{roleId,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{isAvailable,jdbcType=VARCHAR}, 
@@ -141,7 +141,7 @@
       #{reservedField2,jdbcType=VARCHAR}, #{reservedField3,jdbcType=VARCHAR}, #{reservedField4,jdbcType=VARCHAR}, 
       #{reservedField5,jdbcType=VARCHAR}, #{reservedField6,jdbcType=VARCHAR}, #{reservedField7,jdbcType=VARCHAR}, 
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{notExpired,jdbcType=VARCHAR}, #{accountNotLocked,jdbcType=VARCHAR}, 
-      #{credentialsNotExpired,jdbcType=VARCHAR}, #{mobileNo,jdbcType=VARCHAR}, #{optFlag,jdbcType=VARCHAR}
+      #{credentialsNotExpired,jdbcType=VARCHAR}, #{mobileNo,jdbcType=VARCHAR}, #{otpFlag,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.allinfinance.dev.ccs.dal.model.TblUser">
@@ -225,8 +225,8 @@
       <if test="mobileNo != null">
         MOBILE_NO,
       </if>
-      <if test="optFlag != null">
-        opt_flag,
+      <if test="otpFlag != null">
+        OTP_FLAG,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -308,8 +308,8 @@
       <if test="mobileNo != null">
         #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="optFlag != null">
-        #{optFlag,jdbcType=VARCHAR},
+      <if test="otpFlag != null">
+        #{otpFlag,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -400,8 +400,8 @@
       <if test="record.mobileNo != null">
         MOBILE_NO = #{record.mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="record.optFlag != null">
-        opt_flag = #{record.optFlag,jdbcType=VARCHAR},
+      <if test="record.otpFlag != null">
+        OTP_FLAG = #{record.otpFlag,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -436,7 +436,7 @@
       ACCOUNT_NOT_LOCKED = #{record.accountNotLocked,jdbcType=VARCHAR},
       CREDENTIALS_NOT_EXPIRED = #{record.credentialsNotExpired,jdbcType=VARCHAR},
       MOBILE_NO = #{record.mobileNo,jdbcType=VARCHAR},
-      opt_flag = #{record.optFlag,jdbcType=VARCHAR}
+      OTP_FLAG = #{record.otpFlag,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -519,8 +519,8 @@
       <if test="mobileNo != null">
         MOBILE_NO = #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="optFlag != null">
-        opt_flag = #{optFlag,jdbcType=VARCHAR},
+      <if test="otpFlag != null">
+        OTP_FLAG = #{otpFlag,jdbcType=VARCHAR},
       </if>
     </set>
     where USER_ID = #{userId,jdbcType=VARCHAR}
@@ -552,7 +552,7 @@
       ACCOUNT_NOT_LOCKED = #{accountNotLocked,jdbcType=VARCHAR},
       CREDENTIALS_NOT_EXPIRED = #{credentialsNotExpired,jdbcType=VARCHAR},
       MOBILE_NO = #{mobileNo,jdbcType=VARCHAR},
-      opt_flag = #{optFlag,jdbcType=VARCHAR}
+      OTP_FLAG = #{otpFlag,jdbcType=VARCHAR}
     where USER_ID = #{userId,jdbcType=VARCHAR}
   </update>
 </mapper>

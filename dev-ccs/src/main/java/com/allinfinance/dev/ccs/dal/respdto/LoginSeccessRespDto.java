@@ -8,11 +8,20 @@ public class LoginSeccessRespDto implements Serializable {
     private String userId;
     private String userName;
     private String org;
+    private String optFlag;
     private String passStatus;
     private String isFirstLogin;
     private String token;
     private String refreshToken;
     private long expirTime;
+
+    public String getOptFlag() {
+        return optFlag;
+    }
+
+    public void setOptFlag(String optFlag) {
+        this.optFlag = optFlag;
+    }
 
     public long getExpirTime() {
         return expirTime;
