@@ -2,13 +2,10 @@ package com.allinfinance.dev.xxl.job.admin.core.conf;
 
 import com.allinfinance.dev.xxl.job.admin.core.alarm.JobAlarmer;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.XxlJobScheduler;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobGroupDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobInfoDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogReportDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobRegistryDao;
+import com.allinfinance.dev.xxl.job.admin.dao.*;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -84,7 +81,7 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     private XxlJobGroupDao xxlJobGroupDao;
     @Resource
     private XxlJobLogReportDao xxlJobLogReportDao;
-    @Resource
+    @Autowired(required = false)
     private JavaMailSender mailSender;
     @Resource
     private DataSource dataSource;

@@ -9,29 +9,26 @@ import com.allinfinance.dev.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.thread.JobScheduleHelper;
 import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobGroupDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobInfoDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogGlueDao;
-import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogReportDao;
+import com.allinfinance.dev.xxl.job.admin.dao.*;
+import com.allinfinance.dev.xxl.job.admin.dto.ChartInfoResponseDTO;
+import com.allinfinance.dev.xxl.job.admin.dto.IndexInfoResponseDTO;
+import com.allinfinance.dev.xxl.job.admin.dto.TriggerDayInfo;
 import com.allinfinance.dev.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * core job action for xxl-job
@@ -92,7 +89,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             if (jobInfo.getScheduleConf() == null || !CronExpression.isValidExpression(jobInfo.getScheduleConf())) {
                 return new ReturnT<>(ReturnT.FAIL_CODE, "Cron" + I18nUtil.getString("system_unvalid"));
             }
-        } else if (scheduleTypeEnum == ScheduleTypeEnum.FIX_RATE/* || scheduleTypeEnum == ScheduleTypeEnum.FIX_DELAY*/) {
+        } else if (scheduleTypeEnum == ScheduleTypeEnum.FIX_RATE) {
             if (jobInfo.getScheduleConf() == null) {
                 return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")));
             }
@@ -357,8 +354,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     }
 
     @Override
-    public Map<String, Object> dashboardInfo() {
-
+    public IndexInfoResponseDTO dashboardInfo() {
         int jobInfoCount = xxlJobInfoDao.findAllCount();
         int jobLogCount = 0;
         int jobLogSuccessCount = 0;
@@ -369,7 +365,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         }
 
         // executor count
-        Set<String> executorAddressSet = new HashSet<String>();
+        Set<String> executorAddressSet = new HashSet<>();
         List<XxlJobGroup> groupList = xxlJobGroupDao.findAll();
 
         if (groupList != null && !groupList.isEmpty()) {
@@ -382,64 +378,60 @@ public class XxlJobServiceImpl implements XxlJobService {
 
         int executorCount = executorAddressSet.size();
 
-        Map<String, Object> dashboardMap = new HashMap<String, Object>();
-        dashboardMap.put("jobInfoCount", jobInfoCount);
-        dashboardMap.put("jobLogCount", jobLogCount);
-        dashboardMap.put("jobLogSuccessCount", jobLogSuccessCount);
-        dashboardMap.put("executorCount", executorCount);
-        return dashboardMap;
+        IndexInfoResponseDTO indexInfoResponseDTO = new IndexInfoResponseDTO();
+        indexInfoResponseDTO.setJobInfoCount(jobInfoCount);
+        indexInfoResponseDTO.setJobLogCount(jobLogCount);
+        indexInfoResponseDTO.setJobLogSuccessCount(jobLogSuccessCount);
+        indexInfoResponseDTO.setExecutorCount(executorCount);
+
+        return indexInfoResponseDTO;
     }
 
     @Override
-    public Map<String, Object> chartInfo(Date startDate, Date endDate) {
-
+    public ChartInfoResponseDTO chartInfo(Date startDate, Date endDate) {
         // process
-        List<String> triggerDayList = new ArrayList<String>();
-        List<Integer> triggerDayCountRunningList = new ArrayList<Integer>();
-        List<Integer> triggerDayCountSucList = new ArrayList<Integer>();
-        List<Integer> triggerDayCountFailList = new ArrayList<Integer>();
-        int triggerCountRunningTotal = 0;
-        int triggerCountSucTotal = 0;
-        int triggerCountFailTotal = 0;
+        AtomicInteger triggerCountRunningTotal = new AtomicInteger();
+        AtomicInteger triggerCountSucTotal = new AtomicInteger();
+        AtomicInteger triggerCountFailTotal = new AtomicInteger();
 
         List<XxlJobLogReport> logReportList = xxlJobLogReportDao.queryLogReport(startDate, endDate);
 
-        if (logReportList != null && logReportList.size() > 0) {
-            for (XxlJobLogReport item : logReportList) {
-                String day = DateUtil.formatDate(item.getTriggerDay());
-                int triggerDayCountRunning = item.getRunningCount();
-                int triggerDayCountSuc = item.getSucCount();
-                int triggerDayCountFail = item.getFailCount();
-
-                triggerDayList.add(day);
-                triggerDayCountRunningList.add(triggerDayCountRunning);
-                triggerDayCountSucList.add(triggerDayCountSuc);
-                triggerDayCountFailList.add(triggerDayCountFail);
-
-                triggerCountRunningTotal += triggerDayCountRunning;
-                triggerCountSucTotal += triggerDayCountSuc;
-                triggerCountFailTotal += triggerDayCountFail;
-            }
-        } else {
-            for (int i = -6; i <= 0; i++) {
-                triggerDayList.add(DateUtil.formatDate(DateUtil.addDays(new Date(), i)));
-                triggerDayCountRunningList.add(0);
-                triggerDayCountSucList.add(0);
-                triggerDayCountFailList.add(0);
-            }
+        ChartInfoResponseDTO chartInfoResponseDTO = new ChartInfoResponseDTO();
+        if (CollectionUtils.isEmpty(logReportList)) {
+            List<TriggerDayInfo> triggerDayInfoList = IntStream.rangeClosed(-6, 0)
+                    .mapToObj(value -> {
+                        TriggerDayInfo triggerDayInfo = new TriggerDayInfo();
+                        triggerDayInfo.setTriggerDay(DateUtil.formatDate(DateUtil.addDays(new Date(), value)));
+                        return triggerDayInfo;
+                    }).collect(Collectors.toList());
+            chartInfoResponseDTO.setTriggerDayList(triggerDayInfoList);
+            return chartInfoResponseDTO;
         }
 
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("triggerDayList", triggerDayList);
-        result.put("triggerDayCountRunningList", triggerDayCountRunningList);
-        result.put("triggerDayCountSucList", triggerDayCountSucList);
-        result.put("triggerDayCountFailList", triggerDayCountFailList);
+        List<TriggerDayInfo> triggerDayInfoList = logReportList.stream()
+                .map(xxlJobLogReport -> {
+                    int triggerDayCountRunning = xxlJobLogReport.getRunningCount();
+                    int triggerDayCountSuc = xxlJobLogReport.getSucCount();
+                    int triggerDayCountFail = xxlJobLogReport.getFailCount();
 
-        result.put("triggerCountRunningTotal", triggerCountRunningTotal);
-        result.put("triggerCountSucTotal", triggerCountSucTotal);
-        result.put("triggerCountFailTotal", triggerCountFailTotal);
+                    TriggerDayInfo triggerDayInfo = new TriggerDayInfo();
+                    triggerDayInfo.setTriggerDay(DateUtil.formatDate(xxlJobLogReport.getTriggerDay()));
+                    triggerDayInfo.setTriggerDayCountRunning(triggerDayCountRunning);
+                    triggerDayInfo.setTriggerDayCountSuc(triggerDayCountSuc);
+                    triggerDayInfo.setTriggerDayCountFail(triggerDayCountFail);
 
-        return result;
+                    triggerCountRunningTotal.addAndGet(triggerDayCountRunning);
+                    triggerCountSucTotal.addAndGet(triggerDayCountSuc);
+                    triggerCountFailTotal.addAndGet(triggerDayCountFail);
+
+                    return triggerDayInfo;
+                }).collect(Collectors.toList());
+
+        chartInfoResponseDTO.setTriggerDayList(triggerDayInfoList);
+        chartInfoResponseDTO.setTriggerCountRunningTotal(triggerCountRunningTotal.get());
+        chartInfoResponseDTO.setTriggerCountSucTotal(triggerCountSucTotal.get());
+        chartInfoResponseDTO.setTriggerCountFailTotal(triggerCountFailTotal.get());
+        return chartInfoResponseDTO;
     }
 
 }

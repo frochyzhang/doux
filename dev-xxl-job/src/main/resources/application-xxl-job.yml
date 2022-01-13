@@ -1,0 +1,17 @@
+### xxl-job, access token
+### xxl-job, i18n (default is zh_CN, and you can choose "zh_CN", "zh_TC" and "en")
+## xxl-job, triggerpool max size
+### xxl-job, log retention days
+xxl:
+  job:
+    accessToken:
+    i18n: zh_CN
+    triggerpool:
+      fast:
+        max: 200
+      slow:
+        max: 100
+    logretentiondays: 30
+    jobGroup:
+      appNameRegex: ^[a-z][a-z0-9-]{3,63}$
+      titleRegex: ^.{4,12}$

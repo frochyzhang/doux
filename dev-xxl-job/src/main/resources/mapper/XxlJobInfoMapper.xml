@@ -73,7 +73,7 @@
             <if test="jobGroup gt 0">
                 AND t.job_group = #{jobGroup}
             </if>
-            <if test="triggerStatus gte 0">
+            <if test="triggerStatus != null">
                 AND t.trigger_status = #{triggerStatus}
             </if>
             <if test="jobDesc != null and jobDesc != ''">
@@ -87,7 +87,7 @@
             </if>
         </trim>
         ORDER BY id DESC
-        LIMIT #{offset}, #{pagesize}
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">

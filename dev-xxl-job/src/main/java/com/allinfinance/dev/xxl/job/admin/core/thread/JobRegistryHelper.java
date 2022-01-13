@@ -10,16 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * job registry instance
@@ -98,7 +90,7 @@ public class JobRegistryHelper {
 
                         // fresh group address
                         for (XxlJobGroup group : groupList) {
-                            List<String> registryList = appAddressMap.get(group.getAppname());
+                            List<String> registryList = appAddressMap.get(group.getAppName());
                             String addressListStr = null;
                             if (registryList != null && !registryList.isEmpty()) {
                                 Collections.sort(registryList);

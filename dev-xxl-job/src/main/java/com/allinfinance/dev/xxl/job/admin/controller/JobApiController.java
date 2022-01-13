@@ -42,15 +42,15 @@ public class JobApiController {
 
         // valid
         if (!"POST".equalsIgnoreCase(request.getMethod())) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, HttpMethod not support.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "invalid request, HttpMethod not support.");
         }
         if (uri == null || uri.trim().length() == 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping empty.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "invalid request, uri-mapping empty.");
         }
         if (XxlJobAdminConfig.getAdminConfig().getAccessToken() != null
                 && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length() > 0
                 && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN))) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "The access token is wrong.");
         }
 
         // services mapping
@@ -67,7 +67,7 @@ public class JobApiController {
                 return adminBiz.registryRemove(registryParam);
             }
             default:
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping(" + uri + ") not found.");
+                return new ReturnT<>(ReturnT.FAIL_CODE, "invalid request, uri-mapping(" + uri + ") not found.");
         }
 
     }
