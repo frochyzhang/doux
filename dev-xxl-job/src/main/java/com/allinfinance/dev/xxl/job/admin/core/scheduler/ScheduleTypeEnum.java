@@ -1,30 +1,23 @@
 package com.allinfinance.dev.xxl.job.admin.core.scheduler;
 
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
-
 /**
  * @author xuxueli 2020-10-29 21:11:23
  */
 public enum ScheduleTypeEnum {
 
-    NONE(I18nUtil.getString("schedule_type_none")),
+    NONE("无"),
 
     /**
      * schedule by cron
      */
-    CRON(I18nUtil.getString("schedule_type_cron")),
+    CRON("CRON"),
 
     /**
      * schedule by fixed rate (in seconds)
      */
-    FIX_RATE(I18nUtil.getString("schedule_type_fix_rate")),
+    FIX_RATE("固定速度");
 
-    /**
-     * schedule by fix delay (in seconds)， after the last time
-     */
-    /*FIX_DELAY(I18nUtil.getString("schedule_type_fix_delay"))*/;
-
-    private String title;
+    private final String title;
 
     ScheduleTypeEnum(String title) {
         this.title = title;

@@ -17,16 +17,16 @@ import java.util.Map;
 public interface XxlJobLogDao {
 
     // exist jobId not use jobGroup, not exist use jobGroup
-    public List<XxlJobLog> pageList(@Param("offset") int offset,
-                                    @Param("pagesize") int pagesize,
-                                    @Param("jobGroup") int jobGroup,
-                                    @Param("jobId") int jobId,
+    public List<XxlJobLog> pageList(@Param("offset") Integer offset,
+                                    @Param("pageSize") Integer pageSize,
+                                    @Param("jobGroup") Integer jobGroup,
+                                    @Param("jobId") Integer jobId,
                                     @Param("triggerTimeStart") Date triggerTimeStart,
                                     @Param("triggerTimeEnd") Date triggerTimeEnd,
-                                    @Param("logStatus") int logStatus);
+                                    @Param("logStatus") Integer logStatus);
 
     public int pageListCount(@Param("offset") int offset,
-                             @Param("pagesize") int pagesize,
+                             @Param("pageSize") int pageSize,
                              @Param("jobGroup") int jobGroup,
                              @Param("jobId") int jobId,
                              @Param("triggerTimeStart") Date triggerTimeStart,
@@ -50,11 +50,11 @@ public interface XxlJobLogDao {
                                       @Param("jobId") int jobId,
                                       @Param("clearBeforeTime") Date clearBeforeTime,
                                       @Param("clearBeforeNum") int clearBeforeNum,
-                                      @Param("pagesize") int pagesize);
+                                      @Param("pageSize") int pageSize);
 
     public int clearLog(@Param("logIds") List<Long> logIds);
 
-    public List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
+    public List<Long> findFailJobLogIds(@Param("pageSize") int pageSize);
 
     public int updateAlarmStatus(@Param("logId") long logId,
                                  @Param("oldAlarmStatus") int oldAlarmStatus,

@@ -49,10 +49,10 @@
         <include refid="Base_Column_List"/>
         FROM xxl_job_log AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="jobId==0 and jobGroup gt 0">
+            <if test="jobGroup != null">
                 AND t.job_group = #{jobGroup}
             </if>
-            <if test="jobId gt 0">
+            <if test="jobId != null">
                 AND t.job_id = #{jobId}
             </if>
             <if test="triggerTimeStart != null">
@@ -76,7 +76,7 @@
             </if>
         </trim>
         ORDER BY t.trigger_time DESC
-        LIMIT #{offset}, #{pagesize}
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="pageListCount" resultType="int">
@@ -219,7 +219,7 @@
             </if>
         </trim>
         order by id asc
-        LIMIT #{pagesize}
+        LIMIT #{pageSize}
     </select>
 
     <delete id="clearLog">
@@ -239,7 +239,7 @@
 		)
 		AND `alarm_status` = 0
 		ORDER BY id ASC
-		LIMIT #{pagesize}
+		LIMIT #{pageSize}
 	</select>
 
     <update id="updateAlarmStatus">

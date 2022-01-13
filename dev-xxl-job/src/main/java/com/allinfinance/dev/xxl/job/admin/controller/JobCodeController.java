@@ -1,31 +1,33 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
 import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.core.util.result.ResultCodeEnum;
+import com.allinfinance.dev.xxl.job.admin.constant.XxlJobResultCodeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobLogGlue;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobInfoDao;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogGlueDao;
+import com.allinfinance.dev.xxl.job.admin.dto.JobGlueIndexInfoResponseDTO;
 import com.xxl.job.core.glue.GlueTypeEnum;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * job code controller
  *
  * @author xuxueli 2015-12-19 16:13:16
  */
+@Api(value = "JobCodeController", tags = {"GLUE模式代码接口"})
 @Controller
-@RequestMapping("/jobcode")
+@RequestMapping("/codes")
 public class JobCodeController {
 
     @Resource
@@ -33,43 +35,45 @@ public class JobCodeController {
     @Resource
     private XxlJobLogGlueDao xxlJobLogGlueDao;
 
-    @RequestMapping
-    public Result index(HttpServletRequest request, int jobId) {
+    @GetMapping("{jobId}")
+    @ApiOperation("查询GLUE任务源码信息")
+    public Result index(@PathVariable int jobId) {
         XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
         List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);
 
         if (jobInfo == null) {
-            throw new RuntimeException(I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
+            return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
         }
         if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobInfo.getGlueType())) {
-            throw new RuntimeException(I18nUtil.getString("jobinfo_glue_gluetype_unvalid"));
+            return Result.failure(XxlJobResultCodeEnum.JOB_GLUE_TYPE_INVALID);
         }
 
+        // TODO: 2022/1/4 权限控制待定
         // valid permission
-        JobInfoController.validPermission(request, jobInfo.getJobGroup());
+        //JobInfoController.validPermission(request, jobInfo.getJobGroup());
 
-        Map<String, Object> maps = new HashMap<>();
-        // Glue类型-字典
-        maps.put("GlueTypeEnum", GlueTypeEnum.values());
-
-        maps.put("jobInfo", jobInfo);
-        maps.put("jobLogGlues", jobLogGlues);
-        return Result.success(maps);
+        JobGlueIndexInfoResponseDTO jobGlueIndexInfoResponseDTO = new JobGlueIndexInfoResponseDTO();
+        jobGlueIndexInfoResponseDTO.setGlueTypeList(Arrays.stream(GlueTypeEnum.values()).map(GlueTypeEnum::getDesc)
+                .collect(Collectors.toList()));
+        jobGlueIndexInfoResponseDTO.setJobInfo(jobInfo);
+        jobGlueIndexInfoResponseDTO.setJobLogGlues(jobLogGlues);
+        return Result.success(jobGlueIndexInfoResponseDTO);
     }
 
-    @RequestMapping("/save")
-    @ResponseBody
-    public Result save(Model model, int id, String glueSource, String glueRemark) {
+    @PutMapping
+    @ApiOperation("保存GLUE任务代码")
+    public Result save(@RequestParam(name = "jobId") int jobId, @RequestParam(name = "glueSource") String glueSource,
+                       @RequestParam(name = "glueRemark") String glueRemark) {
         // valid
         if (glueRemark == null) {
-            return Result.failure("500", (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_remark")));
+            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
         }
         if (glueRemark.length() < 4 || glueRemark.length() > 100) {
-            return Result.failure("500", I18nUtil.getString("jobinfo_glue_remark_limit"));
+            return Result.failure(XxlJobResultCodeEnum.GLUE_REMARK_LENGTH_LIMIT);
         }
-        XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+        XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(jobId);
         if (xxlJobInfo == null) {
-            return Result.failure("500", I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
+            return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
         }
 
         // update new code
@@ -96,5 +100,4 @@ public class JobCodeController {
 
         return Result.success();
     }
-
 }

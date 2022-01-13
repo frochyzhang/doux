@@ -69,6 +69,11 @@
                 <artifactId>dev-ccs</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-xxl-job</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

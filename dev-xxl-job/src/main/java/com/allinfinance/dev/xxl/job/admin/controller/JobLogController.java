@@ -1,43 +1,42 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
+import com.allinfinance.dev.core.util.common.DateUtils;
 import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.xxl.job.admin.constant.XxlJobResultCodeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.complete.XxlJobCompleter;
-import com.allinfinance.dev.xxl.job.admin.core.exception.XxlJobException;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobGroup;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobLog;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.XxlJobScheduler;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobGroupDao;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobInfoDao;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobLogDao;
+import com.allinfinance.dev.xxl.job.admin.dto.LogDetailQueryResponseDTO;
+import com.github.pagehelper.PageInfo;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.KillParam;
 import com.xxl.job.core.biz.model.LogParam;
 import com.xxl.job.core.biz.model.LogResult;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * index controller
  *
  * @author xuxueli 2015-12-19 16:13:16
  */
+@Api(value = "JobLogController", tags = {"日志管理接口"})
 @RestController
 @RequestMapping("/logs")
 public class JobLogController {
@@ -50,96 +49,77 @@ public class JobLogController {
     @Resource
     public XxlJobLogDao xxlJobLogDao;
 
-    @GetMapping("constants")
-    public Result index(HttpServletRequest request, @RequestParam(required = false, defaultValue = "0") Integer jobId) {
-
+    @GetMapping("/jobGroups")
+    @ApiOperation("查询执行器列表")
+    public Result index() {
         // 执行器列表
+        // TODO: 2021/12/31 权限控制待定，返回所有执行器
         List<XxlJobGroup> xxlJobGroupDaoAll = xxlJobGroupDao.findAll();
 
-        // filter group
-        List<XxlJobGroup> jobGroupList = JobInfoController.filterJobGroupByRole(request, xxlJobGroupDaoAll);
-        if (jobGroupList == null || jobGroupList.size() == 0) {
-            throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
-        }
-
-        Map<String, Object> maps = new HashMap<>();
-        maps.put("JobGroupList", jobGroupList);
-
-        // 任务
-        if (jobId > 0) {
-            XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
-            if (jobInfo == null) {
-                throw new RuntimeException(I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_unvalid"));
-            }
-
-            maps.put("jobInfo", jobInfo);
-
-            // valid permission
-            JobInfoController.validPermission(request, jobInfo.getJobGroup());
-        }
-
-        return Result.success(maps);
-    }
-
-    @GetMapping("{jobGroup}")
-    public Result getJobsByGroup(@PathVariable int jobGroup) {
-        List<XxlJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
-        return Result.success(list);
+        return Result.success(xxlJobGroupDaoAll);
     }
 
     @GetMapping
-    public Result pageList(HttpServletRequest request,
-                           @RequestParam(required = false, defaultValue = "0") int start,
-                           @RequestParam(required = false, defaultValue = "10") int length,
-                           int jobGroup, int jobId, int logStatus, String filterTime) {
+    @ApiOperation("分页查询日志列表")
+    public Result pageList(@RequestParam(name = "current") Integer pageNo,
+                           @RequestParam(name = "pageSize") Integer pageSize,
+                           @RequestParam(name = "jobGroupId", required = false) Integer jobGroupId,
+                           @RequestParam(name = "jobId", required = false) Integer jobId,
+                           @RequestParam(name = "logStatus", required = false) Integer logStatus,
+                           @RequestParam(name = "startDate", required = false) String startDate,
+                           @RequestParam(name = "endDate", required = false) String endDate) {
 
-        // valid permission
-        JobInfoController.validPermission(request, jobGroup);    // 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
-
-        // parse param
-        Date triggerTimeStart = null;
-        Date triggerTimeEnd = null;
-        if (filterTime != null && filterTime.trim().length() > 0) {
-            String[] temp = filterTime.split(" - ");
-            if (temp.length == 2) {
-                triggerTimeStart = DateUtil.parseDateTime(temp[0]);
-                triggerTimeEnd = DateUtil.parseDateTime(temp[1]);
-            }
+        Date startTime = null;
+        Date endTime = null;
+        if (StringUtils.isBlank(startDate) || StringUtils.isBlank(endDate)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            endTime = calendar.getTime();
+            //默认显示一周的日志
+            calendar.add(Calendar.DAY_OF_MONTH, -6);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+        } else {
+            startTime = DateUtils.parseDateString(startDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.parseDateString(endDate));
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            endTime = calendar.getTime();
         }
 
         // page query
-        List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
-        int listCount = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+        List<XxlJobLog> xxlJobLogList = xxlJobLogDao.pageList((pageNo - 1) * pageSize, pageSize, jobGroupId, jobId, startTime, endTime, logStatus);
 
-        // package result
-        Map<String, Object> maps = new HashMap<>();
-        maps.put("recordsTotal", listCount);        // 总记录数
-        maps.put("recordsFiltered", listCount);    // 过滤后的总记录数
-        maps.put("data", list);                    // 分页列表
-        return Result.success(maps);
+        return Result.success(new PageInfo<>(xxlJobLogList));
     }
 
     @GetMapping("{jobLogId}")
-    public Result logDetailPage(@PathVariable int jobLogId) {
+    @ApiOperation("根据日志id查询日志页面信息")
+    public Result logDetail(@PathVariable int jobLogId) {
 
         // base check
         XxlJobLog jobLog = xxlJobLogDao.load(jobLogId);
         if (jobLog == null) {
-            throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
+            return Result.failure(XxlJobResultCodeEnum.JOB_LOG_NOT_EXIST);
         }
 
-        Map<String, Object> maps = new HashMap<>();
-
-        maps.put("triggerCode", jobLog.getTriggerCode());
-        maps.put("handleCode", jobLog.getHandleCode());
-        maps.put("executorAddress", jobLog.getExecutorAddress());
-        maps.put("triggerTime", jobLog.getTriggerTime().getTime());
-        maps.put("logId", jobLog.getId());
-        return Result.success(maps);
+        LogDetailQueryResponseDTO logDetailQueryResponseDTO = new LogDetailQueryResponseDTO();
+        logDetailQueryResponseDTO.setTriggerCode(jobLog.getTriggerCode());
+        logDetailQueryResponseDTO.setHandleCode(jobLog.getHandleCode());
+        logDetailQueryResponseDTO.setExecutorAddress(jobLog.getExecutorAddress());
+        logDetailQueryResponseDTO.setTriggerTime(jobLog.getTriggerTime());
+        logDetailQueryResponseDTO.setLogId(jobLog.getId());
+        return Result.success(logDetailQueryResponseDTO);
     }
 
-    @RequestMapping("/logDetailCat")
-    @ResponseBody
+    @GetMapping("/logDetailCat")
+    @ApiOperation("查询执行日志页面详细日志信息")
     public Result logDetailCat(String executorAddress, long triggerTime, long logId, int fromLineNum) {
         try {
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(executorAddress);
@@ -160,43 +140,48 @@ public class JobLogController {
         }
     }
 
-    @RequestMapping("/logKill")
-    @ResponseBody
-    public Result logKill(int id) {
+    @PostMapping("/logKill")
+    @ApiOperation("终止任务")
+    public Result logKill(@RequestParam int jobLogId) {
         // base check
-        XxlJobLog log = xxlJobLogDao.load(id);
-        XxlJobInfo jobInfo = xxlJobInfoDao.loadById(log.getJobId());
-        if (jobInfo == null) {
-            return Result.failure("500", I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
+        XxlJobLog jobLog = xxlJobLogDao.load(jobLogId);
+        if (jobLog == null) {
+            return Result.failure(XxlJobResultCodeEnum.JOB_LOG_NOT_EXIST);
         }
-        if (ReturnT.SUCCESS_CODE != log.getTriggerCode()) {
-            return Result.failure("500", I18nUtil.getString("joblog_kill_log_limit"));
+        XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobLog.getJobId());
+        if (jobInfo == null) {
+            return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
+        }
+        if (ReturnT.SUCCESS_CODE != jobLog.getTriggerCode()) {
+            return Result.failure(XxlJobResultCodeEnum.JOB_LOG_KILL_DISPATCH_FAILED);
         }
 
         // request of kill
         ReturnT<String> runResult = null;
         try {
-            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(log.getExecutorAddress());
+            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(jobLog.getExecutorAddress());
             runResult = executorBiz.kill(new KillParam(jobInfo.getId()));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            runResult = new ReturnT<String>(500, e.getMessage());
+            logger.error("终止日志异常", e);
+            runResult = new ReturnT<>(ReturnT.FAIL_CODE, e.getMessage());
         }
 
         if (ReturnT.SUCCESS_CODE == runResult.getCode()) {
-            log.setHandleCode(ReturnT.FAIL_CODE);
-            log.setHandleMsg(I18nUtil.getString("joblog_kill_log_byman") + ":" + (runResult.getMsg() != null ? runResult.getMsg() : ""));
-            log.setHandleTime(new Date());
-            XxlJobCompleter.updateHandleInfoAndFinish(log);
+            jobLog.setHandleCode(ReturnT.FAIL_CODE);
+            jobLog.setHandleMsg("人为操作，主动终止" + ":" + (runResult.getMsg() != null ? runResult.getMsg() : ""));
+            jobLog.setHandleTime(new Date());
+            XxlJobCompleter.updateHandleInfoAndFinish(jobLog);
             return Result.success(runResult.getMsg());
         } else {
-            return Result.failure("500", runResult.getMsg());
+            return Result.failure(XxlJobResultCodeEnum.JOB_LOG_KILL_FAILED);
         }
     }
 
-    @RequestMapping("/clearLog")
-    @ResponseBody
-    public Result clearLog(int jobGroup, int jobId, int type) {
+    @DeleteMapping("/clearLog")
+    @ApiOperation("清理日志")
+    public Result clearLog(@RequestParam(name = "jobGroupId") int jobGroupId,
+                           @RequestParam(name = "jobId") int jobId,
+                           @RequestParam(name = "type") int type) {
 
         Date clearBeforeTime = null;
         int clearBeforeNum = 0;
@@ -219,12 +204,12 @@ public class JobLogController {
         } else if (type == 9) {
             clearBeforeNum = 0;            // 清理所有日志数据
         } else {
-            return Result.failure("" + ReturnT.FAIL_CODE, I18nUtil.getString("joblog_clean_type_unvalid"));
+            return Result.failure(XxlJobResultCodeEnum.INVALID_CLEAR_LOG_TYPE);
         }
 
         List<Long> logIds = null;
         do {
-            logIds = xxlJobLogDao.findClearLogIds(jobGroup, jobId, clearBeforeTime, clearBeforeNum, 1000);
+            logIds = xxlJobLogDao.findClearLogIds(jobGroupId, jobId, clearBeforeTime, clearBeforeNum, 1000);
             if (logIds != null && logIds.size() > 0) {
                 xxlJobLogDao.clearLog(logIds);
             }

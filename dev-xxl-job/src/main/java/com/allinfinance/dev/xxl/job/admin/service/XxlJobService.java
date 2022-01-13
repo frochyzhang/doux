@@ -2,6 +2,8 @@ package com.allinfinance.dev.xxl.job.admin.service;
 
 
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
+import com.allinfinance.dev.xxl.job.admin.dto.ChartInfoResponseDTO;
+import com.allinfinance.dev.xxl.job.admin.dto.IndexInfoResponseDTO;
 import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Date;
@@ -73,7 +75,7 @@ public interface XxlJobService {
      *
      * @return
      */
-    public Map<String, Object> dashboardInfo();
+    public IndexInfoResponseDTO dashboardInfo();
 
     /**
      * chart info
@@ -82,6 +84,6 @@ public interface XxlJobService {
      * @param endDate
      * @return
      */
-    public Map<String, Object> chartInfo(Date startDate, Date endDate);
+    public ChartInfoResponseDTO chartInfo(Date startDate, Date endDate);
 
 }
