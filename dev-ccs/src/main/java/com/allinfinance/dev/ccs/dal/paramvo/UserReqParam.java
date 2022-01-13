@@ -14,10 +14,19 @@ public class UserReqParam extends BaseReqParam {
     private String userName;
     private String roleId;
     private String org;
+    private String otpFlag;
     private String confirmpass;
     private String userPass;
     private String mobileNo;
     private String isAvailable;
+
+    public String getOtpFlag() {
+        return otpFlag;
+    }
+
+    public void setOtpFlag(String otpFlag) {
+        this.otpFlag = otpFlag;
+    }
 
     public String getConfirmpass() {
         return confirmpass;
@@ -91,6 +100,7 @@ public class UserReqParam extends BaseReqParam {
                 "userName='" + userName + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", org='" + org + '\'' +
+                ", otpFlag='" + otpFlag + '\'' +
                 ", confirmpass='" + confirmpass + '\'' +
                 ", userPass='" + userPass + '\'' +
                 ", mobileNo='" + mobileNo + '\'' +

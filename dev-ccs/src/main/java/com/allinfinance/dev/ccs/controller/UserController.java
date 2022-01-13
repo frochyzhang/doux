@@ -83,7 +83,6 @@ public class UserController {
         if (!AosContent.ROLE_WEIGHT_SUPER_ADMIN.equals(JwtUtil.getWeight(token))) {
             userReqParam.setOrg(JwtUtil.getOrg(token));
         }
-        String userId = JwtUtil.getUserId(token);
         // 查询出所有的role信息
         Map<String, List<TblRole>> roleMap = tblRoleService.selectByExample(new TblRoleExample()).stream().collect(Collectors.groupingBy(TblRole::getWeight));
         // 遍历map找出比自己权重小的userId
@@ -119,10 +118,16 @@ public class UserController {
     @OperLog(operModul = "用户管理-新增用户", operType = AosContent.INSERT, operDesc = "新增用户信息")
     public Result addUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         logger.info("接收到的新增用户信息: {}", userReqParam);
+        //系统用户重名检查
+        TblUser isExistUser = tblUserService.selectByUserName(userReqParam);
+        if (isExistUser != null) {
+            return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
+        }
         TblUser tblUser = new TblUser();
         tblUser.setUserName(userReqParam.getUserName());
         tblUser.setRoleId(userReqParam.getRoleId());
         tblUser.setOrg(userReqParam.getOrg());
+        tblUser.setOtpFlag(userReqParam.getOtpFlag());
         tblUser.setUserPass(userReqParam.getUserPass());
         tblUser.setMobileNo(userReqParam.getMobileNo());
         tblUser.setIsAvailable(userReqParam.getIsAvailable());
@@ -143,20 +148,14 @@ public class UserController {
         String userName = JwtUtil.getUsername(token);
         tblUser.setCreateBy(userName);
         tblUser.setCreateTime(new Date());
-        //系统用户重名检查
-        TblUser isExitUser = tblUserService.selectByUserName(userReqParam);
-        if (isExitUser != null) {
-            return Result.failure("该用户已存在", ResultCodeEnum.USER_HAS_EXISTED.code());
-        }
-        int result;
         try {
-            result = tblUserService.insertSelective(tblUser);
+            tblUserService.insertSelective(tblUser);
         } catch (Exception e) {
             logger.error("新增用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         logger.info("新增用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
-        return Result.success(result);
+        return Result.success();
     }
 
     /**
@@ -182,15 +181,14 @@ public class UserController {
         } else {
             userReqParam.setUserPass(null);
         }
-        int result = 0;
         try {
-            result = tblUserService.updateByPrimaryKeySelective(userReqParam);
+            tblUserService.updateByPrimaryKeySelective(userReqParam);
         } catch (Exception e) {
             logger.error("更新用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         logger.info("更新用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
-        return Result.success(result);
+        return Result.success();
     }
 
     /**
@@ -204,16 +202,13 @@ public class UserController {
     public Result delUser(@RequestBody UserReqParam userReqParam, HttpServletRequest request) {
         String requestUri = request.getRequestURI();
         logger.info("请求的参数userReqParam: {}", userReqParam);
-        //暂时存放进于预留域传到service
-//        userReqParam.setReservedField1(requestUri);
-        int result = 0;
         try {
-            result = tblUserService.deleteByPrimaryKey(userReqParam);
+            tblUserService.deleteByPrimaryKey(userReqParam);
         } catch (Exception e) {
             logger.error("删除用户异常!", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
         logger.info("删除用户执行结果: {}", Result.success(ResultCodeEnum.SUCCESS));
-        return Result.success(result);
+        return Result.success();
     }
 }
