@@ -1,6 +1,5 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
-import com.allinfinance.dev.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.allinfinance.dev.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.core.biz.AdminBiz;
 import com.xxl.job.core.biz.model.HandleCallbackParam;
@@ -37,7 +36,6 @@ public class JobApiController {
      */
     @RequestMapping("/{uri}")
     @ResponseBody
-    @PermissionLimit(limit = false)
     public ReturnT<String> api(HttpServletRequest request, @PathVariable("uri") String uri, @RequestBody(required = false) String data) {
 
         // valid

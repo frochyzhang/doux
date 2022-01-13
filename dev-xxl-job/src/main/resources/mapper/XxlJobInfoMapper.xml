@@ -70,7 +70,7 @@
         <include refid="Base_Column_List"/>
         FROM xxl_job_info AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="jobGroup gt 0">
+            <if test="jobGroup != null">
                 AND t.job_group = #{jobGroup}
             </if>
             <if test="triggerStatus != null">
@@ -94,10 +94,10 @@
         SELECT count(1)
         FROM xxl_job_info AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="jobGroup gt 0">
+            <if test="jobGroup != null">
                 AND t.job_group = #{jobGroup}
             </if>
-            <if test="triggerStatus gte 0">
+            <if test="triggerStatus != null">
                 AND t.trigger_status = #{triggerStatus}
             </if>
             <if test="jobDesc != null and jobDesc != ''">

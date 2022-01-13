@@ -2,11 +2,11 @@ package com.allinfinance.dev.xxl.job.admin.controller;
 
 import com.allinfinance.dev.core.util.result.Result;
 import com.allinfinance.dev.core.util.result.ResultCodeEnum;
+import com.allinfinance.dev.xxl.job.admin.config.ExecutorBlockStrategyEnum;
 import com.allinfinance.dev.xxl.job.admin.constant.XxlJobResultCodeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.cron.CronExpression;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobGroup;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
-import com.allinfinance.dev.xxl.job.admin.core.route.ExecutorBlockStrategyEnum;
 import com.allinfinance.dev.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  */
 @Api(value = "JobInfoController", tags = {"任务管理接口"})
 @RestController
-@RequestMapping("/jobs")
+@RequestMapping("/job/jobs")
 public class JobInfoController {
     private static final Logger logger = LoggerFactory.getLogger(JobInfoController.class);
 
@@ -116,14 +116,17 @@ public class JobInfoController {
     @ApiOperation("分页查询任务列表")
     public Result pageList(@RequestParam(name = "current") Integer pageNo,
                            @RequestParam(name = "pageSize") Integer pageSize,
-                           @RequestParam(name = "jobGroup", required = false) Integer jobGroupId,
+                           @RequestParam(name = "jobGroupId", required = false) Integer jobGroupId,
                            @RequestParam(name = "triggerStatus", required = false) Integer triggerStatus,
                            @RequestParam(name = "jobDesc", required = false) String jobDesc,
                            @RequestParam(name = "executorHandler", required = false) String executorHandler,
                            @RequestParam(name = "author", required = false) String author) {
 
         List<XxlJobInfo> list = xxlJobInfoDao.pageList((pageNo - 1) * pageSize, pageSize, jobGroupId, triggerStatus, jobDesc, executorHandler, author);
-        return Result.success(new PageInfo<>(list));
+        int pageListCount = xxlJobInfoDao.pageListCount(jobGroupId, triggerStatus, jobDesc, executorHandler, author);
+        PageInfo<XxlJobInfo> xxlJobInfoPageInfo = new PageInfo<>(list);
+        xxlJobInfoPageInfo.setTotal(pageListCount);
+        return Result.success(xxlJobInfoPageInfo);
     }
 
     @GetMapping("/groups/{jobGroupId}")

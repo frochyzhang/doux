@@ -4,7 +4,7 @@ spring:
     port: 25
     username: xxx@qq.com
     password: xxx
-    from: xxx@qq.com
+    from: dev-xxl-job@allinfinance.com
     properties:
       mail:
         smtp:
@@ -14,3 +14,8 @@ spring:
             required: true
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
+
+management:
+  health:
+    mail:
+      enabled: false

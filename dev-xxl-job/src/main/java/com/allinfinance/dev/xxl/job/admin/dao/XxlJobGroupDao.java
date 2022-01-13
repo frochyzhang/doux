@@ -29,9 +29,7 @@ public interface XxlJobGroupDao {
                                       @Param("appName") String appName,
                                       @Param("title") String title);
 
-    public int pageListCount(@Param("offset") int offset,
-                             @Param("pageSize") int pageSize,
-                             @Param("appName") String appName,
+    public int pageListCount(@Param("appName") String appName,
                              @Param("title") String title);
 
 }

@@ -26,7 +26,7 @@ import java.util.*;
  */
 @Api(value = "JobGroupController", tags = {"执行器管理接口"})
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/job/groups")
 public class JobGroupController {
 
     @Resource
@@ -35,9 +35,9 @@ public class JobGroupController {
     public XxlJobGroupDao xxlJobGroupDao;
     @Resource
     private XxlJobRegistryDao xxlJobRegistryDao;
-    @Value("${xxl.job.jobGroup.appNameRegex}")
+    @Value("${xxl.job.jobGroup.appNameRegex:^[a-z][a-z0-9-]{3,63}$}")
     private String appNameRegex;
-    @Value("${xxl.job.jobGroup.titleRegex}")
+    @Value("${xxl.job.jobGroup.titleRegex:^.{4,12}$}")
     private String titleRegex;
 
     @GetMapping
@@ -49,7 +49,10 @@ public class JobGroupController {
 
         // page query
         List<XxlJobGroup> list = xxlJobGroupDao.pageList((pageNo - 1) * pageSize, pageSize, appName, title);
-        return Result.success(new PageInfo<>(list));
+        int pageListCount = xxlJobGroupDao.pageListCount(appName, title);
+        PageInfo<XxlJobGroup> xxlJobGroupPageInfo = new PageInfo<>(list);
+        xxlJobGroupPageInfo.setTotal(pageListCount);
+        return Result.success(xxlJobGroupPageInfo);
     }
 
     @PostMapping
@@ -158,7 +161,7 @@ public class JobGroupController {
     @ApiOperation("删除执行器")
     public Result remove(@PathVariable int groupId) {
         // valid
-        int count = xxlJobInfoDao.pageListCount(0, 10, groupId, -1, null, null, null);
+        int count = xxlJobInfoDao.pageListCount(groupId, -1, null, null, null);
         if (count > 0) {
             return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EMPTY);
         }

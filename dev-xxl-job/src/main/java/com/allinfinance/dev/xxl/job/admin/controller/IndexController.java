@@ -24,7 +24,7 @@ import java.util.Date;
  */
 @Api(value = "IndexController", tags = {"首页图标数据接口"})
 @RestController
-@RequestMapping("/index")
+@RequestMapping("/job/report")
 public class IndexController {
 
     @Resource

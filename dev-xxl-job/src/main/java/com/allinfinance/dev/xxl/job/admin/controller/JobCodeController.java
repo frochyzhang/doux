@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @Api(value = "JobCodeController", tags = {"GLUE模式代码接口"})
 @Controller
-@RequestMapping("/codes")
+@RequestMapping("/job/codes")
 public class JobCodeController {
 
     @Resource

@@ -4,7 +4,6 @@ import com.allinfinance.dev.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobInfo;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobLog;
 import com.allinfinance.dev.xxl.job.admin.core.trigger.TriggerTypeEnum;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ public class JobFailMonitorHelper {
                             // 1、fail retry monitor
                             if (log.getExecutorFailRetryCount() > 0) {
                                 JobTriggerPoolHelper.trigger(log.getJobId(), TriggerTypeEnum.RETRY, (log.getExecutorFailRetryCount() - 1), log.getExecutorShardingParam(), log.getExecutorParam(), null);
-                                String retryMsg = "<br><br><span style=\"color:#F39C12;\" > >>>>>>>>>>>" + I18nUtil.getString("jobconf_trigger_type_retry") + "<<<<<<<<<<< </span><br>";
+                                String retryMsg = "<br><br><span style=\"color:#F39C12;\" > >>>>>>>>>>>" + "失败重试触发" + "<<<<<<<<<<< </span><br>";
                                 log.setTriggerMsg(log.getTriggerMsg() + retryMsg);
                                 XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateTriggerInfo(log);
                             }

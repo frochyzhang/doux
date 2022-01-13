@@ -83,10 +83,10 @@
         SELECT count(1)
         FROM xxl_job_log AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="jobId==0 and jobGroup gt 0">
+            <if test="jobGroup != null">
                 AND t.job_group = #{jobGroup}
             </if>
-            <if test="jobId gt 0">
+            <if test="jobId != null">
                 AND t.job_id = #{jobId}
             </if>
             <if test="triggerTimeStart != null">

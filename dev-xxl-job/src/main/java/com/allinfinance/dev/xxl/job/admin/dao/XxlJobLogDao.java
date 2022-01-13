@@ -25,13 +25,11 @@ public interface XxlJobLogDao {
                                     @Param("triggerTimeEnd") Date triggerTimeEnd,
                                     @Param("logStatus") Integer logStatus);
 
-    public int pageListCount(@Param("offset") int offset,
-                             @Param("pageSize") int pageSize,
-                             @Param("jobGroup") int jobGroup,
-                             @Param("jobId") int jobId,
+    public int pageListCount(@Param("jobGroup") Integer jobGroup,
+                             @Param("jobId") Integer jobId,
                              @Param("triggerTimeStart") Date triggerTimeStart,
                              @Param("triggerTimeEnd") Date triggerTimeEnd,
-                             @Param("logStatus") int logStatus);
+                             @Param("logStatus") Integer logStatus);
 
     public XxlJobLog load(@Param("id") long id);
 

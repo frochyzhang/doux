@@ -1,4 +1,4 @@
-package com.allinfinance.dev.xxl.job.admin.core.route;
+package com.allinfinance.dev.xxl.job.admin.config;
 
 /**
  * @author huanghf
@@ -10,13 +10,9 @@ public enum ExecutorBlockStrategyEnum {
     DISCARD_LATER("丢弃后续调度"),
     COVER_EARLY("覆盖之前调度");
 
-    private String title;
+    private final String title;
 
-    private ExecutorBlockStrategyEnum(String title) {
-        this.title = title;
-    }
-
-    public void setTitle(String title) {
+    ExecutorBlockStrategyEnum(String title) {
         this.title = title;
     }
 

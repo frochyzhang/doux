@@ -3,7 +3,6 @@ package com.allinfinance.dev.xxl.job.admin.core.thread;
 import com.allinfinance.dev.xxl.job.admin.core.complete.XxlJobCompleter;
 import com.allinfinance.dev.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobLog;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.model.HandleCallbackParam;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
@@ -12,11 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * job lose-monitor instance
@@ -89,7 +84,7 @@ public class JobCompleteHelper {
 
                             jobLog.setHandleTime(new Date());
                             jobLog.setHandleCode(ReturnT.FAIL_CODE);
-                            jobLog.setHandleMsg(I18nUtil.getString("joblog_lost_fail"));
+                            jobLog.setHandleMsg("任务结果丢失，标记失败");
 
                             XxlJobCompleter.updateHandleInfoAndFinish(jobLog);
                         }
@@ -97,7 +92,7 @@ public class JobCompleteHelper {
                     }
                 } catch (Exception e) {
                     if (!toStop) {
-                        logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
+                        logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error", e);
                     }
                 }
 

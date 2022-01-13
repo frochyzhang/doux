@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Api(value = "JobLogController", tags = {"日志管理接口"})
 @RestController
-@RequestMapping("/logs")
+@RequestMapping("/job/logs")
 public class JobLogController {
     private static final Logger logger = LoggerFactory.getLogger(JobLogController.class);
 
@@ -95,8 +95,11 @@ public class JobLogController {
 
         // page query
         List<XxlJobLog> xxlJobLogList = xxlJobLogDao.pageList((pageNo - 1) * pageSize, pageSize, jobGroupId, jobId, startTime, endTime, logStatus);
+        int pageListCount = xxlJobLogDao.pageListCount(jobGroupId, jobId, startTime, endTime, logStatus);
+        PageInfo<XxlJobLog> xxlJobLogPageInfo = new PageInfo<>(xxlJobLogList);
+        xxlJobLogPageInfo.setTotal(pageListCount);
 
-        return Result.success(new PageInfo<>(xxlJobLogList));
+        return Result.success(xxlJobLogPageInfo);
     }
 
     @GetMapping("{jobLogId}")

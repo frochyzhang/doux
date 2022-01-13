@@ -1,16 +1,9 @@
 package com.allinfinance.dev.xxl.job.admin.core.scheduler;
 
 import com.allinfinance.dev.xxl.job.admin.core.conf.XxlJobAdminConfig;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobCompleteHelper;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobFailMonitorHelper;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobLogReportHelper;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobRegistryHelper;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobScheduleHelper;
-import com.allinfinance.dev.xxl.job.admin.core.thread.JobTriggerPoolHelper;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
+import com.allinfinance.dev.xxl.job.admin.core.thread.*;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.client.ExecutorBizClient;
-import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +19,6 @@ public class XxlJobScheduler {
 
 
     public void init() throws Exception {
-        // init i18n
-        initI18n();
-
         // admin trigger pool start
         JobTriggerPoolHelper.toStart();
 
@@ -71,14 +61,6 @@ public class XxlJobScheduler {
         // admin trigger pool stop
         JobTriggerPoolHelper.toStop();
 
-    }
-
-    // ---------------------- I18n ----------------------
-
-    private void initI18n() {
-        for (ExecutorBlockStrategyEnum item : ExecutorBlockStrategyEnum.values()) {
-            item.setTitle(I18nUtil.getString("jobconf_block_".concat(item.name())));
-        }
     }
 
     // ---------------------- executor-client ----------------------

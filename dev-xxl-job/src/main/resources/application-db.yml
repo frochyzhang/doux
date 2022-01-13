@@ -1,0 +1,13 @@
+### xxl-job, datasource
+jdbc:
+  url: jdbc:mysql://10.250.28.143:3306/iasp_backend?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+  username: root
+  password: allinfinance
+  driver: com.mysql.cj.jdbc.Driver
+  validationQuery: select 1
+
+dev:
+  batch:
+    mapper:
+      aop:
+        expression: execution(* com.allinfinance.dev.xxl.job.admin.dao.*.*(..))

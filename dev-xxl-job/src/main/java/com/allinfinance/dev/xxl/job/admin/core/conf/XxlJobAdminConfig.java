@@ -5,14 +5,12 @@ import com.allinfinance.dev.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import com.allinfinance.dev.xxl.job.admin.dao.*;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.Arrays;
 
 /**
  * xxl-job config
@@ -50,24 +48,20 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     // ---------------------- XxlJobScheduler ----------------------
 
-    // conf
-    @Value("${xxl.job.i18n}")
-    private String i18n;
-
-    @Value("${xxl.job.accessToken}")
+    @Value("${xxl.job.accessToken:}")
     private String accessToken;
 
-    @Value("${spring.mail.from}")
+    @Value("${spring.mail.from:dev-xxl-job@allinfinance.com}")
     private String emailFrom;
 
-    @Value("${xxl.job.triggerpool.fast.max}")
+    @Value("${xxl.job.triggerPool.fast.max:200}")
     private int triggerPoolFastMax;
 
-    @Value("${xxl.job.triggerpool.slow.max}")
+    @Value("${xxl.job.triggerPool.slow.max:100}")
     private int triggerPoolSlowMax;
 
-    @Value("${xxl.job.logretentiondays}")
-    private int logretentiondays;
+    @Value("${xxl.job.logRetentionDays:30}")
+    private int logRetentionDays;
 
     // dao, service
 
@@ -81,20 +75,12 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     private XxlJobGroupDao xxlJobGroupDao;
     @Resource
     private XxlJobLogReportDao xxlJobLogReportDao;
-    @Autowired(required = false)
+    @Resource
     private JavaMailSender mailSender;
     @Resource
     private DataSource dataSource;
     @Resource
     private JobAlarmer jobAlarmer;
-
-
-    public String getI18n() {
-        if (!Arrays.asList("zh_CN", "zh_TC", "en").contains(i18n)) {
-            return "zh_CN";
-        }
-        return i18n;
-    }
 
     public String getAccessToken() {
         return accessToken;
@@ -118,11 +104,11 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
         return triggerPoolSlowMax;
     }
 
-    public int getLogretentiondays() {
-        if (logretentiondays < 7) {
+    public int getLogRetentionDays() {
+        if (logRetentionDays < 7) {
             return -1;  // Limit greater than or equal to 7, otherwise close
         }
-        return logretentiondays;
+        return logRetentionDays;
     }
 
     public XxlJobLogDao getXxlJobLogDao() {

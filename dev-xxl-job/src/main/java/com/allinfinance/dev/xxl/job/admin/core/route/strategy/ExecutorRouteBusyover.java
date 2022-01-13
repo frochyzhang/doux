@@ -2,7 +2,6 @@ package com.allinfinance.dev.xxl.job.admin.core.route.strategy;
 
 import com.allinfinance.dev.xxl.job.admin.core.route.ExecutorRouter;
 import com.allinfinance.dev.xxl.job.admin.core.scheduler.XxlJobScheduler;
-import com.allinfinance.dev.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.IdleBeatParam;
 import com.xxl.job.core.biz.model.ReturnT;
@@ -29,7 +28,7 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
                 idleBeatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }
             idleBeatResultSB.append((idleBeatResultSB.length() > 0) ? "<br><br>" : "")
-                    .append(I18nUtil.getString("jobconf_idleBeat") + "：")
+                    .append("空闲检测：")
                     .append("<br>address：").append(address)
                     .append("<br>code：").append(idleBeatResult.getCode())
                     .append("<br>msg：").append(idleBeatResult.getMsg());
