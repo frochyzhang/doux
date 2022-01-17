@@ -7,6 +7,7 @@ import com.allinfinance.dev.ccs.dal.model.TblRoleAuthExample;
 import com.allinfinance.dev.ccs.dal.model.TblRoleAuthKey;
 import com.allinfinance.dev.ccs.dal.paramvo.AuthReqParam;
 import com.allinfinance.dev.ccs.dal.service.TblRoleAuthService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,9 +91,11 @@ public class TblRoleAuthServiceImpl implements TblRoleAuthService {
 
     @Override
     public void createRoleAuthMapping(String roleId, String authId) {
-        System.out.println(roleId);
         TblRoleAuth tblRoleAuth = PoMapper.INSTANCE.convertToTblRoleAuth(roleId, authId);
-        tblRoleAuthMapper.insertSelective(tblRoleAuth);
+//        当送的两个参数都不为空时执行插入操作
+        if (StringUtils.isNotBlank(authId) && StringUtils.isNotBlank(roleId)) {
+            tblRoleAuthMapper.insertSelective(tblRoleAuth);
+        }
     }
 
     @Override
