@@ -2,14 +2,21 @@ spring:
   profiles:
     active: db,web
 
+# token过期时间  默认为7天
+token.expire_time: 10800
+# refreshToken过期时间  默认为30天
+#token.refresh_expire_time: 7
+# token 生成秘钥
+token.token_secret: f26e587c28064d0e855e72c0a6a0e618
+# OTP 二维码生成保存路径
+qrCode.path: C:\home\aos\qrcode
 
-#Cas客户端配置
-cas:
-  incluster: true
-  validation-type: cas
-  #CAS服务端地址
-  cas-server-url: http://10.250.28.56:8001/cas
-  #CAS客户端地址
-  cas-client-host: http://10.252.60.56:8082
-  #前端首页地址
-  cas-front-url: http://10.252.60.56:8000
+# 日志查询配置范围（query,insert,update,delete）
+logType: insert,update,delete
+
+
+# rsa配置
+rsa.key.privateKeyFile: C:\\test\\auth\\priKey.key
+rsa.key.publicKeyFile: C:\\test\\auth\\pubKey.key
+rsa.key.secret: 1@dfj459fhjd4$jfdk#
+

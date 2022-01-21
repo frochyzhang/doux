@@ -30,21 +30,6 @@ public class GoogleAuthenticator {
         return generateBase32Secret(32);
     }
 
-    public static void main(String[] args) throws GeneralSecurityException {
-
-
-//        UnicastServerRef
-//        User user
-//        user.otp
-//        user.username     base32Secret
-//          otp1 = generateCurrentNumberString(base32Secret)
-//        System.out.println(generateBase32Secret());
-//        String cuiwy = qrImageUrl("cuiwy", "2wsx3edc4rfv5tgb2wsx3edc4rfv5tgb");
-        String cuiwy = generateOtpAuthUrl("cuiwy", "2wsx3edc4rfv5tgb2wsx3edc4rfv5tgb", "allinfinance");
-        System.out.println(cuiwy);
-        System.out.println(generateCurrentNumberString("2wsx3edc4rfv5tgb2wsx3edc4rfv5tgb"));
-    }
-
     public static String generateBase32Secret(int length) {
         StringBuilder sb = new StringBuilder(length);
         Random random = new SecureRandom();
