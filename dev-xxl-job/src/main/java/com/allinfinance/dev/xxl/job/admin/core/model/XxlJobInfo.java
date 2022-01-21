@@ -1,5 +1,7 @@
 package com.allinfinance.dev.xxl.job.admin.core.model;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**
@@ -12,21 +14,27 @@ public class XxlJobInfo {
     private int id;                // 主键ID
 
     private int jobGroup;        // 执行器主键ID
+    @NotEmpty(message = "任务描述不能为空")
     private String jobDesc;
 
     private Date addTime;
     private Date updateTime;
 
+    @NotEmpty(message = "负责人不能为空")
     private String author;        // 负责人
+    @Email(message = "报警邮件格式不正确")
     private String alarmEmail;    // 报警邮件
 
     private String scheduleType;            // 调度类型
     private String scheduleConf;            // 调度配置，值含义取决于调度类型
+    @NotEmpty(message = "调度过期策略不能为空")
     private String misfireStrategy;            // 调度过期策略
 
+    @NotEmpty(message = "路由策略不能为空")
     private String executorRouteStrategy;    // 执行器路由策略
     private String executorHandler;            // 执行器，任务Handler名称
     private String executorParam;            // 执行器，任务参数
+    @NotEmpty(message = "阻塞处理策略不能为空")
     private String executorBlockStrategy;    // 阻塞处理策略
     private int executorTimeout;            // 任务执行超时时间，单位秒
     private int executorFailRetryCount;        // 失败重试次数

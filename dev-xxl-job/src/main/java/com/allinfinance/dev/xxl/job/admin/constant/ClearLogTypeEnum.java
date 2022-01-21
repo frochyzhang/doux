@@ -1,5 +1,7 @@
 package com.allinfinance.dev.xxl.job.admin.constant;
 
+import java.util.Arrays;
+
 /**
  * @author huanghf
  * @date 2022/1/4 11:25
@@ -14,19 +16,26 @@ public enum ClearLogTypeEnum {
     CLEAR_LOG_THIRTY_THOUSAND_LEFT(7, "清理三万条以前日志数据"),
     CLEAR_LOG_ONE_HUNDRED_THOUSAND_LEFT(8, "清理十万条以前日志数据"),
     CLEAR_LOG_ALL(9, "清理所有日志数据");
-    private final int type;
+    private final Integer type;
     private final String desc;
 
-    ClearLogTypeEnum(int type, String desc) {
+    ClearLogTypeEnum(Integer type, String desc) {
         this.type = type;
         this.desc = desc;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
     public String getDesc() {
         return desc;
+    }
+
+    public static ClearLogTypeEnum match(Integer clearType) {
+        return Arrays.stream(ClearLogTypeEnum.values())
+                .filter(enu -> enu.type == clearType)
+                .findFirst()
+                .orElse(null);
     }
 }
