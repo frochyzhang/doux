@@ -191,24 +191,24 @@
     <select id="findClearLogIds" resultType="long">
         SELECT id FROM xxl_job_log
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="jobGroup gt 0">
+            <if test="jobGroup != null">
                 AND job_group = #{jobGroup}
             </if>
-            <if test="jobId gt 0">
+            <if test="jobId != null">
                 AND job_id = #{jobId}
             </if>
             <if test="clearBeforeTime != null">
                 AND trigger_time <![CDATA[ <= ]]> #{clearBeforeTime}
             </if>
-            <if test="clearBeforeNum gt 0">
+            <if test="clearBeforeNum != null">
                 AND id NOT in(
                 SELECT id FROM(
                 SELECT id FROM xxl_job_log AS t
                 <trim prefix="WHERE" prefixOverrides="AND | OR">
-                    <if test="jobGroup gt 0">
+                    <if test="jobGroup != null">
                         AND t.job_group = #{jobGroup}
                     </if>
-                    <if test="jobId gt 0">
+                    <if test="jobId != null">
                         AND t.job_id = #{jobId}
                     </if>
                 </trim>

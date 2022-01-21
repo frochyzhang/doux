@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,6 +59,7 @@ public class JobInfoController {
     @GetMapping("/constants")
     @ApiOperation("查询任务管理页面需要的常量数据")
     public Result index() {
+        logger.info("查询任务管理页面需要的常量数据");
         JobInfoIndexResponseDTO jobInfoIndexResponseDTO = new JobInfoIndexResponseDTO();
         // 枚举-字典
         // 路由策略-列表
@@ -81,36 +83,10 @@ public class JobInfoController {
         List<XxlJobGroup> xxlJobGroupDaoAll = xxlJobGroupDao.findAll();
 
         jobInfoIndexResponseDTO.setJobGroupList(xxlJobGroupDaoAll);
+        logger.info("查询完成");
+        logger.debug("执行器列表: {}", xxlJobGroupDaoAll);
         return Result.success(jobInfoIndexResponseDTO);
     }
-
-    //public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupListAll) {
-    //    List<XxlJobGroup> jobGroupList = new ArrayList<>();
-    //    if (jobGroupListAll != null && jobGroupListAll.size() > 0) {
-    //        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
-    //        if (loginUser.getRole() == 1) {
-    //            jobGroupList = jobGroupListAll;
-    //        } else {
-    //            List<String> groupIdStrs = new ArrayList<>();
-    //            if (loginUser.getPermission() != null && loginUser.getPermission().trim().length() > 0) {
-    //                groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
-    //            }
-    //            for (XxlJobGroup groupItem : jobGroupListAll) {
-    //                if (groupIdStrs.contains(String.valueOf(groupItem.getId()))) {
-    //                    jobGroupList.add(groupItem);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return jobGroupList;
-    //}
-
-    //public static void validPermission(HttpServletRequest request, int jobGroup) {
-    //    XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
-    //    if (!loginUser.validPermission(jobGroup)) {
-    //        throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username=" + loginUser.getUsername() + "]");
-    //    }
-    //}
 
     @GetMapping
     @ApiOperation("分页查询任务列表")
@@ -121,58 +97,64 @@ public class JobInfoController {
                            @RequestParam(name = "jobDesc", required = false) String jobDesc,
                            @RequestParam(name = "executorHandler", required = false) String executorHandler,
                            @RequestParam(name = "author", required = false) String author) {
-
-        List<XxlJobInfo> list = xxlJobInfoDao.pageList((pageNo - 1) * pageSize, pageSize, jobGroupId, triggerStatus, jobDesc, executorHandler, author);
+        logger.info("分页查询任务列表, jobGroupId: {}, triggerStatus: {}, jobDesc: {}, executorHandler: {}, author: {}", jobGroupId, triggerStatus, jobDesc, executorHandler, author);
+        List<XxlJobInfo> xxlJobInfoList = xxlJobInfoDao.pageList((pageNo - 1) * pageSize, pageSize, jobGroupId, triggerStatus, jobDesc, executorHandler, author);
         int pageListCount = xxlJobInfoDao.pageListCount(jobGroupId, triggerStatus, jobDesc, executorHandler, author);
-        PageInfo<XxlJobInfo> xxlJobInfoPageInfo = new PageInfo<>(list);
+        PageInfo<XxlJobInfo> xxlJobInfoPageInfo = new PageInfo<>(xxlJobInfoList);
         xxlJobInfoPageInfo.setTotal(pageListCount);
+        logger.info("查询任务列表完成");
+        logger.debug("任务列表: {}", xxlJobInfoList);
         return Result.success(xxlJobInfoPageInfo);
     }
 
     @GetMapping("/groups/{jobGroupId}")
     @ApiOperation("根据groupId查询对应的任务列表")
     public Result getJobsByGroup(@PathVariable int jobGroupId) {
+        logger.info("根据jobGroupId查询对应的任务列表, jobGroupId: {}", jobGroupId);
         // jobGroup change, job list init and select
-        List<XxlJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroupId);
-        return Result.success(list);
+        List<XxlJobInfo> xxlJobInfoList = xxlJobInfoDao.getJobsByGroup(jobGroupId);
+        logger.info("根据jobGroupId查询对应的任务列表完成");
+        logger.debug("任务列表: {}", xxlJobInfoList);
+        return Result.success(xxlJobInfoList);
     }
 
     @PostMapping
     @ApiOperation("新增任务信息")
-    public Result add(@RequestBody XxlJobInfo jobInfo) {
-        XxlJobGroup xxlJobGroup = xxlJobGroupDao.load(jobInfo.getId());
+    public Result add(@RequestBody @Valid XxlJobInfo jobInfo) {
+        logger.info("新增任务信息: {}", jobInfo);
+
+        XxlJobGroup xxlJobGroup = xxlJobGroupDao.load(jobInfo.getJobGroup());
         if (xxlJobGroup == null) {
+            logger.error("执行器信息不存在, jobGroupId: {}", jobInfo.getJobGroup());
             return Result.failure(XxlJobResultCodeEnum.JOB_GROUP_NOT_EXIST);
-        }
-        // valid base
-        if (StringUtils.isBlank(jobInfo.getJobDesc()) || StringUtils.isBlank(jobInfo.getAuthor())) {
-            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
         }
 
         // valid trigger
         ScheduleTypeEnum scheduleType = ScheduleTypeEnum.match(jobInfo.getScheduleType(), null);
         if (scheduleType == ScheduleTypeEnum.CRON) {
             if (!CronExpression.isValidExpression(jobInfo.getScheduleConf())) {
+                logger.error("CRON表达式格式不正确, cronExpression: {}", jobInfo.getScheduleConf());
                 return Result.failure(XxlJobResultCodeEnum.CRON_EXPRESSION_INVALID);
             }
         } else if (scheduleType == ScheduleTypeEnum.FIX_RATE) {
             int fixSecond = Integer.parseInt(jobInfo.getScheduleConf());
             if (fixSecond < 1) {
+                logger.error("调度类型为固定速率时速率不能小于1秒");
                 return Result.failure(XxlJobResultCodeEnum.FIX_RATE_LESS_THAN_ONE_SECOND);
             }
+        } else {
+            jobInfo.setScheduleConf(null);
         }
 
         // valid job
         GlueTypeEnum glueType = GlueTypeEnum.match(jobInfo.getGlueType());
         if (glueType == GlueTypeEnum.BEAN) {
             if (StringUtils.isBlank(jobInfo.getExecutorHandler())) {
-                return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
+                logger.error("运行模式为BEAN模式时jobHandler不能为空");
+                return Result.failure(XxlJobResultCodeEnum.BEAN_JOB_HANDLER_IS_BLANK);
             }
-        } else if (glueType == GlueTypeEnum.GLUE_SHELL) {
-            // 》fix "\r" in shell
-            if (jobInfo.getGlueSource() != null) {
-                jobInfo.setGlueSource(jobInfo.getGlueSource().replaceAll("\r", ""));
-            }
+        } else {
+            jobInfo.setExecutorHandler(null);
         }
 
         // 》ChildJobId valid
@@ -182,9 +164,11 @@ public class JobInfoController {
                 if (StringUtils.isNotBlank(childJobId) && StringUtils.isNumeric(childJobId)) {
                     XxlJobInfo childJobInfo = xxlJobInfoDao.loadById(Integer.parseInt(childJobId));
                     if (childJobInfo == null) {
-                        return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
+                        logger.error("子任务不存在, jobgId: {}", childJobId);
+                        return Result.failure(XxlJobResultCodeEnum.CHILD_JOB_INFO_NOT_EXIST);
                     }
                 } else {
+                    logger.error("子任务ID格式不正确, childJobId: {}", jobInfo.getChildJobId());
                     return Result.failure(XxlJobResultCodeEnum.CHILD_JOB_INFO_ID_INVALID);
                 }
             }
@@ -196,34 +180,35 @@ public class JobInfoController {
         jobInfo.setGlueUpdatetime(new Date());
         xxlJobInfoDao.save(jobInfo);
         if (jobInfo.getId() < 1) {
+            logger.error("保存任务信息失败");
             return Result.failure(XxlJobResultCodeEnum.JOB_INFO_SAVE_FAILED);
         }
 
+        logger.info("新增任务信息完成");
         return Result.success();
     }
 
     @PutMapping
     @ApiOperation("更新任务信息")
-    public Result update(@RequestBody XxlJobInfo jobInfo) {
-        XxlJobGroup xxlJobGroup = xxlJobGroupDao.load(jobInfo.getId());
+    public Result update(@RequestBody @Valid XxlJobInfo jobInfo) {
+        logger.info("更新任务信息: {}", jobInfo);
+        XxlJobGroup xxlJobGroup = xxlJobGroupDao.load(jobInfo.getJobGroup());
         if (xxlJobGroup == null) {
+            logger.error("执行器信息不存在, jobGroupId: {}", jobInfo.getJobGroup());
             return Result.failure(XxlJobResultCodeEnum.JOB_GROUP_NOT_EXIST);
         }
 
-        // valid base
-        if (StringUtils.isBlank(jobInfo.getJobDesc()) || StringUtils.isBlank(jobInfo.getAuthor())) {
-            return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
-        }
-
-        // valid trigger
+        // valid
         ScheduleTypeEnum scheduleType = ScheduleTypeEnum.match(jobInfo.getScheduleType(), null);
         if (scheduleType == ScheduleTypeEnum.CRON) {
             if (!CronExpression.isValidExpression(jobInfo.getScheduleConf())) {
+                logger.error("CRON表达式格式不正确, cronExpression: {}", jobInfo.getScheduleConf());
                 return Result.failure(XxlJobResultCodeEnum.CRON_EXPRESSION_INVALID);
             }
         } else if (scheduleType == ScheduleTypeEnum.FIX_RATE) {
             int fixSecond = Integer.parseInt(jobInfo.getScheduleConf());
             if (fixSecond < 1) {
+                logger.error("调度类型为固定速率时速率不能小于1秒");
                 return Result.failure(XxlJobResultCodeEnum.FIX_RATE_LESS_THAN_ONE_SECOND);
             }
         }
@@ -232,7 +217,8 @@ public class JobInfoController {
         GlueTypeEnum glueType = GlueTypeEnum.match(jobInfo.getGlueType());
         if (glueType == GlueTypeEnum.BEAN) {
             if (StringUtils.isBlank(jobInfo.getExecutorHandler())) {
-                return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
+                logger.error("运行模式为BEAN模式时jobHandler不能为空");
+                return Result.failure(XxlJobResultCodeEnum.BEAN_JOB_HANDLER_IS_BLANK);
             }
         }
 
@@ -243,9 +229,11 @@ public class JobInfoController {
                 if (StringUtils.isNotBlank(childJobId) && StringUtils.isNumeric(childJobId)) {
                     XxlJobInfo childJobInfo = xxlJobInfoDao.loadById(Integer.parseInt(childJobId));
                     if (childJobInfo == null) {
-                        return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
+                        logger.error("子任务不存在, jobgId: {}", childJobId);
+                        return Result.failure(XxlJobResultCodeEnum.CHILD_JOB_INFO_NOT_EXIST);
                     }
                 } else {
+                    logger.error("子任务ID格式不正确, childJobId: {}", jobInfo.getChildJobId());
                     return Result.failure(XxlJobResultCodeEnum.CHILD_JOB_INFO_ID_INVALID);
                 }
             }
@@ -254,6 +242,7 @@ public class JobInfoController {
         // stage job info
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(jobInfo.getId());
         if (xxlJobInfo == null) {
+            logger.error("要更新的job信息不存在, jobId: {}", jobInfo.getId());
             return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
         }
 
@@ -264,6 +253,7 @@ public class JobInfoController {
             try {
                 Date nextValidTime = JobScheduleHelper.generateNextValidTime(jobInfo, new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
                 if (nextValidTime == null) {
+                    logger.error("调度类型不合法");
                     return Result.failure(XxlJobResultCodeEnum.SCHEDULE_TYPE_INVALID);
                 }
                 nextTriggerTime = nextValidTime.getTime();
@@ -292,12 +282,14 @@ public class JobInfoController {
         xxlJobInfo.setUpdateTime(new Date());
         xxlJobInfoDao.update(xxlJobInfo);
 
+        logger.info("更新任务信息完成");
         return Result.success();
     }
 
     @DeleteMapping("{jobId}")
     @ApiOperation("删除任务信息")
     public Result remove(@PathVariable int jobId) {
+        logger.info("删除任务信息, jobId: {}", jobId);
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(jobId);
         if (xxlJobInfo == null) {
             return Result.success();
@@ -306,18 +298,21 @@ public class JobInfoController {
         xxlJobInfoDao.delete(jobId);
         xxlJobLogDao.delete(jobId);
         xxlJobLogGlueDao.deleteByJobId(jobId);
+        logger.info("删除任务信息完成");
         return Result.success();
     }
 
     @PutMapping("{jobId}/start")
     @ApiOperation("启动任务")
     public Result start(@PathVariable int jobId) {
+        logger.info("启动任务, jobId: {}", jobId);
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(jobId);
 
         // valid
         ScheduleTypeEnum scheduleTypeEnum = ScheduleTypeEnum.match(xxlJobInfo.getScheduleType(), ScheduleTypeEnum.NONE);
         if (ScheduleTypeEnum.NONE == scheduleTypeEnum) {
-            return Result.failure(XxlJobResultCodeEnum.SCHEDULE_TYPE_NONE_LIMIT_START);
+            logger.error("调度类型为无时禁止启动");
+            return Result.failure(XxlJobResultCodeEnum.CURRENT_SCHEDULE_TYPE_LIMIT_START);
         }
 
         // next trigger time (5s后生效，避开预读周期)
@@ -325,6 +320,7 @@ public class JobInfoController {
         try {
             Date nextValidTime = JobScheduleHelper.generateNextValidTime(xxlJobInfo, new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
             if (nextValidTime == null) {
+                logger.error("调度类型不合法");
                 return Result.failure(XxlJobResultCodeEnum.SCHEDULE_TYPE_INVALID);
             }
             nextTriggerTime = nextValidTime.getTime();
@@ -340,13 +336,19 @@ public class JobInfoController {
         xxlJobInfo.setUpdateTime(new Date());
         xxlJobInfoDao.update(xxlJobInfo);
 
+        logger.info("启动任务完成");
         return Result.success();
     }
 
     @PutMapping("{jobId}/stop")
     @ApiOperation("暂停任务")
     public Result pause(@PathVariable int jobId) {
+        logger.info("暂停任务, jobId: {}", jobId);
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(jobId);
+        if (xxlJobInfo == null) {
+            logger.error("任务信息不存在, jobId: {}", jobId);
+            return Result.failure(XxlJobResultCodeEnum.JOB_INFO_NOT_EXIST);
+        }
 
         xxlJobInfo.setTriggerStatus(0);
         xxlJobInfo.setTriggerLastTime(0);
@@ -355,6 +357,7 @@ public class JobInfoController {
         xxlJobInfo.setUpdateTime(new Date());
         xxlJobInfoDao.update(xxlJobInfo);
 
+        logger.info("暂停任务完成");
         return Result.success();
     }
 
@@ -363,12 +366,14 @@ public class JobInfoController {
     public Result triggerJob(@PathVariable int jobId,
                              @RequestParam(name = "executorParam", required = false) String executorParam,
                              @RequestParam(name = "addressList", required = false) String addressList) {
+        logger.info("执行一次任务, jobId: {}, 任务参数: {}, 机器地址列表: {}", jobId, executorParam, addressList);
         // force cover job param
         if (executorParam == null) {
             executorParam = "";
         }
 
         JobTriggerPoolHelper.trigger(jobId, TriggerTypeEnum.MANUAL, -1, null, executorParam, addressList);
+        logger.info("执行一次任务完成");
         return Result.success();
     }
 
@@ -376,7 +381,7 @@ public class JobInfoController {
     @ApiOperation("下次执行时间")
     public Result nextTriggerTime(@RequestParam(name = "scheduleType") String scheduleType,
                                   @RequestParam(name = "scheduleConf") String scheduleConf) {
-
+        logger.info("查询任务下次执行时间, 调度类型: {}, 调度配置: {}", scheduleType, scheduleConf);
         XxlJobInfo paramXxlJobInfo = new XxlJobInfo();
         paramXxlJobInfo.setScheduleType(scheduleType);
         paramXxlJobInfo.setScheduleConf(scheduleConf);
@@ -396,6 +401,7 @@ public class JobInfoController {
             logger.error("计算下次执行时间异常", e);
             return Result.failure(ResultCodeEnum.GENERIC_EXCEPTION);
         }
+        logger.info("下次执行时间列表: {}", nextTriggerTimeList);
         return Result.success(nextTriggerTimeList);
     }
 }

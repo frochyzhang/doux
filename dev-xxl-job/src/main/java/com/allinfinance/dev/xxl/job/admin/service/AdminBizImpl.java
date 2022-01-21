@@ -1,4 +1,4 @@
-package com.allinfinance.dev.xxl.job.admin.service.impl;
+package com.allinfinance.dev.xxl.job.admin.service;
 
 import com.allinfinance.dev.xxl.job.admin.core.thread.JobCompleteHelper;
 import com.allinfinance.dev.xxl.job.admin.core.thread.JobRegistryHelper;

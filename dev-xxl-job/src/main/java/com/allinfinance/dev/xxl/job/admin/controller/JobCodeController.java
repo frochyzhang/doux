@@ -11,7 +11,8 @@ import com.allinfinance.dev.xxl.job.admin.dto.JobGlueIndexInfoResponseDTO;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,9 +27,10 @@ import java.util.stream.Collectors;
  * @author xuxueli 2015-12-19 16:13:16
  */
 @Api(value = "JobCodeController", tags = {"GLUE模式代码接口"})
-@Controller
+@RestController
 @RequestMapping("/job/codes")
 public class JobCodeController {
+    private static final Logger logger = LoggerFactory.getLogger(JobCodeController.class);
 
     @Resource
     private XxlJobInfoDao xxlJobInfoDao;
@@ -36,8 +38,9 @@ public class JobCodeController {
     private XxlJobLogGlueDao xxlJobLogGlueDao;
 
     @GetMapping("{jobId}")
-    @ApiOperation("查询GLUE任务源码信息")
+    @ApiOperation("查询GLUE任务信息")
     public Result index(@PathVariable int jobId) {
+        logger.info("查询GLUE任务信息, jobId: {}", jobId);
         XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
         List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);
 
@@ -57,6 +60,8 @@ public class JobCodeController {
                 .collect(Collectors.toList()));
         jobGlueIndexInfoResponseDTO.setJobInfo(jobInfo);
         jobGlueIndexInfoResponseDTO.setJobLogGlues(jobLogGlues);
+
+        logger.debug("GLUE任务信息: {}", jobGlueIndexInfoResponseDTO);
         return Result.success(jobGlueIndexInfoResponseDTO);
     }
 
@@ -64,6 +69,8 @@ public class JobCodeController {
     @ApiOperation("保存GLUE任务代码")
     public Result save(@RequestParam(name = "jobId") int jobId, @RequestParam(name = "glueSource") String glueSource,
                        @RequestParam(name = "glueRemark") String glueRemark) {
+        logger.info("保存GLUE任务信息, jobId: {}, 源码备注: {}", jobId, glueRemark);
+        logger.debug("GLUE任务源码: {}", glueSource);
         // valid
         if (glueRemark == null) {
             return Result.failure(ResultCodeEnum.PARAM_IS_BLANK);
@@ -98,6 +105,7 @@ public class JobCodeController {
         // remove code backup more than 30
         xxlJobLogGlueDao.removeOld(xxlJobInfo.getId(), 30);
 
+        logger.info("保存GLUE任务信息完成");
         return Result.success();
     }
 }
