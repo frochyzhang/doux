@@ -4,14 +4,16 @@ import com.allinfinance.dev.socket.handler.AbstractMessageIOHandler;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
-@Component
 public class TestIOHandler extends AbstractMessageIOHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageIOHandler.class);
+
+    public TestIOHandler(String appName) {
+        super(appName);
+    }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {

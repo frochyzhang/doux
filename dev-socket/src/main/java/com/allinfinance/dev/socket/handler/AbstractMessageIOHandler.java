@@ -16,6 +16,12 @@ public class AbstractMessageIOHandler implements IoHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageIOHandler.class);
 
+    private String appName;
+
+    public AbstractMessageIOHandler(String appName) {
+        this.appName = appName;
+    }
+
     @Override
     public void sessionCreated(IoSession session) {
         String clientIp = ((InetSocketAddress) (session.getRemoteAddress())).getAddress().getHostAddress();

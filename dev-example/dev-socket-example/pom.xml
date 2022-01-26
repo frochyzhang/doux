@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-socket</artifactId>
+            <artifactId>dev-socket-boot-starter</artifactId>
         </dependency>
     </dependencies>
 

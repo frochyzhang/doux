@@ -1,18 +1,16 @@
 package com.allinfinance.dev.example.socket;
 
-import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
-import com.allinfinance.dev.socket.MinaApplication;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author 张勇
  * @description
  * @date 2020/11/30 21:01
  */
+@SpringBootApplication
 public class SocketServerTest {
     public static void main(String[] args) {
-        new ClassPathXmlApplicationContext("classpath:application-context-test.xml");
-        BeanConvertValidator.beanVerify("abc", "utf-8");
-        MinaApplication.run(SocketServerTest.class);
+        SpringApplication.run(SocketServerTest.class, args);
     }
 }

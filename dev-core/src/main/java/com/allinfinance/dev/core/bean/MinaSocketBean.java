@@ -1,10 +1,5 @@
 package com.allinfinance.dev.core.bean;
 
-import com.allinfinance.dev.core.constant.SocketBeanLoaderEnum;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Map;
-
 /**
  * @author 张勇
  * @date 2020-11-28 01:25
@@ -31,27 +26,7 @@ public class MinaSocketBean {
     private Integer beatInterval;
     private Boolean keepAlive;
 
-    public MinaSocketBean(Map<SocketBeanLoaderEnum, String> propertyValueMap) throws Exception {
-        this.name = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKKET_APP_NAME);
-        this.port = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_PORT));
-        this.processorCount = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_PROC_COUNT));
-        this.threadCount = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_THREAD_COUNT));
-        this.decodeMsgLength = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DEC_LENGTH));
-        this.encodeMsgLength = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENC_LENGTH));
-        this.decodeCharset = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DEC_CHARSET);
-        this.encodeCharset = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENC_CHARSET);
-        this.bufferSize = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BUFFER_SIZE));
-        this.timeOut = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_TIMEOUT));
-        this.handlerClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_HANDLER);
-        this.decoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_DECODER);
-        this.encoderClassName = propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_ENCODER);
-        this.soLinger = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_SOLINGER));
-        this.beatTimeout = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_TIMEOUT));
-        this.beatInterval = Integer.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_BEAT_INTERVAL));
-        this.keepAlive = Boolean.valueOf(propertyValueMap.get(SocketBeanLoaderEnum.DEV_SOCKET_KEEPALIVE));
-        if (this.port == 0 || StringUtils.isBlank(this.handlerClassName)) {
-            throw new Exception("运行端口及报文路径类全路径未指定!");
-        }
+    public MinaSocketBean() {
     }
 
     public String getName() {
