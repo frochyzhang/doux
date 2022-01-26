@@ -1,0 +1,6 @@
+com:
+  allinfinance:
+    xxl:
+      job:
+        admin-addresses: http://127.0.0.1:8090/xxl-job-admin/
+        appname: ${spring.application.name}

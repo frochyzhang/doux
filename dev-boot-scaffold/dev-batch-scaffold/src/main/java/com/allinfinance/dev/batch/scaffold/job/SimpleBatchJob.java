@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author qipeng
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class SimpleBatchJob extends AbstractBatchJob {
     @Autowired
     private SimpleJobListener jobListener;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     @Bean("testBatchJob")
     public Job job(@Qualifier("step1") Step step1, @Qualifier("step2") Step step2) {
@@ -35,6 +38,7 @@ public class SimpleBatchJob extends AbstractBatchJob {
                          ItemProcessor<String, String> processor,
                          ItemWriter<String> writer) {
         return stepBuilderFactory.get("step1")
+                .transactionManager(transactionManager)
                 .<String, String>chunk(10)
                 .reader(reader)
                 .processor(processor)

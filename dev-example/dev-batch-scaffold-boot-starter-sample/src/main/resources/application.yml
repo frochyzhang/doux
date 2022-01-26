@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: xxl-job-test
+  profiles:
+    active: job,db
+  batch:
+    job:
+      enabled: true
+server:
+  port: 8082
+
+
+

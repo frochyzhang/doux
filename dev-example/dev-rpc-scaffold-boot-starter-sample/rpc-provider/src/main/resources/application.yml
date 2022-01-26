@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: rpc-provider
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        bolt-port: 12201
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.rpc.provider.service
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/common-platform?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      #      password: root
+      password: kmHoW1yvFY6x+fFp2mo0g0PGJFV307bQwrPSI+/iqwjzIsBBjR4mwuMvelhAeNaj8qhpjBCb4fueDNsMUUd5gQ==
+      encrypt:
+        encrypted: true
+        public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANWZ/fzBYWqg31mpI/dIiF5IWf//ZaozrgjgXcwiDhsNx7ErrANwSfk/ymj0WKTkFLW7EMfbZU3AdrYMOzJDQ00CAwEAAQ==

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: rpc-consumer
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        bolt-port: 12202
+  allinfinance:
+    rpc:
+      reference-list:
+        - com.allinfinance.rpc.scaffold.api.TestApi
