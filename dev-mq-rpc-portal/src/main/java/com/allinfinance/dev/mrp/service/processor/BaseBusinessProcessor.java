@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 
 /**
- * @Description:
  * @Author: qipeng
  * @Date: 2021/7/16
  **/

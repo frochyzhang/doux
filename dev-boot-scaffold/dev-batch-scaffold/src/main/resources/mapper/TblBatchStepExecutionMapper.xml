@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinfinance.dev.batch.scaffold.dal.mapper.TblBatchStepExecutionMapper">
+    <resultMap id="BaseResultMap" type="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecution">
+        <constructor>
+            <idArg column="STEP_EXECUTION_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="VERSION" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="STEP_NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="JOB_EXECUTION_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="START_TIME" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
+            <arg column="END_TIME" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
+            <arg column="STATUS" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="COMMIT_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="READ_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="FILTER_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="WRITE_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="READ_SKIP_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="WRITE_SKIP_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="PROCESS_SKIP_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="ROLLBACK_COUNT" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="EXIT_CODE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="EXIT_MESSAGE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="LAST_UPDATED" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        STEP_EXECUTION_ID
+        , VERSION, STEP_NAME, JOB_EXECUTION_ID, START_TIME, END_TIME, STATUS,
+    COMMIT_COUNT, READ_COUNT, FILTER_COUNT, WRITE_COUNT, READ_SKIP_COUNT, WRITE_SKIP_COUNT, 
+    PROCESS_SKIP_COUNT, ROLLBACK_COUNT, EXIT_CODE, EXIT_MESSAGE, LAST_UPDATED
+    </sql>
+    <select id="selectByExample"
+            parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecutionExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from batch_step_execution
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from batch_step_execution
+        where STEP_EXECUTION_ID = #{stepExecutionId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from batch_step_execution
+        where STEP_EXECUTION_ID = #{stepExecutionId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecution">
+        insert into batch_step_execution (STEP_EXECUTION_ID, VERSION, STEP_NAME,
+                                          JOB_EXECUTION_ID, START_TIME, END_TIME,
+                                          STATUS, COMMIT_COUNT, READ_COUNT,
+                                          FILTER_COUNT, WRITE_COUNT, READ_SKIP_COUNT,
+                                          WRITE_SKIP_COUNT, PROCESS_SKIP_COUNT, ROLLBACK_COUNT,
+                                          EXIT_CODE, EXIT_MESSAGE, LAST_UPDATED)
+        values (#{stepExecutionId,jdbcType=BIGINT}, #{version,jdbcType=BIGINT}, #{stepName,jdbcType=VARCHAR},
+                #{jobExecutionId,jdbcType=BIGINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+                #{status,jdbcType=VARCHAR}, #{commitCount,jdbcType=BIGINT}, #{readCount,jdbcType=BIGINT},
+                #{filterCount,jdbcType=BIGINT}, #{writeCount,jdbcType=BIGINT}, #{readSkipCount,jdbcType=BIGINT},
+                #{writeSkipCount,jdbcType=BIGINT}, #{processSkipCount,jdbcType=BIGINT},
+                #{rollbackCount,jdbcType=BIGINT},
+                #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{lastUpdated,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecution">
+        insert into batch_step_execution
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stepExecutionId != null">
+                STEP_EXECUTION_ID,
+            </if>
+            <if test="version != null">
+                VERSION,
+            </if>
+            <if test="stepName != null">
+                STEP_NAME,
+            </if>
+            <if test="jobExecutionId != null">
+                JOB_EXECUTION_ID,
+            </if>
+            <if test="startTime != null">
+                START_TIME,
+            </if>
+            <if test="endTime != null">
+                END_TIME,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="commitCount != null">
+                COMMIT_COUNT,
+            </if>
+            <if test="readCount != null">
+                READ_COUNT,
+            </if>
+            <if test="filterCount != null">
+                FILTER_COUNT,
+            </if>
+            <if test="writeCount != null">
+                WRITE_COUNT,
+            </if>
+            <if test="readSkipCount != null">
+                READ_SKIP_COUNT,
+            </if>
+            <if test="writeSkipCount != null">
+                WRITE_SKIP_COUNT,
+            </if>
+            <if test="processSkipCount != null">
+                PROCESS_SKIP_COUNT,
+            </if>
+            <if test="rollbackCount != null">
+                ROLLBACK_COUNT,
+            </if>
+            <if test="exitCode != null">
+                EXIT_CODE,
+            </if>
+            <if test="exitMessage != null">
+                EXIT_MESSAGE,
+            </if>
+            <if test="lastUpdated != null">
+                LAST_UPDATED,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stepExecutionId != null">
+                #{stepExecutionId,jdbcType=BIGINT},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=BIGINT},
+            </if>
+            <if test="stepName != null">
+                #{stepName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobExecutionId != null">
+                #{jobExecutionId,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="commitCount != null">
+                #{commitCount,jdbcType=BIGINT},
+            </if>
+            <if test="readCount != null">
+                #{readCount,jdbcType=BIGINT},
+            </if>
+            <if test="filterCount != null">
+                #{filterCount,jdbcType=BIGINT},
+            </if>
+            <if test="writeCount != null">
+                #{writeCount,jdbcType=BIGINT},
+            </if>
+            <if test="readSkipCount != null">
+                #{readSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="writeSkipCount != null">
+                #{writeSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="processSkipCount != null">
+                #{processSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="rollbackCount != null">
+                #{rollbackCount,jdbcType=BIGINT},
+            </if>
+            <if test="exitCode != null">
+                #{exitCode,jdbcType=VARCHAR},
+            </if>
+            <if test="exitMessage != null">
+                #{exitMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="lastUpdated != null">
+                #{lastUpdated,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample"
+            parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecutionExample"
+            resultType="java.lang.Long">
+        select count(*) from batch_step_execution
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update batch_step_execution
+        <set>
+            <if test="record.stepExecutionId != null">
+                STEP_EXECUTION_ID = #{record.stepExecutionId,jdbcType=BIGINT},
+            </if>
+            <if test="record.version != null">
+                VERSION = #{record.version,jdbcType=BIGINT},
+            </if>
+            <if test="record.stepName != null">
+                STEP_NAME = #{record.stepName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.jobExecutionId != null">
+                JOB_EXECUTION_ID = #{record.jobExecutionId,jdbcType=BIGINT},
+            </if>
+            <if test="record.startTime != null">
+                START_TIME = #{record.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.endTime != null">
+                END_TIME = #{record.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.status != null">
+                STATUS = #{record.status,jdbcType=VARCHAR},
+            </if>
+            <if test="record.commitCount != null">
+                COMMIT_COUNT = #{record.commitCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.readCount != null">
+                READ_COUNT = #{record.readCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.filterCount != null">
+                FILTER_COUNT = #{record.filterCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.writeCount != null">
+                WRITE_COUNT = #{record.writeCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.readSkipCount != null">
+                READ_SKIP_COUNT = #{record.readSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.writeSkipCount != null">
+                WRITE_SKIP_COUNT = #{record.writeSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.processSkipCount != null">
+                PROCESS_SKIP_COUNT = #{record.processSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.rollbackCount != null">
+                ROLLBACK_COUNT = #{record.rollbackCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.exitCode != null">
+                EXIT_CODE = #{record.exitCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.exitMessage != null">
+                EXIT_MESSAGE = #{record.exitMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="record.lastUpdated != null">
+                LAST_UPDATED = #{record.lastUpdated,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update batch_step_execution
+        set STEP_EXECUTION_ID = #{record.stepExecutionId,jdbcType=BIGINT},
+        VERSION = #{record.version,jdbcType=BIGINT},
+        STEP_NAME = #{record.stepName,jdbcType=VARCHAR},
+        JOB_EXECUTION_ID = #{record.jobExecutionId,jdbcType=BIGINT},
+        START_TIME = #{record.startTime,jdbcType=TIMESTAMP},
+        END_TIME = #{record.endTime,jdbcType=TIMESTAMP},
+        STATUS = #{record.status,jdbcType=VARCHAR},
+        COMMIT_COUNT = #{record.commitCount,jdbcType=BIGINT},
+        READ_COUNT = #{record.readCount,jdbcType=BIGINT},
+        FILTER_COUNT = #{record.filterCount,jdbcType=BIGINT},
+        WRITE_COUNT = #{record.writeCount,jdbcType=BIGINT},
+        READ_SKIP_COUNT = #{record.readSkipCount,jdbcType=BIGINT},
+        WRITE_SKIP_COUNT = #{record.writeSkipCount,jdbcType=BIGINT},
+        PROCESS_SKIP_COUNT = #{record.processSkipCount,jdbcType=BIGINT},
+        ROLLBACK_COUNT = #{record.rollbackCount,jdbcType=BIGINT},
+        EXIT_CODE = #{record.exitCode,jdbcType=VARCHAR},
+        EXIT_MESSAGE = #{record.exitMessage,jdbcType=VARCHAR},
+        LAST_UPDATED = #{record.lastUpdated,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecution">
+        update batch_step_execution
+        <set>
+            <if test="version != null">
+                VERSION = #{version,jdbcType=BIGINT},
+            </if>
+            <if test="stepName != null">
+                STEP_NAME = #{stepName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobExecutionId != null">
+                JOB_EXECUTION_ID = #{jobExecutionId,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="commitCount != null">
+                COMMIT_COUNT = #{commitCount,jdbcType=BIGINT},
+            </if>
+            <if test="readCount != null">
+                READ_COUNT = #{readCount,jdbcType=BIGINT},
+            </if>
+            <if test="filterCount != null">
+                FILTER_COUNT = #{filterCount,jdbcType=BIGINT},
+            </if>
+            <if test="writeCount != null">
+                WRITE_COUNT = #{writeCount,jdbcType=BIGINT},
+            </if>
+            <if test="readSkipCount != null">
+                READ_SKIP_COUNT = #{readSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="writeSkipCount != null">
+                WRITE_SKIP_COUNT = #{writeSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="processSkipCount != null">
+                PROCESS_SKIP_COUNT = #{processSkipCount,jdbcType=BIGINT},
+            </if>
+            <if test="rollbackCount != null">
+                ROLLBACK_COUNT = #{rollbackCount,jdbcType=BIGINT},
+            </if>
+            <if test="exitCode != null">
+                EXIT_CODE = #{exitCode,jdbcType=VARCHAR},
+            </if>
+            <if test="exitMessage != null">
+                EXIT_MESSAGE = #{exitMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="lastUpdated != null">
+                LAST_UPDATED = #{lastUpdated,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where STEP_EXECUTION_ID = #{stepExecutionId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.allinfinance.dev.batch.scaffold.dal.model.TblBatchStepExecution">
+        update batch_step_execution
+        set VERSION            = #{version,jdbcType=BIGINT},
+            STEP_NAME          = #{stepName,jdbcType=VARCHAR},
+            JOB_EXECUTION_ID   = #{jobExecutionId,jdbcType=BIGINT},
+            START_TIME         = #{startTime,jdbcType=TIMESTAMP},
+            END_TIME           = #{endTime,jdbcType=TIMESTAMP},
+            STATUS             = #{status,jdbcType=VARCHAR},
+            COMMIT_COUNT       = #{commitCount,jdbcType=BIGINT},
+            READ_COUNT         = #{readCount,jdbcType=BIGINT},
+            FILTER_COUNT       = #{filterCount,jdbcType=BIGINT},
+            WRITE_COUNT        = #{writeCount,jdbcType=BIGINT},
+            READ_SKIP_COUNT    = #{readSkipCount,jdbcType=BIGINT},
+            WRITE_SKIP_COUNT   = #{writeSkipCount,jdbcType=BIGINT},
+            PROCESS_SKIP_COUNT = #{processSkipCount,jdbcType=BIGINT},
+            ROLLBACK_COUNT     = #{rollbackCount,jdbcType=BIGINT},
+            EXIT_CODE          = #{exitCode,jdbcType=VARCHAR},
+            EXIT_MESSAGE       = #{exitMessage,jdbcType=VARCHAR},
+            LAST_UPDATED       = #{lastUpdated,jdbcType=TIMESTAMP}
+        where STEP_EXECUTION_ID = #{stepExecutionId,jdbcType=BIGINT}
+    </update>
+</mapper>

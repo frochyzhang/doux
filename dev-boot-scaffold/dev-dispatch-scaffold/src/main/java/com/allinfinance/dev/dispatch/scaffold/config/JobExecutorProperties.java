@@ -1,0 +1,44 @@
+package com.allinfinance.dev.dispatch.scaffold.config;
+
+import com.allinfinance.dev.dispatch.scaffold.executor.XxlJobCustomExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+
+/**
+ * @author qipeng
+ * @description: 获取xxl-job执行器相关配置
+ * @date 2022/1/7 16:12
+ */
+@Configuration
+@ConfigurationProperties(prefix = "com.allinfinance.xxl.job")
+public class JobExecutorProperties {
+    private String adminAddresses;
+    private String appName;
+    @Autowired
+    private XxlJobCustomExecutor xxlJobCustomExecutor;
+
+    @PostConstruct
+    private void initXxlJobExecutor() {
+        xxlJobCustomExecutor.setAppname(appName);
+        xxlJobCustomExecutor.setAdminAddresses(adminAddresses);
+    }
+
+    public String getAdminAddresses() {
+        return adminAddresses;
+    }
+
+    public void setAdminAddresses(String adminAddresses) {
+        this.adminAddresses = adminAddresses;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+}

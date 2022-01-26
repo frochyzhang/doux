@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dev-parent</artifactId>
+        <groupId>com.allinfinance.dev</groupId>
+        <version>${revision}</version>
+        <relativePath>../dev-parent</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dev-boot-scaffold</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dev-rpc-scaffold</module>
+        <module>dev-dispatch-scaffold</module>
+        <module>dev-datasource-scaffold</module>
+        <module>dev-batch-scaffold</module>
+        <module>dev-actuator-scaffold</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <druid.version>1.2.8</druid.version>
+        <mybatis.version>2.2.1</mybatis.version>
+        <mybatis-generator.version>1.4.0</mybatis-generator.version>
+        <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
+        <xxl-job.version>2.3.0</xxl-job.version>
+        <spring-batch.version>4.2.8.RELEASE</spring-batch.version>
+        <proguard.maven.plugin.version>2.3.1</proguard.maven.plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-typehandlers-jsr310</artifactId>
+                <version>${mybatis-typetrans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis-generator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.batch</groupId>
+                <artifactId>spring-batch-core</artifactId>
+                <version>${spring-batch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.batch</groupId>
+                <artifactId>spring-batch-infrastructure</artifactId>
+                <version>${spring-batch.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

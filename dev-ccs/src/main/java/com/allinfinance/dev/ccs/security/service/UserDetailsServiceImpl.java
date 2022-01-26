@@ -7,7 +7,8 @@ import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +22,6 @@ import java.util.List;
  * 构建UserDetails
  *
  * @Author: liuqi
- * @Description:
  * @Date Create in 2021/5/15 14:36
  */
 public class UserDetailsServiceImpl implements UserDetailsService {

@@ -4,7 +4,6 @@ import com.allinfinance.dev.mrp.param.GenericReponse;
 import com.allinfinance.dev.mrp.param.RequestParams;
 
 /**
- * @Description:
  * @Author: qipeng
  * @Date: 2021/7/16
  **/

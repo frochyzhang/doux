@@ -4,13 +4,11 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
 
-
 import java.util.Collection;
 
 
 /**
  * @Author: liuqi
- * @Description:
  * @Date Create in 2021/5/15 21:06
  */
 @Component
