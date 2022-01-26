@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author qipeng
- * @description:
  * @date 2022/1/25 11:11
  */
 public abstract class AbstractBatchJob {

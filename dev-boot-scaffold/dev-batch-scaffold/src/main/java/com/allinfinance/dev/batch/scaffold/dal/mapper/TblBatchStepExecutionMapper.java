@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * @author qipeng
- * @description:
  * @date 2022/1/25 11:11
  */
 public interface TblBatchStepExecutionMapper {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author qipeng
- * @description:
  * @date 2022/1/25 23:14
  */
 @Component

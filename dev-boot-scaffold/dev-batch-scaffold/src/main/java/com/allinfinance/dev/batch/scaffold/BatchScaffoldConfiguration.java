@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author qipeng
- * @description:
  * @date 2022/1/21 16:42
  */
 @ComponentScan(basePackages = BatchScaffoldConfiguration.SCAFFOLD_BASE_PACKAGE_PREFIX)
