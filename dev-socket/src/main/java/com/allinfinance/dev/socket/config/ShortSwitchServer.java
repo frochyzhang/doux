@@ -57,7 +57,10 @@ public class ShortSwitchServer implements DisposableBean {
     @Order
     public void init() {
         CountDownLatch countDownLatch = new CountDownLatch(socketBeans.size());
-        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNamePrefix("socket-server-pool-").build();
+        ThreadFactory threadFactory = new ThreadFactoryBuilder()
+                .setNamePrefix("socket-server-pool-")
+                .setDaemon(true)
+                .build();
         threadPoolExecutor = new ThreadPoolExecutor(socketBeans.size(), socketBeans.size(), 0L,
                 TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
 
