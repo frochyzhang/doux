@@ -1,10 +1,7 @@
 package com.allinfinance.dev.example.socket.service;
 
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.allinfinance.dev.example.socket.factory.AppProcessFactory;
+import com.allinfinance.dev.example.socket.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
-import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,38 +17,14 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     private static final Logger logger = LoggerFactory.getLogger(AppRegistrarServiceImpl.class);
 
     @Autowired
-    private AppProcessFactory appProcessFactory;
+    private GateClientFactoryAware gateClientFactoryAware;
 
     @Override
     public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
-
-        if (appProcessFactory.checkIfExist(bootstrap.getAppUniqueId())) {
-            logger.info("[ {} ]无需重复注册", bootstrap.getAppUniqueId());
-            return Boolean.TRUE;
+        String appUniqueId = bootstrap.getAppUniqueId();
+        if (gateClientFactoryAware.registerConsumer(appUniqueId)) {
+            logger.info("[ {} ]应用注册成功!", appUniqueId);
         }
-        RegistryConfig registryConfig = new RegistryConfig()
-                .setProtocol(RpcConfigurationProperties.Bootstrap.REGISTRY_PROTOCOL)
-                .setAddress(bootstrap.getGateRegistry());
-
-        // todo: 还得监听provider服务健康情况
-        ConsumerConfig<ProcessService> consumerConfig = new ConsumerConfig<ProcessService>()
-                .setInterfaceId(ProcessService.class.getName())
-                .setUniqueId(bootstrap.getAppUniqueId())
-                .setTimeout(30000)
-                .setConnectTimeout(30000)
-                .setRegistry(registryConfig);
-        ProcessService processService = consumerConfig.refer();
-
-        if (processService.verify()) {
-            logger.info("[ {} ]业务处理服务订阅成功!", bootstrap.getAppUniqueId());
-        }
-        // 监听端口
-
-        // 监听完成
-
-        appProcessFactory.register(bootstrap.getAppUniqueId(), processService);
-
-
         return Boolean.TRUE;
     }
 }
