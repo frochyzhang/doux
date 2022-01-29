@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class TestApiImpl implements TestApi {
     @Override
     public String message() {
+        System.out.println("alsdjfalskdf");
         return "hello test";
     }
 }

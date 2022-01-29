@@ -7,8 +7,15 @@ com:
     sofa:
       rpc:
         registry-address: nacos://10.100.79.102:8848/iasp-zy
-        bolt-port: 12202
+        bolt-port: 12204
   allinfinance:
     rpc:
       reference-list:
         - com.allinfinance.rpc.scaffold.api.TestApi
+      bootstrap:
+        enable: true
+        gate-registry: 10.100.79.102:8848/iasp-zy
+        app-unique-id: ${spring.application.name}
+        listen-port: 12345
+server:
+  port: 8083

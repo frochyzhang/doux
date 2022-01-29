@@ -24,14 +24,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.annotation.Order;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author 张勇
@@ -68,41 +65,7 @@ public class ShortSwitchServer implements DisposableBean {
         socketBeans.forEach(minaSocketBean -> {
             threadPoolExecutor.submit(() -> {
                 try {
-                    MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
-                            .getConstructor(Integer.class, String.class)
-                            .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
-                    MessageEncoder messageEncoder = (MessageEncoder) Class.forName(minaSocketBean.getEncoderClassName())
-                            .getConstructor(Integer.class, String.class)
-                            .newInstance(minaSocketBean.getEncodeMsgLength(), minaSocketBean.getEncodeCharset());
-                    IoAcceptor acceptor = new NioSocketAcceptor(minaSocketBean.getProcessorCount());
-                    acceptor.getFilterChain().addLast("MsgCodec",
-                            new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder)));
-                    acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newFixedThreadPool(minaSocketBean.getThreadCount())));
-                    acceptor.setHandler((IoHandler) Class.forName(minaSocketBean.getHandlerClassName()).getConstructor(String.class)
-                            .newInstance(minaSocketBean.getName()));
-                    acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
-                    acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
-                    // TODO: 2021/3/22 长链接处理逻辑
-                    if (minaSocketBean.getKeepAlive()) {
-                        logger.info("开启服务端保持连接!");
-                        KeepAliveFilter keepAliveFilter = new KeepAliveFilter(new KeepAliveMessageFactoryImpl(),
-                                IdleStatus.BOTH_IDLE, new KeepAliveRequestTimeoutHandlerImpl());
-                        keepAliveFilter.setForwardEvent(true);
-                        keepAliveFilter.setRequestInterval(minaSocketBean.getBeatInterval());
-                        keepAliveFilter.setRequestTimeout(minaSocketBean.getBeatTimeout());
-                        acceptor.getFilterChain().addLast("heartbeat", keepAliveFilter);
-                    } else {
-                        logger.info("关闭服务端保持连接!");
-                        acceptor.setCloseOnDeactivation(true);
-                        if (minaSocketBean.getSoLinger()) {
-                            logger.info("TIME_WAIT SO_LINGER = 0生效!");
-                            SocketSessionConfig sessionConfig = (SocketSessionConfig) acceptor.getSessionConfig();
-                            sessionConfig.setSoLinger(0);
-                        }
-                    }
-
-                    acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));
-                    logger.info("[ {} ] 服务端启动成功! 参数为{}", minaSocketBean.getName(), minaSocketBean);
+                    initMinaServer(minaSocketBean);
                 } catch (Exception e2) {
                     logger.error("[ {}] 启动服务失败! 参数为{}", minaSocketBean.getName(), minaSocketBean, e2);
                     System.exit(0);
@@ -112,6 +75,44 @@ public class ShortSwitchServer implements DisposableBean {
                 logger.info("{}-Server Thread start!", minaSocketBean.getName());
             });
         });
+    }
+
+    private void initMinaServer(MinaSocketBean minaSocketBean) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException {
+        MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
+                .getConstructor(Integer.class, String.class)
+                .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
+        MessageEncoder messageEncoder = (MessageEncoder) Class.forName(minaSocketBean.getEncoderClassName())
+                .getConstructor(Integer.class, String.class)
+                .newInstance(minaSocketBean.getEncodeMsgLength(), minaSocketBean.getEncodeCharset());
+        IoAcceptor acceptor = new NioSocketAcceptor(minaSocketBean.getProcessorCount());
+        acceptor.getFilterChain().addLast("MsgCodec",
+                new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder)));
+        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newFixedThreadPool(minaSocketBean.getThreadCount())));
+        acceptor.setHandler((IoHandler) Class.forName(minaSocketBean.getHandlerClassName()).getConstructor(String.class)
+                .newInstance(minaSocketBean.getName()));
+        acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
+        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
+        // TODO: 2021/3/22 长链接处理逻辑
+        if (minaSocketBean.getKeepAlive()) {
+            logger.info("开启服务端保持连接!");
+            KeepAliveFilter keepAliveFilter = new KeepAliveFilter(new KeepAliveMessageFactoryImpl(),
+                    IdleStatus.BOTH_IDLE, new KeepAliveRequestTimeoutHandlerImpl());
+            keepAliveFilter.setForwardEvent(true);
+            keepAliveFilter.setRequestInterval(minaSocketBean.getBeatInterval());
+            keepAliveFilter.setRequestTimeout(minaSocketBean.getBeatTimeout());
+            acceptor.getFilterChain().addLast("heartbeat", keepAliveFilter);
+        } else {
+            logger.info("关闭服务端保持连接!");
+            acceptor.setCloseOnDeactivation(true);
+            if (minaSocketBean.getSoLinger()) {
+                logger.info("TIME_WAIT SO_LINGER = 0生效!");
+                SocketSessionConfig sessionConfig = (SocketSessionConfig) acceptor.getSessionConfig();
+                sessionConfig.setSoLinger(0);
+            }
+        }
+
+        acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));
+        logger.info("[ {} ] 服务端启动成功! 参数为{}", minaSocketBean.getName(), minaSocketBean);
     }
 
     /**

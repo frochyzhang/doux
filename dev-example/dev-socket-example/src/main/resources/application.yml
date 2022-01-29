@@ -1,5 +1,7 @@
 com:
   allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.example.socket.service
     dev:
       socket:
         name: "test1"
@@ -9,3 +11,13 @@ com:
           - name: "test2"
             port: 13455
             handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        bolt-port: 12203
+spring:
+  application:
+    name: socket-example
+
+

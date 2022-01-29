@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.allinfinance.dev.boot.socket.autoconfigure.SocketConfigAutoConfiguration,  \
-  com.allinfinance.dev.socket.config.ShortSwitchServer

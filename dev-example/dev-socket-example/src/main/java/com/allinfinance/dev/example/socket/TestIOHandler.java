@@ -21,6 +21,7 @@ public class TestIOHandler extends AbstractMessageIOHandler {
         logger.info("收到请求消息:{}", reqMsg);
         String respMsg = "【服务端响应数据】" + reqMsg;
         logger.info("返回应答消息:{}|{}", respMsg, respMsg.getBytes(StandardCharsets.UTF_8).length);
+
         session.write(respMsg);
     }
 }

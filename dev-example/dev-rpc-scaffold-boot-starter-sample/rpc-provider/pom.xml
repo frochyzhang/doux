@@ -21,9 +21,13 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
         </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.allinfinance.dev</groupId>-->
+        <!--            <artifactId>dev-datasource-scaffold-boot-starter</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-datasource-scaffold-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 
