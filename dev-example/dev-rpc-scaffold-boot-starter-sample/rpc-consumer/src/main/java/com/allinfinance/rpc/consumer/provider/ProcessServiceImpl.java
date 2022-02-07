@@ -1,6 +1,6 @@
 package com.allinfinance.rpc.consumer.provider;
 
-import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
+import com.allinfinance.dev.rpc.scaffold.api.AbstractProcessService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,18 +8,7 @@ import org.springframework.stereotype.Service;
  * @date 2022/1/28 09:51
  */
 @Service
-public class ProcessServiceImpl implements ProcessService {
-
-    /**
-     * 注册到网关后的验证接口
-     *
-     * @return
-     */
-    @Override
-    public Boolean verify() {
-        return Boolean.TRUE;
-    }
-
+public class ProcessServiceImpl extends AbstractProcessService {
     /**
      * 应用系统业务处理服务
      *

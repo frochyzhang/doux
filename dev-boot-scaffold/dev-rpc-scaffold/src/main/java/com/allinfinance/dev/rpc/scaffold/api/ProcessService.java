@@ -13,6 +13,13 @@ public interface ProcessService {
     Boolean verify();
 
     /**
+     * 返回应用参数
+     *
+     * @return
+     */
+    Integer init();
+
+    /**
      * 应用系统业务处理服务
      *
      * @param process
