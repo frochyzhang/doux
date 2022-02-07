@@ -91,7 +91,6 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 // 监听完成
 
                 appProcessFactory.register(uniqueId, processService);
-                appProcessFactory.register(new AppProcessFactory.AppRegisterProperties(uniqueId, 8888));
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;
