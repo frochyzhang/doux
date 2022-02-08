@@ -2,7 +2,6 @@ package com.allinfinance.dev.example.socket.service;
 
 import com.allinfinance.dev.example.socket.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,7 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     private GateClientFactoryAware gateClientFactoryAware;
 
     @Override
-    public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
-        String appUniqueId = bootstrap.getAppUniqueId();
+    public Boolean register(String appUniqueId) {
         if (gateClientFactoryAware.registerConsumer(appUniqueId)) {
             logger.info("[ {} ]应用注册成功!", appUniqueId);
         }

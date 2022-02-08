@@ -69,7 +69,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                 Boolean registerResult = null;
                 while (null == registerResult) {
                     try {
-                        registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap());
+                        registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
                     } catch (SofaRouteException sofaRouteException) {
                         logger.warn("网关不存在，10s后重试+1");
                     }
