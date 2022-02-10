@@ -57,7 +57,7 @@ public class DruidDataSourceAutoConfigure {
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
-    //    @Primary
+    @Primary
     @ConditionalOnMissingBean
     @Bean(initMethod = "init")
     public DruidDataSourceWrapper druidDataSourceWrapper() throws Exception {

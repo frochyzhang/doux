@@ -1,17 +1,24 @@
 package com.allinfinance.dev.batch.scaffold.job;
 
+import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
+import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
 import com.allinfinance.dev.batch.scaffold.listener.SimpleJobListener;
+import com.allinfinance.dev.batch.scaffold.tasklet.SimpleTasklet;
+import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteLengthProcessor;
+import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteSeparatorProcessor;
+import com.allinfinance.dev.batch.scaffold.tasklet.processor.TblBatchExecutionProcessor;
+import com.allinfinance.dev.batch.scaffold.tasklet.writer.SimpleWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author qipeng
@@ -22,53 +29,71 @@ public class SimpleBatchJob extends AbstractBatchJob {
     @Autowired
     private SimpleJobListener jobListener;
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    private SimpleTasklet simpleTasklet;
+    @Autowired
+    private FlatFileItemReader definiteSeparatorReader;
+    @Autowired
+    private DefiniteSeparatorProcessor definiteSeparatorProcessor;
+    @Autowired
+    private FlatFileItemWriter definiteSeparatorWriter;
+    @Autowired
+    private FlatFileItemReader definiteLengthReader;
+    @Autowired
+    private DefiniteLengthProcessor definiteLengthProcessor;
+    @Autowired
+    private FlatFileItemWriter definiteLengthWriter;
+    @Autowired
+    private JdbcPagingItemReader batchJobExecutionPagingItemReader;
+    @Autowired
+    private TblBatchExecutionProcessor tblBatchExecutionProcessor;
+    @Autowired
+    private SimpleWriter simpleWriter;
 
     @Bean("testBatchJob")
-    public Job job(@Qualifier("step1") Step step1, @Qualifier("step2") Step step2) {
+    public Job job(@Qualifier("step1") Step step1, @Qualifier("step2") Step step2, @Qualifier("step3") Step step3, @Qualifier("step4") Step step4) {
         return jobBuilderFactory.get("myJob")
                 .listener(jobListener)
                 .start(step1)
                 .next(step2)
+                .next(step3)
+                .next(step4)
                 .build();
     }
 
     @Bean
-    protected Step step1(ItemReader<String> reader,
-                         ItemProcessor<String, String> processor,
-                         ItemWriter<String> writer) {
+    protected Step step1() {
         return stepBuilderFactory.get("step1")
-                .transactionManager(transactionManager)
-                .<String, String>chunk(10)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
+                .tasklet(simpleTasklet)
                 .build();
     }
 
     @Bean
-    protected Step step2(Tasklet tasklet) {
+    protected Step step2() {
         return stepBuilderFactory.get("step2")
-                .tasklet(tasklet)
+                .<TblBatchJobExecution,TblBatchJobExecution>chunk(10)
+                .reader(batchJobExecutionPagingItemReader)
+                .processor(tblBatchExecutionProcessor)
+                .writer(simpleWriter)
                 .build();
     }
 
     @Bean
-    protected ItemReader<String> reader() {
-        System.out.println("reading ...");
-        return () -> "read information";
+    protected Step step3() {
+        return stepBuilderFactory.get("step3")
+                .<DefiniteSeparatorDTO, DefiniteSeparatorDTO>chunk(10)
+                .reader(definiteSeparatorReader)
+                .processor(definiteSeparatorProcessor)
+                .writer(definiteSeparatorWriter)
+                .build();
     }
 
     @Bean
-    protected ItemProcessor<String, String> processor() {
-        System.out.println("processing ...");
-        return input -> input + ", then process it";
-    }
-
-    @Bean
-    protected ItemWriter<String> writer() {
-        ItemWriter stringItemWriter = System.out::println;
-        System.out.println("wrote");
-        return stringItemWriter;
+    protected Step step4() {
+        return stepBuilderFactory.get("step4")
+                .<DefiniteLengthDTO, DefiniteLengthDTO>chunk(10)
+                .reader(definiteLengthReader)
+                .processor(definiteLengthProcessor)
+                .writer(definiteLengthWriter)
+                .build();
     }
 }

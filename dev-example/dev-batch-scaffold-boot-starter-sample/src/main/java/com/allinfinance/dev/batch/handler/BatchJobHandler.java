@@ -52,7 +52,5 @@ public class BatchJobHandler implements IJobHandler {
         JobParameters jobParameters = new JobParameters(pramMap);
 
         batchJobService.startNewJob(testBatchJob, jobParameters);
-        Thread.sleep(3000);
-        batchJobService.stopJob(testBatchJob, jobParameters);
     }
 }

@@ -40,8 +40,8 @@
         <springframework.boot.version>2.3.9.RELEASE</springframework.boot.version>
         <nacos.boot.version>0.2.10</nacos.boot.version>
         <sofa.boot.version>3.7.0</sofa.boot.version>
-        <springframework.version>5.2.13.RELEASE</springframework.version>
-        <batch.version>4.2.5.RELEASE</batch.version>
+        <springframework.version>5.2.19.RELEASE</springframework.version>
+        <batch.version>4.2.8.RELEASE</batch.version>
         <mina.version>2.0.19</mina.version>
         <dubbo.version>2.7.12</dubbo.version>
         <curator.version>4.3.0</curator.version>

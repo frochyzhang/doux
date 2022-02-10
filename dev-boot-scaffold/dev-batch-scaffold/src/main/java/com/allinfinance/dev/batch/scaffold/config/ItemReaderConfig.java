@@ -1,0 +1,211 @@
+package com.allinfinance.dev.batch.scaffold.config;
+
+import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
+import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.PagingQueryProvider;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
+import org.springframework.batch.item.file.transform.Range;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.core.RowMapper;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * @author qipeng
+ * @description 配置了按固定分隔符读取、按固定长度读取
+ * 以及数据库读取三种reader，可根据配置自行新增、修改
+ * @date 2022/2/9 15:25
+ */
+@Configuration
+public class ItemReaderConfig {
+    /**
+     * 文件编码类型
+     */
+    private static String encoding = "UTF-8";
+    /**
+     * 分隔符
+     */
+    private static String separator = ";";
+    /**
+     * 文件顶部要跳过的行
+     */
+    private static int linesToSkip = 2;
+    @Autowired
+    private DataSource dataSource;
+
+    /**
+     * 注册一个固定分割符的ItemReader
+     *
+     * @return FlatFileItemReader
+     */
+
+    @Bean("definiteSeparatorReader")
+    @StepScope
+    public FlatFileItemReader<DefiniteSeparatorDTO> initReader1() {
+        FlatFileItemReader<DefiniteSeparatorDTO> itemReader = new FlatFileItemReader<>();
+        itemReader.setEncoding(encoding);
+        //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
+        itemReader.setStrict(true);
+        itemReader.setLinesToSkip(linesToSkip);
+        itemReader.setResource(new FileSystemResource("D:\\project\\java\\dev\\dev-example\\dev-batch-scaffold-boot-starter-sample\\src\\main\\resources\\definite-separator-source-file-2"));
+        itemReader.setLineMapper(configDefaultSeparatorLineMapper());
+        return itemReader;
+    }
+
+    /**
+     * 注册一个固定长度的ItemReader
+     *
+     * @return FlatFileItemReader
+     */
+    @Bean("definiteLengthReader")
+    @StepScope
+    public FlatFileItemReader<DefiniteLengthDTO> initReader2() {
+        FlatFileItemReader<DefiniteLengthDTO> itemReader = new FlatFileItemReader<>();
+        itemReader.setEncoding(encoding);
+        //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
+        itemReader.setStrict(true);
+        itemReader.setLinesToSkip(linesToSkip);
+        itemReader.setResource(new FileSystemResource("D:\\project\\java\\dev\\dev-example\\dev-batch-scaffold-boot-starter-sample\\src\\main\\resources\\definite-length-source-file"));
+        Map<String, Range> tokenRangeMap = new LinkedHashMap<>();
+        tokenRangeMap.put("ISIN", new Range(1, 12));
+        tokenRangeMap.put("number", new Range(13, 15));
+        tokenRangeMap.put("price", new Range(16, 20));
+        tokenRangeMap.put("customer", new Range(21, 29));
+
+        itemReader.setLineMapper(configDefaultLengthLineMapper(tokenRangeMap));
+        return itemReader;
+    }
+
+    /**
+     * 注册一个分页的数据库ItemReader
+     *
+     * @param queryProvider
+     * @return
+     */
+    @Bean("batchJobExecutionPagingItemReader")
+    @StepScope
+    public JdbcPagingItemReader<TblBatchJobExecution> itemReader3(PagingQueryProvider queryProvider) {
+        Map<String, Object> parameterValues = new HashMap<>();
+        parameterValues.put("JOB_EXECUTION_ID", 3);
+
+        return new JdbcPagingItemReaderBuilder<TblBatchJobExecution>()
+                .name("batchJobExecutionPagingItemReader")
+                .dataSource(dataSource)
+                .queryProvider(queryProvider)
+                .parameterValues(parameterValues)
+                .rowMapper(new TblBatchJobExecutionRowMapper())
+                .pageSize(1000)
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public SqlPagingQueryProviderFactoryBean queryProvider() {
+        SqlPagingQueryProviderFactoryBean provider = new SqlPagingQueryProviderFactoryBean();
+        provider.setSelectClause("SELECT JOB_EXECUTION_ID, VERSION, JOB_INSTANCE_ID, CREATE_TIME, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, LAST_UPDATED, JOB_CONFIGURATION_LOCATION");
+        provider.setFromClause("from batch_job_execution");
+        provider.setWhereClause("where JOB_EXECUTION_ID>:JOB_EXECUTION_ID");
+        provider.setSortKey("JOB_EXECUTION_ID");
+
+        return provider;
+    }
+
+    protected static class TblBatchJobExecutionRowMapper implements RowMapper<TblBatchJobExecution> {
+
+        @Override
+        public TblBatchJobExecution mapRow(ResultSet rs, int rowNum) throws SQLException {
+            TblBatchJobExecution tblBatchJobExecution = new TblBatchJobExecution();
+            tblBatchJobExecution.setJobExecutionId(rs.getLong("jobExecutionId"));
+            tblBatchJobExecution.setVersion(rs.getLong("version"));
+            tblBatchJobExecution.setJobInstanceId(rs.getLong("jobInstanceId"));
+            tblBatchJobExecution.setCreateTime(rs.getObject("createTime", LocalDateTime.class));
+            tblBatchJobExecution.setStartTime(rs.getObject("startTime", LocalDateTime.class));
+            tblBatchJobExecution.setEndTime(rs.getObject("endTime", LocalDateTime.class));
+            tblBatchJobExecution.setStatus(rs.getString("status"));
+            tblBatchJobExecution.setExitCode(rs.getString("exitCode"));
+            tblBatchJobExecution.setExitMessage(rs.getString("exitMessage"));
+            tblBatchJobExecution.setLastUpdated(rs.getObject("lastUpdated", LocalDateTime.class));
+            tblBatchJobExecution.setJobConfigurationLocation(rs.getString("jobConfigurationLocation"));
+
+            return tblBatchJobExecution;
+        }
+    }
+
+    /**
+     * 创建固定分隔符的DTO mapper
+     *
+     * @return FieldSetMapper
+     */
+    @Bean("definiteSeparatorDTOMapper")
+    @StepScope
+    public FieldSetMapper<DefiniteSeparatorDTO> separatorFieldSetMapper(String beanName) {
+        BeanWrapperFieldSetMapper<DefiniteSeparatorDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setPrototypeBeanName(beanName);
+        return fieldSetMapper;
+    }
+
+    /**
+     * 创建固定长度的DTO mapper
+     *
+     * @return FieldSetMapper
+     */
+    @Bean("definiteLengthDTOMapper")
+    @StepScope
+    public FieldSetMapper<DefiniteLengthDTO> lengthFieldSetMapper(String beanName) {
+        BeanWrapperFieldSetMapper<DefiniteLengthDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setPrototypeBeanName(beanName);
+        return fieldSetMapper;
+    }
+
+    /**
+     * 配置按固定分割符映射的lineMapper
+     *
+     * @return LineMapper
+     */
+    private DefaultLineMapper<DefiniteSeparatorDTO> configDefaultSeparatorLineMapper() {
+        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
+        delimitedLineTokenizer.setDelimiter(separator);
+        //设置字段别名，增强可读性
+        delimitedLineTokenizer.setNames("company", "year", "channel", "rank", "name", "count1", "count2");
+        DefaultLineMapper<DefiniteSeparatorDTO> defaultLineMapper = new DefaultLineMapper<>();
+        defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+        defaultLineMapper.setFieldSetMapper(separatorFieldSetMapper("definiteSeparatorDTO"));
+        return defaultLineMapper;
+    }
+
+    /**
+     * 配置按固定长度映射的lineMapper
+     *
+     * @return LineMapper
+     */
+    private DefaultLineMapper<DefiniteLengthDTO> configDefaultLengthLineMapper(Map<String, Range> tokenRangeMap) {
+        FixedLengthTokenizer fixedLengthTokenizer = new FixedLengthTokenizer();
+        //设置字段别名，增强可读性
+        fixedLengthTokenizer.setNames(tokenRangeMap.keySet().toArray(new String[]{}));
+        fixedLengthTokenizer.setStrict(true);
+        fixedLengthTokenizer.setColumns(tokenRangeMap.values().toArray(new Range[]{}));
+        DefaultLineMapper<DefiniteLengthDTO> defaultLineMapper = new DefaultLineMapper<>();
+        defaultLineMapper.setLineTokenizer(fixedLengthTokenizer);
+        defaultLineMapper.setFieldSetMapper(lengthFieldSetMapper("definiteLengthDTO"));
+        return defaultLineMapper;
+    }
+}
