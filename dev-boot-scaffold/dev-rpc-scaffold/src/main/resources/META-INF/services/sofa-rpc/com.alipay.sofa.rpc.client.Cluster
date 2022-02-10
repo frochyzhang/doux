@@ -1,1 +1,1 @@
-foreach=com.allinfinance.dev.rpc.scaffold.lb.ForeachCluster
+foreach=com.allinfinance.dev.rpc.scaffold.ext.ForeachCluster

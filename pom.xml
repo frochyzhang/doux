@@ -652,14 +652,14 @@
     </build>
     <distributionManagement>
         <repository>
-            <id>LocalMaven</id>
-            <name>LocalMaven</name>
-            <url>http://10.250.20.182:8081/repository/maven-releases/</url>
+            <id>localmvn</id>
+            <name>localmvn</name>
+            <url>http://10.100.79.102:8081/repository/maven-releases//</url>
         </repository>
         <snapshotRepository>
-            <id>LocalMaven</id>
-            <name>LocalMaven</name>
-            <url>http://10.250.20.182:8081/repository/maven-snapshots/</url>
+            <id>localmvn</id>
+            <name>localmvn</name>
+            <url>http://10.100.79.102:8081/repository/maven-snapshots//</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

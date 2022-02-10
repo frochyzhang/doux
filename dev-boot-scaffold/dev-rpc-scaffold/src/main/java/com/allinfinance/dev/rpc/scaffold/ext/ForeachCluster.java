@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.lb;
+package com.allinfinance.dev.rpc.scaffold.ext;
 
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.client.AbstractCluster;
