@@ -12,6 +12,7 @@ public abstract class AbstractProcessService implements ProcessService {
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
+
     /**
      * 注册到网关后的验证接口
      *
@@ -19,6 +20,7 @@ public abstract class AbstractProcessService implements ProcessService {
      */
     @Override
     public Boolean verify() {
+        System.out.println("called");
         return Boolean.TRUE;
     }
 
@@ -28,8 +30,7 @@ public abstract class AbstractProcessService implements ProcessService {
      * @return
      */
     @Override
-    public Integer init() {
-        Integer listenPort = rpcConfigurationProperties.getBootstrap().getListenPort();
-        return listenPort;
+    public RpcConfigurationProperties.Bootstrap init() {
+        return rpcConfigurationProperties.getBootstrap();
     }
 }

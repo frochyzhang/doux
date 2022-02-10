@@ -35,7 +35,6 @@ import java.util.concurrent.*;
  * @date 2020-11-28 01:24
  */
 @Configuration
-@ImportResource(locations = {"classpath:socket-default-context.xml"})
 public class ShortSwitchServer implements DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(ShortSwitchServer.class);
@@ -77,7 +76,7 @@ public class ShortSwitchServer implements DisposableBean {
         });
     }
 
-    private void initMinaServer(MinaSocketBean minaSocketBean) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException {
+    public void initMinaServer(MinaSocketBean minaSocketBean) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException {
         MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
                 .getConstructor(Integer.class, String.class)
                 .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
@@ -123,5 +122,12 @@ public class ShortSwitchServer implements DisposableBean {
         threadPoolExecutor.shutdown();
         logger.info("socket server thread pool is shutting down!");
     }
+
+    public void closeMinaServer(MinaSocketBean minaSocketBean){
+        IoAcceptor acceptor = new NioSocketAcceptor();
+        acceptor.unbind(new InetSocketAddress(minaSocketBean.getPort()));
+    }
+
+
 
 }

@@ -46,7 +46,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
 
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
             ServerConfig serverConfig = new ServerConfig()
-                    .setPort(12200)
+                    .setPort(12500)
                     .setProtocol(RpcConfigurationProperties.Bootstrap.TRANSPORT_PROTOCOL);
             ProviderConfig<ProcessService> providerConfig = new ProviderConfig<ProcessService>()
                     .setInterfaceId(ProcessService.class.getName())
@@ -62,6 +62,8 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                     .setInterfaceId(AppRegistrarService.class.getName())
                     .setTimeout(3000)
                     .setConnectTimeout(3000)
+//                    .setCluster("failover")
+                    .setCluster("foreach")
                     .setRetries(3)
                     .setRegistry(registryConfig);
             AppRegistrarService appRegistrarService = consumerConfig.refer();
@@ -69,7 +71,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                 Boolean registerResult = null;
                 while (null == registerResult) {
                     try {
-                        registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap());
+                        registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
                     } catch (SofaRouteException sofaRouteException) {
                         logger.warn("网关不存在，10s后重试+1");
                     }

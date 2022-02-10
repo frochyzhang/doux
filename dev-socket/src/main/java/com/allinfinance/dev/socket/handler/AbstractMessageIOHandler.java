@@ -18,6 +18,10 @@ public class AbstractMessageIOHandler implements IoHandler {
 
     private String appName;
 
+    public String getAppName() {
+        return appName;
+    }
+
     public AbstractMessageIOHandler(String appName) {
         this.appName = appName;
     }

@@ -16,6 +16,16 @@ com:
         enable: true
         gate-registry: 10.100.79.102:8848/iasp-zy
         app-unique-id: ${spring.application.name}
-        listen-port: 12345
+        app-list:
+          - type: TCP
+            listen-port: 8852
+            tcp-config:
+              decode-msg-length: 4
+              encode-msg-length: 4
+          - type: TCP
+            listen-port: 8863
+            tcp-config:
+              decode-msg-length: 4
+              encode-msg-length: 4
 server:
-  port: 8083
+  port: 8085

@@ -7,7 +7,11 @@ import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
+import com.allinfinance.dev.core.bean.MinaSocketBean;
+import com.allinfinance.dev.example.socket.util.AppPropertiesMapper;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -30,6 +35,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     private AppProcessFactory appProcessFactory;
 
     private ReferenceClient referenceClient;
+
 
     @Override
     public void setClientFactory(ClientFactory clientFactory) {
@@ -68,27 +74,54 @@ public class GateClientFactoryAware implements ClientFactoryAware {
 
     }
 
+    /*
+    1、重复注册的逻辑校验：需增加参数校验，参数不一致时需做参数刷新
+    2、移除订阅并下掉端口监听
+    3、网关异步同步应用注册信息
+    4、去注册中心查询服务，
+     */
     public Boolean registerConsumer(String uniqueId) {
-        if (appProcessFactory.checkIfExist(uniqueId)) {
-            logger.info("[ {} ]无需重复注册", uniqueId);
-            return Boolean.TRUE;
-        }
 
         ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
-        BindingParam refBindingParam = new BoltBindingParam();
-        referenceParam.setBindingParam(refBindingParam);
+        BoltBindingParam boltBindingParam = new BoltBindingParam();
+        boltBindingParam.setLoadBalancer("roundRobin");
+        referenceParam.setBindingParam(boltBindingParam);
 
         referenceParam.setInterfaceType(ProcessService.class);
         referenceParam.setUniqueId(uniqueId);
+
         ProcessService processService = referenceClient.reference(referenceParam);
         try {
             if (processService.verify()) {
                 logger.info("[ {} ]业务处理服务订阅成功!", uniqueId);
-                Integer init = processService.init();
-                logger.error("listenPort:{}", init);
+                RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
+                logger.info("应用注册参数:{}", bootstrap);
+                if (appProcessFactory.checkIfExist(uniqueId, bootstrap)) {
+                    logger.info("[ {} ]无需重复注册", uniqueId);
+                    return Boolean.TRUE;
+                }
                 // 监听端口
-
-                // 监听完成
+                bootstrap.getAppList().forEach(appConfigList -> {
+                    RpcConfigurationProperties.Bootstrap.AppConfigList.Type type = appConfigList.getType();
+                    switch (type) {
+                        case TCP:
+                            MinaSocketBean minaSocketBean = AppPropertiesMapper.INSTANCE.convertToMinaSocketBean(appConfigList.getTcpConfig());
+                            minaSocketBean.setName(uniqueId);
+                            minaSocketBean.setPort(appConfigList.getListenPort());
+                            minaSocketBean.setKeepAlive(false);
+                            minaSocketBean.setSoLinger(false);
+                            // 监听完成
+                            try {
+                                new ShortSwitchServer().initMinaServer(minaSocketBean);
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
+                                e.printStackTrace();
+                            }
+                        case HTTP:
+                            break;
+                        default:
+                            throw new IllegalArgumentException("参数不合法");
+                    }
+                });
 
                 appProcessFactory.register(uniqueId, processService);
                 return Boolean.TRUE;

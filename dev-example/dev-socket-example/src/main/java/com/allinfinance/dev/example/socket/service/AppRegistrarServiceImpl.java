@@ -20,8 +20,7 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     private GateClientFactoryAware gateClientFactoryAware;
 
     @Override
-    public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
-        String appUniqueId = bootstrap.getAppUniqueId();
+    public Boolean register(String appUniqueId) {
         if (gateClientFactoryAware.registerConsumer(appUniqueId)) {
             logger.info("[ {} ]应用注册成功!", appUniqueId);
         }

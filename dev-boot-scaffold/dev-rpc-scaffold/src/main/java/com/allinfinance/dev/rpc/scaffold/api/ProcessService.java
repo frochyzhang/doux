@@ -1,5 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/1/28 09:35
@@ -17,7 +19,7 @@ public interface ProcessService {
      *
      * @return
      */
-    Integer init();
+    RpcConfigurationProperties.Bootstrap init();
 
     /**
      * 应用系统业务处理服务
