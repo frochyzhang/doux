@@ -9,15 +9,14 @@ import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -36,6 +35,7 @@ import java.util.Map;
  * @date 2022/2/9 15:25
  */
 @Configuration
+@DependsOn({"applicationContextUtil", "jobDtoMapperBeanFactory"})
 public class ItemReaderConfig {
     /**
      * 文件编码类型
@@ -51,6 +51,8 @@ public class ItemReaderConfig {
     private static int linesToSkip = 2;
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private JobDtoMapperBeanFactory jobDtoMapperBeanFactory;
 
     /**
      * 注册一个固定分割符的ItemReader
@@ -113,7 +115,7 @@ public class ItemReaderConfig {
                 .queryProvider(queryProvider)
                 .parameterValues(parameterValues)
                 .rowMapper(new TblBatchJobExecutionRowMapper())
-                .pageSize(1000)
+                .pageSize(100)
                 .build();
     }
 
@@ -121,6 +123,8 @@ public class ItemReaderConfig {
     @StepScope
     public SqlPagingQueryProviderFactoryBean queryProvider() {
         SqlPagingQueryProviderFactoryBean provider = new SqlPagingQueryProviderFactoryBean();
+
+        provider.setDataSource(dataSource);
         provider.setSelectClause("SELECT JOB_EXECUTION_ID, VERSION, JOB_INSTANCE_ID, CREATE_TIME, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, LAST_UPDATED, JOB_CONFIGURATION_LOCATION");
         provider.setFromClause("from batch_job_execution");
         provider.setWhereClause("where JOB_EXECUTION_ID>:JOB_EXECUTION_ID");
@@ -134,46 +138,20 @@ public class ItemReaderConfig {
         @Override
         public TblBatchJobExecution mapRow(ResultSet rs, int rowNum) throws SQLException {
             TblBatchJobExecution tblBatchJobExecution = new TblBatchJobExecution();
-            tblBatchJobExecution.setJobExecutionId(rs.getLong("jobExecutionId"));
-            tblBatchJobExecution.setVersion(rs.getLong("version"));
-            tblBatchJobExecution.setJobInstanceId(rs.getLong("jobInstanceId"));
-            tblBatchJobExecution.setCreateTime(rs.getObject("createTime", LocalDateTime.class));
-            tblBatchJobExecution.setStartTime(rs.getObject("startTime", LocalDateTime.class));
-            tblBatchJobExecution.setEndTime(rs.getObject("endTime", LocalDateTime.class));
-            tblBatchJobExecution.setStatus(rs.getString("status"));
-            tblBatchJobExecution.setExitCode(rs.getString("exitCode"));
-            tblBatchJobExecution.setExitMessage(rs.getString("exitMessage"));
-            tblBatchJobExecution.setLastUpdated(rs.getObject("lastUpdated", LocalDateTime.class));
-            tblBatchJobExecution.setJobConfigurationLocation(rs.getString("jobConfigurationLocation"));
+            tblBatchJobExecution.setJobExecutionId(rs.getLong(1));
+            tblBatchJobExecution.setVersion(rs.getLong(2));
+            tblBatchJobExecution.setJobInstanceId(rs.getLong(3));
+            tblBatchJobExecution.setCreateTime(rs.getObject(4, LocalDateTime.class));
+            tblBatchJobExecution.setStartTime(rs.getObject(5, LocalDateTime.class));
+            tblBatchJobExecution.setEndTime(rs.getObject(6, LocalDateTime.class));
+            tblBatchJobExecution.setStatus(rs.getString(7));
+            tblBatchJobExecution.setExitCode(rs.getString(8));
+            tblBatchJobExecution.setExitMessage(rs.getString(9));
+            tblBatchJobExecution.setLastUpdated(rs.getObject(10, LocalDateTime.class));
+            tblBatchJobExecution.setJobConfigurationLocation(rs.getString(11));
 
             return tblBatchJobExecution;
         }
-    }
-
-    /**
-     * 创建固定分隔符的DTO mapper
-     *
-     * @return FieldSetMapper
-     */
-    @Bean("definiteSeparatorDTOMapper")
-    @StepScope
-    public FieldSetMapper<DefiniteSeparatorDTO> separatorFieldSetMapper(String beanName) {
-        BeanWrapperFieldSetMapper<DefiniteSeparatorDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setPrototypeBeanName(beanName);
-        return fieldSetMapper;
-    }
-
-    /**
-     * 创建固定长度的DTO mapper
-     *
-     * @return FieldSetMapper
-     */
-    @Bean("definiteLengthDTOMapper")
-    @StepScope
-    public FieldSetMapper<DefiniteLengthDTO> lengthFieldSetMapper(String beanName) {
-        BeanWrapperFieldSetMapper<DefiniteLengthDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setPrototypeBeanName(beanName);
-        return fieldSetMapper;
     }
 
     /**
@@ -188,7 +166,7 @@ public class ItemReaderConfig {
         delimitedLineTokenizer.setNames("company", "year", "channel", "rank", "name", "count1", "count2");
         DefaultLineMapper<DefiniteSeparatorDTO> defaultLineMapper = new DefaultLineMapper<>();
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
-        defaultLineMapper.setFieldSetMapper(separatorFieldSetMapper("definiteSeparatorDTO"));
+        defaultLineMapper.setFieldSetMapper(jobDtoMapperBeanFactory.getFieldSetMapper("definiteSeparatorDTOMapper", DefiniteSeparatorDTO.class));
         return defaultLineMapper;
     }
 
@@ -205,7 +183,7 @@ public class ItemReaderConfig {
         fixedLengthTokenizer.setColumns(tokenRangeMap.values().toArray(new Range[]{}));
         DefaultLineMapper<DefiniteLengthDTO> defaultLineMapper = new DefaultLineMapper<>();
         defaultLineMapper.setLineTokenizer(fixedLengthTokenizer);
-        defaultLineMapper.setFieldSetMapper(lengthFieldSetMapper("definiteLengthDTO"));
+        defaultLineMapper.setFieldSetMapper(jobDtoMapperBeanFactory.getFieldSetMapper("definiteLengthDTOMapper", DefiniteLengthDTO.class));
         return defaultLineMapper;
     }
 }

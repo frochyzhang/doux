@@ -25,7 +25,7 @@ public class ItemWriterConfig {
     public FlatFileItemWriter<DefiniteSeparatorDTO> itemWriter1() {
         FileSystemResource outputResource = new FileSystemResource("D:\\project\\java\\dev\\dev-example\\dev-batch-scaffold-boot-starter-sample\\src\\main\\resources\\definite-separator-target-file");
         return new FlatFileItemWriterBuilder<DefiniteSeparatorDTO>()
-                .name("customerCreditWriter")
+                .name("definiteSeparatorWriter")
                 .resource(outputResource)
                 .delimited()
                 .delimiter("|")
