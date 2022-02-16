@@ -28,6 +28,7 @@
         <module>dev-xxl-job</module>
         <module>dev-boot-starters</module>
         <module>dev-boot-scaffold</module>
+        <module>dev-ccp</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 

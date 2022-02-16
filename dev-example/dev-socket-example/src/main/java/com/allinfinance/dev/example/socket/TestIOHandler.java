@@ -20,7 +20,7 @@ public class TestIOHandler extends AbstractMessageIOHandler {
     public void messageReceived(IoSession session, Object message) throws Exception {
         String reqMsg = (String) message;
         logger.info("收到请求消息:{}", reqMsg);
-        String respMsg = AppProcessFactory.processed(this.getAppName(), reqMsg);
+        String respMsg = "AppProcessFactory.processed(this.getAppName(), reqMsg)";
         logger.info("返回应答消息:{}|{}", respMsg, respMsg.getBytes(StandardCharsets.UTF_8).length);
 
         session.write(respMsg);

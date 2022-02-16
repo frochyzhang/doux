@@ -23,18 +23,18 @@ import java.util.concurrent.TimeUnit;
  * @date 2017/1/5
  */
 @Service("socketService")
-public class SocketServiceImpl implements ISocketService {
+public class SocketServiceImpl implements ISocketClientService {
     private Logger logger = LoggerFactory.getLogger(SocketServiceImpl.class);
 
     @Override
-    public String clientRequest(String remoteIp, int remotePort, String format, int timeOut, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
+    public String clientRequest(String remoteIp, int remotePort, String clientAppName, int timeOutSeconds, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
         String resp = null;
         IoSession session = null;
         NioSocketConnector clientConnector = null;
         try {
             clientConnector = new NioSocketConnector();
-            clientConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeOut);
-            if ("8583".equals(format)) {
+            clientConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeOutSeconds);
+            if ("8583".equals(clientAppName)) {
                 clientConnector.getFilterChain().addLast(
                         "8583MsgCodec",
                         new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
@@ -45,7 +45,7 @@ public class SocketServiceImpl implements ISocketService {
             }
             clientConnector.setHandler(new ClientIoHandler(checkMac));
             clientConnector.getSessionConfig().setUseReadOperation(true);
-            clientConnector.setConnectTimeoutMillis(timeOut * 1000L);
+            clientConnector.setConnectTimeoutMillis(timeOutSeconds * 1000L);
             ConnectFuture future = clientConnector
                     .connect(new InetSocketAddress(remoteIp, remotePort));
             future.awaitUninterruptibly();
@@ -57,7 +57,7 @@ public class SocketServiceImpl implements ISocketService {
             session = future.getSession();
             session.write(message);
             ReadFuture readFuture = session.read();
-            if (readFuture.awaitUninterruptibly(timeOut, TimeUnit.SECONDS)) {
+            if (readFuture.awaitUninterruptibly(timeOutSeconds, TimeUnit.SECONDS)) {
                 Object RespMess = readFuture.getMessage();
                 if (RespMess != null) {
                     resp = (String) RespMess;

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: dev-ccp
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        bolt-port: 12202
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.ccp.service

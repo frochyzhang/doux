@@ -12,8 +12,10 @@ com:
     rpc:
       reference-list:
         - com.allinfinance.rpc.scaffold.api.TestApi
+        - com.allinfinance.dev.core.util.socket.client.ISocketClientService
+        - com.allinfinance.dev.core.util.http.client.IHttpClientService
       bootstrap:
-        enable: true
+        enable: false
         gate-registry: 10.100.79.102:8848/iasp-zy
         app-unique-id: ${spring.application.name}
         app-list:
