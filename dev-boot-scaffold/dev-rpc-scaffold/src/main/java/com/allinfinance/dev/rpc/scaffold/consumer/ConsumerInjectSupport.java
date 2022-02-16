@@ -6,8 +6,8 @@ import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
+import com.allinfinance.dev.core.util.common.BeanUtils;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
-import com.allinfinance.dev.rpc.scaffold.util.BeanNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
                 e.printStackTrace();
             }
             Object proxy = referenceClient.reference(referenceParam);
-            String beanName = BeanNameUtils.getBeanName(className);
+            String beanName = BeanUtils.getBeanNameWithImpl(className);
             if (logger.isDebugEnabled()) {
                 logger.debug("注入Bean: beanName=[{}], beanType=[{}]", beanName, className);
             }

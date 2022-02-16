@@ -1,5 +1,6 @@
 package com.allinfinance.dev.core.util.common;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -7,6 +8,8 @@ import org.springframework.util.Assert;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.allinfinance.dev.core.util.common.StrUtils.toLowerCaseFirstOne;
 
 /**
  * BeanUtil
@@ -40,6 +43,31 @@ public class BeanUtils {
         } catch (IllegalAccessException ex) {
             logger.error("属性复制异常!");
             ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 将全类名转换成以Impl结尾的bean名称
+     *
+     * @param className
+     * @return beaName
+     */
+    public static String getBeanNameWithImpl(String className) {
+        return StringUtils.join(getDefaultBeanName(className), "Impl");
+    }
+
+    /**
+     * 将全类名转换成以类名首字母小写的bean名称
+     *
+     * @param className
+     * @return beanName
+     */
+    public static String getDefaultBeanName(String className) {
+        if (StringUtils.isNotBlank(className)) {
+            String[] split = StringUtils.split(className, ".");
+            return toLowerCaseFirstOne(split[split.length - 1]);
+        } else {
+            return "";
         }
     }
 

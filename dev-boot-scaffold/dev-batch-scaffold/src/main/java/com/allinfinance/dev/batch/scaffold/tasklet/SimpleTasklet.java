@@ -1,9 +1,16 @@
 package com.allinfinance.dev.batch.scaffold.tasklet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,23 +19,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SimpleTasklet implements Tasklet {
-    /**
-     * Given the current context in the form of a step contribution, do whatever
-     * is necessary to process this unit inside a transaction. Implementations
-     * return {@link RepeatStatus#FINISHED} if finished. If not they return
-     * {@link RepeatStatus#CONTINUABLE}. On failure throws an exception.
-     *
-     * @param contribution mutable state to be passed back to update the current
-     *                     step execution
-     * @param chunkContext attributes shared between invocations but not between
-     *                     restarts
-     * @return an {@link RepeatStatus} indicating whether processing is
-     * continuable. Returning {@code null} is interpreted as {@link RepeatStatus#FINISHED}
-     * @throws Exception thrown if error occurs during execution.
-     */
+    private static final Logger logger = LoggerFactory.getLogger(SimpleTasklet.class);
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        System.out.println("tasklet done successfully!");
+        logger.info("simpleTasklet done successfully!");
         return RepeatStatus.FINISHED;
     }
 }
