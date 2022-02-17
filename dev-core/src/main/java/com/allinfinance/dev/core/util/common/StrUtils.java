@@ -387,36 +387,6 @@ public class StrUtils {
         return hideSense1(hideSense(data));
     }
 
-
-    /**
-     * 首字母转小写
-     *
-     * @param s
-     * @return String
-     */
-    public static String toLowerCaseFirstOne(String s) {
-        if (Character.isLowerCase(s.charAt(0))) {
-            return s;
-        } else {
-            return (new StringBuffer()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
-        }
-    }
-
-
-    /**
-     * 首字母转大写
-     *
-     * @param s
-     * @return String
-     */
-    public static String toUpperCaseFirstOne(String s) {
-        if (Character.isUpperCase(s.charAt(0))) {
-            return s;
-        } else {
-            return (new StringBuffer()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
-        }
-    }
-
     private static String hideSense(String data) {
         return data.replaceAll("<IDNo>\\w{14}", "<IDNo>**************").replaceAll("<RcverNm>\\w*</RcverNm>", "<RcverNm>******</RcverNm>").replaceAll("<MobNo>\\d*</MobNo>", "<MobNo>***********</MobNo>");
     }

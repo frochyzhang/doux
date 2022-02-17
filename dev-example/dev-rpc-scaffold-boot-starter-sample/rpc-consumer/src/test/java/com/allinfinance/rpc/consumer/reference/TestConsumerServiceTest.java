@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.stream.IntStream;
 
@@ -69,7 +70,12 @@ class TestConsumerServiceTest {
                 .parallel()
                 .forEach(i->{
 //                    String result = iHttpClientService.httpRequest(HttpMethod.GET, new HashMap<>(), null, "http://localhost:3000", 3, 30);
-                    String result = iHttpClientService.httpRequest(HttpMethod.POST, new HashMap<>(), "{\"name\":\"zy\",\"age\":27,\"dept\":\"dev3\"}", "http://localhost:3000", 3, 30);
+                    String result = null;
+                    try {
+                        result = iHttpClientService.httpRequest(HttpMethod.POST, new HashMap<>(), "{\"name\":\"zy\",\"age\":27,\"dept\":\"dev3\"}", "http://localhost:3000", 3, 30);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(result);
                     Assertions.assertNotNull(result);
                 });

@@ -7,6 +7,7 @@ import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,8 @@ public class JobDtoMapperBeanFactory implements BeanFactoryAware {
      * @return
      */
     public static RowMapper getJdbcRowMapper(String beanName, Class type) {
+        BeanPropertyRowMapper beanPropertyRowMapper = new BeanPropertyRowMapper();
+
         return null;
     }
 
