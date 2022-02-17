@@ -1,9 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
-import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.rpc.config.ProviderConfig;
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.config.ServerConfig;
+import com.alipay.sofa.rpc.config.*;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
@@ -45,6 +42,8 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                     .setAddress(rpcConfigurationProperties.getBootstrap().getGateRegistry());
 
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
+            ApplicationConfig applicationConfig = new ApplicationConfig();
+            applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
             ServerConfig serverConfig = new ServerConfig()
                     .setPort(12500)
                     .setProtocol(RpcConfigurationProperties.Bootstrap.TRANSPORT_PROTOCOL);
@@ -53,6 +52,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                     .setRef(processService)
                     .setUniqueId(rpcConfigurationProperties.getBootstrap().getAppUniqueId())
                     .setServer(serverConfig)
+                    .setApplication(applicationConfig)
                     .setRegistry(registryConfig);
             providerConfig.export();
             logger.info("{}业务处理服务注册成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
