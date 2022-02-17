@@ -9,8 +9,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.allinfinance.dev.core.util.common.StrUtils.toLowerCaseFirstOne;
-
 /**
  * BeanUtil
  * 对象属性工具类
@@ -65,7 +63,7 @@ public class BeanUtils {
     public static String getDefaultBeanName(String className) {
         if (StringUtils.isNotBlank(className)) {
             String[] split = StringUtils.split(className, ".");
-            return toLowerCaseFirstOne(split[split.length - 1]);
+            return StringUtils.uncapitalize(split[split.length - 1]);
         } else {
             return "";
         }

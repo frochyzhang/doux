@@ -13,10 +13,11 @@ public class ProcessServiceImpl extends AbstractProcessService {
      * 应用系统业务处理服务
      *
      * @param process
+     * @param url
      * @return
      */
     @Override
-    public String process(String process) {
+    public String process(String process, String... url) {
         System.out.println("请求他进来了");
         return "test2";
     }

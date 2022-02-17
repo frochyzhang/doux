@@ -25,7 +25,8 @@ public interface ProcessService {
      * 应用系统业务处理服务
      *
      * @param process
+     * @param url
      * @return
      */
-    String process(String process);
+    String process(String process,String... url);
 }
