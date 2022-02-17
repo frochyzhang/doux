@@ -1,26 +1,27 @@
-package com.allinfinance.dev.example.socket.factory;
+package com.allinfinance.dev.gateway.socket.factory;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
-import com.alibaba.nacos.client.naming.NacosNamingService;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
-import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.core.bean.MinaSocketBean;
-import com.allinfinance.dev.example.socket.util.AppPropertiesMapper;
+import com.allinfinance.dev.gateway.socket.util.AppPropertiesMapper;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import com.google.gson.Gson;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,45 +51,52 @@ public class GateClientFactoryAware implements ClientFactoryAware {
 
         this.referenceClient = clientFactory.getClient(ReferenceClient.class);
 
-//        Properties properties = new Properties();
-//        properties.put(PropertyKeyConst.SERVER_ADDR, "10.100.79.102:8848");
-//        properties.put(PropertyKeyConst.NAMESPACE, "iasp-zy");
-//        try {
-//            NamingService namingService = NacosFactory.createNamingService(properties);
-//            List<ServiceInfo> subscribeServices = namingService.getSubscribeServices();
-//            System.out.println("" + subscribeServices);
+        Properties properties = new Properties();
+        properties.put(PropertyKeyConst.SERVER_ADDR, "10.100.79.102:8848");
+        properties.put(PropertyKeyConst.NAMESPACE, "iasp-zy");
+        try {
+            NamingService namingService = NacosFactory.createNamingService(properties);
+            List<ServiceInfo> subscribeServices = namingService.getSubscribeServices();
+            System.out.println("" + subscribeServices);
+            subscribeServices.stream()
+                    .filter(service -> service.getName().contains(ProcessService.class.getName()))
+                    .forEach(service -> {
+                        String uniqueId = service.getName().split(":")[1];
+                        if (registerConsumer(uniqueId)) {
+                            logger.info("[ {} ]应用注册成功!", uniqueId);
+                        }
+                    });
+        } catch (NacosException e) {
+            logger.error("【{}】应用注册失败！", clientFactory, e);
+        }
+
+//        String url = "http://10.100.79.102:8848/nacos/v1/ns/service/list?pageNo=1&pageSize=10&serviceNameParam=&groupNameParam=&namespaceId=iasp-zy";
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        final Request request = new Request.Builder()
+//                .url(url)
+//                .get()//默认就是GET请求，可以不写
+//                .build();
+//        Call call = okHttpClient.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                logger.error("onFailure: {}", call, e);
+//            }
 //
-//        } catch (NacosException e) {
-//            e.printStackTrace();
-//        }
-
-        String url = "http://10.100.79.102:8848/nacos/v1/ns/service/list?pageNo=1&pageSize=10&serviceNameParam=&groupNameParam=&namespaceId=iasp-zy";
-        OkHttpClient okHttpClient = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .get()//默认就是GET请求，可以不写
-                .build();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                logger.error("onFailure: {}", call, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String resp = response.body().string();
-                ServiceListDTO serviceListDTO = new Gson().fromJson(resp, ServiceListDTO.class);
-                serviceListDTO.getDoms().stream()
-                        .filter(service -> service.contains(ProcessService.class.getName()))
-                        .forEach(service -> {
-                            String uniqueId = service.split(":")[1];
-                            if (registerConsumer(uniqueId)) {
-                                logger.info("[ {} ]应用注册成功!", uniqueId);
-                            }
-                        });
-            }
-        });
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                String resp = response.body().string();
+//                ServiceListDTO serviceListDTO = new Gson().fromJson(resp, ServiceListDTO.class);
+//                serviceListDTO.getDoms().stream()
+//                        .filter(service -> service.contains(ProcessService.class.getName()))
+//                        .forEach(service -> {
+//                            String uniqueId = service.split(":")[1];
+//                            if (registerConsumer(uniqueId)) {
+//                                logger.info("[ {} ]应用注册成功!", uniqueId);
+//                            }
+//                        });
+//            }
+//        });
 
 
     }
