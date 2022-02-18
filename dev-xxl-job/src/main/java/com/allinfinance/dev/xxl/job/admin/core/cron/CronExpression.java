@@ -14,7 +14,6 @@
  * under the License.
  *
  */
-
 package com.allinfinance.dev.xxl.job.admin.core.cron;
 
 import java.io.Serializable;

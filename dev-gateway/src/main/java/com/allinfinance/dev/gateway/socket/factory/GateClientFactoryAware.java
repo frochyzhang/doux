@@ -12,16 +12,11 @@ import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.core.bean.MinaSocketBean;
+import com.allinfinance.dev.gateway.socket.netty.HttpServer;
 import com.allinfinance.dev.gateway.socket.util.AppPropertiesMapper;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.socket.config.ShortSwitchServer;
-import com.google.gson.Gson;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +52,6 @@ public class GateClientFactoryAware implements ClientFactoryAware {
         try {
             NamingService namingService = NacosFactory.createNamingService(properties);
             List<ServiceInfo> subscribeServices = namingService.getSubscribeServices();
-            System.out.println("" + subscribeServices);
             subscribeServices.stream()
                     .filter(service -> service.getName().contains(ProcessService.class.getName()))
                     .forEach(service -> {
@@ -69,35 +63,6 @@ public class GateClientFactoryAware implements ClientFactoryAware {
         } catch (NacosException e) {
             logger.error("【{}】应用注册失败！", clientFactory, e);
         }
-
-//        String url = "http://10.100.79.102:8848/nacos/v1/ns/service/list?pageNo=1&pageSize=10&serviceNameParam=&groupNameParam=&namespaceId=iasp-zy";
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        final Request request = new Request.Builder()
-//                .url(url)
-//                .get()//默认就是GET请求，可以不写
-//                .build();
-//        Call call = okHttpClient.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                logger.error("onFailure: {}", call, e);
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                String resp = response.body().string();
-//                ServiceListDTO serviceListDTO = new Gson().fromJson(resp, ServiceListDTO.class);
-//                serviceListDTO.getDoms().stream()
-//                        .filter(service -> service.contains(ProcessService.class.getName()))
-//                        .forEach(service -> {
-//                            String uniqueId = service.split(":")[1];
-//                            if (registerConsumer(uniqueId)) {
-//                                logger.info("[ {} ]应用注册成功!", uniqueId);
-//                            }
-//                        });
-//            }
-//        });
-
 
     }
 
@@ -143,7 +108,13 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
                                 e.printStackTrace();
                             }
+                            break;
                         case HTTP:
+                            Boolean startResult = new HttpServer().start(appConfigList.getListenPort(),appConfigList.getHttpConfig());
+                            if (startResult) {
+                                appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
+                            }
+
                             break;
                         default:
                             throw new IllegalArgumentException("参数不合法");
@@ -161,32 +132,4 @@ public class GateClientFactoryAware implements ClientFactoryAware {
         }
     }
 
-    public static class ServiceListDTO {
-        private List<String> doms;
-        private Integer count;
-
-        public List<String> getDoms() {
-            return doms;
-        }
-
-        public void setDoms(List<String> doms) {
-            this.doms = doms;
-        }
-
-        public Integer getCount() {
-            return count;
-        }
-
-        public void setCount(Integer count) {
-            this.count = count;
-        }
-
-        @Override
-        public String toString() {
-            return "ServiceListDTO{" +
-                    "doms=" + doms +
-                    ", count=" + count +
-                    '}';
-        }
-    }
 }

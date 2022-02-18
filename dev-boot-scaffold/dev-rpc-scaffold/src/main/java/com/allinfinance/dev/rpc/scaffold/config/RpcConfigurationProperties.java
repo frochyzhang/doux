@@ -154,7 +154,7 @@ public class RpcConfigurationProperties {
                 /**
                  * 业务处理类
                  */
-                private String handlerClassName = "com.allinfinance.dev.example.socket.TestIOHandler";
+                private String handlerClassName = "com.allinfinance.dev.gateway.socket.TestIOHandler";
                 /**
                  * 报文解码处理类
                  */
@@ -283,8 +283,79 @@ public class RpcConfigurationProperties {
                 }
             }
 
-            private static class HttpConfig {
-                //TODO
+            public static class HttpConfig {
+                /**
+                 * 是否开启TCP_NODELAY
+                 */
+                private Boolean tcpNoDelay = true;
+                /**
+                 * 是否开启TCP_REUSEADDR
+                 */
+                private Boolean soReUseAddr = true;
+                /**
+                 * 是否开启SO_KEEPALIVE
+                 */
+                private Boolean soKeepAlive = false;
+                /**
+                 * 请求缓冲池大小
+                 */
+                private Integer soRcvBuf = 2048;
+                /**
+                 * 响应缓冲池大小
+                 */
+                private Integer soSndBuf = 2048;
+                /**
+                 * 处理的URL列表
+                 */
+                private List<String> urlList;
+
+                public Boolean getTcpNoDelay() {
+                    return tcpNoDelay;
+                }
+
+                public void setTcpNoDelay(Boolean tcpNoDelay) {
+                    this.tcpNoDelay = tcpNoDelay;
+                }
+
+                public Boolean getSoReUseAddr() {
+                    return soReUseAddr;
+                }
+
+                public void setSoReUseAddr(Boolean soReUseAddr) {
+                    this.soReUseAddr = soReUseAddr;
+                }
+
+                public Boolean getSoKeepAlive() {
+                    return soKeepAlive;
+                }
+
+                public void setSoKeepAlive(Boolean soKeepAlive) {
+                    this.soKeepAlive = soKeepAlive;
+                }
+
+                public Integer getSoRcvBuf() {
+                    return soRcvBuf;
+                }
+
+                public void setSoRcvBuf(Integer soRcvBuf) {
+                    this.soRcvBuf = soRcvBuf;
+                }
+
+                public Integer getSoSndBuf() {
+                    return soSndBuf;
+                }
+
+                public void setSoSndBuf(Integer soSndBuf) {
+                    this.soSndBuf = soSndBuf;
+                }
+
+                public List<String> getUrlList() {
+                    return urlList;
+                }
+
+                public void setUrlList(List<String> urlList) {
+                    this.urlList = urlList;
+                }
             }
 
             public Type getType() {

@@ -15,7 +15,7 @@ com:
         - com.allinfinance.dev.core.util.socket.client.ISocketClientService
         - com.allinfinance.dev.core.util.http.client.IHttpClientService
       bootstrap:
-        enable: false
+        enable: true
         gate-registry: 10.100.79.102:8848/iasp-zy
         app-unique-id: ${spring.application.name}
         app-list:
@@ -24,10 +24,9 @@ com:
             tcp-config:
               decode-msg-length: 4
               encode-msg-length: 4
-          - type: TCP
+          - type: HTTP
             listen-port: 8863
-            tcp-config:
-              decode-msg-length: 4
-              encode-msg-length: 4
-server:
-  port: 8085
+            http-config:
+              url-list:
+                - /api/test
+                - /asd/dds

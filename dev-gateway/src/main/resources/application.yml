@@ -1,16 +1,16 @@
 com:
   allinfinance:
     rpc:
-      provider-package: com.allinfinance.dev.example.socket.service
+      provider-package: com.allinfinance.dev.gateway.socket.service
     dev:
       socket:
         name: "test1"
         port: 13454
-        handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
+        handler-class-name: "com.allinfinance.dev.gateway.socket.TestIOHandler"
         ext-config:
           - name: "test2"
             port: 13455
-            handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
+            handler-class-name: "com.allinfinance.dev.gateway.socket.TestIOHandler"
   alipay:
     sofa:
       rpc:
