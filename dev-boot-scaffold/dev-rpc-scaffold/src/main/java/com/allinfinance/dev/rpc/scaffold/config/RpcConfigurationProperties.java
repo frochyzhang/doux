@@ -107,6 +107,7 @@ public class RpcConfigurationProperties {
 
         public static class AppConfigList {
             private Type type;
+            private String appDesc;
             private Integer listenPort;
             private TcpConfig tcpConfig = new TcpConfig();
             private HttpConfig httpConfig = new HttpConfig();
@@ -366,6 +367,14 @@ public class RpcConfigurationProperties {
                 this.type = type;
             }
 
+            public String getAppDesc() {
+                return appDesc;
+            }
+
+            public void setAppDesc(String appDesc) {
+                this.appDesc = appDesc;
+            }
+
             public Integer getListenPort() {
                 return listenPort;
             }
@@ -394,6 +403,7 @@ public class RpcConfigurationProperties {
             public String toString() {
                 return "AppConfigList{" +
                         "type=" + type +
+                        ", appDesc='" + appDesc + '\'' +
                         ", listenPort=" + listenPort +
                         ", tcpConfig=" + tcpConfig +
                         ", httpConfig=" + httpConfig +
