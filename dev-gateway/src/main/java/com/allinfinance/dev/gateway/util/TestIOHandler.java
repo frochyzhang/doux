@@ -1,6 +1,6 @@
-package com.allinfinance.dev.gateway.socket.util;
+package com.allinfinance.dev.gateway.util;
 
-import com.allinfinance.dev.gateway.socket.factory.AppProcessFactory;
+import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.socket.handler.AbstractMessageIOHandler;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket.factory;
+package com.allinfinance.dev.gateway.factory;
 
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;

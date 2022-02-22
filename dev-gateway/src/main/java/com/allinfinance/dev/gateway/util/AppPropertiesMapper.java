@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket.util;
+package com.allinfinance.dev.gateway.util;
 
 import com.allinfinance.dev.core.bean.MinaSocketBean;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;

@@ -19,14 +19,13 @@
  * *
  * **************************************************************************************
  */
-package com.allinfinance.dev.gateway.socket.netty.iohandler;
+package com.allinfinance.dev.gateway.netty.iohandler;
 
 
-import com.allinfinance.dev.gateway.socket.factory.AppProcessFactory;
-import com.allinfinance.dev.gateway.socket.netty.http.NettyHttpRequest;
-import com.allinfinance.dev.gateway.socket.netty.http.NettyHttpResponse;
+import com.allinfinance.dev.gateway.factory.AppProcessFactory;
+import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
+import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.gson.Gson;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

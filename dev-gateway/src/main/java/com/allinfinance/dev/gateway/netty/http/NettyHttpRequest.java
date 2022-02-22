@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket.netty.http;
+package com.allinfinance.dev.gateway.netty.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderResult;

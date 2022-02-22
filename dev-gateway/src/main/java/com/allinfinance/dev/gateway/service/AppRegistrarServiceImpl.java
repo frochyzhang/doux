@@ -1,6 +1,6 @@
-package com.allinfinance.dev.gateway.socket.service;
+package com.allinfinance.dev.gateway.service;
 
-import com.allinfinance.dev.gateway.socket.factory.GateClientFactoryAware;
+import com.allinfinance.dev.gateway.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

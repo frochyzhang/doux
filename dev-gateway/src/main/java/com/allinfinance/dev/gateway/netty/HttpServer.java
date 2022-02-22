@@ -1,8 +1,8 @@
-package com.allinfinance.dev.gateway.socket.netty;
+package com.allinfinance.dev.gateway.netty;
 
-import com.allinfinance.dev.gateway.socket.netty.iohandler.FilterLogginglHandler;
-import com.allinfinance.dev.gateway.socket.netty.iohandler.HttpServerHandler;
-import com.allinfinance.dev.gateway.socket.netty.iohandler.InterceptorHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.InterceptorHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.FilterLogginglHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.HttpServerHandler;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

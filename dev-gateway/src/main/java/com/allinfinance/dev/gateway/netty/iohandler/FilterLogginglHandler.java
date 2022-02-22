@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket.netty.iohandler;
+package com.allinfinance.dev.gateway.netty.iohandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;

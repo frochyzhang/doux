@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket.factory;
+package com.allinfinance.dev.gateway.factory;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -12,8 +12,8 @@ import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.core.bean.MinaSocketBean;
-import com.allinfinance.dev.gateway.socket.netty.HttpServer;
-import com.allinfinance.dev.gateway.socket.util.AppPropertiesMapper;
+import com.allinfinance.dev.gateway.netty.HttpServer;
+import com.allinfinance.dev.gateway.util.AppPropertiesMapper;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.socket.config.ShortSwitchServer;

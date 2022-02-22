@@ -18,9 +18,9 @@
  * Website : http://www.farsunset.com                           *
  * *
  * **************************************************************************************
- */package com.allinfinance.dev.gateway.socket.netty.iohandler;
+ */package com.allinfinance.dev.gateway.netty.iohandler;
 
-import com.allinfinance.dev.gateway.socket.netty.http.NettyHttpResponse;
+import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,7 +28,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.ReferenceCountUtil;
-import org.springframework.stereotype.Component;
 
 
 /**
