@@ -5,11 +5,11 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        registry-address: nacos://10.100.79.102:8848/public
         bolt-port: 12204
         consumer-repeated-reference-limit: 100
 spring:
   application:
-    name: socket-example
+    name: dev-gateway
 
 

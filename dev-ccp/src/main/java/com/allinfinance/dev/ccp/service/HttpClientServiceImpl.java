@@ -22,6 +22,7 @@ public class HttpClientServiceImpl implements IHttpClientService {
 
     @Override
     public String httpRequest(HttpMethod httpMethod, HashMap<String, String> header, String message, String url, int retryTimes, int timeout) throws IOException {
+        logger.info("开始请求【{}】,请求方法【{}】,请求消息【{}】,请求头【{}】", url, httpMethod, message, header);
         Request.Builder builder = new Request.Builder().url(url);
         header.forEach(builder::header);
         switch (httpMethod) {
@@ -44,6 +45,8 @@ public class HttpClientServiceImpl implements IHttpClientService {
         } catch (NullPointerException | IOException e) {
             logger.error("调用{}失败.", url);
             throw e;
+        }finally {
+            logger.info("请求【{}】,请求方法【{}】,请求消息【{}】,请求头【{}】完成!", url, httpMethod, message, header);
         }
 
         return resp;
