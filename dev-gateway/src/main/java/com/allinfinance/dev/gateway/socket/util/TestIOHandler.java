@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.socket;
+package com.allinfinance.dev.gateway.socket.util;
 
 import com.allinfinance.dev.gateway.socket.factory.AppProcessFactory;
 import com.allinfinance.dev.socket.handler.AbstractMessageIOHandler;

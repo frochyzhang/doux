@@ -154,7 +154,7 @@ public class RpcConfigurationProperties {
                 /**
                  * 业务处理类
                  */
-                private String handlerClassName = "com.allinfinance.dev.gateway.socket.TestIOHandler";
+                private String handlerClassName = "com.allinfinance.dev.gateway.socket.util.TestIOHandler";
                 /**
                  * 报文解码处理类
                  */

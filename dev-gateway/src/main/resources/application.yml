@@ -6,11 +6,11 @@ com:
       socket:
         name: "test1"
         port: 13454
-        handler-class-name: "com.allinfinance.dev.gateway.socket.TestIOHandler"
+        handler-class-name: "com.allinfinance.dev.gateway.socket.util.TestIOHandler"
         ext-config:
           - name: "test2"
             port: 13455
-            handler-class-name: "com.allinfinance.dev.gateway.socket.TestIOHandler"
+            handler-class-name: "com.allinfinance.dev.gateway.socket.util.TestIOHandler"
   alipay:
     sofa:
       rpc:

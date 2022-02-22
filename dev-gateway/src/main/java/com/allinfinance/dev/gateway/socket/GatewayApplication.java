@@ -4,9 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author 张勇
- * @description
- * @date 2020/11/30 21:01
+ * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
+ * @date 2022/1/28 15:32
  */
 //@EnableSocketServer
 @SpringBootApplication
