@@ -92,6 +92,8 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 }
                 // 监听端口
                 bootstrap.getAppList().forEach(appConfigList -> {
+                    appProcessFactory.register(uniqueId, processService);
+
                     RpcConfigurationProperties.Bootstrap.AppConfigList.Type type = appConfigList.getType();
                     switch (type) {
                         case TCP:
@@ -108,18 +110,14 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                             }
                             break;
                         case HTTP:
-                            Boolean startResult = new HttpServer().start(appConfigList.getListenPort(), appConfigList.getHttpConfig());
-                            if (startResult) {
-                                appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
-                            }
-
+                            appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
+                            new HttpServer().start(appConfigList.getListenPort(), appConfigList.getHttpConfig());
                             break;
                         default:
                             throw new IllegalArgumentException("参数不合法");
                     }
                 });
 
-                appProcessFactory.register(uniqueId, processService);
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;
