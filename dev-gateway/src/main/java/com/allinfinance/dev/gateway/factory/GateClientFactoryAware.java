@@ -4,7 +4,6 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -48,14 +46,14 @@ public class GateClientFactoryAware implements ClientFactoryAware {
 
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, "10.100.79.102:8848");
-        properties.put(PropertyKeyConst.NAMESPACE, "iasp-zy");
+        properties.put(PropertyKeyConst.NAMESPACE, "public");
         try {
             NamingService namingService = NacosFactory.createNamingService(properties);
-            List<ServiceInfo> subscribeServices = namingService.getSubscribeServices();
-            subscribeServices.stream()
-                    .filter(service -> service.getName().contains(ProcessService.class.getName()))
+
+            namingService.getServicesOfServer(1, 10).getData().stream()
+                    .filter(service -> service.contains(ProcessService.class.getName()))
                     .forEach(service -> {
-                        String uniqueId = service.getName().split(":")[1];
+                        String uniqueId = service.split(":")[1];
                         if (registerConsumer(uniqueId)) {
                             logger.info("[ {} ]应用注册成功!", uniqueId);
                         }
@@ -110,7 +108,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                             }
                             break;
                         case HTTP:
-                            Boolean startResult = new HttpServer().start(appConfigList.getListenPort(),appConfigList.getHttpConfig());
+                            Boolean startResult = new HttpServer().start(appConfigList.getListenPort(), appConfigList.getHttpConfig());
                             if (startResult) {
                                 appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
                             }

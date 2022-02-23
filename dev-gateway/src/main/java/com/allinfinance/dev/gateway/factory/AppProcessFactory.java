@@ -45,7 +45,6 @@ public class AppProcessFactory {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("请求地址" + tmp + "不在应用注册列表内"))
                 .getKey();
-        processors.get(appUniqueId).process(requestMsg, url);
-        return processors.get(appUniqueId).process(requestMsg);
+        return processors.get(appUniqueId).process(requestMsg, url);
     }
 }
