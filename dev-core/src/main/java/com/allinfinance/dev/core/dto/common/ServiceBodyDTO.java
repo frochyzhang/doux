@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceBodyDTO {
     @XStreamAlias("EXT_ATTRIBUTES")
-    private ExtAttributes extAttributes;
+    protected ExtAttributes extAttributes;
 
 
     @Override
