@@ -31,7 +31,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +88,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             resp = AppProcessFactory.httpProcessed(uri, requestMsg);
         } catch (Exception e) {
             logger.error("请求应用前置失败:", e);
-            return NettyHttpResponse.make(HttpResponseStatus.BAD_REQUEST);
+            return NettyHttpResponse.makeError(e);
         }
 
         return NettyHttpResponse.ok(resp);
