@@ -1,15 +1,20 @@
 package com.allinfinance.dev.rpc.scaffold.consumer;
 
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
+import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.core.util.common.BeanUtils;
+import com.allinfinance.dev.core.util.http.client.IHttpClientService;
+import com.allinfinance.dev.core.util.socket.client.ISocketClientService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.rpc.scaffold.config.SofaAPIConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -19,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/12/30 9:58
  */
 @Component
-public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostProcessor, ClientFactoryAware {
+public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostProcessor, ClientFactoryAware, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerInjectSupport.class);
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
@@ -46,6 +51,10 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         referenceParam.setBindingParam(refBindingParam);
 
         for (String className : rpcConfigurationProperties.getReferenceList()) {
+            if (className.equals(IHttpClientService.class.getName())
+                    || className.equals(ISocketClientService.class.getName())) {
+                continue;
+            }
             try {
                 referenceParam.setInterfaceType(Class.forName(className));
             } catch (ClassNotFoundException e) {
@@ -60,5 +69,19 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         }
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
+        if (rpcConfigurationProperties.getReferenceList().contains(IHttpClientService.class.getName())) {
+            logger.info("注入HttpClientService！");
+            IHttpClientService iHttpClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, IHttpClientService.class, 3000);
+            customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(IHttpClientService.class.getName()), iHttpClientService);
+        }
 
+        if (rpcConfigurationProperties.getReferenceList().contains(ISocketClientService.class.getName())) {
+            logger.info("注入ISocketClientService！");
+            ISocketClientService iSocketClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, ISocketClientService.class, 3000);
+            customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(ISocketClientService.class.getName()), iSocketClientService);
+        }
+    }
 }
