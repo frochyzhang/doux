@@ -52,22 +52,22 @@ public class XStreamUtils {
         xs.autodetectAnnotations(true);
         xs.alias(ALIAS, load);
         T o = (T) xs.fromXML(xml);
-        try {
-            BeanConvertValidator.beanVerify(o, "UTF-8");
-        } catch (IllegalArgumentException e) {
-            logger.error("xml -> bean, 字段校验异常!");
-            throw e;
-        }
+//        try {
+//            BeanConvertValidator.beanVerify(o, "UTF-8");
+//        } catch (IllegalArgumentException e) {
+//            logger.error("xml -> bean, 字段校验异常!");
+//            throw e;
+//        }
         return o;
     }
 
     public static String beanToXml(Object object, String encoding) {
-        try {
-            BeanConvertValidator.beanVerify(object, encoding);
-        } catch (IllegalArgumentException e) {
-            logger.error("bean -> xml, 字段校验异常!");
-            throw e;
-        }
+//        try {
+//            BeanConvertValidator.beanVerify(object, encoding);
+//        } catch (IllegalArgumentException e) {
+//            logger.error("bean -> xml, 字段校验异常!");
+//            throw e;
+//        }
         xsFriendly.alias(ALIAS, object.getClass());
         xsFriendly.processAnnotations(object.getClass());
         return XML_HEAD + "\n" + xsFriendly.toXML(object);
