@@ -1,6 +1,8 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
-import com.alipay.sofa.rpc.config.*;
+import com.alipay.sofa.rpc.config.ApplicationConfig;
+import com.alipay.sofa.rpc.config.RegistryConfig;
+import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
@@ -37,36 +39,19 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
         if (StringUtils.hasText(bootstrap.getAppUniqueId())
                 && StringUtils.hasText(bootstrap.getGateRegistry())) {
 
-            RegistryConfig registryConfig = new RegistryConfig()
-                    .setProtocol(RpcConfigurationProperties.Bootstrap.REGISTRY_PROTOCOL)
-                    .setAddress(rpcConfigurationProperties.getBootstrap().getGateRegistry());
+            RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
 
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
             ApplicationConfig applicationConfig = new ApplicationConfig();
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-            ServerConfig serverConfig = new ServerConfig()
-                    .setPort(12500)
-                    .setProtocol(RpcConfigurationProperties.Bootstrap.TRANSPORT_PROTOCOL);
-            ProviderConfig<ProcessService> providerConfig = new ProviderConfig<ProcessService>()
-                    .setInterfaceId(ProcessService.class.getName())
-                    .setRef(processService)
-                    .setUniqueId(rpcConfigurationProperties.getBootstrap().getAppUniqueId())
-                    .setServer(serverConfig)
-                    .setApplication(applicationConfig)
-                    .setRegistry(registryConfig);
-            providerConfig.export();
+            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(12500);
+
+            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
+
             logger.info("{}业务处理服务注册成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
 
             // 2 调用网关的注册服务
-            ConsumerConfig<AppRegistrarService> consumerConfig = new ConsumerConfig<AppRegistrarService>()
-                    .setInterfaceId(AppRegistrarService.class.getName())
-                    .setTimeout(3000)
-                    .setConnectTimeout(3000)
-//                    .setCluster("failover")
-                    .setCluster("foreach")
-                    .setRetries(3)
-                    .setRegistry(registryConfig);
-            AppRegistrarService appRegistrarService = consumerConfig.refer();
+            AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 3000, "foreach", 3);
             Thread gateRegistryThread = new Thread(() -> {
                 Boolean registerResult = null;
                 while (null == registerResult) {
@@ -91,10 +76,8 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
 
             gateRegistryThread.setDaemon(true);
             gateRegistryThread.start();
-
         } else {
             throw new RuntimeException("TCP网关注册开关已打开，未设置必要参数!");
         }
     }
-
 }
