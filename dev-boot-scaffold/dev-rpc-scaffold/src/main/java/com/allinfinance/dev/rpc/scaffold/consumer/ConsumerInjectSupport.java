@@ -12,6 +12,7 @@ import com.allinfinance.dev.core.util.http.client.IHttpClientService;
 import com.allinfinance.dev.core.util.socket.client.ISocketClientService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.rpc.scaffold.config.SofaAPIConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -71,6 +72,9 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
 
     @Override
     public void afterPropertiesSet() {
+        if (StringUtils.isBlank(rpcConfigurationProperties.getBootstrap().getGateRegistry())) {
+            return;
+        }
         RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
 
         IHttpClientService iHttpClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, IHttpClientService.class, 3000);
