@@ -72,16 +72,13 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
     @Override
     public void afterPropertiesSet() {
         RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
-        if (rpcConfigurationProperties.getReferenceList().contains(IHttpClientService.class.getName())) {
-            logger.info("注入HttpClientService！");
-            IHttpClientService iHttpClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, IHttpClientService.class, 3000);
-            customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(IHttpClientService.class.getName()), iHttpClientService);
-        }
 
-        if (rpcConfigurationProperties.getReferenceList().contains(ISocketClientService.class.getName())) {
-            logger.info("注入ISocketClientService！");
-            ISocketClientService iSocketClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, ISocketClientService.class, 3000);
-            customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(ISocketClientService.class.getName()), iSocketClientService);
-        }
+        IHttpClientService iHttpClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, IHttpClientService.class, 3000);
+        customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(IHttpClientService.class.getName()), iHttpClientService);
+        logger.info("注入HttpClientService完成！");
+
+        ISocketClientService iSocketClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, ISocketClientService.class, 3000);
+        customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(ISocketClientService.class.getName()), iSocketClientService);
+        logger.info("注入ISocketClientService完成！");
     }
 }
