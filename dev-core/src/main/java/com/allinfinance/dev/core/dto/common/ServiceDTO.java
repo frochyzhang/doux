@@ -21,6 +21,13 @@ public class ServiceDTO {
     @XStreamAsAttribute
     protected String xmlns = "http://www.allinfinance.com/dataspec/";
 
+    public ServiceDTO() {
+    }
+
+    public ServiceDTO(ServiceHeaderDTO header) {
+        this.header = header;
+    }
+
     @Override
     public String toString() {
         return "ServiceDTO{" +

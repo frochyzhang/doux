@@ -18,6 +18,13 @@ public class ExtAttributes implements Serializable {
     @XStreamAlias("AUTH")
     protected Auth auth;
 
+    public ExtAttributes() {
+    }
+
+    public ExtAttributes(Auth auth) {
+        this.auth = auth;
+    }
+
     @Override
     public String toString() {
         return "ExtAttributes{" +

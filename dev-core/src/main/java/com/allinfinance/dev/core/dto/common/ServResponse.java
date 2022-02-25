@@ -35,6 +35,15 @@ public class ServResponse implements Serializable {
     @XmlElement(required = true)
     private String desc;
 
+    public ServResponse() {
+    }
+
+    public ServResponse(String status, String code, String desc) {
+        this.status = status;
+        this.code = code;
+        this.desc = desc;
+    }
+
     @Override
     public String toString() {
         return "ServResponse{" +

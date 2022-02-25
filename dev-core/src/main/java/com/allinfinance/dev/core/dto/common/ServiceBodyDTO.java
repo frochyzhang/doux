@@ -14,6 +14,12 @@ public class ServiceBodyDTO {
     @XStreamAlias("EXT_ATTRIBUTES")
     protected ExtAttributes extAttributes;
 
+    public ServiceBodyDTO() {
+    }
+
+    public ServiceBodyDTO(ExtAttributes extAttributes) {
+        this.extAttributes = extAttributes;
+    }
 
     @Override
     public String toString() {

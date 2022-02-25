@@ -24,7 +24,7 @@ public class ServiceHeaderDTO {
     @XStreamAlias("OP_ID")
     protected String opId;
     @XStreamAlias("REQUST_TIME")
-    protected String requstTime;
+    protected String requestTime;
     @XStreamAlias("VERSION_ID")
     protected String versionId;
     @XStreamAlias("MAC")
@@ -44,7 +44,7 @@ public class ServiceHeaderDTO {
                 ", org='" + org + '\'' +
                 ", channelId='" + channelId + '\'' +
                 ", opId='" + opId + '\'' +
-                ", requstTime='" + requstTime + '\'' +
+                ", requestTime='" + requestTime + '\'' +
                 ", versionId='" + versionId + '\'' +
                 ", mac='" + mac + '\'' +
                 ", resServiceSn='" + resServiceSn + '\'' +
@@ -93,12 +93,12 @@ public class ServiceHeaderDTO {
         this.opId = opId;
     }
 
-    public String getRequstTime() {
-        return requstTime;
+    public String getRequestTime() {
+        return requestTime;
     }
 
-    public void setRequstTime(String requstTime) {
-        this.requstTime = requstTime;
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
     }
 
     public String getVersionId() {
@@ -139,5 +139,106 @@ public class ServiceHeaderDTO {
 
     public void setServResponse(ServResponse servResponse) {
         this.servResponse = servResponse;
+    }
+
+    public ServiceHeaderDTO() {
+    }
+
+    public ServiceHeaderDTO(String serviceSn, String serviceId, String org, String channelId, String opId, String requestTime, String versionId, String mac, String resServiceSn, String resServiceTime, ServResponse servResponse) {
+        this.serviceSn = serviceSn;
+        this.serviceId = serviceId;
+        this.org = org;
+        this.channelId = channelId;
+        this.opId = opId;
+        this.requestTime = requestTime;
+        this.versionId = versionId;
+        this.mac = mac;
+        this.resServiceSn = resServiceSn;
+        this.resServiceTime = resServiceTime;
+        this.servResponse = servResponse;
+    }
+
+    public static ServiceHeaderDTO.ServiceHeaderDTOBuilder builder() {
+        return new ServiceHeaderDTO.ServiceHeaderDTOBuilder();
+    }
+
+    public static class ServiceHeaderDTOBuilder {
+        private String serviceSn;
+        private String serviceId;
+        private String org;
+        private String channelId;
+        private String opId;
+        private String requestTime;
+        private String versionId;
+        private String mac;
+        private String resServiceSn;
+        private String resServiceTime;
+        private ServResponse servResponse;
+
+        ServiceHeaderDTOBuilder() {
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder serviceSn(String serviceSn) {
+            this.serviceSn = serviceSn;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder serviceId(String serviceId) {
+            this.serviceId = serviceId;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder org(String org) {
+            this.org = org;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder channelId(String channelId) {
+            this.channelId = channelId;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder opId(String opId) {
+            this.opId = opId;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder requestTime(String requestTime) {
+            this.requestTime = requestTime;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder versionId(String versionId) {
+            this.versionId = versionId;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder mac(String mac) {
+            this.mac = mac;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder resServiceSn(String resServiceSn) {
+            this.resServiceSn = resServiceSn;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder resServiceTime(String resServiceTime) {
+            this.resServiceTime = resServiceTime;
+            return this;
+        }
+
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder servResponse(ServResponse servResponse) {
+            this.servResponse = servResponse;
+            return this;
+        }
+
+        public ServiceHeaderDTO build() {
+            return new ServiceHeaderDTO(this.serviceSn, this.serviceId, this.org, this.channelId, this.opId, this.requestTime, this.versionId, this.mac, this.resServiceSn, this.resServiceTime, this.servResponse);
+        }
+
+        public String toString() {
+            return "ServiceHeaderDTO.ServiceHeaderDTOBuilder(serviceSn=" + this.serviceSn + ", serviceId=" + this.serviceId + ", org=" + this.org + ", channelId=" + this.channelId + ", opId=" + this.opId + ", requestTime=" + this.requestTime + ", versionId=" + this.versionId + ", mac=" + this.mac + ", resServiceSn=" + this.resServiceSn + ", resServiceTime=" + this.resServiceTime + ", servResponse=" + this.servResponse + ")";
+        }
     }
 }

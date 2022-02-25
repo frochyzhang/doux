@@ -139,4 +139,105 @@ public class Auth implements Serializable {
     public void setpPin(String pPin) {
         this.pPin = pPin;
     }
+
+    public Auth() {
+    }
+
+    public Auth(String idType, String idNo, String mobileNo, String homePhone, String custName, String birthday, String corpPhone, String name, String phone, String qPin, String pPin) {
+        this.idType = idType;
+        this.idNo = idNo;
+        this.mobileNo = mobileNo;
+        this.homePhone = homePhone;
+        this.custName = custName;
+        this.birthday = birthday;
+        this.corpPhone = corpPhone;
+        this.name = name;
+        this.phone = phone;
+        this.qPin = qPin;
+        this.pPin = pPin;
+    }
+
+    public static Auth.AuthBuilder builder() {
+        return new Auth.AuthBuilder();
+    }
+
+    public static class AuthBuilder {
+        private String idType;
+        private String idNo;
+        private String mobileNo;
+        private String homePhone;
+        private String custName;
+        private String birthday;
+        private String corpPhone;
+        private String name;
+        private String phone;
+        private String qPin;
+        private String pPin;
+
+        AuthBuilder() {
+        }
+
+        public Auth.AuthBuilder idType(String idType) {
+            this.idType = idType;
+            return this;
+        }
+
+        public Auth.AuthBuilder idNo(String idNo) {
+            this.idNo = idNo;
+            return this;
+        }
+
+        public Auth.AuthBuilder mobileNo(String mobileNo) {
+            this.mobileNo = mobileNo;
+            return this;
+        }
+
+        public Auth.AuthBuilder homePhone(String homePhone) {
+            this.homePhone = homePhone;
+            return this;
+        }
+
+        public Auth.AuthBuilder custName(String custName) {
+            this.custName = custName;
+            return this;
+        }
+
+        public Auth.AuthBuilder birthday(String birthday) {
+            this.birthday = birthday;
+            return this;
+        }
+
+        public Auth.AuthBuilder corpPhone(String corpPhone) {
+            this.corpPhone = corpPhone;
+            return this;
+        }
+
+        public Auth.AuthBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Auth.AuthBuilder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Auth.AuthBuilder qPin(String qPin) {
+            this.qPin = qPin;
+            return this;
+        }
+
+        public Auth.AuthBuilder pPin(String pPin) {
+            this.pPin = pPin;
+            return this;
+        }
+
+        public Auth build() {
+            return new Auth(this.idType, this.idNo, this.mobileNo, this.homePhone, this.custName, this.birthday, this.corpPhone, this.name, this.phone, this.qPin, this.pPin);
+        }
+
+        public String toString() {
+            return "Auth.AuthBuilder(idType=" + this.idType + ", idNo=" + this.idNo + ", mobileNo=" + this.mobileNo + ", homePhone=" + this.homePhone + ", custName=" + this.custName + ", birthday=" + this.birthday + ", corpPhone=" + this.corpPhone + ", name=" + this.name + ", phone=" + this.phone + ", qPin=" + this.qPin + ", pPin=" + this.pPin + ")";
+        }
+    }
 }
