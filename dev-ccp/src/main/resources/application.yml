@@ -6,7 +6,7 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.100.79.102:8848/vctss-dev
+        registry-address: nacos://10.100.79.102:8848/public
         bolt-port: 12202
   allinfinance:
     rpc:
