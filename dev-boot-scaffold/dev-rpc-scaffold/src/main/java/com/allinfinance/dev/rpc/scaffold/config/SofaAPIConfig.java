@@ -1,15 +1,16 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
 import com.alipay.sofa.rpc.config.*;
+import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/24 17:40
  */
 public class SofaAPIConfig {
-    public static <T> void initProviderConfig(ServerConfig serverConfig, RegistryConfig registryConfig, ApplicationConfig applicationConfig, String appUniqueId, T refService) {
-        ProviderConfig<T> providerConfig = new ProviderConfig<T>()
-                .setInterfaceId(refService.getClass().getName())
+    public static void initProviderConfig(ServerConfig serverConfig, RegistryConfig registryConfig, ApplicationConfig applicationConfig, String appUniqueId, ProcessService refService) {
+        ProviderConfig<ProcessService> providerConfig = new ProviderConfig<ProcessService>()
+                .setInterfaceId(ProcessService.class.getName())
                 .setRef(refService)
                 .setUniqueId(appUniqueId)
                 .setServer(serverConfig)

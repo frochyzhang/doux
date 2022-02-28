@@ -1,9 +1,5 @@
 package com.allinfinance.dev.gateway.factory;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.PropertyKeyConst;
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
@@ -19,11 +15,11 @@ import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -38,29 +34,23 @@ public class GateClientFactoryAware implements ClientFactoryAware {
 
     private ReferenceClient referenceClient;
 
+    @Value("${com.alipay.sofa.rpc.registry-address}")
+    private String registryAddress;
 
     @Override
     public void setClientFactory(ClientFactory clientFactory) {
 
         this.referenceClient = clientFactory.getClient(ReferenceClient.class);
 
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.SERVER_ADDR, "10.100.79.102:8848");
-        properties.put(PropertyKeyConst.NAMESPACE, "public");
-        try {
-            NamingService namingService = NacosFactory.createNamingService(properties);
+        String server = registryAddress.substring(registryAddress.indexOf("://") + 3);
 
-            namingService.getServicesOfServer(1, 10).getData().stream()
-                    .filter(service -> service.contains(ProcessService.class.getName()))
-                    .forEach(service -> {
-                        String uniqueId = service.split(":")[1];
-                        if (registerConsumer(uniqueId)) {
-                            logger.info("[ {} ]应用注册成功!", uniqueId);
-                        }
-                    });
-        } catch (NacosException e) {
-            logger.error("【{}】应用注册失败！", clientFactory, e);
-        }
+        AppProcessFactory.getServiceList(server)
+                .forEach(service -> {
+                    String uniqueId = service.split(":")[1];
+                    if (registerConsumer(uniqueId)) {
+                        logger.info("[ {} ]应用注册成功!", uniqueId);
+                    }
+                });
 
     }
 
