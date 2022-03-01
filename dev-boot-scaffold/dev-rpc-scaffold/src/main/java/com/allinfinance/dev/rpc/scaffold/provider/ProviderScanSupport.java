@@ -61,14 +61,15 @@ public class ProviderScanSupport implements BeanPostProcessor, ClientFactoryAwar
             ServiceParam serviceParam = new ServiceParam();
             serviceParam.setInstance(bean);
             Class<?>[] interfaces = bean.getClass().getInterfaces();
-            serviceParam.setInterfaceType(interfaces[0]);
+            if (interfaces.length != 0) {
+                serviceParam.setInterfaceType(interfaces[0]);
 
-            List<BindingParam> params = new ArrayList<>();
-            BindingParam serviceBindingParam = new BoltBindingParam();
-            params.add(serviceBindingParam);
-            serviceParam.setBindingParams(params);
-            serviceClient.service(serviceParam);
-
+                List<BindingParam> params = new ArrayList<>();
+                BindingParam serviceBindingParam = new BoltBindingParam();
+                params.add(serviceBindingParam);
+                serviceParam.setBindingParams(params);
+                serviceClient.service(serviceParam);
+            }
         }
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
     }
