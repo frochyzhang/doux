@@ -47,6 +47,22 @@
                     <mainClass>${start-class}</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>src/main/assembly/assembly.xml</descriptors>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

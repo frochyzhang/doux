@@ -1,5 +1,5 @@
 #Active Profile(YAML)
-ACTIVE_PROFILE="preprod"
+ACTIVE_PROFILE="sit,rpc"
 #Base Folder Path like "/folder/packages"
 CURRENT_DIR=$(readlink -f "$0")
 BASE_PACKAGE="${CURRENT_DIR%/bin/*}"

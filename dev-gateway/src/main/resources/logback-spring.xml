@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!--
+    说明：
+        1. 文件的命名和加载顺序有关
+           logback.xml早于application.yml加载，logback-spring.xml晚于application.yml加载
+           如果logback配置需要使用application.yml中的属性，需要命名为logback-spring.xml
+        2. logback使用application.yml中的属性
+           使用springProperty才可使用application.yml中的值 可以设置默认值
+    -->
+    <!-- log base path -->
+    <springProperty scope="context" name="LOG_HOME" source="gate.log-base-path"/>
+
+    <appender name="SRP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<Encoding>UTF-8</Encoding>-->
+        <file>${LOG_HOME}/dev-gateway.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/srp-consumer.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>200MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SRP-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+            <level>info</level>
+        </filter>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.allinfinance" level="info" additivity="false">
+        <appender-ref ref="SRP-ALL"/>
+    </logger>
+
+    <logger name="com.alipay.sofa" level="info" additivity="false">
+        <appender-ref ref="SRP-ALL"/>
+    </logger>
+
+    <logger name="java.sql" level="info" additivity="false">
+        <appender-ref ref="SRP-ALL"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="SRP-ALL"/>
+    </root>
+    <!-- 异步输出 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="SRP-ALL"/>
+    </appender>
+</configuration>

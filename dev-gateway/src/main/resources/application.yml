@@ -1,13 +1,23 @@
-com:
-  allinfinance:
-    rpc:
-      provider-package: com.allinfinance.dev.gateway.service
-  alipay:
-    sofa:
-      rpc:
-        registry-address: nacos://10.100.79.102:8848/public
-        bolt-port: 12204
-        consumer-repeated-reference-limit: 100
 spring:
   application:
     name: dev-gateway
+  profiles:
+    active: dev,rpc
+---
+
+spring:
+  profiles: dev
+
+GATE_BASE: /Users/zhangyong/workspace/allinfinance/frame/dev-latest/dev-gateway/src/main/resources/
+
+gate:
+  log-base-path: ${GATE_BASE}/logs/${spring.application.name}/
+---
+
+spring:
+  profiles: sit
+
+GATE_BASE: ${APP_BASE}/apps/${spring.application.name}/config/
+
+gate:
+  log-base-path: ${APP_BASE}/logs/${spring.application.name}

@@ -1,5 +1,5 @@
 #Active Profile(YAML)
-ACTIVE_PROFILE="preprod"
+ACTIVE_PROFILE="sit,rpc"
 # JVM Parameters and Spring boot initialization parameters
 JVM_PARAM="-Xms512m -Xmx1024m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true "
 # Base Folder Path like "/folder/packages"
@@ -31,6 +31,6 @@ JAVA_APP=$(ls -t $BASE_PACKAGE/apps/$APP_NAME/$APP_NAME*.jar | head -n1)
 # To execute the application.
 FINAL_EXEC="$JAVA_EXEC $JVM_PARAM -jar $JAVA_APP $JVM_PARAM_EXT"
 # Making executable command using tilde symbol and running completely detached from terminal
-#`nohup $FINAL_EXEC  </dev/null >/dev/null 2>&1 &`
-`nohup $FINAL_EXEC >> ../logs/$APP_NAME/$APP_NAME.log 2>&1 &`
+`nohup $FINAL_EXEC  </dev/null >/dev/null 2>&1 &`
+#`nohup $FINAL_EXEC >> ../logs/$APP_NAME/$APP_NAME.log 2>&1 &`
 echo "$APP_NAME start script is  completed."
