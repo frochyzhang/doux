@@ -46,7 +46,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
             ServerConfig serverConfig = SofaAPIConfig.getServerConfig(12500);
 
-            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
+            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(),processService);
 
             logger.info("{}业务处理服务注册成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
 

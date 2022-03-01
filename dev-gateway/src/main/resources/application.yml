@@ -11,5 +11,3 @@ com:
 spring:
   application:
     name: dev-gateway
-
-
