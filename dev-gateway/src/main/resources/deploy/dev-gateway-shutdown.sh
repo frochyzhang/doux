@@ -6,9 +6,9 @@ BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
 # Shell Script file name after removing path like "start-yaml-validator.sh"
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 # Shell Script file name after removing extension like "start-yaml-validator"
-SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.*}"
+#SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.*}"
 # App name after removing start/stop strings like "yaml-validator"
-APP_NAME=${SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT:5}
+APP_NAME=${SHELL_SCRIPT_FILE_NAME%-shutdown.sh}
 
 # Script to stop the application
 PID_PATH="$BASE_PACKAGE/config/$APP_NAME/$APP_NAME.pid"
@@ -42,7 +42,7 @@ else
                 exit 0;
             fi
     done
-    echo "Forcefully Killing $APP_NAME with PROCESS_ID:$PROCESS_ID."
-    kill -9 $PROCESS_ID
+    echo "Gracefully Killing $APP_NAME with PROCESS_ID:$PROCESS_ID."
+    kill $PROCESS_ID
   done
 fi

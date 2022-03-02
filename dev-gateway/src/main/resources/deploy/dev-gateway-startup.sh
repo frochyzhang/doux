@@ -8,9 +8,9 @@ BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
 # Shell Script file name after removing path like "start-yaml-validator.sh"
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 # Shell Script file name after removing extension like "start-yaml-validator"
-SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.sh}"
+#SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.sh}"
 # App name after removing start/stop strings like "yaml-validator"
-APP_NAME=${SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT#start-}
+APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
 
 JVM_PARAM_EXT="--spring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/"
 PIDS=`ps aux |grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | awk {'print $2'}`
@@ -18,7 +18,7 @@ if [ -z "$PIDS" ]; then
   echo "No instances of $APP_NAME with profile:$ACTIVE_PROFILE is running..." 1>&2
 else
   for PROCESS_ID in $PIDS; do
-        echo "Please stop the process($PROCESS_ID) using the shell script: stop-$APP_NAME.sh"
+        echo "Please stop the process($PROCESS_ID) using the shell script: $APP_NAME-shutdown.sh"
   done
   exit 1
 fi
