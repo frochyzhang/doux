@@ -357,6 +357,18 @@ public class RpcConfigurationProperties {
                 public void setUrlList(List<String> urlList) {
                     this.urlList = urlList;
                 }
+
+                @Override
+                public String toString() {
+                    return "HttpConfig{" +
+                            "tcpNoDelay=" + tcpNoDelay +
+                            ", soReUseAddr=" + soReUseAddr +
+                            ", soKeepAlive=" + soKeepAlive +
+                            ", soRcvBuf=" + soRcvBuf +
+                            ", soSndBuf=" + soSndBuf +
+                            ", urlList=" + urlList +
+                            '}';
+                }
             }
 
             public Type getType() {

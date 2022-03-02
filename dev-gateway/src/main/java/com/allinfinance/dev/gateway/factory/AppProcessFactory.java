@@ -8,7 +8,6 @@ import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +34,9 @@ public class AppProcessFactory {
     }
 
     public void register(String appUniqueId, List<String> urls) {
+        if (appUrlMap.containsKey(appUniqueId)) {
+            urls.addAll(appUrlMap.get(appUniqueId));
+        }
         appUrlMap.put(appUniqueId, urls);
     }
 
@@ -77,7 +79,7 @@ public class AppProcessFactory {
     }
 
     public void checkAndProcess(List<String> appList) {
-        logger.info("开始检查:{}",appList);
+        logger.info("开始检查:{}", appList);
         processors.keySet().stream()
                 .filter(app -> !appList.contains(app))
                 .forEach(app -> {
