@@ -1,9 +1,9 @@
 package com.allinfinance.dev.core.util.xml.xstream;
 
-import com.allinfinance.dev.core.util.validate.BeanConvertValidator;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.thoughtworks.xstream.mapper.CachingMapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +51,10 @@ public class XStreamUtils {
         }
         xs.autodetectAnnotations(true);
         xs.alias(ALIAS, load);
+        if (xs.getMapper() instanceof CachingMapper) {
+            CachingMapper cachingMapper = (CachingMapper) xs.getMapper();
+            cachingMapper.flushCache();
+        }
         T o = (T) xs.fromXML(xml);
 //        try {
 //            BeanConvertValidator.beanVerify(o, "UTF-8");
