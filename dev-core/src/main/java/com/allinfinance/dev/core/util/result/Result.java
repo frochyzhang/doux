@@ -104,4 +104,15 @@ public class Result implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "success=" + success +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                ", status=" + status +
+                '}';
+    }
 }
