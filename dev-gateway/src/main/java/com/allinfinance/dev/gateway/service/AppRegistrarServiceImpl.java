@@ -22,7 +22,8 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     public Boolean register(String appUniqueId) {
         if (gateClientFactoryAware.registerConsumer(appUniqueId)) {
             logger.info("[ {} ]应用注册成功!", appUniqueId);
+            return Boolean.TRUE;
         }
-        return Boolean.TRUE;
+        return Boolean.FALSE;
     }
 }

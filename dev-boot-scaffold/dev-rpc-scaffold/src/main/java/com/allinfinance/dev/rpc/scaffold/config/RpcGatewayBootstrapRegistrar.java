@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
@@ -31,7 +32,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
     private ProcessService processService;
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws NacosException {
         if (processService == null) {
             throw new NullPointerException("未匹配到ProcessService实现!");
         }
@@ -46,9 +47,54 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
             ServerConfig serverConfig = SofaAPIConfig.getServerConfig(12500);
 
-            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(),processService);
+            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
+
+            //Properties properties = new Properties();
+            //
+            //properties.put(PropertyKeyConst.SERVER_ADDR, "10.100.79.102:8848");
+            //properties.put(PropertyKeyConst.NAMESPACE, "public");
+            //
+            //NamingService namingService = NacosFactory.createNamingService(properties);
+            //String processServiceName = null;
+            //while (true) {
+            //    processServiceName = namingService.getServicesOfServer(1, 10)
+            //            .getData()
+            //            .stream()
+            //            .filter(service -> service.contains(ProcessService.class.getName())
+            //                    && service.contains(rpcConfigurationProperties.getBootstrap().getAppUniqueId()))
+            //            .findFirst()
+            //            .orElse(null);
+            //    if (processServiceName != null) {
+            //        break;
+            //    }
+            //    logger.warn("ProcessService未发布成功，等待10s后重试");
+            //    try {
+            //        TimeUnit.SECONDS.sleep(10);
+            //    } catch (InterruptedException e) {
+            //        e.printStackTrace();
+            //    }
+            //}
 
             logger.info("{}业务处理服务注册成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+
+            ProcessService testProcessService = SofaAPIConfig.referProxyConsumerRef(rpcConfigurationProperties.getBootstrap().getAppUniqueId(), registryConfig, ProcessService.class, 3000, "foreach", 3);
+
+            Boolean verifyResult = null;
+            while (true) {
+                try {
+                    verifyResult = testProcessService.verify();
+                } catch (SofaRouteException sofaRouteException) {
+                    logger.warn("ProcessService未发布成功，等待10s后重试");
+                }
+                if (verifyResult != null) {
+                    break;
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             // 2 调用网关的注册服务
             AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 3000, "foreach", 3);

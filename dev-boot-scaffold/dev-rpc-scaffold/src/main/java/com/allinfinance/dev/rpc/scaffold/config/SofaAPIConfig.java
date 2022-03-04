@@ -30,6 +30,18 @@ public class SofaAPIConfig {
         return consumerConfig.refer();
     }
 
+    public static <T> T referProxyConsumerRef(String uniqueId, RegistryConfig registryConfig, Class<T> tClass, int timeout, String cluster, int retries) {
+        ConsumerConfig<T> consumerConfig = new ConsumerConfig<T>()
+                .setInterfaceId(tClass.getName())
+                .setTimeout(timeout)
+                .setConnectTimeout(timeout)
+                .setCluster(cluster)
+                .setRetries(retries)
+                .setUniqueId(uniqueId)
+                .setRegistry(registryConfig);
+        return consumerConfig.refer();
+    }
+
     public static <T> T referProxyConsumerRef(RegistryConfig registryConfig, Class<T> tClass, int timeout) {
         return referProxyConsumerRef(registryConfig, tClass, timeout, "failover", 3);
     }
