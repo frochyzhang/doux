@@ -15,6 +15,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <start-class>com.allinfinance.dev.gateway.GatewayApplication</start-class>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
