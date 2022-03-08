@@ -1,12 +1,60 @@
 spring:
   application:
     name: dev-ccp
+  profiles:
+    active: sit
+
+---
+spring:
+  profiles: dev
 
 com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.100.79.102:8848/public
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12202
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.ccp.service
+
+---
+spring:
+  profiles: sit
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12202
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.ccp.service
+
+---
+spring:
+  profiles: uat
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12202
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.ccp.service
+
+---
+spring:
+  profiles: prod
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
         bolt-port: 12202
   allinfinance:
     rpc:

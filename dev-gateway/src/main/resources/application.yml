@@ -2,22 +2,65 @@ spring:
   application:
     name: dev-gateway
   profiles:
-    active: dev,rpc
----
+    active: sit
 
+---
 spring:
   profiles: dev
 
-GATE_BASE: /Users/zhangyong/workspace/allinfinance/frame/dev-latest/dev-gateway/src/main/resources/
+com:
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.gateway.service
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12204
+        consumer-repeated-reference-limit: 100
 
-gate:
-  log-base-path: ${GATE_BASE}/logs/${spring.application.name}/
 ---
-
 spring:
   profiles: sit
 
-GATE_BASE: ${APP_BASE}/apps/${spring.application.name}/config/
+com:
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.gateway.service
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12204
+        consumer-repeated-reference-limit: 100
 
-gate:
-  log-base-path: ${APP_BASE}/logs/${spring.application.name}
+---
+spring:
+  profiles: uat
+
+com:
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.gateway.service
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12204
+        consumer-repeated-reference-limit: 100
+
+
+---
+spring:
+  profiles: prod
+
+com:
+  allinfinance:
+    rpc:
+      provider-package: com.allinfinance.dev.gateway.service
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public
+        bolt-port: 12204
+        consumer-repeated-reference-limit: 100
