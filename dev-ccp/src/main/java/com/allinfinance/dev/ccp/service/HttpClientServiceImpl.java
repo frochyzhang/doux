@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -18,7 +19,7 @@ import java.util.HashMap;
 public class HttpClientServiceImpl implements IHttpClientService {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClientServiceImpl.class);
-    private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
+    private static final OkHttpClient.Builder OK_HTTP_CLIENT_BUILDER = new OkHttpClient.Builder();
 
     @Override
     public String httpRequest(HttpMethod httpMethod, HashMap<String, String> header, String message, String url, int retryTimes, int timeout) throws IOException {
@@ -36,7 +37,13 @@ public class HttpClientServiceImpl implements IHttpClientService {
                 throw new IllegalArgumentException("请求方法不正确");
         }
         final Request request = builder.build();
-        Call call = OK_HTTP_CLIENT.newCall(request);
+        Call call = OK_HTTP_CLIENT_BUILDER
+                .retryOnConnectionFailure(true)
+                .connectTimeout(timeout, TimeUnit.SECONDS) //连接超时
+                .readTimeout(timeout, TimeUnit.SECONDS) //读取超时
+                .writeTimeout(timeout, TimeUnit.SECONDS) //写超时
+                .build()
+                .newCall(request);
         Response response;
         String resp;
         try {
@@ -45,7 +52,7 @@ public class HttpClientServiceImpl implements IHttpClientService {
         } catch (NullPointerException | IOException e) {
             logger.error("调用{}失败.", url);
             throw e;
-        }finally {
+        } finally {
             logger.info("请求【{}】,请求方法【{}】,请求消息【{}】,请求头【{}】完成!", url, httpMethod, message, header);
         }
 

@@ -57,8 +57,8 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
             buf.put(body);
         }
         buf.flip();
-        logger.info("编码完成：字符length=" + buf.limit() + ", content["
-                + ConvertUtils.bytesArrayToHexString(body).substring(0, 10) + "]");
+//        logger.info("编码完成：字符length=" + buf.limit() + ", content["
+//                + ConvertUtils.bytesArrayToHexString(body).substring(0, 10) + "]");
         session.write(buf);
     }
 

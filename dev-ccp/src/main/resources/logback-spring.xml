@@ -16,12 +16,28 @@
     <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="info"/>
 
     <!-- 文件输出 -->
-    <appender name="CPP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="CPP-HTTP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<Encoding>UTF-8</Encoding>-->
-        <file>${LOG_HOME}/dev-ccp.log</file>
+        <file>${LOG_HOME}/dev-http-ccp.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/dev-ccp.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/dev-http-ccp.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>200MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="CPP-TCP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<Encoding>UTF-8</Encoding>-->
+        <file>${LOG_HOME}/dev-tcp-ccp.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/dev-tcp-ccp.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>200MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -41,16 +57,6 @@
             <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
-    </appender>
-
-    <!-- 异步输出 -->
-    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
-        <discardingThreshold>0</discardingThreshold>
-        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
-        <queueSize>512</queueSize>
-        <!-- 添加附加的appender,最多只能添加一个 -->
-        <appender-ref ref="CPP-ALL"/>
     </appender>
 
     <!--开发环境配置-->
@@ -74,20 +80,25 @@
 
     <!--sit环境配置-->
     <springProfile name="sit">
-        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <!--写到TCP文件-->
+        <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CPP-TCP-ALL"/>
         </logger>
 
-        <logger name="com.alipay" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CPP-TCP-ALL"/>
         </logger>
 
-        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CPP-HTTP-ALL"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-ALL"/>
+            <appender-ref ref="CPP-TCP-ALL"/>
+        </root>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="CPP-HTTP-ALL"/>
         </root>
     </springProfile>
 

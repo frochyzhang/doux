@@ -45,6 +45,7 @@ public class SocketClientServiceImpl implements ISocketClientService {
             nioSocketConnector = socketConnectorFactory.registrar(clientAppName, timeOutSeconds, msgLengthSize, msgEncode);
         }
 
+        logger.info("请求报文：{}", message);
         ConnectFuture future = nioSocketConnector.connect(new InetSocketAddress(remoteIp, remotePort));
         future.awaitUninterruptibly();
 
@@ -66,6 +67,7 @@ public class SocketClientServiceImpl implements ISocketClientService {
             } else {
                 logger.error("读取应答消息失败.");
             }
+            logger.info("应答报文：{}", resp);
             return resp;
         } finally {
             if (session != null) {
