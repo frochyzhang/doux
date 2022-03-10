@@ -16,7 +16,7 @@
     <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="info"/>
 
     <!-- 文件输出 -->
-    <appender name="CPP-HTTP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="CCP-HTTP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<Encoding>UTF-8</Encoding>-->
         <file>${LOG_HOME}/dev-http-ccp.log</file>
 
@@ -32,7 +32,7 @@
         </encoder>
     </appender>
 
-    <appender name="CPP-TCP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="CCP-TCP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<Encoding>UTF-8</Encoding>-->
         <file>${LOG_HOME}/dev-tcp-ccp.log</file>
 
@@ -62,81 +62,85 @@
     <!--开发环境配置-->
     <springProfile name="dev">
         <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-CONSOLE"/>
+            <appender-ref ref="CCP-CONSOLE"/>
         </logger>
         <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-CONSOLE"/>
+            <appender-ref ref="CCP-CONSOLE"/>
         </logger>
 
         <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-CONSOLE"/>
+            <appender-ref ref="CCP-CONSOLE"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-CONSOLE"/>
+            <appender-ref ref="CCP-CONSOLE"/>
         </root>
     </springProfile>
 
 
     <!--sit环境配置-->
     <springProfile name="sit">
-        <!--写到TCP文件-->
+        <!--写到TCP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-TCP-ALL"/>
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
         <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-TCP-ALL"/>
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
+        <!--写到HTTP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-HTTP-ALL"/>
+            <appender-ref ref="CCP-HTTP-ALL"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-TCP-ALL"/>
-        </root>
-
-        <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-HTTP-ALL"/>
+            <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="CCP-TCP-ALL"/>
         </root>
     </springProfile>
 
     <!--uat环境配置-->
     <springProfile name="uat">
-        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <!--写到TCP日志文件-->
+        <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
-        <logger name="com.alipay" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
-        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <!--写到HTTP日志文件-->
+        <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-HTTP-ALL"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-ALL"/>
+            <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="CCP-TCP-ALL"/>
         </root>
     </springProfile>
 
     <!--生产环境配置-->
     <springProfile name="prod">
-        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <!--写到TCP日志文件-->
+        <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
-        <logger name="com.alipay" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-TCP-ALL"/>
         </logger>
 
-        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="CPP-ALL"/>
+        <!--写到HTTP日志文件-->
+        <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="CCP-HTTP-ALL"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
-            <appender-ref ref="CPP-ALL"/>
+            <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="CCP-TCP-ALL"/>
         </root>
     </springProfile>
 </configuration>
