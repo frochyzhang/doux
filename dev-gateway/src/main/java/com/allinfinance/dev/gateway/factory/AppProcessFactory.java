@@ -61,7 +61,7 @@ public class AppProcessFactory {
 
     public static String tcpProcessed(String appUniqueId, String requestMsg) {
         ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.TCP);
-        processRequestDTO.setTcpRequest(new TcpRequestDTO(requestMsg));
+        processRequestDTO.setRequestDTO(new TcpRequestDTO(requestMsg));
         return processors.get(appUniqueId).process(processRequestDTO);
     }
 
@@ -100,7 +100,7 @@ public class AppProcessFactory {
             httpRequestDTO.setRequestMsg(m.replaceAll(""));
         }
 
-        processRequestDTO.setHttpRequest(httpRequestDTO);
+        processRequestDTO.setRequestDTO(httpRequestDTO);
         return processors.get(appUniqueId).process(processRequestDTO);
     }
 

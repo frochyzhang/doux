@@ -7,9 +7,7 @@ package com.allinfinance.dev.rpc.scaffold.api.dto;
 public class ProcessRequestDTO {
     private RequestTypeEnum requestType;
 
-    private TcpRequestDTO tcpRequest;
-
-    private HttpRequestDTO httpRequest;
+    private AbstractRequestDTO requestDTO;
 
     public ProcessRequestDTO(RequestTypeEnum requestType) {
         this.requestType = requestType;
@@ -23,28 +21,15 @@ public class ProcessRequestDTO {
         this.requestType = requestType;
     }
 
-    public TcpRequestDTO getTcpRequest() {
-        return tcpRequest;
-    }
-
-    public void setTcpRequest(TcpRequestDTO tcpRequest) {
-        this.tcpRequest = tcpRequest;
-    }
-
-    public HttpRequestDTO getHttpRequest() {
-        return httpRequest;
-    }
-
-    public void setHttpRequest(HttpRequestDTO httpRequest) {
-        this.httpRequest = httpRequest;
+    public void setRequestDTO(AbstractRequestDTO requestDTO) {
+        this.requestDTO = requestDTO;
     }
 
     @Override
     public String toString() {
         return "ProcessRequestDTO{" +
                 "requestType=" + requestType +
-                ", tcpRequest=" + tcpRequest +
-                ", httpRequest=" + httpRequest +
+                ", requestDTO=" + requestDTO +
                 '}';
     }
 }
