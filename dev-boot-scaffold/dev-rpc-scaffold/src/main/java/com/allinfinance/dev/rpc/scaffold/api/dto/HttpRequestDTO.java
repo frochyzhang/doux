@@ -8,16 +8,18 @@ import java.util.Map;
  * @author <a href="mailto:frochyzhang@gmail.com">frochyZhang</a>
  * @date 2022/3/15 9:45
  */
-public class HttpRequestDTO {
+public class HttpRequestDTO extends AbstractRequestDTO {
     private HttpMethod httpMethod;
 
     private String url;
 
-    private String body;
-
     private Map<String, String> headers;
 
     private Map<String, String> params;
+
+    public HttpRequestDTO(String requestMsg) {
+        super(requestMsg);
+    }
 
     public HttpMethod getHttpMethod() {
         return httpMethod;
@@ -33,14 +35,6 @@ public class HttpRequestDTO {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 
     public Map<String, String> getHeaders() {
@@ -64,9 +58,8 @@ public class HttpRequestDTO {
         return "HttpRequestDTO{" +
                 "httpMethod=" + httpMethod +
                 ", url='" + url + '\'' +
-                ", body='" + body + '\'' +
                 ", headers=" + headers +
                 ", params=" + params +
-                '}';
+                "} " + super.toString();
     }
 }

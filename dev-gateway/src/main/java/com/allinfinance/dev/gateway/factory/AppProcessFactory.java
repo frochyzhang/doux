@@ -80,7 +80,7 @@ public class AppProcessFactory {
                 .getKey();
 
         ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.HTTP);
-        HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
+        HttpRequestDTO httpRequestDTO = new HttpRequestDTO(null);
         httpRequestDTO.setUrl(url);
 
 
@@ -97,7 +97,7 @@ public class AppProcessFactory {
 
         if (StringUtils.isNotBlank(requestMsg)) {
             Matcher m = PATTERN.matcher(requestMsg);
-            httpRequestDTO.setBody(m.replaceAll(""));
+            httpRequestDTO.setRequestMsg(m.replaceAll(""));
         }
 
         processRequestDTO.setHttpRequest(httpRequestDTO);
