@@ -80,12 +80,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         // TODO: 2022/2/18 处理业务逻辑
         System.out.println("requested!");
 
-        String uri = request.getUri();
-        String requestMsg = request.contentText();
-
         String resp;
         try {
-            resp = AppProcessFactory.httpProcessed(uri, requestMsg);
+            resp = AppProcessFactory.httpProcessed(request);
         } catch (Exception e) {
             logger.error("请求应用前置失败:", e);
             return NettyHttpResponse.makeError(e);

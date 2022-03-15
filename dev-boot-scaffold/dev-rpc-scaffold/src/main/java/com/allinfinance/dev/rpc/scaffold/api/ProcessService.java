@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
+import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 
 /**
@@ -24,9 +25,8 @@ public interface ProcessService {
     /**
      * 应用系统业务处理服务
      *
-     * @param process
-     * @param url
+     * @param processRequestDTO
      * @return
      */
-    String process(String process,String... url);
+    String process(ProcessRequestDTO processRequestDTO);
 }

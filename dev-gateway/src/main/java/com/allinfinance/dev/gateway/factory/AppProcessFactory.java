@@ -4,16 +4,27 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.RequestTypeEnum;
+import com.allinfinance.dev.rpc.scaffold.api.dto.TcpRequestDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -49,16 +60,48 @@ public class AppProcessFactory {
 
 
     public static String tcpProcessed(String appUniqueId, String requestMsg) {
-        return processors.get(appUniqueId).process(requestMsg);
+        ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.TCP);
+        processRequestDTO.setTcpRequest(new TcpRequestDTO(requestMsg));
+        return processors.get(appUniqueId).process(processRequestDTO);
     }
 
-    public static String httpProcessed(String url, String requestMsg) {
-        String tmp = url.contains("?") ? url.split("\\?")[0] : url;
-        String appUniqueId = appUrlMap.entrySet().stream().filter(entry -> entry.getValue().contains(tmp))
+    private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
+
+    public static String httpProcessed(NettyHttpRequest request) {
+        String urlWithParam = request.getUri();
+        String requestMsg = request.contentText();
+
+        String url = urlWithParam.contains("?") ? urlWithParam.split("\\?")[0] : urlWithParam;
+        String paramString = urlWithParam.contains("?") ? urlWithParam.split("\\?")[1] : "";
+
+        String appUniqueId = appUrlMap.entrySet().stream().filter(entry -> entry.getValue().contains(url))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("请求地址" + tmp + "不在应用注册列表内"))
+                .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
                 .getKey();
-        return processors.get(appUniqueId).process(requestMsg, url);
+
+        ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.HTTP);
+        HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
+        httpRequestDTO.setUrl(url);
+
+
+        Map<String, String> params = StringUtils.isNotBlank(paramString) ? Arrays.stream(paramString.split("&"))
+                .map(param -> param.split("="))
+                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1])) : new HashMap<>(0);
+
+        Map<String, String> headers = request.headers().entries().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        httpRequestDTO.setParams(params);
+        httpRequestDTO.setHeaders(headers);
+        httpRequestDTO.setHttpMethod(HttpMethod.valueOf(request.method().name()));
+
+        if (StringUtils.isNotBlank(requestMsg)) {
+            Matcher m = PATTERN.matcher(requestMsg);
+            httpRequestDTO.setBody(m.replaceAll(""));
+        }
+
+        processRequestDTO.setHttpRequest(httpRequestDTO);
+        return processors.get(appUniqueId).process(processRequestDTO);
     }
 
     public static List<String> getServiceList(String server) {

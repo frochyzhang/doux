@@ -1,6 +1,7 @@
 package com.allinfinance.rpc.consumer.provider;
 
 import com.allinfinance.dev.rpc.scaffold.api.AbstractProcessService;
+import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,12 +13,11 @@ public class ProcessServiceImpl extends AbstractProcessService {
     /**
      * 应用系统业务处理服务
      *
-     * @param process
-     * @param url
+     * @param processRequestDTO
      * @return
      */
     @Override
-    public String process(String process, String... url) {
+    public String process(ProcessRequestDTO processRequestDTO) {
         System.out.println("请求他进来了");
         return "test2";
     }

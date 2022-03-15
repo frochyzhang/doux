@@ -27,10 +27,4 @@ public class AppProcessFactory {
                 bootstrap.toString().equals(compares.get(appUniqueId).toString()));
 
     }
-
-
-    public static String processed(String appUniqueId, String requestMsg) {
-        return processors.get(appUniqueId).process(requestMsg);
-    }
-
 }
