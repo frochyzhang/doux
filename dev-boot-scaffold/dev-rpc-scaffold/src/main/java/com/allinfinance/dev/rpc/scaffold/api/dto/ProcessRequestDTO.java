@@ -21,6 +21,10 @@ public class ProcessRequestDTO {
         this.requestType = requestType;
     }
 
+    public AbstractRequestDTO getRequestDTO() {
+        return requestDTO;
+    }
+
     public void setRequestDTO(AbstractRequestDTO requestDTO) {
         this.requestDTO = requestDTO;
     }
