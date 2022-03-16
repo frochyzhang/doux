@@ -67,7 +67,7 @@ public class AppProcessFactory {
 
     private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
 
-    public static String httpProcessed(NettyHttpRequest request) {
+    public static String httpProcessed(String appUniqueId, NettyHttpRequest request) {
         String urlWithParam = request.getUri();
         String requestMsg = request.contentText();
 

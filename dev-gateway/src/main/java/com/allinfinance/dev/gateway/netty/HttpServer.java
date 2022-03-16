@@ -1,8 +1,8 @@
 package com.allinfinance.dev.gateway.netty;
 
-import com.allinfinance.dev.gateway.netty.iohandler.InterceptorHandler;
 import com.allinfinance.dev.gateway.netty.iohandler.FilterLogginglHandler;
 import com.allinfinance.dev.gateway.netty.iohandler.HttpServerHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.InterceptorHandler;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class HttpServer {
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
-    public Boolean start(int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
+    public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -43,19 +43,20 @@ public class HttpServer {
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
                 ch.pipeline().addLast("logging", new FilterLogginglHandler());
                 ch.pipeline().addLast("interceptor", new InterceptorHandler());
-                ch.pipeline().addLast("bizHandler", new HttpServerHandler());
+                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId));
             }
         })
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).syncUninterruptibly().addListener(future -> {
-            String logBanner = "\n\n" +
-                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n" +
-                    "*                                                                                   *\n" +
-                    "*                                                                                   *\n" +
-                    "*                   Netty Http Server started on port {}.                         *\n" +
-                    "*                                                                                   *\n" +
-                    "*                                                                                   *\n" +
-                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n";
+//            String logBanner = "\n\n" +
+//                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n" +
+//                    "*                                                                                   *\n" +
+//                    "*                                                                                   *\n" +
+//                    "*                   Netty Http Server started on port {}.                         *\n" +
+//                    "*                                                                                   *\n" +
+//                    "*                                                                                   *\n" +
+//                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n";
+            String logBanner = "Netty Http Server started on port {}.";
             logger.info(logBanner, port);
         });
         channelFuture.channel().closeFuture().addListener(future -> {

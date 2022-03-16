@@ -25,7 +25,6 @@ package com.allinfinance.dev.gateway.netty.iohandler;
 import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -36,7 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -47,14 +49,20 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
 
-    private static ExecutorService executor = Executors.newFixedThreadPool(30, new ThreadFactoryBuilder().setNameFormat("NettyHttpHandler-%d").build());
+    private static ExecutorService executor = null;
 
-//    static {
-//        ThreadFactory threadFactory = ;
-//        executor = new ThreadPoolExecutor(10, 200,
-//                0L, TimeUnit.MILLISECONDS,
-//                new LinkedBlockingQueue<>(0), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
-//    }
+    private final String appUniqueId;
+
+    public HttpServerHandler(String uniqueId) {
+        this.appUniqueId = uniqueId;
+
+        ThreadFactory threadFactory = new cn.hutool.core.thread.ThreadFactoryBuilder()
+                .setNamePrefix(uniqueId + "-server-pool-")
+                .setDaemon(true)
+                .build();
+        executor = new ThreadPoolExecutor(30, 30, 0L,
+                TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+    }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
@@ -64,7 +72,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) {
         FullHttpRequest copyRequest = request.copy();
-//        onReceivedRequest(ctx, new NettyHttpRequest(copyRequest));
         executor.execute(() -> onReceivedRequest(ctx, new NettyHttpRequest(copyRequest)));
     }
 
@@ -72,7 +79,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private void onReceivedRequest(ChannelHandlerContext context, NettyHttpRequest request) {
         FullHttpResponse response = handleHttpRequest(request);
         context.writeAndFlush(response).addListener(future -> logger.info("Response sended and flushed"));
-//        context.writeAndFlush(response);
         ReferenceCountUtil.release(request);
     }
 
@@ -82,7 +88,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         String resp;
         try {
-            resp = AppProcessFactory.httpProcessed(request);
+            resp = AppProcessFactory.httpProcessed(appUniqueId, request);
         } catch (Exception e) {
             logger.error("请求应用前置失败:", e);
             return NettyHttpResponse.makeError(e);
@@ -106,17 +112,5 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 //            LOGGER.error(functionHandler.getClass().getSimpleName() + " Error",error);
 //            return NettyHttpResponse.makeError(error);
 //        }
-    }
-
-    static class Test {
-        private String uri;
-        private String method;
-        private String body;
-
-        public Test(String uri, String method, String body) {
-            this.uri = uri;
-            this.method = method;
-            this.body = body;
-        }
     }
 }

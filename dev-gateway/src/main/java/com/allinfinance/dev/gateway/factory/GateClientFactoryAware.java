@@ -101,7 +101,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                             break;
                         case HTTP:
                             appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
-                            new HttpServer().start(appConfigList.getListenPort(), appConfigList.getHttpConfig());
+                            new HttpServer().start(uniqueId, appConfigList.getListenPort(), appConfigList.getHttpConfig());
                             break;
                         default:
                             throw new IllegalArgumentException("参数不合法");
