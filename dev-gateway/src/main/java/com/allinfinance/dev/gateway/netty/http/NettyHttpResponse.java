@@ -61,6 +61,7 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
     }
 
     private static FullHttpResponse make(HttpResponseStatus status,String content) {
+        content = content == null ? "" : content;
         byte[] body = content.getBytes();
         ByteBuf buffer = BYTE_BUF_ALLOCATOR.buffer(body.length);
         buffer.writeBytes(body);
