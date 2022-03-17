@@ -49,7 +49,7 @@ JAVA_EXEC=${JAVA_HOME}/bin/java
 # Java Executable - Jar Path Obtained from latest file in directory
 JAVA_APP=$(ls -t $BASE_PACKAGE/apps/$APP_NAME/$APP_NAME*.jar | head -n1)
 # To execute the application.
-FINAL_EXEC="$JAVA_EXEC $JVM_PARAM -jar $JAVA_APP $JVM_PARAM_EXT $SKY_WALKING_PARAM $SKY_WALKING_PLUGIN_PARAM"
+FINAL_EXEC="$JAVA_EXEC $JVM_PARAM $SKY_WALKING_PARAM $SKY_WALKING_PLUGIN_PARAM -jar $JAVA_APP $JVM_PARAM_EXT "
 # Making executable command using tilde symbol and running completely detached from terminal
 `nohup $FINAL_EXEC  </dev/null >/dev/null 2>&1 &`
 #`nohup $FINAL_EXEC >> ../logs/$APP_NAME/$APP_NAME.log 2>&1 &`
