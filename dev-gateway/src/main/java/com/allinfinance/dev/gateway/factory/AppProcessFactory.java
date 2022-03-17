@@ -102,14 +102,9 @@ public class AppProcessFactory {
             //2、不包含url则去寻找其他监听了这个端口的应用
             List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
                     .stream()
-                    .filter(bootstrap -> {
-                        RpcConfigurationProperties.Bootstrap.AppConfigList appConfig = bootstrap.getAppList()
-                                .stream()
-                                .filter(appConfigList -> appConfigList.getListenPort().equals(port))
-                                .findFirst()
-                                .orElse(null);
-                        return appConfig != null;
-                    }).collect(Collectors.toList());
+                    .filter(bootstrap -> bootstrap.getAppList().stream()
+                            .anyMatch(appConfigList -> appConfigList.getListenPort().equals(port)))
+                    .collect(Collectors.toList());
             //3、遍历监听了这个端口的应用列表，判断是否包含url，如果包含则直接调用
             appUniqueId = bootstrapList.stream()
                     .filter(bootstrap -> appUrlMap.get(bootstrap.getAppUniqueId()).contains(url))
