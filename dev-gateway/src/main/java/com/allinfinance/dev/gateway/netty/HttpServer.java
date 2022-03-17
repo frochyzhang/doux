@@ -43,7 +43,7 @@ public class HttpServer {
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
                 ch.pipeline().addLast("logging", new FilterLogginglHandler());
                 ch.pipeline().addLast("interceptor", new InterceptorHandler());
-                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId));
+                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port));
             }
         })
         ;

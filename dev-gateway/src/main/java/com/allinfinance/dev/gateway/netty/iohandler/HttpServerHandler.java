@@ -34,11 +34,7 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -53,8 +49,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     private final String appUniqueId;
 
-    public HttpServerHandler(String uniqueId) {
+    private final Integer port;
+
+    public HttpServerHandler(String uniqueId, int port) {
         this.appUniqueId = uniqueId;
+        this.port = port;
 
         ThreadFactory threadFactory = new cn.hutool.core.thread.ThreadFactoryBuilder()
                 .setNamePrefix(uniqueId + "-server-pool-")
@@ -88,7 +87,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         String resp;
         try {
-            resp = AppProcessFactory.httpProcessed(appUniqueId, request);
+            resp = AppProcessFactory.httpProcessed(appUniqueId, request, port);
         } catch (Exception e) {
             logger.error("请求应用前置失败:", e);
             return NettyHttpResponse.makeError(e);

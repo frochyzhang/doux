@@ -17,11 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,40 +63,60 @@ public class AppProcessFactory {
 
     private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
 
-    public static String httpProcessed(String appUniqueId, NettyHttpRequest request) {
+    public static String httpProcessed(String appUniqueId, NettyHttpRequest request, int port) {
         String urlWithParam = request.getUri();
         String requestMsg = request.contentText();
 
         String url = urlWithParam.contains("?") ? urlWithParam.split("\\?")[0] : urlWithParam;
         String paramString = urlWithParam.contains("?") ? urlWithParam.split("\\?")[1] : "";
 
-        String appUniqueId = appUrlMap.entrySet().stream().filter(entry -> entry.getValue().contains(url))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
-                .getKey();
+        //String appUniqueId = appUrlMap.entrySet().stream().filter(entry -> entry.getValue().contains(url))
+        //        .findFirst()
+        //        .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
+        //        .getKey();
 
+        //装配ProcessRequestDTO
         ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.HTTP);
         HttpRequestDTO httpRequestDTO = new HttpRequestDTO(null);
         httpRequestDTO.setUrl(url);
-
-
+        //取出url中的params
         Map<String, String> params = StringUtils.isNotBlank(paramString) ? Arrays.stream(paramString.split("&"))
                 .map(param -> param.split("="))
                 .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1])) : new HashMap<>(0);
-
+        httpRequestDTO.setParams(params);
+        //取出header中的信息
         Map<String, String> headers = request.headers().entries().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        httpRequestDTO.setParams(params);
         httpRequestDTO.setHeaders(headers);
         httpRequestDTO.setHttpMethod(HttpMethod.valueOf(request.method().name()));
-
+        //对请求体里的空行和多余的空格进行处理
         if (StringUtils.isNotBlank(requestMsg)) {
             Matcher m = PATTERN.matcher(requestMsg);
             httpRequestDTO.setRequestMsg(m.replaceAll(""));
         }
-
         processRequestDTO.setRequestDTO(httpRequestDTO);
+
+        //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
+        List<String> urlList = appUrlMap.get(appUniqueId);
+        if (!urlList.contains(url)) {
+            //2、不包含url则去寻找其他监听了这个端口的应用
+            List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
+                    .stream()
+                    .filter(bootstrap -> {
+                        RpcConfigurationProperties.Bootstrap.AppConfigList appConfig = bootstrap.getAppList()
+                                .stream()
+                                .filter(appConfigList -> appConfigList.getListenPort().equals(port))
+                                .findFirst()
+                                .orElse(null);
+                        return appConfig != null;
+                    }).collect(Collectors.toList());
+            //3、遍历监听了这个端口的应用列表，判断是否包含url，如果包含则直接调用
+            appUniqueId = bootstrapList.stream()
+                    .filter(bootstrap -> appUrlMap.get(bootstrap.getAppUniqueId()).contains(url))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
+                    .getAppUniqueId();
+        }
         return processors.get(appUniqueId).process(processRequestDTO);
     }
 
