@@ -58,6 +58,7 @@
         <mapstruct.version>1.4.1.Final</mapstruct.version>
         <druid.version>1.2.8</druid.version>
         <mybatis.version>2.2.1</mybatis.version>
+        <skywalking.version>8.6.0</skywalking.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
     </properties>
@@ -264,6 +265,11 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking.version}</version>
             </dependency>
 
             <!--slf4j-->

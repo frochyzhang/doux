@@ -15,6 +15,15 @@
                     defaultValue="${HOME}/logs/${APP_NAME}/"/>
     <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="info"/>
 
+    <!--SKY-WALKING日志收集-->
+    <appender name="GRPC-LOG" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
     <!-- 文件输出 -->
     <appender name="CCP-HTTP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<Encoding>UTF-8</Encoding>-->
@@ -26,9 +35,10 @@
                 <maxFileSize>200MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
-        <encoder>
-            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
-            <charset>UTF-8</charset>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
         </encoder>
     </appender>
 
@@ -42,9 +52,10 @@
                 <maxFileSize>200MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
-        <encoder>
-            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
-            <charset>UTF-8</charset>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
         </encoder>
     </appender>
 
@@ -53,9 +64,10 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
             <level>info</level>
         </filter>
-        <encoder>
-            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
-            <charset>UTF-8</charset>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
         </encoder>
     </appender>
 
@@ -63,17 +75,21 @@
     <springProfile name="dev">
         <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
         <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
             <appender-ref ref="CCP-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
         </root>
     </springProfile>
 
@@ -83,20 +99,24 @@
         <!--写到TCP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <!--写到HTTP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
             <appender-ref ref="CCP-HTTP-ALL"/>
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </root>
     </springProfile>
 
@@ -105,20 +125,24 @@
         <!--写到TCP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <!--写到HTTP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
             <appender-ref ref="CCP-HTTP-ALL"/>
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </root>
     </springProfile>
 
@@ -127,20 +151,24 @@
         <!--写到TCP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.SocketClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <logger name="com.allinfinance.dev.core.util.socket" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <!--写到HTTP日志文件-->
         <logger name="com.allinfinance.dev.ccp.service.HttpClientServiceImpl" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="CCP-HTTP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </logger>
 
         <root level="${LOG_LEVEL}">
             <appender-ref ref="CCP-HTTP-ALL"/>
             <appender-ref ref="CCP-TCP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
         </root>
     </springProfile>
 </configuration>
