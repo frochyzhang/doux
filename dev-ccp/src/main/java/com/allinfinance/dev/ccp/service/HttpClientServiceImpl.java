@@ -1,7 +1,12 @@
 package com.allinfinance.dev.ccp.service;
 
 import com.allinfinance.dev.core.util.http.client.IHttpClientService;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -44,7 +49,7 @@ public class HttpClientServiceImpl implements IHttpClientService {
                 .writeTimeout(timeout, TimeUnit.SECONDS) //写超时
                 .build()
                 .newCall(request);
-        Response response;
+        Response response = null;
         String resp;
         try {
             response = call.execute();
@@ -53,7 +58,7 @@ public class HttpClientServiceImpl implements IHttpClientService {
             logger.error("调用{}失败.", url);
             throw e;
         } finally {
-            logger.info("请求【{}】,请求方法【{}】,请求消息【{}】,请求头【{}】完成!", url, httpMethod, message, header);
+            logger.info("请求完成，响应为: {}", response);
         }
 
         return resp;
