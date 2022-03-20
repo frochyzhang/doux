@@ -6,17 +6,15 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.100.79.102:8848/iasp-zy
+        registry-address: nacos://10.250.28.142:8848/iasp-zy
         bolt-port: 12204
   allinfinance:
     rpc:
       reference-list:
         - com.allinfinance.rpc.scaffold.api.TestApi
-        - com.allinfinance.dev.core.util.socket.client.ISocketClientService
-        - com.allinfinance.dev.core.util.http.client.IHttpClientService
       bootstrap:
         enable: true
-        gate-registry: 10.100.79.102:8848/iasp-zy
+        gate-registry: 10.250.28.142:8848/public
         app-unique-id: ${spring.application.name}
         app-list:
           - type: TCP
