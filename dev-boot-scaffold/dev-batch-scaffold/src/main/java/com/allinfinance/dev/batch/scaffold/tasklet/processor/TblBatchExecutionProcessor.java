@@ -13,6 +13,7 @@ public class TblBatchExecutionProcessor implements ItemProcessor<TblBatchJobExec
     @Override
     public TblBatchJobExecution process(TblBatchJobExecution item) throws Exception {
         System.out.println("job编号：" + item.getJobExecutionId().toString() + "创建时间：" + item.getCreateTime());
-        return null;
+        item.setJobExecutionId(item.getJobExecutionId() + 1000);
+        return item;
     }
 }

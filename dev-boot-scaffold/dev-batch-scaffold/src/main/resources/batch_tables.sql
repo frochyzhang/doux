@@ -1,6 +1,5 @@
 --		Spring Batch 建表语句
-use
-`your_database`;
+use `common-platform`;
 
 begin;
 --      唯一标识一个Job实例

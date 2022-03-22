@@ -2,7 +2,7 @@ spring:
   application:
     name: xxl-job-test
   profiles:
-    active: job,db
+    active: job,db,file
   batch:
     job:
       enabled: false

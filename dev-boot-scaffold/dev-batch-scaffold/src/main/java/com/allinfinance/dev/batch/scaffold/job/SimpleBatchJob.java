@@ -3,15 +3,14 @@ package com.allinfinance.dev.batch.scaffold.job;
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
 import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
 import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
-import com.allinfinance.dev.batch.scaffold.listener.SimpleJobListener;
+import com.allinfinance.dev.batch.scaffold.listener.FlatFileJobListener;
 import com.allinfinance.dev.batch.scaffold.tasklet.SimpleTasklet;
 import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteLengthProcessor;
 import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteSeparatorProcessor;
 import com.allinfinance.dev.batch.scaffold.tasklet.processor.TblBatchExecutionProcessor;
-import com.allinfinance.dev.batch.scaffold.tasklet.writer.SimpleWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -27,7 +26,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimpleBatchJob extends AbstractBatchJob {
     @Autowired
-    private SimpleJobListener jobListener;
+    private FlatFileJobListener jobListener;
     @Autowired
     private SimpleTasklet simpleTasklet;
     @Autowired
@@ -47,10 +46,11 @@ public class SimpleBatchJob extends AbstractBatchJob {
     @Autowired
     private TblBatchExecutionProcessor tblBatchExecutionProcessor;
     @Autowired
-    private SimpleWriter simpleWriter;
+    private JdbcBatchItemWriter tblTestWriter;
 
     @Bean("testBatchJob")
-    public Job job(@Qualifier("step1") Step step1, @Qualifier("step2") Step step2, @Qualifier("step3") Step step3, @Qualifier("step4") Step step4) {
+    public Job job(@Qualifier("step1") Step step1, @Qualifier("step2") Step step2,
+                   @Qualifier("step3") Step step3, @Qualifier("step4") Step step4) {
         return jobBuilderFactory.get("myJob")
                 .listener(jobListener)
                 .start(step1)
@@ -70,10 +70,10 @@ public class SimpleBatchJob extends AbstractBatchJob {
     @Bean
     protected Step step2() {
         return stepBuilderFactory.get("step2")
-                .<TblBatchJobExecution,TblBatchJobExecution>chunk(10)
+                .<TblBatchJobExecution, TblBatchJobExecution>chunk(10)
                 .reader(batchJobExecutionPagingItemReader)
                 .processor(tblBatchExecutionProcessor)
-                .writer(simpleWriter)
+                .writer(tblTestWriter)
                 .build();
     }
 

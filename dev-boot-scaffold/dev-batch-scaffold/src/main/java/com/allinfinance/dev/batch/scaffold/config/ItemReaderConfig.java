@@ -3,7 +3,6 @@ package com.allinfinance.dev.batch.scaffold.config;
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
 import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
 import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
@@ -37,22 +36,15 @@ import java.util.Map;
 @Configuration
 @DependsOn({"applicationContextUtil", "jobDtoMapperBeanFactory"})
 public class ItemReaderConfig {
-    /**
-     * 文件编码类型
-     */
-    private static String encoding = "UTF-8";
-    /**
-     * 分隔符
-     */
-    private static String separator = ";";
-    /**
-     * 文件顶部要跳过的行
-     */
-    private static int linesToSkip = 2;
+
     @Autowired
     private DataSource dataSource;
+
     @Autowired
     private JobDtoMapperBeanFactory jobDtoMapperBeanFactory;
+
+    @Autowired
+    private BatchFileConfig batchFileConfig;
 
     /**
      * 注册一个固定分割符的ItemReader
@@ -61,14 +53,13 @@ public class ItemReaderConfig {
      */
 
     @Bean("definiteSeparatorReader")
-    @StepScope
     public FlatFileItemReader<DefiniteSeparatorDTO> initReader1() {
         FlatFileItemReader<DefiniteSeparatorDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setEncoding(encoding);
+        itemReader.setEncoding(batchFileConfig.getEncoding());
         //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
         itemReader.setStrict(true);
-        itemReader.setLinesToSkip(linesToSkip);
-        itemReader.setResource(new FileSystemResource("D:\\project\\java\\dev\\dev-example\\dev-batch-scaffold-boot-starter-sample\\src\\main\\resources\\definite-separator-source-file-2"));
+        itemReader.setLinesToSkip(batchFileConfig.getSkipLines());
+        itemReader.setResource(new FileSystemResource(batchFileConfig.getSourceFilePath() + "definite-separator-source-file-2"));
         itemReader.setLineMapper(configDefaultSeparatorLineMapper());
         return itemReader;
     }
@@ -79,14 +70,13 @@ public class ItemReaderConfig {
      * @return FlatFileItemReader
      */
     @Bean("definiteLengthReader")
-    @StepScope
     public FlatFileItemReader<DefiniteLengthDTO> initReader2() {
         FlatFileItemReader<DefiniteLengthDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setEncoding(encoding);
+        itemReader.setEncoding(batchFileConfig.getEncoding());
         //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
         itemReader.setStrict(true);
-        itemReader.setLinesToSkip(linesToSkip);
-        itemReader.setResource(new FileSystemResource("D:\\project\\java\\dev\\dev-example\\dev-batch-scaffold-boot-starter-sample\\src\\main\\resources\\definite-length-source-file"));
+        itemReader.setLinesToSkip(batchFileConfig.getSkipLines());
+        itemReader.setResource(new FileSystemResource(batchFileConfig.getSourceFilePath() + "definite-length-source-file"));
         Map<String, Range> tokenRangeMap = new LinkedHashMap<>();
         tokenRangeMap.put("ISIN", new Range(1, 12));
         tokenRangeMap.put("number", new Range(13, 15));
@@ -104,7 +94,6 @@ public class ItemReaderConfig {
      * @return
      */
     @Bean("batchJobExecutionPagingItemReader")
-    @StepScope
     public JdbcPagingItemReader<TblBatchJobExecution> itemReader3(PagingQueryProvider queryProvider) {
         Map<String, Object> parameterValues = new HashMap<>();
         parameterValues.put("JOB_EXECUTION_ID", 3);
@@ -115,12 +104,11 @@ public class ItemReaderConfig {
                 .queryProvider(queryProvider)
                 .parameterValues(parameterValues)
                 .rowMapper(new TblBatchJobExecutionRowMapper())
-                .pageSize(100)
+                .pageSize(15)
                 .build();
     }
 
     @Bean
-    @StepScope
     public SqlPagingQueryProviderFactoryBean queryProvider() {
         SqlPagingQueryProviderFactoryBean provider = new SqlPagingQueryProviderFactoryBean();
 
@@ -161,7 +149,7 @@ public class ItemReaderConfig {
      */
     private DefaultLineMapper<DefiniteSeparatorDTO> configDefaultSeparatorLineMapper() {
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
-        delimitedLineTokenizer.setDelimiter(separator);
+        delimitedLineTokenizer.setDelimiter(batchFileConfig.getSeparator());
         //设置字段别名，增强可读性
         delimitedLineTokenizer.setNames("company", "year", "channel", "rank", "name", "count1", "count2");
         DefaultLineMapper<DefiniteSeparatorDTO> defaultLineMapper = new DefaultLineMapper<>();
