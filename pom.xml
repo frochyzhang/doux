@@ -57,7 +57,6 @@
         <logback.version>1.2.3</logback.version>
         <quartz.version>2.3.2</quartz.version>
         <redisson.version>3.15.0</redisson.version>
-        <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <nacos.version>1.4.2</nacos.version>
         <xxl.version>2.3.0</xxl.version>
         <mapstruct.version>1.4.1.Final</mapstruct.version>
@@ -201,11 +200,6 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>3.5.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-core</artifactId>
-                <version>${mybatis-generator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -685,7 +679,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.3</version>
                 <configuration>
-                    <autoVersionSubModules>true</autoVersionSubModules>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <generateReleasePoms>false</generateReleasePoms>
                     <arguments>-DskipTests</arguments>

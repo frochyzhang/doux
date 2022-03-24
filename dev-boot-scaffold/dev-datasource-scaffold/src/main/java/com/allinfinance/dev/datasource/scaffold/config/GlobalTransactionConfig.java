@@ -9,7 +9,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.interceptor.*;
+import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
+import org.springframework.transaction.interceptor.RollbackRuleAttribute;
+import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022/3/19 00:11
  */
 @Aspect
-@ConditionalOnProperty(value = "com.allinfinance.datasource.transaction.enabled", havingValue = "true")
+@ConditionalOnProperty(value = TransactionPointProperties.TRANSACTION_ENABLE, havingValue = "true")
 @Configuration
 public class GlobalTransactionConfig {
     private static final int TX_METHOD_TIMEOUT = 60;
