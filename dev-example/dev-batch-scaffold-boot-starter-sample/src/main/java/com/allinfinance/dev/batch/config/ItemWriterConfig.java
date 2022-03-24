@@ -1,8 +1,9 @@
-package com.allinfinance.dev.batch.scaffold.config;
+package com.allinfinance.dev.batch.config;
 
+import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.dto.DefiniteSeparatorDTO;
+import com.allinfinance.dev.batch.scaffold.config.BatchFileConfig;
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;

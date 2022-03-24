@@ -1,6 +1,6 @@
-package com.allinfinance.dev.batch.scaffold.tasklet.processor;
+package com.allinfinance.dev.batch.tasklet.processor;
 
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 

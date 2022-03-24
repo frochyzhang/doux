@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.tasklet.processor;
+package com.allinfinance.dev.batch.tasklet.processor;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;

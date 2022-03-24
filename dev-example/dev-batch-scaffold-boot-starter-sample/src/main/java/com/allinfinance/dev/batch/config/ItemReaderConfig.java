@@ -1,8 +1,10 @@
-package com.allinfinance.dev.batch.scaffold.config;
+package com.allinfinance.dev.batch.config;
 
+import com.allinfinance.dev.batch.scaffold.config.BatchFileConfig;
+import com.allinfinance.dev.batch.scaffold.config.JobDtoMapperBeanFactory;
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
+import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.dto.DefiniteSeparatorDTO;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;

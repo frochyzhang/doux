@@ -1,13 +1,14 @@
-package com.allinfinance.dev.batch.scaffold.job;
+package com.allinfinance.dev.batch.job;
 
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteLengthDTO;
-import com.allinfinance.dev.batch.scaffold.dto.DefiniteSeparatorDTO;
-import com.allinfinance.dev.batch.scaffold.listener.FlatFileJobListener;
-import com.allinfinance.dev.batch.scaffold.tasklet.SimpleTasklet;
-import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteLengthProcessor;
-import com.allinfinance.dev.batch.scaffold.tasklet.processor.DefiniteSeparatorProcessor;
-import com.allinfinance.dev.batch.scaffold.tasklet.processor.TblBatchExecutionProcessor;
+import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.dto.DefiniteSeparatorDTO;
+import com.allinfinance.dev.batch.listener.FlatFileJobListener;
+import com.allinfinance.dev.batch.scaffold.job.AbstractBatchJob;
+import com.allinfinance.dev.batch.tasklet.SimpleTasklet;
+import com.allinfinance.dev.batch.tasklet.processor.DefiniteLengthProcessor;
+import com.allinfinance.dev.batch.tasklet.processor.DefiniteSeparatorProcessor;
+import com.allinfinance.dev.batch.tasklet.processor.TblBatchExecutionProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;

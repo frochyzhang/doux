@@ -1,0 +1,11 @@
+com:
+  allinfinance:
+    batch:
+      verify-enabled: true
+      # 路径末尾要带上分割符
+      source-file-path: D:\project\java\dev\dev-example\dev-batch-scaffold-boot-starter-sample\src\main\resources\
+      target-file-path: D:\project\java\dev\dev-example\dev-batch-scaffold-boot-starter-sample\src\main\resources\
+      separator: ";"
+      delimiter: "|"
+      encoding: GB18030
+      skip-lines: -3

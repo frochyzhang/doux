@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.tasklet.reader;
+package com.allinfinance.dev.batch.tasklet.reader;
 
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;

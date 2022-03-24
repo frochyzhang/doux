@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.listener;
+package com.allinfinance.dev.batch.listener;
 
 import com.allinfinance.dev.batch.scaffold.config.BatchFileConfig;
 import org.apache.commons.io.FileUtils;
@@ -45,6 +45,7 @@ public class FlatFileJobListener implements JobExecutionListener {
                 logger.error("目标文件未生成: {}", targetFileName.getValue());
                 throw new IllegalArgumentException("目标文件未生成");
             }
+            //其他文件内容校验
             logger.info("Job执行成功，生成.OK文件...");
             try {
                 FileUtils.touch(new File(batchFileConfig.getTargetFilePath() + targetFileName.getValue() + ".OK"));

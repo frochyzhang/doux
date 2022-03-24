@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.tasklet.processor;
+package com.allinfinance.dev.batch.tasklet.processor;
 
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
 import org.springframework.batch.item.ItemProcessor;

@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.dto;
+package com.allinfinance.dev.batch.dto;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.tasklet.writer;
+package com.allinfinance.dev.batch.tasklet.writer;
 
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
 import org.springframework.batch.item.ItemWriter;
