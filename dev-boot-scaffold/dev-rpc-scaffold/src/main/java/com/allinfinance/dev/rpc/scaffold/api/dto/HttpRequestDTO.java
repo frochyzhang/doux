@@ -53,6 +53,14 @@ public class HttpRequestDTO extends AbstractRequestDTO {
         this.params = params;
     }
 
+    public String getHeader(String headerKey) {
+        return this.headers.get(headerKey);
+    }
+
+    public String getParam(String paramKey) {
+        return this.params.get(paramKey);
+    }
+
     @Override
     public String toString() {
         return "HttpRequestDTO{" +

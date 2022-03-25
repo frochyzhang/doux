@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @date 2022/2/28 10:59
  */
 @Component
-public class GatewayAppStartedListener implements ApplicationListener<ContextStartedEvent> {
+public class GatewayAppStartedListener implements ApplicationListener<ApplicationStartedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(GatewayAppStartedListener.class);
 
     @Value("${com.alipay.sofa.rpc.registry-address}")
@@ -28,7 +28,7 @@ public class GatewayAppStartedListener implements ApplicationListener<ContextSta
     private AppProcessFactory appProcessFactory;
 
     @Override
-    public void onApplicationEvent(ContextStartedEvent contextStartedEvent) {
+    public void onApplicationEvent(ApplicationStartedEvent event) {
         logger.info("GatewayAppListener stated...");
 
         Thread appRemoveThread = new Thread(() -> {
@@ -41,7 +41,7 @@ public class GatewayAppStartedListener implements ApplicationListener<ContextSta
                 appProcessFactory.checkAndProcess(appList);
 
                 try {
-                    TimeUnit.SECONDS.sleep(10);
+                    TimeUnit.SECONDS.sleep(60);
                 } catch (InterruptedException e) {
                     return;
                 }

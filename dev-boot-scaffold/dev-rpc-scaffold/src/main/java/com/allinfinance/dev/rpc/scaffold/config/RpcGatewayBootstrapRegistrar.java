@@ -1,11 +1,11 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
+import cn.hutool.core.net.NetUtil;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
-import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
             ApplicationConfig applicationConfig = new ApplicationConfig();
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(12500);
+            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(NetUtil.getUsableLocalPort(12001, 12999));
 
             SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
 
@@ -68,33 +68,6 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                     e.printStackTrace();
                 }
             }
-
-            // 2 调用网关的注册服务
-            AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 3000, "foreach", 3);
-            Thread gateRegistryThread = new Thread(() -> {
-                Boolean registerResult = null;
-                while (null == registerResult) {
-                    try {
-                        registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-                    } catch (SofaRouteException sofaRouteException) {
-                        logger.warn("网关不存在，10s后重试+1");
-                    }
-                    try {
-                        TimeUnit.SECONDS.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (registerResult) {
-                    logger.info("应用{}注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-                } else {
-                    logger.info("应用{}注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-                    throw new RuntimeException("应用注册失败!");
-                }
-            }, "gate-registry-thread");
-
-            gateRegistryThread.setDaemon(true);
-            gateRegistryThread.start();
         } else {
             throw new RuntimeException("TCP网关注册开关已打开，未设置必要参数!");
         }

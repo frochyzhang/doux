@@ -51,9 +51,6 @@ public class ForeachCluster extends AbstractCluster {
             throw noAvailableProviderException(request.getInterfaceName());
         }
         for (ProviderInfo providerInfo : providerInfos) {
-//            if (CommonUtils.isNotEmpty(invokedProviderInfos) && providerInfos.size() > invokedProviderInfos.size()) { // 总数大于已调用数
-//                providerInfos.removeAll(invokedProviderInfos);// 已经调用异常的本次不再重试
-//            }
 
             ClientTransport clientTransport = selectByProvider(request, providerInfo);
             if (clientTransport == null) {

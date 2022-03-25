@@ -1,5 +1,6 @@
 package com.allinfinance.rpc.consumer.provider;
 
+import cn.hutool.core.net.NetUtil;
 import com.allinfinance.dev.rpc.scaffold.api.AbstractProcessService;
 import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,6 @@ public class ProcessServiceImpl extends AbstractProcessService {
     @Override
     public String process(ProcessRequestDTO processRequestDTO) {
         System.out.println("请求他进来了");
-        return "test2";
+        return NetUtil.getUsableLocalPort(12000, 12999) + "";
     }
 }
