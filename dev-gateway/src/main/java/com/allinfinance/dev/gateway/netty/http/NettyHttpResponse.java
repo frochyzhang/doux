@@ -7,7 +7,13 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
+import java.util.Map;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS;
+import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS;
+import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -25,8 +31,8 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
 
     private String content;
 
-    private NettyHttpResponse(HttpResponseStatus status, ByteBuf buffer ) {
-        super(HttpVersion.HTTP_1_1, status,buffer);
+    private NettyHttpResponse(HttpResponseStatus status, ByteBuf buffer) {
+        super(HttpVersion.HTTP_1_1, status, buffer);
         headers().set(CONTENT_TYPE, "application/json;charset=utf-8");
         headers().setInt(CONTENT_LENGTH, content().readableBytes());
 
@@ -36,6 +42,25 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
         headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         headers().set(ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, RCS-ACCESS-TOKEN");
         headers().set(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,DELETE");
+    }
+
+    private NettyHttpResponse(HttpResponseStatus status, Map<String, String> headers, ByteBuf buffer) {
+        super(HttpVersion.HTTP_1_1, status, buffer);
+        headers().set(CONTENT_TYPE, "application/json;charset=utf-8");
+        headers().setInt(CONTENT_LENGTH, content().readableBytes());
+
+        /*
+         * 支持CORS 跨域访问
+         */
+        headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+        headers().set(ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, RCS-ACCESS-TOKEN");
+        headers().set(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,DELETE");
+
+        /*
+         * 自定义header
+         */
+
+        headers.forEach((key, value) -> headers().set(key, value));
     }
 
     public static FullHttpResponse make(HttpResponseStatus status) {
@@ -48,30 +73,44 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
         if (HttpResponseStatus.METHOD_NOT_ALLOWED == status) {
             return NettyHttpResponse.make(HttpResponseStatus.METHOD_NOT_ALLOWED, CONTENT_ERROR_405);
         }
-        return NettyHttpResponse.make(HttpResponseStatus.OK,CONTENT_NORMAL_200);
+        return NettyHttpResponse.make(HttpResponseStatus.OK, CONTENT_NORMAL_200);
     }
 
     public static FullHttpResponse makeError(Exception exception) {
         String message = exception.getClass().getName() + ":" + exception.getMessage();
-        return NettyHttpResponse.make(HttpResponseStatus.INTERNAL_SERVER_ERROR, String.format(CONTENT_ERROR_500,message));
+        return NettyHttpResponse.make(HttpResponseStatus.INTERNAL_SERVER_ERROR, String.format(CONTENT_ERROR_500, message));
     }
 
     public static FullHttpResponse ok(String content) {
-        return make(HttpResponseStatus.OK,content);
+        return make(HttpResponseStatus.OK, content);
     }
 
-    private static FullHttpResponse make(HttpResponseStatus status,String content) {
+    public static FullHttpResponse ok(Map<String, String> headers, String content) {
+        return make(HttpResponseStatus.OK, headers, content);
+    }
+
+    private static FullHttpResponse make(HttpResponseStatus status, Map<String, String> headers, String content) {
         content = content == null ? "" : content;
         byte[] body = content.getBytes();
         ByteBuf buffer = BYTE_BUF_ALLOCATOR.buffer(body.length);
         buffer.writeBytes(body);
-        NettyHttpResponse response = new NettyHttpResponse(status,buffer);
+        NettyHttpResponse response = new NettyHttpResponse(status, headers, buffer);
+        response.content = content;
+        return response;
+    }
+
+    private static FullHttpResponse make(HttpResponseStatus status, String content) {
+        content = content == null ? "" : content;
+        byte[] body = content.getBytes();
+        ByteBuf buffer = BYTE_BUF_ALLOCATOR.buffer(body.length);
+        buffer.writeBytes(body);
+        NettyHttpResponse response = new NettyHttpResponse(status, buffer);
         response.content = content;
         return response;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer builder = new StringBuffer();
         builder.append(protocolVersion().toString()).append(" ").append(status().toString()).append("\n");
         builder.append(CONTENT_TYPE).append(": ").append(headers().get(CONTENT_TYPE)).append("\n");

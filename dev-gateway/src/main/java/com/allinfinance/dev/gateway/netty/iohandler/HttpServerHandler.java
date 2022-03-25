@@ -25,6 +25,7 @@ package com.allinfinance.dev.gateway.netty.iohandler;
 import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,7 +35,11 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -82,34 +87,15 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     }
 
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
-        // TODO: 2022/2/18 处理业务逻辑
         System.out.println("requested!");
-
-        String resp;
+        HttpResponseDTO httpResponseDTO;
         try {
-            resp = AppProcessFactory.httpProcessed(appUniqueId, request, port);
+            httpResponseDTO = AppProcessFactory.httpProcessed(appUniqueId, request, port);
         } catch (Exception e) {
             logger.error("请求应用前置失败:", e);
             return NettyHttpResponse.makeError(e);
         }
 
-        return NettyHttpResponse.ok(resp);
-//        IFunctionHandler functionHandler = null;
-//
-//        try {
-//            functionHandler = matchFunctionHandler(request);
-//            Response response =  functionHandler.execute(request);
-//            return NettyHttpResponse.ok(response.toJSONString());
-//        }
-//        catch (IllegalMethodNotAllowedException error){
-//            return NettyHttpResponse.make(HttpResponseStatus.METHOD_NOT_ALLOWED);
-//        }
-//        catch (IllegalPathNotFoundException error){
-//            return NettyHttpResponse.make(HttpResponseStatus.NOT_FOUND);
-//        }
-//        catch (Exception error){
-//            LOGGER.error(functionHandler.getClass().getSimpleName() + " Error",error);
-//            return NettyHttpResponse.makeError(error);
-//        }
+        return NettyHttpResponse.ok(httpResponseDTO.getHeaders(), httpResponseDTO.getResponseMsg());
     }
 }
