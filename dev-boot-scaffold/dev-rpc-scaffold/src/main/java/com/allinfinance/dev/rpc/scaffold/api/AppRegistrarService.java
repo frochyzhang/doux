@@ -6,4 +6,6 @@ package com.allinfinance.dev.rpc.scaffold.api;
  */
 public interface AppRegistrarService {
     Boolean register(String appUniqueId);
+
+    void signExporterClosedEvent(String appUniqueId);
 }

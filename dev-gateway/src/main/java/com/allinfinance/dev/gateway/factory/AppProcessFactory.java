@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.api.dto.HttpRequestDTO;
@@ -15,6 +16,7 @@ import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,9 @@ public class AppProcessFactory {
     private static final Map<String, List<String>> appUrlMap = new ConcurrentHashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(AppProcessFactory.class);
+
+    @Autowired
+    private GateClientFactoryAware gateClientFactoryAware;
 
     public void register(String appUniqueId, ProcessService processService) {
         processors.put(appUniqueId, processService);
@@ -65,7 +70,6 @@ public class AppProcessFactory {
         processRequestDTO.setRequestDTO(new TcpRequestDTO(requestMsg));
         return processors.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
     }
-
     private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
 
     public static HttpResponseDTO httpProcessed(String appUniqueId, NettyHttpRequest request, int port) {
@@ -132,13 +136,16 @@ public class AppProcessFactory {
         return serviceList;
     }
 
-    public void checkAndProcess(List<String> appList) {
-        logger.info("开始检查:{}", appList);
-        processors.keySet().stream()
-                .filter(app -> !appList.contains(app))
-                .forEach(app -> {
-                    logger.warn("{}应用已下线，移除网关订阅!", app);
-                    processors.remove(app);
-                });
+    public void removeReference(ReferenceParam<ProcessService> referenceParam) {
+        String uniqueId = referenceParam.getUniqueId();
+        logger.warn("准备移除[appUniqueId:{}, interfaceType:{}]订阅", uniqueId, referenceParam.getInterfaceType());
+
+        ProcessService removeRet = processors.remove(uniqueId);
+        if (removeRet != null) {
+            logger.warn("appUniqueId:{}网关缓冲池已移除，准备移除sofa订阅", uniqueId);
+            gateClientFactoryAware.getReferenceClient().removeReference(referenceParam);
+        } else {
+            logger.info("应用[{}]不存在", uniqueId);
+        }
     }
 }

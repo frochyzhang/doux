@@ -24,10 +24,13 @@ import org.slf4j.LoggerFactory;
 public class HttpServer {
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
+    EventLoopGroup bossGroup = new NioEventLoopGroup();
+    EventLoopGroup workerGroup = new NioEventLoopGroup();
+
     public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+//        EventLoopGroup bossGroup = new NioEventLoopGroup();
+//        EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -48,14 +51,6 @@ public class HttpServer {
         })
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).syncUninterruptibly().addListener(future -> {
-//            String logBanner = "\n\n" +
-//                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n" +
-//                    "*                                                                                   *\n" +
-//                    "*                                                                                   *\n" +
-//                    "*                   Netty Http Server started on port {}.                         *\n" +
-//                    "*                                                                                   *\n" +
-//                    "*                                                                                   *\n" +
-//                    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n";
             String logBanner = "Netty Http Server started on port {}.";
             logger.info(logBanner, port);
         });
@@ -64,6 +59,13 @@ public class HttpServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         });
+        return Boolean.TRUE;
+    }
+
+    public Boolean shutdown() {
+        logger.info("Netty Http Server Start Shutdown ............");
+        this.bossGroup.shutdownGracefully();
+        this.workerGroup.shutdownGracefully();
         return Boolean.TRUE;
     }
 }

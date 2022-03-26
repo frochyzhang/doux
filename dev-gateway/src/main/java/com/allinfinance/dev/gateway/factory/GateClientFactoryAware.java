@@ -113,9 +113,12 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             return Boolean.FALSE;
         } catch (SofaRouteException e) {
             logger.warn("[ {} ]已掉线,移除订阅!", uniqueId, e);
-            referenceClient.removeReference(referenceParam);
+            appProcessFactory.removeReference(referenceParam);
             return Boolean.FALSE;
         }
     }
 
+    public ReferenceClient getReferenceClient() {
+        return referenceClient;
+    }
 }
