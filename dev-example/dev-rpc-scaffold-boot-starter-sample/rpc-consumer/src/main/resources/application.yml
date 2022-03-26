@@ -14,7 +14,7 @@ com:
         - com.allinfinance.rpc.scaffold.api.TestApi
       bootstrap:
         enable: true
-        gate-registry: 10.250.28.142:8848/public
+        gate-registry: 10.250.28.142:8848/qps-dev
         app-unique-id: ${spring.application.name}
         app-list:
           - type: TCP

@@ -1,6 +1,8 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractProcessService implements ProcessService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractProcessService.class);
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
@@ -20,7 +23,7 @@ public abstract class AbstractProcessService implements ProcessService {
      */
     @Override
     public Boolean verify() {
-        System.out.println("called");
+        logger.info("业务处理服务验证接口调用");
         return Boolean.TRUE;
     }
 

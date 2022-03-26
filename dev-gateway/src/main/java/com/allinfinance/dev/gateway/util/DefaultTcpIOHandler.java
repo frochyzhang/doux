@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
-public class TestIOHandler extends AbstractMessageIOHandler {
+public class DefaultTcpIOHandler extends AbstractMessageIOHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageIOHandler.class);
 
-    public TestIOHandler(String appName) {
+    public DefaultTcpIOHandler(String appName) {
         super(appName);
     }
 
