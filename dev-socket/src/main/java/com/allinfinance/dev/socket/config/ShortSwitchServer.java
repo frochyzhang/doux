@@ -21,14 +21,18 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.annotation.Order;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 张勇
@@ -77,6 +81,10 @@ public class ShortSwitchServer implements DisposableBean {
     }
 
     public void initMinaServer(MinaSocketBean minaSocketBean) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+                .setNamePrefix(minaSocketBean.getName() + "-pool-").build();
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(minaSocketBean.getThreadCount(), minaSocketBean.getThreadCount(),
+                0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1), namedThreadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
         MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
                 .getConstructor(Integer.class, String.class)
                 .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
@@ -86,7 +94,7 @@ public class ShortSwitchServer implements DisposableBean {
         IoAcceptor acceptor = new NioSocketAcceptor(minaSocketBean.getProcessorCount());
         acceptor.getFilterChain().addLast("MsgCodec",
                 new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder)));
-        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newFixedThreadPool(minaSocketBean.getThreadCount())));
+        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(threadPoolExecutor));
         acceptor.setHandler((IoHandler) Class.forName(minaSocketBean.getHandlerClassName()).getConstructor(String.class)
                 .newInstance(minaSocketBean.getName()));
         acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
