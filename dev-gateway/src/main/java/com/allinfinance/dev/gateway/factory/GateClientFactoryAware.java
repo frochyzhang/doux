@@ -96,7 +96,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                             try {
                                 new ShortSwitchServer().initMinaServer(minaSocketBean);
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
-                                e.printStackTrace();
+                                logger.error("启动socket监听失败!", e);
                             }
                             break;
                         case HTTP:

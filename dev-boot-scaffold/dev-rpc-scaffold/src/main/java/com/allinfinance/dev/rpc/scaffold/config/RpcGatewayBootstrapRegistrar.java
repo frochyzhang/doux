@@ -67,7 +67,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
                 try {
                     TimeUnit.SECONDS.sleep(10);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("调用本地验证服务失败!", e);
                 }
             }
         } else {

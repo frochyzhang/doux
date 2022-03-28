@@ -44,7 +44,7 @@ public class ExporterStatedListener implements ApplicationListener<ApplicationSt
                 try {
                     TimeUnit.SECONDS.sleep(10);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("调用网关注册服务失败!", e);
                 }
             }
             if (registerResult) {

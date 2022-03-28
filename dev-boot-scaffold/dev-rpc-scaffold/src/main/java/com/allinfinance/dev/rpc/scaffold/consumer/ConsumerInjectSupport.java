@@ -59,7 +59,7 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
             try {
                 referenceParam.setInterfaceType(Class.forName(className));
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.error("接口不存在", e);
             }
             Object proxy = referenceClient.reference(referenceParam);
             String beanName = BeanUtils.getBeanNameWithImpl(className);
