@@ -17,6 +17,9 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/18 13:34
@@ -26,6 +29,8 @@ public class HttpServer {
 
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+    private static final Map<String, HttpServer> APP_SERVER_MAP = new ConcurrentHashMap<>();
 
     public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -52,6 +57,7 @@ public class HttpServer {
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).syncUninterruptibly().addListener(future -> {
             String logBanner = "Netty Http Server started on port {}.";
+            APP_SERVER_MAP.put(uniqueId, this);
             logger.info(logBanner, port);
         });
         channelFuture.channel().closeFuture().addListener(future -> {
@@ -67,5 +73,9 @@ public class HttpServer {
         this.bossGroup.shutdownGracefully();
         this.workerGroup.shutdownGracefully();
         return Boolean.TRUE;
+    }
+
+    public static HttpServer getInstance(String appUniqueId) {
+        return APP_SERVER_MAP.get(appUniqueId);
     }
 }
