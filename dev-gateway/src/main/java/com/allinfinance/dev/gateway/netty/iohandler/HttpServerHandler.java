@@ -31,10 +31,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -87,7 +89,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     }
 
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
-        System.out.println("requested!");
+        logger.info("接收[{}]请求开始!", appUniqueId);
+
+        boolean verifyRet = crossOriginVerify(request);
+
+        if (verifyRet) {
+            return NettyHttpResponse.ok(null);
+        }
         HttpResponseDTO httpResponseDTO;
         try {
             httpResponseDTO = AppProcessFactory.httpProcessed(appUniqueId, request, port);
@@ -95,7 +103,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             logger.error("请求应用前置失败:", e);
             return NettyHttpResponse.makeError(e);
         }
+        logger.info("[{}]请求处理结束, 开始组装响应。", appUniqueId);
+        Map<String, String> headers = httpResponseDTO.getHeaders();
+        return NettyHttpResponse.ok(headers, httpResponseDTO.getResponseMsg());
+    }
 
-        return NettyHttpResponse.ok(httpResponseDTO.getHeaders(), httpResponseDTO.getResponseMsg());
+    private boolean crossOriginVerify(NettyHttpRequest request) {
+        return request.getMethod().equals(HttpMethod.OPTIONS);
     }
 }
