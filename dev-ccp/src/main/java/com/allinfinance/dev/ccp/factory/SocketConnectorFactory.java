@@ -3,6 +3,8 @@ package com.allinfinance.dev.ccp.factory;
 import com.allinfinance.dev.core.util.socket.client.ClientIoHandler;
 import com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder;
 import com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder;
+import com.allinfinance.dev.core.util.socket.codec.Message8583Decoder;
+import com.allinfinance.dev.core.util.socket.codec.Message8583Encoder;
 import com.allinfinance.dev.core.util.socket.codec.MessageCodecFactory;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -28,9 +30,15 @@ public class SocketConnectorFactory {
             nioSocketConnector.setConnectTimeoutMillis(timeOut * 1000L);
             nioSocketConnector.setHandler(new ClientIoHandler(false));
 
-            nioSocketConnector.getFilterChain().addLast(
-                    "msgCodec", new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode),
-                            new DemuxingMessageEncoder(msgLengthSize, msgEncode))));
+            if (clientAppName.endsWith("-8583")) {
+                nioSocketConnector.getFilterChain().addLast(
+                        "8583MsgCodec",
+                        new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
+            } else {
+                nioSocketConnector.getFilterChain().addLast(
+                        "diyMsgCodec", new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode),
+                                new DemuxingMessageEncoder(msgLengthSize, msgEncode))));
+            }
             return nioSocketConnector;
         });
         return getConnector(clientAppName);

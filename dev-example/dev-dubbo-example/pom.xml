@@ -16,6 +16,10 @@
         <module>dev-dubbo-example-consumer</module>
     </modules>
     <artifactId>dev-dubbo-example</artifactId>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>

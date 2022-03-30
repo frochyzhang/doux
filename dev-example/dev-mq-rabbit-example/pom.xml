@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <name>dev-mq-rabbit rabbitmq 使用示例</name>
     <artifactId>dev-mq-rabbit-example</artifactId>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 
     <dependencies>
         <dependency>

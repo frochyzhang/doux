@@ -11,5 +11,10 @@
     <name>${project.artifactId}-${project.version}</name>
 
     <artifactId>rpc-api</artifactId>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 
 </project>

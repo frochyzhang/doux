@@ -11,5 +11,8 @@
 
     <artifactId>dev-dubbo-example-api</artifactId>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 
 </project>
