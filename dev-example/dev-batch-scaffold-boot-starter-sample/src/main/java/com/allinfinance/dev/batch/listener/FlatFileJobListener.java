@@ -24,11 +24,12 @@ public class FlatFileJobListener implements JobExecutionListener {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
         JobParameters jobParameters = jobExecution.getJobParameters();
         logger.info("Job参数：" + jobParameters);
         Map<String, JobParameter> parameterMap = jobParameters.getParameters();
         JobParameter sourceFileName = parameterMap.get("sourceFileName");
-        File file = new File(batchFileConfig.getSourceFilePath() + sourceFileName.getValue());
+        File file = new File(fileConfig.getSourceFilePath() + sourceFileName.getValue());
         if (!file.exists()) {
             logger.error("源文件不存在: {}", sourceFileName.getValue());
             throw new IllegalArgumentException("源文件不存在");
@@ -37,10 +38,11 @@ public class FlatFileJobListener implements JobExecutionListener {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             Map<String, JobParameter> parameterMap = jobExecution.getJobParameters().getParameters();
             JobParameter targetFileName = parameterMap.get("targetFileName");
-            File file = new File(batchFileConfig.getTargetFilePath() + targetFileName.getValue());
+            File file = new File(fileConfig.getTargetFilePath() + targetFileName.getValue());
             if (!file.exists()) {
                 logger.error("目标文件未生成: {}", targetFileName.getValue());
                 throw new IllegalArgumentException("目标文件未生成");
@@ -48,7 +50,7 @@ public class FlatFileJobListener implements JobExecutionListener {
             //其他文件内容校验
             logger.info("Job执行成功，生成.OK文件...");
             try {
-                FileUtils.touch(new File(batchFileConfig.getTargetFilePath() + targetFileName.getValue() + ".OK"));
+                FileUtils.touch(new File(fileConfig.getTargetFilePath() + targetFileName.getValue() + ".OK"));
             } catch (IOException e) {
                 logger.error("生成.OK文件失败");
             }

@@ -34,12 +34,13 @@ public class ItemWriterConfig {
      */
     @Bean("definiteSeparatorWriter")
     public FlatFileItemWriter<DefiniteSeparatorDTO> itemWriter1() {
-        FileSystemResource outputResource = new FileSystemResource(batchFileConfig.getTargetFilePath() + "definite-separator-target-file");
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
+        FileSystemResource outputResource = new FileSystemResource(fileConfig.getTargetFilePath() + "definite-separator-target-file");
         return new FlatFileItemWriterBuilder<DefiniteSeparatorDTO>()
                 .name("definiteSeparatorWriter")
                 .resource(outputResource)
                 .delimited()
-                .delimiter(batchFileConfig.getDelimiter())
+                .delimiter(fileConfig.getDelimiter())
                 .names(new String[]{"company", "year", "channel", "rank", "name", "count1", "count2"})
                 .build();
     }
@@ -51,7 +52,8 @@ public class ItemWriterConfig {
      */
     @Bean("definiteLengthWriter")
     public FlatFileItemWriter<DefiniteLengthDTO> itemWriter2() {
-        FileSystemResource outputResource = new FileSystemResource(batchFileConfig.getTargetFilePath() + "definite-length-target-file");
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
+        FileSystemResource outputResource = new FileSystemResource(fileConfig.getTargetFilePath() + "definite-length-target-file");
         return new FlatFileItemWriterBuilder<DefiniteLengthDTO>()
                 .name("definiteLengthWriter")
                 .resource(outputResource)

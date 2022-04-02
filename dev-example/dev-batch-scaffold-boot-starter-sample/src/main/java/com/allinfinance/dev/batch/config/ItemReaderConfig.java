@@ -1,10 +1,10 @@
 package com.allinfinance.dev.batch.config;
 
+import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
+import com.allinfinance.dev.batch.dto.DefiniteSeparatorDTO;
 import com.allinfinance.dev.batch.scaffold.config.BatchFileConfig;
 import com.allinfinance.dev.batch.scaffold.config.JobDtoMapperBeanFactory;
 import com.allinfinance.dev.batch.scaffold.dal.model.TblBatchJobExecution;
-import com.allinfinance.dev.batch.dto.DefiniteLengthDTO;
-import com.allinfinance.dev.batch.dto.DefiniteSeparatorDTO;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
@@ -56,12 +56,13 @@ public class ItemReaderConfig {
 
     @Bean("definiteSeparatorReader")
     public FlatFileItemReader<DefiniteSeparatorDTO> initReader1() {
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
         FlatFileItemReader<DefiniteSeparatorDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setEncoding(batchFileConfig.getEncoding());
+        itemReader.setEncoding(fileConfig.getEncoding());
         //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
         itemReader.setStrict(true);
-        itemReader.setLinesToSkip(batchFileConfig.getSkipLines());
-        itemReader.setResource(new FileSystemResource(batchFileConfig.getSourceFilePath() + "definite-separator-source-file-2"));
+        itemReader.setLinesToSkip(fileConfig.getSkipLines());
+        itemReader.setResource(new FileSystemResource(fileConfig.getSourceFilePath() + "definite-separator-source-file-2"));
         itemReader.setLineMapper(configDefaultSeparatorLineMapper());
         return itemReader;
     }
@@ -73,12 +74,13 @@ public class ItemReaderConfig {
      */
     @Bean("definiteLengthReader")
     public FlatFileItemReader<DefiniteLengthDTO> initReader2() {
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
         FlatFileItemReader<DefiniteLengthDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setEncoding(batchFileConfig.getEncoding());
+        itemReader.setEncoding(fileConfig.getEncoding());
         //如果输入资源不存在，阅读器会抛出异常。否则，它会记录问题并继续。
         itemReader.setStrict(true);
-        itemReader.setLinesToSkip(batchFileConfig.getSkipLines());
-        itemReader.setResource(new FileSystemResource(batchFileConfig.getSourceFilePath() + "definite-length-source-file"));
+        itemReader.setLinesToSkip(fileConfig.getSkipLines());
+        itemReader.setResource(new FileSystemResource(fileConfig.getSourceFilePath() + "definite-length-source-file"));
         Map<String, Range> tokenRangeMap = new LinkedHashMap<>();
         tokenRangeMap.put("ISIN", new Range(1, 12));
         tokenRangeMap.put("number", new Range(13, 15));
@@ -150,8 +152,9 @@ public class ItemReaderConfig {
      * @return LineMapper
      */
     private DefaultLineMapper<DefiniteSeparatorDTO> configDefaultSeparatorLineMapper() {
+        BatchFileConfig.FileConfig fileConfig = batchFileConfig.getFileConfigMap().get("cups-trx");
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
-        delimitedLineTokenizer.setDelimiter(batchFileConfig.getSeparator());
+        delimitedLineTokenizer.setDelimiter(fileConfig.getSeparator());
         //设置字段别名，增强可读性
         delimitedLineTokenizer.setNames("company", "year", "channel", "rank", "name", "count1", "count2");
         DefaultLineMapper<DefiniteSeparatorDTO> defaultLineMapper = new DefaultLineMapper<>();
