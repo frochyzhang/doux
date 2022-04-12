@@ -19,6 +19,13 @@ public enum TransmitModeEnum {
                 .orElseThrow(() -> new IllegalArgumentException(code));
     }
 
+    public static TransmitModeEnum valueByDesc(String desc) {
+        return Arrays.stream(TransmitModeEnum.values())
+                .filter(enu -> enu.description.equals(desc))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(desc));
+    }
+
     private String code;
     private String description;
 

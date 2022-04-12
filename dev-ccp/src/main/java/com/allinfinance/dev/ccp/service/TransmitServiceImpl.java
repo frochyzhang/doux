@@ -24,7 +24,7 @@ public class TransmitServiceImpl implements TransmitService {
 
     private Logger logger = LoggerFactory.getLogger(TransmitServiceImpl.class);
 
-    @Value("${dev.ccp.file.localSysPath:}")
+    @Value("${dev.ccp.file.local-sys-path:}")
     private String localSysPath;
 
     @Override

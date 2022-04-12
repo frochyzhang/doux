@@ -12,11 +12,16 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.20.81:8848/dev
+        registry-address: nacos://10.250.28.142:8848/qps-dev
         bolt-port: 12202
   allinfinance:
     rpc:
       provider-package: com.allinfinance.dev.ccp.service
+
+dev:
+  ccp:
+    file:
+      local-sys-path: Z:\work\dev-new\dev\dev-ccp\src\main\resources
 
 ---
 spring:
