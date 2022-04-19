@@ -22,6 +22,10 @@ public class RpcConfigurationProperties {
      * 服务提供方的包路径
      */
     private String providerPackage;
+    /**
+     * RPC客户端配置
+     */
+    private Consumer consumer;
 
     private Bootstrap bootstrap = new Bootstrap();
 
@@ -41,6 +45,14 @@ public class RpcConfigurationProperties {
         this.referenceList = referenceList;
     }
 
+    public Consumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(Consumer consumer) {
+        this.consumer = consumer;
+    }
+
     public Bootstrap getBootstrap() {
         return bootstrap;
     }
@@ -49,6 +61,40 @@ public class RpcConfigurationProperties {
         this.bootstrap = bootstrap;
     }
 
+    public static class Consumer{
+        /**
+         * 客户端调用超时时间
+         */
+        private Integer timeout;
+        /**
+         * 客户端调用类型，默认为同步，设置为future时为异步调用
+         */
+        private String invokeType;
+
+        public Integer getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(Integer timeout) {
+            this.timeout = timeout;
+        }
+
+        public String getInvokeType() {
+            return invokeType;
+        }
+
+        public void setInvokeType(String invokeType) {
+            this.invokeType = invokeType;
+        }
+
+        @Override
+        public String toString() {
+            return "Consumer{" +
+                    "timeout=" + timeout +
+                    ", future=" + invokeType +
+                    '}';
+        }
+    }
     public static class Bootstrap {
 
         public static final String BOOT_ENABLE = "com.allinfinance.rpc.bootstrap.enable";

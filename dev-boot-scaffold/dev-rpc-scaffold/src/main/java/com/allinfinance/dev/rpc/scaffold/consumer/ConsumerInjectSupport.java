@@ -5,7 +5,6 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
-import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.core.util.common.BeanUtils;
 import com.allinfinance.dev.core.util.http.client.IHttpClientService;
@@ -19,6 +18,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * @author qipeng
@@ -48,7 +49,14 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         }
         ReferenceClient referenceClient = clientFactory.getClient(ReferenceClient.class);
         ReferenceParam referenceParam = new ReferenceParam<>();
-        BindingParam refBindingParam = new BoltBindingParam();
+        BoltBindingParam refBindingParam = new BoltBindingParam();
+
+        RpcConfigurationProperties.Consumer consumer = rpcConfigurationProperties.getConsumer();
+        Optional.ofNullable(consumer.getTimeout())
+                .ifPresent(refBindingParam::setTimeout);
+        Optional.ofNullable(consumer.getInvokeType())
+                .ifPresent(refBindingParam::setType);
+
         referenceParam.setBindingParam(refBindingParam);
 
         for (String className : rpcConfigurationProperties.getReferenceList()) {
