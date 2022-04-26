@@ -9,11 +9,7 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS;
-import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS;
-import static io.netty.handler.codec.http.HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpHeaderNames.*;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -77,8 +73,7 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
     }
 
     public static FullHttpResponse makeError(Exception exception) {
-        String message = exception.getClass().getName() + ":" + exception.getMessage();
-        return NettyHttpResponse.make(HttpResponseStatus.INTERNAL_SERVER_ERROR, String.format(CONTENT_ERROR_500, message));
+        return NettyHttpResponse.make(HttpResponseStatus.INTERNAL_SERVER_ERROR, String.format(CONTENT_ERROR_500, exception.getMessage()));
     }
 
     public static FullHttpResponse ok(String content) {

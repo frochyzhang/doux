@@ -7,11 +7,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
-import com.allinfinance.dev.rpc.scaffold.api.dto.HttpRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.RequestTypeEnum;
-import com.allinfinance.dev.rpc.scaffold.api.dto.TcpRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.*;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,11 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +30,7 @@ import java.util.stream.Collectors;
 public class AppProcessFactory {
     private static final Map<String, ProcessService> processors = new ConcurrentHashMap<>();
     private static final Map<String, RpcConfigurationProperties.Bootstrap> compares = new ConcurrentHashMap<>();
-    private static final Map<String, List<String>> appUrlMap = new ConcurrentHashMap<>();
+    private static final Map<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> appUrlMap = new ConcurrentHashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(AppProcessFactory.class);
 
@@ -50,7 +42,7 @@ public class AppProcessFactory {
         compares.put(appUniqueId, processService.init());
     }
 
-    public void register(String appUniqueId, List<String> urls) {
+    public void register(String appUniqueId, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urls) {
         if (appUrlMap.containsKey(appUniqueId)) {
             urls.addAll(appUrlMap.get(appUniqueId));
         }
@@ -70,6 +62,7 @@ public class AppProcessFactory {
         processRequestDTO.setRequestDTO(new TcpRequestDTO(requestMsg));
         return processors.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
     }
+
     private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
 
     public static HttpResponseDTO httpProcessed(String appUniqueId, NettyHttpRequest request, int port) {
@@ -101,7 +94,11 @@ public class AppProcessFactory {
         processRequestDTO.setRequestDTO(httpRequestDTO);
 
         //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
-        List<String> urlList = appUrlMap.get(appUniqueId);
+        List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urlConfigList = appUrlMap.get(appUniqueId);
+        List<String> urlList = appUrlMap.get(appUniqueId)
+                .stream()
+                .map(RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig::getUrl)
+                .collect(Collectors.toList());
         if (!urlList.contains(url)) {
             //2、不包含url则去寻找其他监听了这个端口的应用
             List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
@@ -111,12 +108,32 @@ public class AppProcessFactory {
                     .collect(Collectors.toList());
             //3、遍历监听了这个端口的应用列表，判断是否包含url，如果包含则直接调用
             appUniqueId = bootstrapList.stream()
-                    .filter(bootstrap -> appUrlMap.get(bootstrap.getAppUniqueId()).contains(url))
+                    .filter(bootstrap -> appUrlMap.get(bootstrap.getAppUniqueId())
+                            .stream()
+                            .map(RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig::getUrl)
+                            .collect(Collectors.toList())
+                            .contains(url))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
                     .getAppUniqueId();
         }
-        return ((HttpResponseDTO) processors.get(appUniqueId).process(processRequestDTO).getResponseDTO());
+        ProcessService processService = processors.get(appUniqueId);
+        if (processService == null) {
+            logger.error("未找到对应http请求处理服务, appUniqueId: {}", appUniqueId);
+            throw new IllegalArgumentException("调用http请求处理服务失败");
+        }
+        //判断请求类型是否与配置的一致
+        HttpMethod requestMethod = appUrlMap.get(appUniqueId)
+                .stream()
+                .filter(urlConfig -> url.equals(urlConfig.getUrl()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
+                .getRequestMethod();
+        if (requestMethod.equals(HttpMethod.valueOf(request.method().name()))) {
+            return ((HttpResponseDTO) processors.get(appUniqueId).process(processRequestDTO).getResponseDTO());
+        } else {
+            throw new IllegalArgumentException("不合法的请求类型: " + request.method());
+        }
     }
 
     public static List<String> getServiceList(String server) {

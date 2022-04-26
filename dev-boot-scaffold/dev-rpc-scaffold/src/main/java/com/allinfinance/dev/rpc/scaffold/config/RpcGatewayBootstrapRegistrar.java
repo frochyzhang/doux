@@ -45,6 +45,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
             RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
 
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
+            logger.info("开始发布应用{}的ProcessService服务到注册中心", bootstrap.getAppUniqueId());
             ApplicationConfig applicationConfig = new ApplicationConfig();
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
             ServerConfig serverConfig = SofaAPIConfig.getServerConfig(NetUtil.getUsableLocalPort(12001, 12999));
@@ -61,7 +62,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
                     logger.warn("ProcessService未发布成功，等待10s后重试");
                 }
                 if (verifyResult != null) {
-                    logger.info("{}业务处理服务注册成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.info("{}业务处理服务发布成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
                     break;
                 }
                 try {

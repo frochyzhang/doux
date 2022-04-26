@@ -1,6 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpMethod;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class RpcConfigurationProperties {
         this.bootstrap = bootstrap;
     }
 
-    public static class Consumer{
+    public static class Consumer {
         /**
          * 客户端调用超时时间
          */
@@ -95,6 +96,7 @@ public class RpcConfigurationProperties {
                     '}';
         }
     }
+
     public static class Bootstrap {
 
         public static final String BOOT_ENABLE = "com.allinfinance.rpc.bootstrap.enable";
@@ -162,8 +164,6 @@ public class RpcConfigurationProperties {
                 TCP, HTTP;
 
             }
-
-            ;
 
             public static class TcpConfig {
                 /**
@@ -354,7 +354,42 @@ public class RpcConfigurationProperties {
                 /**
                  * 处理的URL列表
                  */
-                private List<String> urlList;
+                private List<UrlConfig> urlList;
+
+                public static class UrlConfig {
+                    /**
+                     * URL
+                     */
+                    private String url;
+                    /**
+                     * 请求类型
+                     */
+                    private HttpMethod requestMethod;
+
+                    public String getUrl() {
+                        return url;
+                    }
+
+                    public void setUrl(String url) {
+                        this.url = url;
+                    }
+
+                    public HttpMethod getRequestMethod() {
+                        return requestMethod;
+                    }
+
+                    public void setRequestMethod(HttpMethod requestMethod) {
+                        this.requestMethod = requestMethod;
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "UrlConfig{" +
+                                "url='" + url + '\'' +
+                                ", requestMethod=" + requestMethod +
+                                '}';
+                    }
+                }
 
                 public Boolean getTcpNoDelay() {
                     return tcpNoDelay;
@@ -396,11 +431,11 @@ public class RpcConfigurationProperties {
                     this.soSndBuf = soSndBuf;
                 }
 
-                public List<String> getUrlList() {
+                public List<UrlConfig> getUrlList() {
                     return urlList;
                 }
 
-                public void setUrlList(List<String> urlList) {
+                public void setUrlList(List<UrlConfig> urlList) {
                     this.urlList = urlList;
                 }
 

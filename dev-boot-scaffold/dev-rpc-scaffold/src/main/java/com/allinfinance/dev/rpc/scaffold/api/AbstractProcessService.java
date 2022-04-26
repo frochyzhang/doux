@@ -23,7 +23,7 @@ public abstract class AbstractProcessService implements ProcessService {
      */
     @Override
     public Boolean verify() {
-        logger.info("业务处理服务验证接口调用");
+        logger.info("业务处理服务验证接口调用成功");
         return Boolean.TRUE;
     }
 

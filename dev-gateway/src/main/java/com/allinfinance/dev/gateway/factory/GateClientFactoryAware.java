@@ -61,7 +61,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     4、去注册中心查询服务，
      */
     public Boolean registerConsumer(String uniqueId) {
-
+        logger.info("开始订阅[ {} ]业务处理服务", uniqueId);
         ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
         BoltBindingParam boltBindingParam = new BoltBindingParam();
         boltBindingParam.setLoadBalancer("roundRobin");

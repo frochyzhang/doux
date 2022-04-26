@@ -52,10 +52,12 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         BoltBindingParam refBindingParam = new BoltBindingParam();
 
         RpcConfigurationProperties.Consumer consumer = rpcConfigurationProperties.getConsumer();
-        Optional.ofNullable(consumer.getTimeout())
-                .ifPresent(refBindingParam::setTimeout);
-        Optional.ofNullable(consumer.getInvokeType())
-                .ifPresent(refBindingParam::setType);
+        if (consumer != null) {
+            Optional.ofNullable(consumer.getTimeout())
+                    .ifPresent(refBindingParam::setTimeout);
+            Optional.ofNullable(consumer.getInvokeType())
+                    .ifPresent(refBindingParam::setType);
+        }
 
         referenceParam.setBindingParam(refBindingParam);
 

@@ -32,6 +32,7 @@ public class ExporterStatedListener implements ApplicationListener<ApplicationSt
         RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
 
         // 2 调用网关的注册服务
+        logger.info("开始调用网关注册服务");
         AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 3000, "foreach", 3);
         Thread gateRegistryThread = new Thread(() -> {
             Boolean registerResult = null;

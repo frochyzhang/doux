@@ -29,6 +29,7 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
             logger.info("[ {} ]应用注册成功!", appUniqueId);
             return Boolean.TRUE;
         }
+        logger.error("[ {} ]应用注册失败!", appUniqueId);
         return Boolean.FALSE;
     }
 

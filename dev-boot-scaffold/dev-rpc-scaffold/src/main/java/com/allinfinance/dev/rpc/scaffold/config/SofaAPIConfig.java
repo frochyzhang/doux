@@ -38,7 +38,8 @@ public class SofaAPIConfig {
                 .setCluster(cluster)
                 .setRetries(retries)
                 .setUniqueId(uniqueId)
-                .setRegistry(registryConfig);
+                .setRegistry(registryConfig)
+                .setInJVM(false);
         return consumerConfig.refer();
     }
 
