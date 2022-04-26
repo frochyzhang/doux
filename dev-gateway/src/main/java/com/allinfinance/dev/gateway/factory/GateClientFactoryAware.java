@@ -15,7 +15,6 @@ import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,24 +33,9 @@ public class GateClientFactoryAware implements ClientFactoryAware {
 
     private ReferenceClient referenceClient;
 
-    @Value("${com.alipay.sofa.rpc.registry-address}")
-    private String registryAddress;
-
     @Override
     public void setClientFactory(ClientFactory clientFactory) {
-
         this.referenceClient = clientFactory.getClient(ReferenceClient.class);
-
-        String server = registryAddress.substring(registryAddress.indexOf("://") + 3);
-
-        AppProcessFactory.getServiceList(server)
-                .forEach(service -> {
-                    String uniqueId = service.split(":")[1];
-                    if (registerConsumer(uniqueId)) {
-                        logger.info("[ {} ]应用注册成功!", uniqueId);
-                    }
-                });
-
     }
 
     /*

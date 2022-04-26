@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
  */
 @ConditionalOnBean(value = {RpcGatewayBootstrapRegistrar.class})
 @Component
-public class ExporterStatedListener implements ApplicationListener<ApplicationStartedEvent> {
-    private static final Logger logger = LoggerFactory.getLogger(ExporterStatedListener.class);
+public class ExporterStartedListener implements ApplicationListener<ApplicationStartedEvent> {
+    private static final Logger logger = LoggerFactory.getLogger(ExporterStartedListener.class);
 
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;

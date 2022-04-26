@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway;
+package com.allinfinance.dev.gateway.listener;
 
 import com.alipay.sofa.rpc.boot.container.ConsumerConfigContainer;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;

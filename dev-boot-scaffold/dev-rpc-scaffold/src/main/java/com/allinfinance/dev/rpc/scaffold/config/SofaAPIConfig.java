@@ -26,7 +26,8 @@ public class SofaAPIConfig {
                 .setConnectTimeout(timeout)
                 .setCluster(cluster)
                 .setRetries(retries)
-                .setRegistry(registryConfig);
+                .setRegistry(registryConfig)
+                .setInJVM(false);
         return consumerConfig.refer();
     }
 
@@ -46,7 +47,6 @@ public class SofaAPIConfig {
     public static <T> T referProxyConsumerRef(RegistryConfig registryConfig, Class<T> tClass, int timeout) {
         return referProxyConsumerRef(registryConfig, tClass, timeout, "failover", 3);
     }
-
 
     public static ServerConfig getServerConfig(Integer port) {
         return new ServerConfig()
