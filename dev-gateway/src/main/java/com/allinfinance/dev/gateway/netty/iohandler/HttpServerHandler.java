@@ -87,11 +87,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
         logger.info("接收[{}]请求开始!", appUniqueId);
 
-        boolean verifyRet = crossOriginVerify(request);
-
-        if (verifyRet) {
-            return NettyHttpResponse.ok(null);
-        }
+//        boolean verifyRet = crossOriginVerify(request);
+//
+//        if (verifyRet) {
+//            return NettyHttpResponse.ok(null);
+//        }
         HttpResponseDTO httpResponseDTO;
         try {
             httpResponseDTO = AppProcessFactory.httpProcessed(appUniqueId, request, port);

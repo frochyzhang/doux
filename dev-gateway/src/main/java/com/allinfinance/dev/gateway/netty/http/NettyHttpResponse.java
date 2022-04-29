@@ -31,26 +31,12 @@ public class NettyHttpResponse extends DefaultFullHttpResponse {
         super(HttpVersion.HTTP_1_1, status, buffer);
         headers().set(CONTENT_TYPE, "application/json;charset=utf-8");
         headers().setInt(CONTENT_LENGTH, content().readableBytes());
-
-        /**
-         * 支持CORS 跨域访问
-         */
-        headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        headers().set(ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, RCS-ACCESS-TOKEN");
-        headers().set(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,DELETE");
     }
 
     private NettyHttpResponse(HttpResponseStatus status, Map<String, String> headers, ByteBuf buffer) {
         super(HttpVersion.HTTP_1_1, status, buffer);
         headers().set(CONTENT_TYPE, "application/json;charset=utf-8");
         headers().setInt(CONTENT_LENGTH, content().readableBytes());
-
-        /*
-         * 支持CORS 跨域访问
-         */
-        headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        headers().set(ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, RCS-ACCESS-TOKEN");
-        headers().set(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,DELETE");
 
         /*
          * 自定义header

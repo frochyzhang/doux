@@ -14,11 +14,20 @@ import io.netty.channel.socket.nio.NioChannelOption;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.cors.CorsConfig;
+import io.netty.handler.codec.http.cors.CorsConfigBuilder;
+import io.netty.handler.codec.http.cors.CorsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.POST;
+import static io.netty.handler.codec.http.HttpMethod.PUT;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -34,8 +43,21 @@ public class HttpServer {
 
     public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
-//        EventLoopGroup bossGroup = new NioEventLoopGroup();
-//        EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+        /* 跨域处理开始 */
+        AtomicReference<CorsConfigBuilder> corsConfigBuilder = new AtomicReference<>(CorsConfigBuilder
+                .forAnyOrigin()
+                .allowNullOrigin());
+
+        Optional.ofNullable(System.getProperty("crossList"))
+                .ifPresent(lst -> {
+                    corsConfigBuilder.set(CorsConfigBuilder.forOrigins(lst.split(",")));
+                });
+
+        CorsConfig config = corsConfigBuilder.get().allowedRequestHeaders("Origin, X-Requested-With, Content-Type, Accept".split(","))
+                .allowedRequestMethods(GET, POST, PUT)
+                .allowCredentials().build();
+        /* 跨域处理结束 */
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -49,6 +71,7 @@ public class HttpServer {
             public void initChannel(SocketChannel ch) {
                 ch.pipeline().addLast("codec", new HttpServerCodec());
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
+                ch.pipeline().addLast("corsHandler", new CorsHandler(config));
                 ch.pipeline().addLast("logging", new FilterLogginglHandler());
                 ch.pipeline().addLast("interceptor", new InterceptorHandler());
                 ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port));
