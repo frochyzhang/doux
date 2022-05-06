@@ -27,12 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author 张勇
@@ -40,8 +35,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 public class ShortSwitchServer implements DisposableBean {
-
     private static final Logger logger = LoggerFactory.getLogger(ShortSwitchServer.class);
+
+    private static final ConcurrentHashMap<Integer, IoAcceptor> IO_ACCEPTOR_MAP = new ConcurrentHashMap<>();
+
     @Autowired
     private List<MinaSocketBean> socketBeans;
 
@@ -119,6 +116,7 @@ public class ShortSwitchServer implements DisposableBean {
         }
 
         acceptor.bind(new InetSocketAddress(minaSocketBean.getPort()));
+        IO_ACCEPTOR_MAP.putIfAbsent(minaSocketBean.getPort(), acceptor);
         logger.info("[ {} ] 服务端启动成功! 参数为{}", minaSocketBean.getName(), minaSocketBean);
     }
 
@@ -131,11 +129,10 @@ public class ShortSwitchServer implements DisposableBean {
         logger.info("socket server thread pool is shutting down!");
     }
 
-    public void closeMinaServer(MinaSocketBean minaSocketBean){
-        IoAcceptor acceptor = new NioSocketAcceptor();
-        acceptor.unbind(new InetSocketAddress(minaSocketBean.getPort()));
+    public void closeMinaServer(MinaSocketBean minaSocketBean) {
+        IoAcceptor acceptor = IO_ACCEPTOR_MAP.get(minaSocketBean.getPort());
+        acceptor.unbind();
+        IO_ACCEPTOR_MAP.remove(minaSocketBean.getPort());
+        logger.info("Mina Server Has Been Shutdown ............");
     }
-
-
-
 }

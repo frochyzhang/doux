@@ -82,6 +82,6 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
 
         AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 3000, "foreach", 3);
 
-        appRegistrarService.signExporterClosedEvent(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+        appRegistrarService.signExporterClosedEvent(rpcConfigurationProperties.getBootstrap());
     }
 }

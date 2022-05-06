@@ -17,17 +17,18 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static io.netty.handler.codec.http.HttpMethod.GET;
-import static io.netty.handler.codec.http.HttpMethod.POST;
-import static io.netty.handler.codec.http.HttpMethod.PUT;
+import static io.netty.handler.codec.http.HttpMethod.*;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -39,7 +40,9 @@ public class HttpServer {
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    private static final Map<String, HttpServer> APP_SERVER_MAP = new ConcurrentHashMap<>();
+    private Integer port;
+
+    private static final Map<String, List<HttpServer>> APP_SERVER_MAP = new ConcurrentHashMap<>();
 
     public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -80,25 +83,48 @@ public class HttpServer {
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).syncUninterruptibly().addListener(future -> {
             String logBanner = "Netty Http Server started on port {}.";
-            APP_SERVER_MAP.put(uniqueId, this);
+            if (APP_SERVER_MAP.get(uniqueId) == null) {
+                List<HttpServer> httpServerList = new ArrayList<>();
+                httpServerList.add(this);
+                APP_SERVER_MAP.put(uniqueId, httpServerList);
+            } else {
+                APP_SERVER_MAP.get(uniqueId).add(this);
+            }
+            this.port = port;
             logger.info(logBanner, port);
         });
         channelFuture.channel().closeFuture().addListener(future -> {
-            logger.info("Netty Http Server Start Shutdown ............");
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            logger.info("Netty Http Server Has Been Shutdown ............");
+            //bossGroup.shutdownGracefully();
+            //workerGroup.shutdownGracefully();
         });
         return Boolean.TRUE;
     }
 
-    public Boolean shutdown() {
+    public void shutdown(String uniqueId) {
         logger.info("Netty Http Server Start Shutdown ............");
         this.bossGroup.shutdownGracefully();
         this.workerGroup.shutdownGracefully();
-        return Boolean.TRUE;
+        APP_SERVER_MAP.get(uniqueId).remove(this);
+        if (CollectionUtils.isEmpty(APP_SERVER_MAP.get(uniqueId))) {
+            APP_SERVER_MAP.remove(uniqueId);
+        }
     }
 
-    public static HttpServer getInstance(String appUniqueId) {
+    public static List<HttpServer> getInstance(String appUniqueId) {
         return APP_SERVER_MAP.get(appUniqueId);
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpServer{" +
+                "bossGroup=" + bossGroup +
+                ", workerGroup=" + workerGroup +
+                ", port=" + port +
+                '}';
     }
 }

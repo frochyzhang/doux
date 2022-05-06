@@ -5,10 +5,14 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
+import com.allinfinance.dev.core.bean.MinaSocketBean;
+import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import com.allinfinance.dev.rpc.scaffold.api.dto.*;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.socket.config.ShortSwitchServer;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,16 +41,20 @@ public class AppProcessFactory {
     @Autowired
     private GateClientFactoryAware gateClientFactoryAware;
 
-    public void register(String appUniqueId, ProcessService processService) {
+    public void registerProcessService(String appUniqueId, ProcessService processService) {
         processors.put(appUniqueId, processService);
         compares.put(appUniqueId, processService.init());
     }
 
-    public void register(String appUniqueId, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urls) {
+    public void registerUrlList(String appUniqueId, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urls) {
         if (appUrlMap.containsKey(appUniqueId)) {
             urls.addAll(appUrlMap.get(appUniqueId));
         }
         appUrlMap.put(appUniqueId, urls);
+    }
+
+    public void registerBootstrap(RpcConfigurationProperties.Bootstrap bootstrap) {
+        compares.put(bootstrap.getAppUniqueId(), bootstrap);
     }
 
     public Boolean checkIfExist(String appUniqueId, RpcConfigurationProperties.Bootstrap bootstrap) {
@@ -56,6 +64,13 @@ public class AppProcessFactory {
 
     }
 
+    public boolean checkProcessServiceIfExist(String appUniqueId) {
+        return processors.containsKey(appUniqueId);
+    }
+
+    public boolean checkBootstrapIfEqual(RpcConfigurationProperties.Bootstrap bootstrap) {
+        return bootstrap.toString().equals(compares.get(bootstrap.getAppUniqueId()).toString());
+    }
 
     public static String tcpProcessed(String appUniqueId, String requestMsg) {
         ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.TCP);
@@ -94,16 +109,16 @@ public class AppProcessFactory {
         processRequestDTO.setRequestDTO(httpRequestDTO);
 
         //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
-        List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urlConfigList = appUrlMap.get(appUniqueId);
         List<String> urlList = appUrlMap.get(appUniqueId)
                 .stream()
                 .map(RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig::getUrl)
                 .collect(Collectors.toList());
         if (!urlList.contains(url)) {
             //2、不包含url则去寻找其他监听了这个端口的应用
+            String finalAppUniqueId = appUniqueId;
             List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
                     .stream()
-                    .filter(bootstrap -> bootstrap.getAppList().stream()
+                    .filter(bootstrap -> !finalAppUniqueId.equals(bootstrap.getAppUniqueId()) && bootstrap.getAppList().stream()
                             .anyMatch(appConfigList -> appConfigList.getListenPort().equals(port)))
                     .collect(Collectors.toList());
             //3、遍历监听了这个端口的应用列表，判断是否包含url，如果包含则直接调用
@@ -153,6 +168,63 @@ public class AppProcessFactory {
         return serviceList;
     }
 
+    public void removeBootstrap(String uniqueId) {
+        logger.info("开始移除[ {} ]应用配置", uniqueId);
+        RpcConfigurationProperties.Bootstrap removeBootstrap = compares.remove(uniqueId);
+        logger.info("旧的配置项: {}", removeBootstrap);
+        List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> removeUrlConfigList = appUrlMap.remove(uniqueId);
+        logger.info("旧的URL列表信息: {}", removeUrlConfigList);
+    }
+
+    public void removePortMonitor(String appUniqueId) {
+        //移除http端口监听
+        Optional.ofNullable(HttpServer.getInstance(appUniqueId))
+                .ifPresent(httpServerList -> {
+                    List<HttpServer> toBeClosedHttpServerList = httpServerList
+                            .stream()
+                            .filter(httpServer -> {
+                                //是否有其它监听这个端口的应用
+                                List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
+                                        .stream()
+                                        .filter(bootstrap -> !appUniqueId.equals(bootstrap.getAppUniqueId())
+                                                && bootstrap.getAppList().stream()
+                                                .anyMatch(appConfigList -> appConfigList.getListenPort().equals(httpServer.getPort())))
+                                        .collect(Collectors.toList());
+                                return CollectionUtils.isEmpty(bootstrapList);
+                            }).collect(Collectors.toList());
+                    toBeClosedHttpServerList.forEach(httpServer -> {
+                        logger.info("{}待关闭", httpServer);
+                        httpServer.shutdown(appUniqueId);
+                    });
+                    // FIXME: 2022/5/6 隐藏的bug，无语，以后再看
+                    //httpServerList
+                    //        .stream()
+                    //        .filter(httpServer -> {
+                    //            //是否有其它监听这个端口的应用
+                    //            List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
+                    //                    .stream()
+                    //                    .filter(bootstrap -> !appUniqueId.equals(bootstrap.getAppUniqueId())
+                    //                            && bootstrap.getAppList().stream()
+                    //                            .anyMatch(appConfigList -> appConfigList.getListenPort().equals(httpServer.getPort())))
+                    //                    .collect(Collectors.toList());
+                    //            return CollectionUtils.isEmpty(bootstrapList);
+                    //        }).forEach(httpServer -> {
+                    //    logger.info("{}待关闭", httpServer);
+                    //    httpServer.shutdown(appUniqueId);
+                    //});
+                });
+        //移除tcp端口监听
+        compares.get(appUniqueId)
+                .getAppList()
+                .stream()
+                .filter(appConfigList -> RpcConfigurationProperties.Bootstrap.AppConfigList.Type.TCP.equals(appConfigList.getType()))
+                .forEach(appConfigList -> {
+                    MinaSocketBean minaSocketBean = new MinaSocketBean();
+                    minaSocketBean.setPort(appConfigList.getListenPort());
+                    new ShortSwitchServer().closeMinaServer(minaSocketBean);
+                });
+    }
+
     public void removeReference(ReferenceParam<ProcessService> referenceParam) {
         String uniqueId = referenceParam.getUniqueId();
         logger.warn("准备移除[appUniqueId:{}, interfaceType:{}]订阅", uniqueId, referenceParam.getInterfaceType());
@@ -164,5 +236,17 @@ public class AppProcessFactory {
         } else {
             logger.info("应用[{}]不存在", uniqueId);
         }
+    }
+
+    public Map<String, ProcessService> getProcessors() {
+        return processors;
+    }
+
+    public Map<String, RpcConfigurationProperties.Bootstrap> getCompares() {
+        return compares;
+    }
+
+    public Map<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> getAppUrlMap() {
+        return appUrlMap;
     }
 }

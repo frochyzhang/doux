@@ -38,68 +38,145 @@ public class GateClientFactoryAware implements ClientFactoryAware {
         this.referenceClient = clientFactory.getClient(ReferenceClient.class);
     }
 
+    /**
+     * 网关重启时调用，订阅exporter业务处理服务
+     *
+     * @param uniqueId ProcessService uniqueId
+     * @return 是否成功
+     */
+    public boolean registerConsumer(String uniqueId) {
+        logger.info("开始订阅[ {} ]业务处理服务", uniqueId);
+        ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
+        ProcessService processService = referenceClient.reference(processServiceParam);
+        try {
+            if (processService.verify()) {
+                logger.info("[ {} ]业务处理服务验证成功，开始监听端口", uniqueId);
+                appProcessFactory.registerProcessService(uniqueId, processService);
+                RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
+                logger.info("应用注册参数: {}", bootstrap);
+                // 监听端口
+                monitorPort(bootstrap);
+                return true;
+            } else {
+                logger.error("[ {} ]业务处理服务验证失败", uniqueId);
+                return false;
+            }
+        } catch (SofaRouteException e) {
+            logger.warn("调用{}应用ProcessService服务异常,移除订阅!", uniqueId, e);
+            appProcessFactory.removeReference(processServiceParam);
+            return Boolean.FALSE;
+        }
+    }
+
     /*
+    应用前置调用
     1、重复注册的逻辑校验：需增加参数校验，参数不一致时需做参数刷新
     2、移除订阅并下掉端口监听
     3、网关异步同步应用注册信息
-    4、去注册中心查询服务，
+    4、去注册中心查询服务
      */
-    public Boolean registerConsumer(String uniqueId) {
+    public Boolean registerConsumer(RpcConfigurationProperties.Bootstrap bootstrap) {
+        String uniqueId = bootstrap.getAppUniqueId();
         logger.info("开始订阅[ {} ]业务处理服务", uniqueId);
+        logger.info("应用注册参数:{}", bootstrap);
+        //判断应用的ProcessService是否存在且
+        if (appProcessFactory.checkProcessServiceIfExist(uniqueId)) {
+            //存在则判断保存的配置和送的是否一致
+            if (appProcessFactory.checkBootstrapIfEqual(bootstrap)) {
+                //一致则直接返回成功
+                logger.info("[ {} ]无需重复注册", uniqueId);
+            } else {
+                logger.info("[ {} ]应用配置信息已更改，开始重新配置", uniqueId);
+                //不一致则重新监听端口，更新配置信息
+                //移除端口监听
+                try {
+                    appProcessFactory.removePortMonitor(uniqueId);
+                } catch (Exception e) {
+                    logger.error("移除端口监听异常", e);
+                    return Boolean.FALSE;
+                }
+                //移除配置信息，包括compares和appUrlMap
+                appProcessFactory.removeBootstrap(uniqueId);
+                //重新保存配置信息
+                appProcessFactory.registerBootstrap(bootstrap);
+                //监听端口
+                monitorPort(bootstrap);
+            }
+        } else {
+            logger.info("[ {} ]应用首次注册，开始保存配置信息，监听端口", uniqueId);
+            //不存在则保存ProcessService和配置信息，监听端口
+            ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
+            ProcessService processService = referenceClient.reference(processServiceParam);
+            try {
+                if (processService.verify()) {
+                    logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
+                    appProcessFactory.registerProcessService(bootstrap.getAppUniqueId(), processService);
+                    monitorPort(bootstrap);
+                }
+            } catch (SofaRouteException e) {
+                logger.warn("调用[ {} ]应用ProcessService服务异常,移除订阅!", uniqueId, e);
+                appProcessFactory.removeReference(processServiceParam);
+                return Boolean.FALSE;
+            }
+        }
+        logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
+        return Boolean.TRUE;
+        //ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
+        //ProcessService processService = referenceClient.reference(processServiceParam);
+        //try {
+        //    //TimeUnit.SECONDS.sleep(10);
+        //    if (processService.verify()) {
+        //        logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
+        //        monitorPort(bootstrap, processService);
+        //        return Boolean.TRUE;
+        //    }
+        //    return Boolean.FALSE;
+        //} catch (SofaRouteException e) {
+        //    logger.warn("调用{}应用ProcessService服务异常,移除订阅!", uniqueId, e);
+        //    appProcessFactory.removeReference(processServiceParam);
+        //    return Boolean.FALSE;
+        //} catch (InterruptedException e) {
+        //    logger.error("订阅[ {} ]业务处理服务失败", uniqueId, e);
+        //    return Boolean.FALSE;
+        //}
+    }
+
+    private ReferenceParam<ProcessService> getProcessServiceParam(String uniqueId) {
         ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
         BoltBindingParam boltBindingParam = new BoltBindingParam();
         boltBindingParam.setLoadBalancer("roundRobin");
         referenceParam.setBindingParam(boltBindingParam);
-
         referenceParam.setInterfaceType(ProcessService.class);
         referenceParam.setUniqueId(uniqueId);
+        return referenceParam;
+    }
 
-        ProcessService processService = referenceClient.reference(referenceParam);
-        try {
-            if (processService.verify()) {
-                logger.info("[ {} ]业务处理服务订阅成功!", uniqueId);
-                RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
-                logger.info("应用注册参数:{}", bootstrap);
-                if (appProcessFactory.checkIfExist(uniqueId, bootstrap)) {
-                    logger.info("[ {} ]无需重复注册", uniqueId);
-                    return Boolean.TRUE;
-                }
-                // 监听端口
-                bootstrap.getAppList().forEach(appConfigList -> {
-                    appProcessFactory.register(uniqueId, processService);
-
-                    RpcConfigurationProperties.Bootstrap.AppConfigList.Type type = appConfigList.getType();
-                    switch (type) {
-                        case TCP:
-                            MinaSocketBean minaSocketBean = AppPropertiesMapper.INSTANCE.convertToMinaSocketBean(appConfigList.getTcpConfig());
-                            minaSocketBean.setName(uniqueId);
-                            minaSocketBean.setPort(appConfigList.getListenPort());
-                            minaSocketBean.setKeepAlive(false);
-                            minaSocketBean.setSoLinger(false);
-                            // 监听完成
-                            try {
-                                new ShortSwitchServer().initMinaServer(minaSocketBean);
-                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
-                                logger.error("启动socket监听失败!", e);
-                            }
-                            break;
-                        case HTTP:
-                            appProcessFactory.register(uniqueId, appConfigList.getHttpConfig().getUrlList());
-                            new HttpServer().start(uniqueId, appConfigList.getListenPort(), appConfigList.getHttpConfig());
-                            break;
-                        default:
-                            throw new IllegalArgumentException("参数不合法");
+    private void monitorPort(RpcConfigurationProperties.Bootstrap bootstrap) {
+        // 监听端口
+        bootstrap.getAppList().forEach(appConfigList -> {
+            RpcConfigurationProperties.Bootstrap.AppConfigList.Type type = appConfigList.getType();
+            switch (type) {
+                case TCP:
+                    MinaSocketBean minaSocketBean = AppPropertiesMapper.INSTANCE.convertToMinaSocketBean(appConfigList.getTcpConfig());
+                    minaSocketBean.setName(bootstrap.getAppUniqueId());
+                    minaSocketBean.setPort(appConfigList.getListenPort());
+                    minaSocketBean.setKeepAlive(false);
+                    minaSocketBean.setSoLinger(false);
+                    // 监听完成
+                    try {
+                        new ShortSwitchServer().initMinaServer(minaSocketBean);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
+                        logger.error("启动socket监听失败!", e);
                     }
-                });
-
-                return Boolean.TRUE;
+                    break;
+                case HTTP:
+                    appProcessFactory.registerUrlList(bootstrap.getAppUniqueId(), appConfigList.getHttpConfig().getUrlList());
+                    new HttpServer().start(bootstrap.getAppUniqueId(), appConfigList.getListenPort(), appConfigList.getHttpConfig());
+                    break;
+                default:
+                    throw new IllegalArgumentException("参数不合法");
             }
-            return Boolean.FALSE;
-        } catch (SofaRouteException e) {
-            logger.warn("[ {} ]已掉线,移除订阅!", uniqueId, e);
-            appProcessFactory.removeReference(referenceParam);
-            return Boolean.FALSE;
-        }
+        });
     }
 
     public ReferenceClient getReferenceClient() {

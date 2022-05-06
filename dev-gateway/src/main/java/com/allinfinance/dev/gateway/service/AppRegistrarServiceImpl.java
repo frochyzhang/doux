@@ -3,6 +3,7 @@ package com.allinfinance.dev.gateway.service;
 import com.allinfinance.dev.gateway.event.ExporterClosedEvent;
 import com.allinfinance.dev.gateway.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,17 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public Boolean register(String appUniqueId) {
-        if (gateClientFactoryAware.registerConsumer(appUniqueId)) {
-            logger.info("[ {} ]应用注册成功!", appUniqueId);
+    public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
+        if (gateClientFactoryAware.registerConsumer(bootstrap)) {
+            logger.info("[ {} ]应用注册成功!", bootstrap.getAppUniqueId());
             return Boolean.TRUE;
         }
-        logger.error("[ {} ]应用注册失败!", appUniqueId);
+        logger.error("[ {} ]应用注册失败!", bootstrap.getAppUniqueId());
         return Boolean.FALSE;
     }
 
     @Override
-    public void signExporterClosedEvent(String appUniqueId) {
-        applicationEventPublisher.publishEvent(new ExporterClosedEvent(new Object(), appUniqueId));
+    public void signExporterClosedEvent(RpcConfigurationProperties.Bootstrap bootstrap) {
+        applicationEventPublisher.publishEvent(new ExporterClosedEvent(new Object(), bootstrap));
     }
 }

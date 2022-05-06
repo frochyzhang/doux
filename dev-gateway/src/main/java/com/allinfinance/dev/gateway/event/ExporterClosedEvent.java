@@ -1,5 +1,6 @@
 package com.allinfinance.dev.gateway.event;
 
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -8,11 +9,11 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ExporterClosedEvent extends ApplicationEvent {
 
-    private final String appUniqueId;
+    private final RpcConfigurationProperties.Bootstrap bootstrap;
 
-    public ExporterClosedEvent(Object source, String appUniqueId) {
+    public ExporterClosedEvent(Object source, RpcConfigurationProperties.Bootstrap bootstrap) {
         super(source);
-        this.appUniqueId = appUniqueId;
+        this.bootstrap = bootstrap;
     }
 
     /**
@@ -25,7 +26,7 @@ public class ExporterClosedEvent extends ApplicationEvent {
         return super.getSource();
     }
 
-    public String getAppUniqueId() {
-        return appUniqueId;
+    public RpcConfigurationProperties.Bootstrap getBootstrap() {
+        return bootstrap;
     }
 }
