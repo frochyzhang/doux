@@ -44,7 +44,7 @@ public class HttpServer {
 
     private static final Map<String, List<HttpServer>> APP_SERVER_MAP = new ConcurrentHashMap<>();
 
-    public Boolean start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
+    public void start(String uniqueId, int port, RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig httpConfig) {
         ServerBootstrap bootstrap = new ServerBootstrap();
 
         /* 跨域处理开始 */
@@ -95,10 +95,7 @@ public class HttpServer {
         });
         channelFuture.channel().closeFuture().addListener(future -> {
             logger.info("Netty Http Server Has Been Shutdown ............");
-            //bossGroup.shutdownGracefully();
-            //workerGroup.shutdownGracefully();
         });
-        return Boolean.TRUE;
     }
 
     public void shutdown(String uniqueId) {
@@ -119,12 +116,24 @@ public class HttpServer {
         return port;
     }
 
-    @Override
-    public String toString() {
-        return "HttpServer{" +
-                "bossGroup=" + bossGroup +
-                ", workerGroup=" + workerGroup +
-                ", port=" + port +
-                '}';
+    public static HttpServer getHttpServer(int port) {
+        for (List<HttpServer> httpServers : APP_SERVER_MAP.values()) {
+            for (HttpServer httpServer : httpServers) {
+                if (httpServer.getPort().equals(port)) {
+                    return httpServer;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void saveHttpServer(String uniqueId, HttpServer httpServer) {
+        if (APP_SERVER_MAP.get(uniqueId) == null) {
+            List<HttpServer> httpServerList = new ArrayList<>();
+            httpServerList.add(httpServer);
+            APP_SERVER_MAP.put(uniqueId, httpServerList);
+        } else {
+            APP_SERVER_MAP.get(uniqueId).add(httpServer);
+        }
     }
 }

@@ -87,14 +87,8 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 logger.info("[ {} ]无需重复注册", uniqueId);
             } else {
                 logger.info("[ {} ]应用配置信息已更改，开始重新配置", uniqueId);
-                //不一致则重新监听端口，更新配置信息
-                //移除端口监听
-                try {
-                    appProcessFactory.removePortMonitor(uniqueId);
-                } catch (Exception e) {
-                    logger.error("移除端口监听异常", e);
-                    return Boolean.FALSE;
-                }
+                //不一致则移除端口监听和配置信息，重新保存配置信息，监听端口
+                appProcessFactory.removePortMonitor(uniqueId);
                 //移除配置信息，包括compares和appUrlMap
                 appProcessFactory.removeBootstrap(uniqueId);
                 //重新保存配置信息
@@ -171,7 +165,13 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                     break;
                 case HTTP:
                     appProcessFactory.registerUrlList(bootstrap.getAppUniqueId(), appConfigList.getHttpConfig().getUrlList());
-                    new HttpServer().start(bootstrap.getAppUniqueId(), appConfigList.getListenPort(), appConfigList.getHttpConfig());
+                    HttpServer httpServer = HttpServer.getHttpServer(appConfigList.getListenPort());
+                    if (httpServer != null) {
+                        logger.info("该端口已被其他应用监听，保存HttpServer，无需重复监听");
+                        HttpServer.saveHttpServer(bootstrap.getAppUniqueId(), httpServer);
+                    } else {
+                        new HttpServer().start(bootstrap.getAppUniqueId(), appConfigList.getListenPort(), appConfigList.getHttpConfig());
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("参数不合法");

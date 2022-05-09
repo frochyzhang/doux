@@ -192,10 +192,8 @@ public class AppProcessFactory {
                                         .collect(Collectors.toList());
                                 return CollectionUtils.isEmpty(bootstrapList);
                             }).collect(Collectors.toList());
-                    toBeClosedHttpServerList.forEach(httpServer -> {
-                        logger.info("{}待关闭", httpServer);
-                        httpServer.shutdown(appUniqueId);
-                    });
+                    // TODO: 2022/5/6 其他应用已经监听此端口，那么关闭时不会进行shutdown，也就不会去除APP_SERVER_MAP中的httpserver，如何处理
+                    toBeClosedHttpServerList.forEach(httpServer -> httpServer.shutdown(appUniqueId));
                     // FIXME: 2022/5/6 隐藏的bug，无语，以后再看
                     //httpServerList
                     //        .stream()
