@@ -20,6 +20,10 @@ public class RpcConfigurationProperties {
      */
     private List<String> referenceList;
     /**
+     * provider的uniqueId
+     */
+    private String providerUniqueId;
+    /**
      * 服务提供方的包路径
      */
     private String providerPackage;
@@ -30,20 +34,28 @@ public class RpcConfigurationProperties {
 
     private Bootstrap bootstrap = new Bootstrap();
 
-    public String getProviderPackage() {
-        return providerPackage;
-    }
-
-    public void setProviderPackage(String providerPackage) {
-        this.providerPackage = providerPackage;
-    }
-
     public List<String> getReferenceList() {
         return referenceList;
     }
 
     public void setReferenceList(List<String> referenceList) {
         this.referenceList = referenceList;
+    }
+
+    public String getProviderUniqueId() {
+        return providerUniqueId;
+    }
+
+    public void setProviderUniqueId(String providerUniqueId) {
+        this.providerUniqueId = providerUniqueId;
+    }
+
+    public String getProviderPackage() {
+        return providerPackage;
+    }
+
+    public void setProviderPackage(String providerPackage) {
+        this.providerPackage = providerPackage;
     }
 
     public Consumer getConsumer() {
