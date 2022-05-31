@@ -94,7 +94,7 @@ public class AppProcessFactory {
         //取出url中的params
         Map<String, String> params = StringUtils.isNotBlank(paramString) ? Arrays.stream(paramString.split("&"))
                 .map(param -> param.split("="))
-                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1])) : new HashMap<>(0);
+                .collect(Collectors.toMap(arr -> arr[0], arr -> arr.length > 1 ? arr[1] : "")) : new HashMap<>(0);
         httpRequestDTO.setParams(params);
         //取出header中的信息
         Map<String, String> headers = request.headers().entries().stream()
