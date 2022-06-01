@@ -80,7 +80,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     private void onReceivedRequest(ChannelHandlerContext context, NettyHttpRequest request) {
         FullHttpResponse response = handleHttpRequest(request);
-        context.writeAndFlush(response).addListener(future -> logger.info("Response sended and flushed"));
+        context.writeAndFlush(response).addListener(future -> logger.info("Response sent and flushed"));
         ReferenceCountUtil.release(request);
     }
 
