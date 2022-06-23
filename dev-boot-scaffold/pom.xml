@@ -18,6 +18,7 @@
         <module>dev-datasource-scaffold</module>
         <module>dev-batch-scaffold</module>
         <module>dev-actuator-scaffold</module>
+        <module>dev-connection-scaffold</module>
     </modules>
 
     <properties>

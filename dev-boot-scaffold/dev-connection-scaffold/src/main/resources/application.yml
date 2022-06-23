@@ -1,0 +1,27 @@
+com:
+  allinfinance:
+    connection:
+      server-metadata-map:
+        server-1:
+          server-name: "加密机1号"
+          server-ip: 127.0.0.1
+          server-port: 9001
+          timeout: 200
+          checkout-time: 300000
+          retry-times: 3
+          max-active-connection: 10
+          max-idle-connection: 5
+          enable-ping: true
+          ping-query-message: "3132333435"
+          ping-verify-message: "706f6e67"
+#        server-2:
+#          server-name: 加密机2号
+#          server-ip: 127.0.0.1
+#          server-port: 9002
+#          timeout: 200
+#          retry-times: 3
+#          max-active-connection: 10
+#          max-idle-connection: 5
+#          enable-ping: true
+#          ping-query-message: "3132333435"
+#          ping-verify-message: "706f6e67"
