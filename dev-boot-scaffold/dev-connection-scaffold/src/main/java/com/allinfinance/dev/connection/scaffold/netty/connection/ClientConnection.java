@@ -38,7 +38,7 @@ public class ClientConnection {
     /**
      * 连接最后更新时间
      */
-    private Long lastUpdateTime = 0L;
+    private Long lastUpdateTime = System.currentTimeMillis();
 
     public Long getLastUpdateTime() {
         return lastUpdateTime;

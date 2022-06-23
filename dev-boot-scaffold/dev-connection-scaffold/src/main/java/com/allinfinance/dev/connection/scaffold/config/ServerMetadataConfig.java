@@ -1,6 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.config;
 
 import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
+import com.allinfinance.dev.connection.scaffold.pool.PooledServerMetadata;
 import com.allinfinance.dev.connection.scaffold.pool.QueueServerMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,20 +35,20 @@ public class ServerMetadataConfig {
         this.serverMetadataMap = serverMetadataMap;
     }
 
-    //@Bean(name = "pooledServerMetadataList")
-    //public List<PooledServerMetadata> getPooledServerMetadataList() {
-    //    return serverMetadataMap.values()
-    //            .stream().map(serverMetadata -> {
-    //                logger.info("服务端配置信息：{}", serverMetadata);
-    //                PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata);
-    //                try {
-    //                    pooledServerMetadata.init();
-    //                } catch (Throwable e) {
-    //                    logger.error("初始化连接异常，请检查服务端！", e);
-    //                }
-    //                return pooledServerMetadata;
-    //            }).collect(Collectors.toList());
-    //}
+    @Bean(name = "pooledServerMetadataList")
+    public List<PooledServerMetadata> getPooledServerMetadataList() {
+        return serverMetadataMap.values()
+                .stream().map(serverMetadata -> {
+                    logger.info("服务端配置信息：{}", serverMetadata);
+                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata);
+                    try {
+                        pooledServerMetadata.init();
+                    } catch (Throwable e) {
+                        logger.error("初始化连接异常，请检查服务端！", e);
+                    }
+                    return pooledServerMetadata;
+                }).collect(Collectors.toList());
+    }
 
     @Bean(name = "queueServerMetadataList")
     public List<QueueServerMetadata> getQueueServerMetadataList() {

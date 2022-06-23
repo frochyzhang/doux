@@ -1,4 +1,4 @@
-package com.yuyee.dev.connection.scaffold.pool;
+package com.allinfinance.dev.connection.scaffold;
 
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.format.ResultFormatType;
