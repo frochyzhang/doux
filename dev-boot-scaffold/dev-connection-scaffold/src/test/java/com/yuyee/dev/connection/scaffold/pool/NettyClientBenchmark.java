@@ -2,7 +2,9 @@ package com.yuyee.dev.connection.scaffold.pool;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.HexUtil;
-import com.yuyee.dev.connection.scaffold.ConnectionPoolAutoConfiguration;
+import com.allinfinance.dev.connection.scaffold.ConnectionPoolAutoConfiguration;
+import com.allinfinance.dev.connection.scaffold.pool.PoolManager;
+import com.allinfinance.dev.connection.scaffold.pool.QueueManger;
 import org.junit.jupiter.api.Assertions;
 import org.openjdk.jmh.annotations.*;
 import org.slf4j.Logger;

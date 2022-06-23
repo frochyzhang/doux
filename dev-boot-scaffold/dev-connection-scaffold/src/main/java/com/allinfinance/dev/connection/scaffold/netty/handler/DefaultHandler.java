@@ -1,5 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.netty.handler;
 
+import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Promise;

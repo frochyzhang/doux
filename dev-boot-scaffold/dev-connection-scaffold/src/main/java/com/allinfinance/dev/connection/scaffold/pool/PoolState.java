@@ -1,5 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
+import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+
 import java.util.ArrayList;
 import java.util.List;
 

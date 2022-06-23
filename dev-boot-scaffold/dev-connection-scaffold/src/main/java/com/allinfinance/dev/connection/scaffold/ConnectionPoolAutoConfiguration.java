@@ -9,6 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @description
  */
 @EnableAutoConfiguration
-@ComponentScan("com.yuyee")
+@ComponentScan("com.allinfinance.dev.connection.scaffold")
 public class ConnectionPoolAutoConfiguration {
 }

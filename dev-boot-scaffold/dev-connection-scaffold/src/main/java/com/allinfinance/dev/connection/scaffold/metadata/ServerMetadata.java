@@ -1,7 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.metadata;
 
-import com.yuyee.dev.connection.scaffold.config.constant.ConnectionStatus;
-import com.yuyee.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
+import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
 
 /**
  * @author qipeng

@@ -1,6 +1,10 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
 import cn.hutool.core.lang.UUID;
+import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
+import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
+import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Promise;
 import org.apache.commons.lang3.StringUtils;
