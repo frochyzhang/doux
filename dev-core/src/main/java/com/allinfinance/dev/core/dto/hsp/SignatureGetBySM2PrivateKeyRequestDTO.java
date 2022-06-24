@@ -8,10 +8,10 @@ import com.allinfinance.dev.core.util.validate.Check;
  */
 public class SignatureGetBySM2PrivateKeyRequestDTO {
     /**
-     * 外部输入密钥
+     * 外部输入密钥，HEX编码
      */
     @Check(maxLength = 65535 / 2)
-    private String externalInputKey;
+    private String privateKey;
     /**
      * 证书序列号
      */
@@ -23,12 +23,12 @@ public class SignatureGetBySM2PrivateKeyRequestDTO {
     @Check(maxLength = 65535 / 2)
     private String data;
 
-    public String getExternalInputKey() {
-        return externalInputKey;
+    public String getPrivateKey() {
+        return privateKey;
     }
 
-    public void setExternalInputKey(String externalInputKey) {
-        this.externalInputKey = externalInputKey;
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
     }
 
     public String getCertId() {
@@ -50,7 +50,7 @@ public class SignatureGetBySM2PrivateKeyRequestDTO {
     @Override
     public String toString() {
         return "SignatureGetBySM2PrivateKeyRequestDTO{" +
-                "externalInputKey='" + externalInputKey + '\'' +
+                "privateKey='" + privateKey + '\'' +
                 ", certId='" + certId + '\'' +
                 ", data='" + data + '\'' +
                 '}';

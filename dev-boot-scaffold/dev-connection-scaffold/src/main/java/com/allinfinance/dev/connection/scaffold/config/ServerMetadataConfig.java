@@ -51,7 +51,7 @@ public class ServerMetadataConfig {
         return serverMetadataMap.values()
                 .stream().map(serverMetadata -> {
                     logger.info("服务端配置信息：{}", serverMetadata);
-                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata,bufferSize);
+                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata, bufferSize);
                     try {
                         pooledServerMetadata.init();
                     } catch (Throwable e) {

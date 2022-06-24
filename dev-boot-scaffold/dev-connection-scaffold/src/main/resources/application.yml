@@ -1,7 +1,7 @@
 com:
   allinfinance:
     connection:
-      pool-type: list
+      pool-type: queue
       buffer-size: 65536
       server-metadata-map:
         server-1:

@@ -8,7 +8,7 @@ import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO
  * @author huanghf
  * @date 2022/6/21 14:24
  */
-public interface ISignatureService {
+public interface SignatureService {
     /**
      * 用SM2私钥做签名--D306
      *

@@ -1,15 +1,17 @@
 package com.allinfinance.dev.hsp.service;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.core.dto.hsp.*;
+import com.allinfinance.dev.connection.scaffold.pool.MessagePorter;
+import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
 import com.allinfinance.dev.core.dto.hsp.constant.HashAlgorithmEnum;
-import com.allinfinance.dev.core.util.hsp.ISignatureService;
-import com.allinfinance.dev.core.util.hsp.ISummaryService;
+import com.allinfinance.dev.core.util.hsp.SignatureService;
 import com.allinfinance.dev.hsp.constant.AlgorithmEnum;
 import com.allinfinance.dev.hsp.constant.HashFlagEnum;
 import com.allinfinance.dev.hsp.constant.InstructionEnum;
 import com.allinfinance.dev.hsp.constant.RespCodeEnum;
-import com.allinfinance.dev.hsp.util.StrUtil;
+import com.allinfinance.dev.hsp.util.DigestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,14 @@ import org.springframework.stereotype.Service;
  * @date 2022/6/19 14:47
  */
 @Service
-public class SignatureServiceImpl implements ISignatureService {
+public class SignatureServiceImpl implements SignatureService {
     private static final Logger logger = LoggerFactory.getLogger(SignatureServiceImpl.class);
 
     @Autowired
-    private ISummaryService summaryService;
+    private DigestUtil digestUtil;
+
+    @Autowired
+    private MessagePorter messagePorter;
 
     /**
      * 用SM2私钥做签名--D306
@@ -35,29 +40,23 @@ public class SignatureServiceImpl implements ISignatureService {
     @Override
     public SignatureGetBySM2PrivateKeyResponseDTO getSignatureBySM2PrivateKey(SignatureGetBySM2PrivateKeyRequestDTO requestDTO) {
         logger.info("开始组装SM2私钥签名加密机指令");
-        SummaryGetRequestDTO summaryGetRequestDTO = new SummaryGetRequestDTO();
-        summaryGetRequestDTO.setData(requestDTO.getData());
-        summaryGetRequestDTO.setHashAlgorithm(HashAlgorithmEnum.SM3);
-        SummaryGetResponseDTO summaryGetResponseDTO = summaryService.getSummary(summaryGetRequestDTO);
+        String digest = digestUtil.getDigest(HashAlgorithmEnum.SM3, requestDTO.getData());
         StringBuilder instruction = new StringBuilder();
-        String externalInputKeyHex = HexUtil.encodeHexStr(requestDTO.getExternalInputKey());
         String certIdHex = HexUtil.encodeHexStr(requestDTO.getCertId());
-        String summaryHex = HexUtil.encodeHexStr(summaryGetResponseDTO.getSummaryData());
         instruction.append(InstructionEnum.D306.getCode())
                 .append("FFFF")
                 //字节数
-                .append(StrUtil.getLengthStr(Integer.toHexString(externalInputKeyHex.length() / 2), 4))
-                .append(externalInputKeyHex)
+                .append(String.format("%04x", requestDTO.getPrivateKey().length() / 2))
+                .append(requestDTO.getPrivateKey())
                 .append(AlgorithmEnum.SM4.getCode())
                 .append(HashFlagEnum.YES.getCode())
-                .append(StrUtil.getLengthStr(Integer.toHexString(certIdHex.length() / 2), 4))
+                .append(String.format("%04x", certIdHex.length() / 2))
                 .append(certIdHex)
-                .append(StrUtil.getLengthStr(Integer.toHexString(summaryHex.length() / 2), 4))
-                .append(summaryHex);
+                .append(String.format("%04x", digest.length() / 2))
+                .append(digest);
 
         logger.debug("请求加密机报文: {}", instruction);
-        // TODO: 2022/6/21 获取连接请求加密机
-        String response = "";
+        String response = messagePorter.writeAndFlush(instruction.toString());
         logger.debug("加密机返回报文: {}", response);
 
         int offset = 0;
@@ -90,28 +89,23 @@ public class SignatureServiceImpl implements ISignatureService {
     @Override
     public boolean verifySignatureBySM2PublicKey(SignatureVerifyBySM2PublicKeyRequestDTO requestDTO) {
         logger.info("开始组装SM2公钥验签加密机指令");
-        SummaryGetRequestDTO summaryGetRequestDTO = new SummaryGetRequestDTO();
-        summaryGetRequestDTO.setData(requestDTO.getData());
-        summaryGetRequestDTO.setHashAlgorithm(HashAlgorithmEnum.SM3);
-        SummaryGetResponseDTO summaryGetResponseDTO = summaryService.getSummary(summaryGetRequestDTO);
         StringBuilder instruction = new StringBuilder();
+        String digest = digestUtil.getDigest(HashAlgorithmEnum.SM3, requestDTO.getData());
         String certIdHex = HexUtil.encodeHexStr(requestDTO.getCertId());
-        String summaryHex = HexUtil.encodeHexStr(summaryGetResponseDTO.getSummaryData());
         instruction.append(InstructionEnum.D307.getCode())
                 .append("FFFF")
-                .append(HexUtil.encodeHexStr(requestDTO.getPlainPublicKeyX()))
-                .append(HexUtil.encodeHexStr(requestDTO.getPlainPublicKeyY()))
-                .append(HexUtil.encodeHexStr(requestDTO.getSignatureR()))
-                .append(HexUtil.encodeHexStr(requestDTO.getSignatureS()))
+                .append(requestDTO.getPlainPublicKeyX())
+                .append(requestDTO.getPlainPublicKeyY())
+                .append(requestDTO.getSignatureR())
+                .append(requestDTO.getSignatureS())
                 .append(HashFlagEnum.YES.getCode())
-                .append(StrUtil.getLengthStr(Integer.toHexString(certIdHex.length() / 2), 4))
+                .append(String.format("%04x", certIdHex.length() / 2))
                 .append(certIdHex)
-                .append(StrUtil.getLengthStr(Integer.toHexString(summaryHex.length() / 2), 4))
-                .append(summaryHex);
+                .append(String.format("%04x", digest.length() / 2))
+                .append(digest);
 
         logger.debug("请求加密机报文: {}", instruction);
-        // TODO: 2022/6/21 获取连接请求加密机
-        String response = "";
+        String response = messagePorter.writeAndFlush(instruction.toString());
         logger.debug("加密机返回报文: {}", response);
 
         int offset = 0;

@@ -8,12 +8,12 @@ import com.allinfinance.dev.core.util.validate.Check;
  */
 public class SignatureVerifyBySM2PublicKeyRequestDTO {
     /**
-     * 公钥铭文X
+     * 公钥明文X
      */
     @Check(length = 32 / 2)
     private String plainPublicKeyX;
     /**
-     * 公钥铭文Y
+     * 公钥明文Y
      */
     @Check(length = 32 / 2)
     private String plainPublicKeyY;

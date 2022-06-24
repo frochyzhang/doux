@@ -18,12 +18,12 @@
         <module>dev-mq/dev-mq-rabbit</module>
         <module>dev-mq-rpc-portal</module>
         <module>dev-autoconfigure</module>
-<!--        <module>dev-hsp</module>-->
+        <!--        <module>dev-hsp</module>-->
         <module>dev-rpc</module>
         <module>dev-rpc/dev-rpc-dubbo</module>
         <module>dev-rpc/dev-rpc-sofa</module>
         <!--        <module>dev-nds</module>-->
-                <module>dev-ccs</module>
+        <module>dev-ccs</module>
         <module>dev-parent</module>
         <module>dev-xxl-job</module>
         <module>dev-boot-starters</module>
@@ -67,6 +67,7 @@
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
         <jmh.version>1.35</jmh.version>
+        <junit-launcher.version>1.6.3</junit-launcher.version>
     </properties>
 
     <developers>
@@ -559,6 +560,17 @@
 
     <!-- 所有的项目都要用到的依赖项 -->
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit-launcher.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!--logback-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -655,28 +667,28 @@
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-dependency-plugin</artifactId>-->
-<!--                <version>2.5.1</version>-->
-<!--                <configuration>-->
-<!--                    <includeScope>runtime</includeScope>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-dependencies</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>-->
-<!--                                ${project.build.directory}/dependency-->
-<!--                            </outputDirectory>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+            <!--                <version>2.5.1</version>-->
+            <!--                <configuration>-->
+            <!--                    <includeScope>runtime</includeScope>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>copy</id>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>copy-dependencies</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <outputDirectory>-->
+            <!--                                ${project.build.directory}/dependency-->
+            <!--                            </outputDirectory>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>

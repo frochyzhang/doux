@@ -24,44 +24,12 @@
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-connection-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-logback-1.x</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.quartz-scheduler</groupId>
-                    <artifactId>quartz</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rpc-dubbo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-registry-nacos</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-dal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
