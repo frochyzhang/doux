@@ -4,6 +4,8 @@ import cn.hutool.core.util.HexUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author qipeng
@@ -11,10 +13,15 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @description 将字符串转成hex
  */
 public class HexToByteEncoder extends MessageToByteEncoder<String> {
+    private static final Logger logger = LoggerFactory.getLogger(HexToByteEncoder.class);
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, String msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, String msg, ByteBuf out) {
         // 传过来的msg就是十六进制的字符串
-        out.writeBytes(HexUtil.decodeHex(msg));
+        byte[] bytes = HexUtil.decodeHex(msg);
+        if (logger.isDebugEnabled()) {
+            logger.debug("编码后的请求内容：{}", bytes);
+        }
+        out.writeBytes(bytes);
     }
 }

@@ -35,7 +35,8 @@ public class NettyClientConnection extends AbstractClientConnection {
         return channelFuture;
     }
 
-    public static final DefaultEventLoop NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NettyResponsePromiseNotify", false));
+    public static final DefaultEventLoop NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP = new DefaultEventLoop(null,
+            new NamedThreadFactory("NettyResponsePromiseNotify", false));
 
     public static final AttributeKey<RequestContext> CURRENT_REQ_BOUND_WITH_THE_CHANNEL =
             AttributeKey.valueOf("CURRENT_REQ_BOUND_WITH_THE_CHANNEL");
@@ -50,7 +51,7 @@ public class NettyClientConnection extends AbstractClientConnection {
     @Override
     public void connect(String remoteIp, int remotePort, int retryTimes, int bufferSize) {
         this.retryTimes.set(retryTimes);
-//        try {
+
         Bootstrap b = new Bootstrap();
         // boss-worker不适用于客户端，不需要指定多个group
         b.group(workerGroup);
@@ -98,7 +99,9 @@ public class NettyClientConnection extends AbstractClientConnection {
     @Override
     public String send(String msg) {
         UUID uuid = UUID.fastUUID();
-        logger.info("{}发送请求：{}", uuid, msg);
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}发送请求：{}", uuid, msg);
+        }
         Channel channel = this.getChannelFuture().channel();
 
         Promise<String> defaultPromise = NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newProgressivePromise();
@@ -109,7 +112,9 @@ public class NettyClientConnection extends AbstractClientConnection {
         channel.writeAndFlush(msg);
 
         String resp = get(defaultPromise);
-        logger.info("{}接受到响应：{}", uuid, resp);
+        if (logger.isDebugEnabled()) {
+            logger.info("{}接受到响应：{}", uuid, resp);
+        }
         return resp;
     }
 

@@ -27,8 +27,6 @@ public class PoolManager implements MessagePorter, DisposableBean {
     @Autowired
     private List<PooledServerMetadata> pooledServerMetadataList;
 
-    public static final DefaultEventLoop NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NettyResponsePromiseNotify", false));
-
     /**
      * 回收连接
      *
