@@ -71,7 +71,8 @@ public class ClientConnection {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(64 * 1024));
+                ch.config()
+                        .setRecvByteBufAllocator(new FixedRecvByteBufAllocator(1024 * 64));
                 ch.pipeline()
                         .addLast(new ByteToHexDecoder())
                         .addLast(new HexToByteEncoder())
