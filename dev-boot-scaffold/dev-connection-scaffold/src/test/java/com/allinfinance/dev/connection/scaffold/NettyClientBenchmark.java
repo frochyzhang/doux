@@ -45,7 +45,6 @@ public class NettyClientBenchmark extends AbstractBenchmark {
 //        logger.info(s);
 //    }
 
-    @Benchmark
     public void queueTest() {
         String d30A = new StringBuffer("D30A")
                 .append("06")
@@ -59,7 +58,7 @@ public class NettyClientBenchmark extends AbstractBenchmark {
         );
     }
 
-    @Test
+    @Benchmark
     public void test_digest_sign_verify() {
         String respStr = "<allslasdlkasjdlfasdf><MsgHeader><MsgVer>1000</MsgVer><SndDt>2022-06-20T13:41:06</SndDt><Trxtyp>0001</Trxtyp><IssrId>00010000</IssrId><Drctn>11</Drctn><SignSN>4039807528</SignSN><EncSN></EncSN><EncKey></EncKey><MDAlgo>1</MDAlgo><SignEncAlgo>1</SignEncAlgo><EncAlgo></EncAlgo></MsgHeader><MsgBody><BizTp>300001</BizTp><BizFunc>111011</BizFunc><BizAssInf><BizAssInfRsv>银联测试123</BizAssInfRsv></BizAssInf><TrxInf><TrxId>0620c0000474106a</TrxId><TrxDtTm>2022-06-20T13:41:06</TrxDtTm><SettlmtDt>2022-06-09</SettlmtDt><SettlmtInf>1323</SettlmtInf><TrxAmt></TrxAmt></TrxInf><RcverInf><RcverAcctIssrId>64901380</RcverAcctIssrId><RcverAcctId>6288888888888888</RcverAcctId><RcverAcctTp></RcverAcctTp><RcverNm>张小小</RcverNm><IDTp>01</IDTp><IDNo>410482198302100584</IDNo><MobNo>13201569405</MobNo></RcverInf><SensInf></SensInf><SderInf><SderIssrId>W0ACQ001</SderIssrId><SderAcctIssrId>W0ACQ002</SderAcctIssrId><SderAcctIssrNm>测试机构</SderAcctIssrNm></SderInf><CorpCard><CorpName></CorpName><USCCode></USCCode></CorpCard><ProductInf><ProductTp>00000000</ProductTp><ProductAssInformation></ProductAssInformation></ProductInf><MrchntInf><MrchntNo></MrchntNo><MrchntTpId></MrchntTpId><MrchntPltfrmNm></MrchntPltfrmNm></MrchntInf><SubMrchntInf><SubMrchntNo></SubMrchntNo><SubMrchntTpId></SubMrchntTpId><SubMrchntPltfrmNm></SubMrchntPltfrmNm></SubMrchntInf><RskInf><deviceMode></deviceMode><deviceLanguage></deviceLanguage><sourceIP></sourceIP><MAC></MAC><devId></devId><extensiveDeviceLocation></extensiveDeviceLocation><deviceNumber></deviceNumber><deviceSIMNumber></deviceSIMNumber><accountIDHash></accountIDHash><riskScore></riskScore><riskReasonCode></riskReasonCode><mchntUsrRgstrTm></mchntUsrRgstrTm><mchntUsrRgstrEmail></mchntUsrRgstrEmail><rcvProvince></rcvProvince><rcvCity></rcvCity><goodsClass></goodsClass></RskInf></MsgBody></root>";
 
@@ -73,19 +72,27 @@ public class NettyClientBenchmark extends AbstractBenchmark {
                 .append(digest).toString();
 
         String d306Resp = queueManger.writeAndFlush(d306);
+        if (!d306Resp.startsWith("41")) {
+            logger.error(d306Resp);
+        }
         Assertions.assertTrue(d306Resp.startsWith("41"));
 
-        digest = getHash(respStr);
-        String d307 = new StringBuffer("d307ffff")
-                .append("1b232da2af19440372e4a942af5c403ee7e374e27365109330c3abd5bfcdb16da4185c3edf420f5bb21d86c8e70e3c3ff76ec72abf4ab614279769d5acf42312")
-                .append(d306Resp.substring(d306Resp.length() - 64 * 2))
-                .append("02")
-                .append("000a34303339383037353238")
-                .append("0020")
-                .append(digest).toString();
-
-        String d307Resp = queueManger.writeAndFlush(d307);
-        Assertions.assertTrue(d307Resp.startsWith("41"));
+//        digest = getHash(respStr);
+//        String d307 = new StringBuffer("d307ffff")
+//                .append("1b232da2af19440372e4a942af5c403ee7e374e27365109330c3abd5bfcdb16da4185c3edf420f5bb21d86c8e70e3c3ff76ec72abf4ab614279769d5acf42312")
+////                .append(d306Resp.substring(d306Resp.length() - 64 * 2))
+//                .append("cf85e3833b2928f187760e8915e9a57b34240102d33043cda365ed396d04d4cfbbe1b8d5ab37b1f0cc7795a854cee15b6b8562467176ce735c4cb3245942d995")
+//                .append("02")
+//                .append("000a34303339383037353238")
+//                .append("0020")
+//                .append(digest).toString();
+//
+//        String d307Resp = queueManger.writeAndFlush(d307);
+//        if (!d307Resp.startsWith("41")) {
+//            logger.error(d307Resp);
+//        }
+//
+//        Assertions.assertTrue(d307Resp.startsWith("41"));
     }
 
     private String getHash(String msg) {

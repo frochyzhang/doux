@@ -6,10 +6,7 @@ import com.allinfinance.dev.connection.scaffold.netty.codec.encoder.HexToByteEnc
 import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
 import com.allinfinance.dev.connection.scaffold.netty.handler.DefaultHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -74,6 +71,7 @@ public class ClientConnection {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
+                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(64 * 1024));
                 ch.pipeline()
                         .addLast(new ByteToHexDecoder())
                         .addLast(new HexToByteEncoder())

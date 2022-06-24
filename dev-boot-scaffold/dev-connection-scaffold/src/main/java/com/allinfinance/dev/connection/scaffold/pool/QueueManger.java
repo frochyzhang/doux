@@ -78,21 +78,22 @@ public class QueueManger implements DisposableBean {
      * @return
      */
     public String writeAndFlush(String msg) {
-        logger.info("发送请求：{}", msg);
         ClientConnection realConnection = popConnection();
 
         synchronized (realConnection) {
+            UUID uuid = UUID.fastUUID();
+            logger.info("{} 发送请求：{}", uuid, msg);
             Channel channel = realConnection.getChannelFuture().channel();
 
-            Promise<String> defaultPromise = NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newPromise();
+            Promise<String> defaultPromise = NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newProgressivePromise();
 
-            RequestContext context = new RequestContext(UUID.fastUUID().toString(), defaultPromise);
+            RequestContext context = new RequestContext(uuid.toString(), defaultPromise);
             channel.attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).set(context);
 
             channel.writeAndFlush(msg);
 
             String response = realConnection.get(defaultPromise);
-            logger.info("接受到响应：{}", response);
+            logger.info("{} 接受到响应：{}", uuid, response);
             return response;
         }
     }

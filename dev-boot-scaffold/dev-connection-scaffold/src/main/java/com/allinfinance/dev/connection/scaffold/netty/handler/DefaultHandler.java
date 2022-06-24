@@ -30,6 +30,10 @@ public class DefaultHandler extends ChannelInboundHandlerAdapter {
         RequestContext requestContext = ctx.channel().attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get();
         Promise<String> promise = requestContext.getResponsePromise();
 
-        promise.setSuccess((String) msg);
+        try {
+            promise.setSuccess((String) msg);
+        } catch (Exception e) {
+            logger.error("{} 有异常:", ctx.channel().attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get().getRequestId(), e);
+        }
     }
 }
