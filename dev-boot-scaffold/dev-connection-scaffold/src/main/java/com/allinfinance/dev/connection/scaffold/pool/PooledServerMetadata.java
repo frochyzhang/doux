@@ -1,12 +1,10 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import cn.hutool.core.lang.UUID;
+import com.allinfinance.dev.connection.scaffold.api.ClientConnection;
 import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
 import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
-import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
-import io.netty.channel.Channel;
-import io.netty.util.concurrent.Promise;
+import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +50,12 @@ public class PooledServerMetadata implements DisposableBean {
      * 开启或禁用侦测查询
      */
     protected boolean poolPingEnabled = true;
+    /**
+     * 接收缓冲区大小
+     */
+    protected int bufferSize;
 
-    public PooledServerMetadata(ServerMetadata serverMetadata) {
+    public PooledServerMetadata(ServerMetadata serverMetadata, int bufferSize) {
         this.serverMetadata = serverMetadata;
         this.poolMaximumActiveConnections = serverMetadata.getMaxActiveConnection();
         this.poolMaximumIdleConnections = serverMetadata.getMaxIdleConnection();
@@ -61,6 +63,7 @@ public class PooledServerMetadata implements DisposableBean {
         this.poolPingEnabled = serverMetadata.getEnablePing();
         this.poolPingQuery = serverMetadata.getPingQueryMessage();
         this.poolPingVerify = serverMetadata.getPingVerifyMessage();
+        this.bufferSize = bufferSize;
     }
 
     /**
@@ -68,7 +71,7 @@ public class PooledServerMetadata implements DisposableBean {
      */
     public void init() {
         for (int i = 0; i < poolMaximumIdleConnections; i++) {
-            state.idleConnections.add(serverMetadata.fetchConnection());
+            state.idleConnections.add(serverMetadata.fetchConnection(bufferSize));
         }
     }
 
@@ -77,7 +80,7 @@ public class PooledServerMetadata implements DisposableBean {
      *
      * @param connection
      */
-    protected void pushConnection(ClientConnection connection) {
+    protected void pushConnection(AbstractClientConnection connection) {
         synchronized (state) {
             state.activeConnections.remove(connection);
             if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
@@ -109,7 +112,7 @@ public class PooledServerMetadata implements DisposableBean {
      *
      * @return 没有获取到就返回null
      */
-    public ClientConnection popConnectionIfIdle() {
+    public AbstractClientConnection popConnectionIfIdle() {
         synchronized (state) {
             if (!state.idleConnections.isEmpty()) {
                 return popConnection();
@@ -123,8 +126,8 @@ public class PooledServerMetadata implements DisposableBean {
      *
      * @return
      */
-    protected ClientConnection popConnection() {
-        ClientConnection conn = null;
+    protected AbstractClientConnection popConnection() {
+        AbstractClientConnection conn = null;
 
         while (conn == null) {
             synchronized (state) {
@@ -138,7 +141,7 @@ public class PooledServerMetadata implements DisposableBean {
                     // 如果无空闲链接，则创建新的链接
                     if (state.activeConnections.size() < poolMaximumActiveConnections) {
                         // 活跃连接数没有超过最大活跃连接数，则创建新连接
-                        conn = serverMetadata.fetchConnection();
+                        conn = serverMetadata.fetchConnection(bufferSize);
                         // 新建的连接，先ping一下
                         pingConnection(conn);
                         logger.info("暂无空闲连接且活跃连接小于{}，创建新连接：{}", poolMaximumActiveConnections, conn.hashCode());
@@ -146,7 +149,7 @@ public class PooledServerMetadata implements DisposableBean {
                         // 活跃连接数已满
                         // 取得活跃链接列表的第一个，也就是最老的一个连接
                         logger.info("取得活跃链接列表的第一个");
-                        ClientConnection oldestActiveConnection = state.activeConnections.get(0);
+                        AbstractClientConnection oldestActiveConnection = state.activeConnections.get(0);
                         //先判断老的连接是否有效
                         if (ConnectionStatus.ACTIVE.equals(oldestActiveConnection.getStatus())) {
                             // 老连接有效时直接赋值
@@ -160,7 +163,7 @@ public class PooledServerMetadata implements DisposableBean {
                             pushConnection(oldestActiveConnection);
                         } else {
                             // 老连接无效时新建连接，并回收老来连接
-                            conn = serverMetadata.fetchConnection();
+                            conn = serverMetadata.fetchConnection(bufferSize);
                             logger.info("老连接无效，获取新连接：{}", conn.hashCode());
                             // 新建的连接，先ping一下
                             pingConnection(conn);
@@ -200,7 +203,7 @@ public class PooledServerMetadata implements DisposableBean {
             // 关闭活跃链接
             for (int i = state.activeConnections.size(); i > 0; i--) {
                 try {
-                    ClientConnection conn = state.activeConnections.remove(i - 1);
+                    AbstractClientConnection conn = state.activeConnections.remove(i - 1);
                     conn.close();
                 } catch (Exception ignore) {
 
@@ -209,7 +212,7 @@ public class PooledServerMetadata implements DisposableBean {
             // 关闭空闲链接
             for (int i = state.idleConnections.size(); i > 0; i--) {
                 try {
-                    ClientConnection conn = state.idleConnections.remove(i - 1);
+                    AbstractClientConnection conn = state.idleConnections.remove(i - 1);
                     conn.close();
                 } catch (Exception ignore) {
 
@@ -226,7 +229,7 @@ public class PooledServerMetadata implements DisposableBean {
      * @param conn
      * @return
      */
-    protected boolean pingConnection(ClientConnection conn) {
+    protected boolean pingConnection(AbstractClientConnection conn) {
         boolean result = false;
 
         if (poolPingEnabled) {
@@ -270,17 +273,8 @@ public class PooledServerMetadata implements DisposableBean {
      */
     public boolean pingWriteAndFlush(ClientConnection connection, String msg, String result, int spendTime) {
         synchronized (connection) {
-            Channel channel = connection.getChannelFuture().channel();
-
-            Promise<String> defaultPromise = PoolManager.NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newPromise();
-
-            RequestContext context = new RequestContext(UUID.fastUUID().toString(), defaultPromise);
-            channel.attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).set(context);
-
             long startTime = System.currentTimeMillis();
-            channel.writeAndFlush(msg);
-
-            String response = connection.get(defaultPromise);
+            String response = connection.send(msg);
             logger.info("ping报文响应：{}", response);
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {
@@ -288,7 +282,7 @@ public class PooledServerMetadata implements DisposableBean {
                 return result.equals(response) && (endTime - startTime) <= spendTime;
             } else {
                 //标准相应结果为空时，仅需要服务端相应不为空且在目标时间内即可
-                return StringUtils.isNotEmpty(response) && (endTime - startTime) <= spendTime;
+                return ObjectUtils.allNotNull(response) && (endTime - startTime) <= spendTime;
             }
         }
     }

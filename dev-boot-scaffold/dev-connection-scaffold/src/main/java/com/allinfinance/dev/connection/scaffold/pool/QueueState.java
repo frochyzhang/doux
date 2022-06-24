@@ -1,6 +1,6 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.api.ClientConnection;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

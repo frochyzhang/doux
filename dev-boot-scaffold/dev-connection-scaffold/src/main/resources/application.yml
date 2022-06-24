@@ -1,6 +1,8 @@
 com:
   allinfinance:
     connection:
+      pool-type: list
+      buffer-size: 65536
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
@@ -14,6 +16,7 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
+
 #        server-2:
 #          server-name: 加密机2号
 #          server-ip: 127.0.0.1

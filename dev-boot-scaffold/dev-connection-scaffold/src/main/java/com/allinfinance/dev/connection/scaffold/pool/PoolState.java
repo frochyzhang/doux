@@ -1,6 +1,6 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +18,22 @@ public class PoolState {
     /**
      * 空闲链接列表
      */
-    protected volatile List<ClientConnection> idleConnections = new ArrayList<>();
+    protected volatile List<AbstractClientConnection> idleConnections = new ArrayList<>();
     /**
      * 活跃链接列表
      */
-    protected volatile List<ClientConnection> activeConnections = new ArrayList<>();
+    protected volatile List<AbstractClientConnection> activeConnections = new ArrayList<>();
 
 
     public PoolState(PooledServerMetadata metadata) {
         this.serverMetadata = metadata;
     }
 
-    public List<ClientConnection> getIdleConnections() {
+    public List<AbstractClientConnection> getIdleConnections() {
         return idleConnections;
     }
 
-    public List<ClientConnection> getActiveConnections() {
+    public List<AbstractClientConnection> getActiveConnections() {
         return activeConnections;
     }
 }

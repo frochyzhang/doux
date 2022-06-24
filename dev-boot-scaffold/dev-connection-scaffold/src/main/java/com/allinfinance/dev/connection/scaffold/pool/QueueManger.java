@@ -1,16 +1,11 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.thread.NamedThreadFactory;
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
-import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
-import io.netty.channel.Channel;
-import io.netty.channel.DefaultEventLoop;
-import io.netty.util.concurrent.Promise;
+import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,21 +15,20 @@ import java.util.List;
  * @date 2022/6/22 17:01
  * @description
  */
+@ConditionalOnBean(name = {"queueServerMetadataList"})
 @Component
-public class QueueManger implements DisposableBean {
+public class QueueManger implements MessagePorter, DisposableBean {
     private static final Logger logger = LoggerFactory.getLogger(QueueManger.class);
 
     @Autowired
     private List<QueueServerMetadata> queueServerMetadataList;
-
-    public static final DefaultEventLoop NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NettyResponsePromiseNotify", false));
 
     /**
      * 回收连接
      *
      * @param connection
      */
-    protected void pushConnection(ClientConnection connection, QueueServerMetadata serverMetadata) {
+    protected void pushConnection(AbstractClientConnection connection, QueueServerMetadata serverMetadata) {
         connection.setLastUpdateTime(System.currentTimeMillis());
         serverMetadata.pushConnection(connection);
     }
@@ -42,15 +36,15 @@ public class QueueManger implements DisposableBean {
     /**
      * 获取连接
      */
-    protected ClientConnection popConnection() {
+    protected AbstractClientConnection popConnection() {
         logger.info("从连接池中获取连接...");
-        ClientConnection conn = null;
+        AbstractClientConnection conn = null;
 
         // 轮询遍历各个连接池，直到找到空闲连接
         while (conn == null) {
             // 先遍历一遍，优先使用空闲连接
             for (QueueServerMetadata serverMetadata : queueServerMetadataList) {
-                conn = serverMetadata.popConnection();
+                conn = (AbstractClientConnection) serverMetadata.popConnection();
                 if (conn != null) {
                     if (System.currentTimeMillis() - conn.getLastUpdateTime() > 5 * 60 * 1000) {
                         if (serverMetadata.pingConnection(conn)) {
@@ -77,23 +71,13 @@ public class QueueManger implements DisposableBean {
      * @param msg
      * @return
      */
+    @Override
     public String writeAndFlush(String msg) {
-        ClientConnection realConnection = popConnection();
+        AbstractClientConnection realConnection = popConnection();
 
         synchronized (realConnection) {
-            UUID uuid = UUID.fastUUID();
-            logger.info("{} 发送请求：{}", uuid, msg);
-            Channel channel = realConnection.getChannelFuture().channel();
-
-            Promise<String> defaultPromise = NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newProgressivePromise();
-
-            RequestContext context = new RequestContext(uuid.toString(), defaultPromise);
-            channel.attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).set(context);
-
-            channel.writeAndFlush(msg);
-
-            String response = realConnection.get(defaultPromise);
-            logger.info("{} 接受到响应：{}", uuid, response);
+            String response = realConnection.send(msg);
+            logger.info("接受到响应：{}", response);
             return response;
         }
     }

@@ -1,12 +1,10 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import cn.hutool.core.lang.UUID;
+import com.allinfinance.dev.connection.scaffold.api.ClientConnection;
 import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
 import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
-import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
-import io.netty.channel.Channel;
-import io.netty.util.concurrent.Promise;
+import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +35,13 @@ public class QueueServerMetadata implements DisposableBean {
      */
     protected int poolMaximumIdleConnections = 5;
     /**
-     * 在被强制返回之前,池中连接被检查的时间，单位：ms
+     * 连接请求超时时间，单位：ms
      */
-    protected int poolMaximumCheckoutTime = 20;
+    protected int requestTimeout = 20;
+    /**
+     * 空闲连接检查时间，单位：ms，默认值5分钟
+     */
+    protected int idleConnectionCheckoutTime = 5 * 60 * 1000;
     /**
      * 连接检查请求内容
      */
@@ -52,15 +54,20 @@ public class QueueServerMetadata implements DisposableBean {
      * 开启或禁用侦测查询
      */
     protected boolean poolPingEnabled = true;
+    /**
+     * 接收缓冲区大小
+     */
+    protected int bufferSize;
 
-    public QueueServerMetadata(ServerMetadata serverMetadata) {
+    public QueueServerMetadata(ServerMetadata serverMetadata, int bufferSize) {
         this.serverMetadata = serverMetadata;
         this.poolMaximumActiveConnections = serverMetadata.getMaxActiveConnection();
         this.poolMaximumIdleConnections = serverMetadata.getMaxIdleConnection();
-        this.poolMaximumCheckoutTime = serverMetadata.getTimeout();
+        this.requestTimeout = serverMetadata.getTimeout();
         this.poolPingEnabled = serverMetadata.getEnablePing();
         this.poolPingQuery = serverMetadata.getPingQueryMessage();
         this.poolPingVerify = serverMetadata.getPingVerifyMessage();
+        this.bufferSize = bufferSize;
         state = new QueueState(this, this.poolMaximumActiveConnections);
     }
 
@@ -69,7 +76,7 @@ public class QueueServerMetadata implements DisposableBean {
      */
     public void init() {
         for (int i = 0; i < poolMaximumActiveConnections; i++) {
-            state.queue.add(serverMetadata.fetchConnection());
+            state.queue.add(serverMetadata.fetchConnection(bufferSize));
         }
     }
 
@@ -78,7 +85,7 @@ public class QueueServerMetadata implements DisposableBean {
      */
     protected void supplyConnections() {
         while (state.queue.size() < poolMaximumActiveConnections) {
-            state.queue.add(serverMetadata.fetchConnection());
+            state.queue.add(serverMetadata.fetchConnection(bufferSize));
         }
     }
 
@@ -87,7 +94,7 @@ public class QueueServerMetadata implements DisposableBean {
      *
      * @param connection
      */
-    protected void pushConnection(ClientConnection connection) {
+    protected void pushConnection(AbstractClientConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
             if (state.queue.size() < poolMaximumActiveConnections) {
                 logger.info("回收连接：{}", connection.hashCode());
@@ -130,12 +137,12 @@ public class QueueServerMetadata implements DisposableBean {
      * @param conn
      * @return
      */
-    protected boolean pingConnection(ClientConnection conn) {
+    protected boolean pingConnection(AbstractClientConnection conn) {
         boolean result = false;
 
         if (poolPingEnabled) {
             try {
-                result = pingWriteAndFlush(conn, poolPingQuery, poolPingVerify, poolMaximumCheckoutTime);
+                result = pingWriteAndFlush(conn, poolPingQuery, poolPingVerify, requestTimeout);
             } catch (Exception e) {
                 logger.error("连接：{}异常，异常信息：{}", conn.hashCode(), e);
                 conn.close();
@@ -174,17 +181,8 @@ public class QueueServerMetadata implements DisposableBean {
      */
     public boolean pingWriteAndFlush(ClientConnection connection, String msg, String result, int spendTime) {
         synchronized (connection) {
-            Channel channel = connection.getChannelFuture().channel();
-
-            Promise<String> defaultPromise = PoolManager.NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newPromise();
-
-            RequestContext context = new RequestContext(UUID.fastUUID().toString(), defaultPromise);
-            channel.attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).set(context);
-
             long startTime = System.currentTimeMillis();
-            channel.writeAndFlush(msg);
-
-            String response = connection.get(defaultPromise);
+            String response = connection.send(msg);
             logger.info("ping报文响应：{}", response);
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {
@@ -192,7 +190,7 @@ public class QueueServerMetadata implements DisposableBean {
                 return result.equals(response) && (endTime - startTime) <= spendTime;
             } else {
                 //标准相应结果为空时，仅需要服务端相应不为空且在目标时间内即可
-                return StringUtils.isNotEmpty(response) && (endTime - startTime) <= spendTime;
+                return ObjectUtils.allNotNull(response) && (endTime - startTime) <= spendTime;
             }
         }
     }

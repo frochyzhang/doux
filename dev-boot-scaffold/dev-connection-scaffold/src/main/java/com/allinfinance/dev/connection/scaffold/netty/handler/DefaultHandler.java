@@ -1,6 +1,6 @@
 package com.allinfinance.dev.connection.scaffold.netty.handler;
 
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.connection.NettyClientConnection;
 import com.allinfinance.dev.connection.scaffold.netty.context.RequestContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -27,13 +27,13 @@ public class DefaultHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        RequestContext requestContext = ctx.channel().attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get();
+        RequestContext requestContext = ctx.channel().attr(NettyClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get();
         Promise<String> promise = requestContext.getResponsePromise();
 
         try {
             promise.setSuccess((String) msg);
         } catch (Exception e) {
-            logger.error("{} 有异常:", ctx.channel().attr(ClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get().getRequestId(), e);
+            logger.error("{} 异常:", ctx.channel().attr(NettyClientConnection.CURRENT_REQ_BOUND_WITH_THE_CHANNEL).get().getRequestId(), e);
         }
     }
 }

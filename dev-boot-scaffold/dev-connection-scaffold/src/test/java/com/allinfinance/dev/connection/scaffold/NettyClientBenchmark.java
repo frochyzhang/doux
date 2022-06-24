@@ -1,9 +1,9 @@
 package com.allinfinance.dev.connection.scaffold;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.connection.scaffold.pool.PoolManager;
-import com.allinfinance.dev.connection.scaffold.pool.QueueManger;
+import com.allinfinance.dev.connection.scaffold.pool.MessagePorter;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,12 @@ import java.util.concurrent.TimeUnit;
 public class NettyClientBenchmark extends AbstractBenchmark {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyClientBenchmark.class);
-    private static PoolManager poolManager;
-    private static QueueManger queueManger;
 
+    private static MessagePorter messagePorter;
 
     @Autowired
-    private void setPoolManager(PoolManager poolManager, QueueManger queueManger) {
-        NettyClientBenchmark.poolManager = poolManager;
-        NettyClientBenchmark.queueManger = queueManger;
+    void setMessagePorter(MessagePorter messagePorter) {
+        NettyClientBenchmark.messagePorter = messagePorter;
     }
 
     @Benchmark
@@ -47,7 +45,7 @@ public class NettyClientBenchmark extends AbstractBenchmark {
                 .append("0020")
                 .append(digest).toString();
 
-        String d306Resp = queueManger.writeAndFlush(d306);
+        String d306Resp = messagePorter.writeAndFlush(d306);
         Assertions.assertTrue(d306Resp.startsWith("41"));
 
     }
@@ -66,12 +64,12 @@ public class NettyClientBenchmark extends AbstractBenchmark {
                 .append("0020")
                 .append(digest).toString();
 
-        String d307Resp = queueManger.writeAndFlush(d307);
+        String d307Resp = messagePorter.writeAndFlush(d307);
         Assertions.assertTrue(d307Resp.startsWith("41"));
     }
 
 
-    @Benchmark
+    @Test
     public void test_digest() {
         String respStr = "<allslasdlkasjdlfasdf><MsgHeader><MsgVer>1000</MsgVer><SndDt>2022-06-20T13:41:06</SndDt><Trxtyp>0001</Trxtyp><IssrId>00010000</IssrId><Drctn>11</Drctn><SignSN>4039807528</SignSN><EncSN></EncSN><EncKey></EncKey><MDAlgo>1</MDAlgo><SignEncAlgo>1</SignEncAlgo><EncAlgo></EncAlgo></MsgHeader><MsgBody><BizTp>300001</BizTp><BizFunc>111011</BizFunc><BizAssInf><BizAssInfRsv>银联测试123</BizAssInfRsv></BizAssInf><TrxInf><TrxId>0620c0000474106a</TrxId><TrxDtTm>2022-06-20T13:41:06</TrxDtTm><SettlmtDt>2022-06-09</SettlmtDt><SettlmtInf>1323</SettlmtInf><TrxAmt></TrxAmt></TrxInf><RcverInf><RcverAcctIssrId>64901380</RcverAcctIssrId><RcverAcctId>6288888888888888</RcverAcctId><RcverAcctTp></RcverAcctTp><RcverNm>张小小</RcverNm><IDTp>01</IDTp><IDNo>410482198302100584</IDNo><MobNo>13201569405</MobNo></RcverInf><SensInf></SensInf><SderInf><SderIssrId>W0ACQ001</SderIssrId><SderAcctIssrId>W0ACQ002</SderAcctIssrId><SderAcctIssrNm>测试机构</SderAcctIssrNm></SderInf><CorpCard><CorpName></CorpName><USCCode></USCCode></CorpCard><ProductInf><ProductTp>00000000</ProductTp><ProductAssInformation></ProductAssInformation></ProductInf><MrchntInf><MrchntNo></MrchntNo><MrchntTpId></MrchntTpId><MrchntPltfrmNm></MrchntPltfrmNm></MrchntInf><SubMrchntInf><SubMrchntNo></SubMrchntNo><SubMrchntTpId></SubMrchntTpId><SubMrchntPltfrmNm></SubMrchntPltfrmNm></SubMrchntInf><RskInf><deviceMode></deviceMode><deviceLanguage></deviceLanguage><sourceIP></sourceIP><MAC></MAC><devId></devId><extensiveDeviceLocation></extensiveDeviceLocation><deviceNumber></deviceNumber><deviceSIMNumber></deviceSIMNumber><accountIDHash></accountIDHash><riskScore></riskScore><riskReasonCode></riskReasonCode><mchntUsrRgstrTm></mchntUsrRgstrTm><mchntUsrRgstrEmail></mchntUsrRgstrEmail><rcvProvince></rcvProvince><rcvCity></rcvCity><goodsClass></goodsClass></RskInf></MsgBody></root>";
         String str = HexUtil.encodeHexStr(respStr);
@@ -80,7 +78,7 @@ public class NettyClientBenchmark extends AbstractBenchmark {
                 .append(String.format("%04x", str.length() / 2))
                 .append(str).toString();
 
-        String resp = queueManger.writeAndFlush(d30A);
+        String resp = messagePorter.writeAndFlush(d30A);
 
         Assertions.assertTrue(resp.startsWith("41"));
 
@@ -93,7 +91,7 @@ public class NettyClientBenchmark extends AbstractBenchmark {
                 .append(String.format("%04x", str.length() / 2))
                 .append(str).toString();
 
-        String resp = queueManger.writeAndFlush(d30A);
+        String resp = messagePorter.writeAndFlush(d30A);
 
         Assertions.assertTrue(resp.startsWith("41"));
         return resp.substring(resp.length() - 32 * 2);

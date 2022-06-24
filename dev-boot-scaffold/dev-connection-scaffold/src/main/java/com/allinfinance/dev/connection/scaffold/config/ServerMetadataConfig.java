@@ -1,10 +1,12 @@
 package com.allinfinance.dev.connection.scaffold.config;
 
+import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionPoolType;
 import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
 import com.allinfinance.dev.connection.scaffold.pool.PooledServerMetadata;
 import com.allinfinance.dev.connection.scaffold.pool.QueueServerMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,14 @@ import java.util.stream.Collectors;
 @ConfigurationProperties(prefix = "com.allinfinance.connection")
 public class ServerMetadataConfig {
     private static final Logger logger = LoggerFactory.getLogger(ServerMetadataConfig.class);
+    /**
+     * 连接池类型：
+     */
+    private String poolType;
+    /**
+     * 接收缓冲区大小
+     */
+    private Integer bufferSize;
 
     /**
      * 服务端参数列表
@@ -35,12 +45,13 @@ public class ServerMetadataConfig {
         this.serverMetadataMap = serverMetadataMap;
     }
 
+    @ConditionalOnProperty(value = "com.allinfinance.connection.pool-type", havingValue = ConnectionPoolType.LIST)
     @Bean(name = "pooledServerMetadataList")
     public List<PooledServerMetadata> getPooledServerMetadataList() {
         return serverMetadataMap.values()
                 .stream().map(serverMetadata -> {
                     logger.info("服务端配置信息：{}", serverMetadata);
-                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata);
+                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata,bufferSize);
                     try {
                         pooledServerMetadata.init();
                     } catch (Throwable e) {
@@ -50,12 +61,13 @@ public class ServerMetadataConfig {
                 }).collect(Collectors.toList());
     }
 
+    @ConditionalOnProperty(value = "com.allinfinance.connection.pool-type", havingValue = ConnectionPoolType.QUEUE)
     @Bean(name = "queueServerMetadataList")
     public List<QueueServerMetadata> getQueueServerMetadataList() {
         return serverMetadataMap.values()
                 .stream().map(serverMetadata -> {
                     logger.info("服务端配置信息：{}", serverMetadata);
-                    QueueServerMetadata pooledServerMetadata = new QueueServerMetadata(serverMetadata);
+                    QueueServerMetadata pooledServerMetadata = new QueueServerMetadata(serverMetadata, bufferSize);
                     try {
                         pooledServerMetadata.init();
                     } catch (Throwable e) {
@@ -65,11 +77,28 @@ public class ServerMetadataConfig {
                 }).collect(Collectors.toList());
     }
 
+    public String getPoolType() {
+        return poolType;
+    }
+
+    public void setPoolType(String poolType) {
+        this.poolType = poolType;
+    }
+
+    public Integer getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(Integer bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
     @Override
     public String toString() {
         return "ServerMetadataConfig{" +
-                "serverMetadataMap=" + serverMetadataMap +
+                "poolType='" + poolType + '\'' +
+                ", bufferSize=" + bufferSize +
+                ", serverMetadataMap=" + serverMetadataMap +
                 '}';
     }
-
 }

@@ -1,7 +1,8 @@
 package com.allinfinance.dev.connection.scaffold.metadata;
 
 import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
-import com.allinfinance.dev.connection.scaffold.netty.connection.ClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
+import com.allinfinance.dev.connection.scaffold.netty.connection.NettyClientConnection;
 
 /**
  * @author qipeng
@@ -58,11 +59,12 @@ public class ServerMetadata {
      *
      * @return
      */
-    public ClientConnection fetchConnection() {
-        ClientConnection clientConnection = new ClientConnection();
-        clientConnection.connect(serverIp, serverPort, retryTimes);
-        clientConnection.setStatus(ConnectionStatus.ACTIVE);
-        return clientConnection;
+    public AbstractClientConnection fetchConnection(int bufferSize) {
+        // TODO: 2022/6/24  避免在这里与底层通信框架耦合
+        AbstractClientConnection abstractClientConnection = new NettyClientConnection();
+        abstractClientConnection.connect(serverIp, serverPort, retryTimes, bufferSize);
+        abstractClientConnection.setStatus(ConnectionStatus.ACTIVE);
+        return abstractClientConnection;
     }
 
     public String getServerName() {
