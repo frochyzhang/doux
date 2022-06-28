@@ -11,6 +11,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Promise;
 import org.slf4j.Logger;
@@ -49,7 +51,7 @@ public class NettyClientConnection extends AbstractClientConnection {
      * @param retryTimes 重试次数
      */
     @Override
-    public void connect(String remoteIp, int remotePort, int retryTimes, int bufferSize) {
+    public void connect(String remoteIp, int remotePort, int retryTimes, int bufferSize, int lengthField) {
         this.retryTimes.set(retryTimes);
 
         Bootstrap b = new Bootstrap();
@@ -63,10 +65,9 @@ public class NettyClientConnection extends AbstractClientConnection {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.config()
-                        .setRecvByteBufAllocator(new FixedRecvByteBufAllocator(bufferSize));
-                ch.config().setSendBufferSize(bufferSize);
                 ch.pipeline()
+                        .addLast(new LengthFieldBasedFrameDecoder(bufferSize, 0, lengthField, 0, 2))
+                        .addLast(new LengthFieldPrepender(lengthField))
                         .addLast(new ByteToHexDecoder())
                         .addLast(new HexToByteEncoder())
                         .addLast(new DefaultHandler());

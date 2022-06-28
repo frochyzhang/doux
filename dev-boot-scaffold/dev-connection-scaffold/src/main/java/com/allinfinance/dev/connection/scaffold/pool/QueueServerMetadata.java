@@ -58,8 +58,12 @@ public class QueueServerMetadata implements DisposableBean {
      * 接收缓冲区大小
      */
     protected int bufferSize;
+    /**
+     * 报文长度域
+     */
+    protected int lengthField;
 
-    public QueueServerMetadata(ServerMetadata serverMetadata, int bufferSize) {
+    public QueueServerMetadata(ServerMetadata serverMetadata, int bufferSize, int lengthField) {
         this.serverMetadata = serverMetadata;
         this.poolMaximumActiveConnections = serverMetadata.getMaxActiveConnection();
         this.poolMaximumIdleConnections = serverMetadata.getMaxIdleConnection();
@@ -68,6 +72,7 @@ public class QueueServerMetadata implements DisposableBean {
         this.poolPingQuery = serverMetadata.getPingQueryMessage();
         this.poolPingVerify = serverMetadata.getPingVerifyMessage();
         this.bufferSize = bufferSize;
+        this.lengthField = lengthField;
         state = new QueueState(this, this.poolMaximumActiveConnections);
     }
 
@@ -76,7 +81,7 @@ public class QueueServerMetadata implements DisposableBean {
      */
     public void init() {
         for (int i = 0; i < poolMaximumActiveConnections; i++) {
-            state.queue.add(serverMetadata.fetchConnection(bufferSize));
+            state.queue.add(serverMetadata.fetchConnection(bufferSize, lengthField));
         }
     }
 
@@ -85,7 +90,7 @@ public class QueueServerMetadata implements DisposableBean {
      */
     protected void supplyConnections() {
         while (state.queue.size() < poolMaximumActiveConnections) {
-            state.queue.add(serverMetadata.fetchConnection(bufferSize));
+            state.queue.add(serverMetadata.fetchConnection(bufferSize, lengthField));
         }
     }
 

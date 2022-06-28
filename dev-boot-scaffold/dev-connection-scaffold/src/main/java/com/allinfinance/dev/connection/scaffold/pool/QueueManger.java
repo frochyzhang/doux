@@ -1,5 +1,6 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
+import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
 import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,11 @@ public class QueueManger implements MessagePorter, DisposableBean {
                             logger.info("老头连接有效，返回该连接：{}", conn.hashCode());
                             pushConnection(conn, serverMetadata);
                             break;
+                        } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
+                            // ping连接失败
+                            logger.warn("老头连接超时，等待重试：{}", conn.hashCode());
+                        } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())){
+                            // 连接重试失败，重新创建新连接
                         }
                     } else {
                         logger.info("小鲜肉连接，返回该连接：{}", conn.hashCode());

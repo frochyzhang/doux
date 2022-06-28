@@ -1,9 +1,5 @@
 package com.allinfinance.dev.connection.scaffold.api;
 
-import io.netty.util.concurrent.Promise;
-
-import java.util.concurrent.Future;
-
 /**
  * @Description:
  * @Author: qipeng
@@ -13,11 +9,13 @@ public interface ClientConnection {
     /**
      * 创建长连接
      *
-     * @param remoteIp   服务端ip
-     * @param remotePort 服务端port
-     * @param retryTimes 重试次数
+     * @param remoteIp    服务端ip
+     * @param remotePort  服务端port
+     * @param retryTimes  重试次数
+     * @param bufferSize  接收缓冲区大小
+     * @param lengthField 报文长度域
      */
-    void connect(String remoteIp, int remotePort, int retryTimes, int bufferSize);
+    void connect(String remoteIp, int remotePort, int retryTimes, int bufferSize, int lengthField);
 
     /**
      * 关闭连接
@@ -26,6 +24,7 @@ public interface ClientConnection {
 
     /**
      * 发送请求
+     *
      * @param msg 请求内容
      * @return 响应内容
      */

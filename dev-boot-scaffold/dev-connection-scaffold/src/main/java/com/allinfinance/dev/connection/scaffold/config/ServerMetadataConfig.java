@@ -31,7 +31,10 @@ public class ServerMetadataConfig {
      * 接收缓冲区大小
      */
     private Integer bufferSize;
-
+    /**
+     * 报文长度域
+     */
+    private Integer lengthField;
     /**
      * 服务端参数列表
      */
@@ -67,7 +70,7 @@ public class ServerMetadataConfig {
         return serverMetadataMap.values()
                 .stream().map(serverMetadata -> {
                     logger.info("服务端配置信息：{}", serverMetadata);
-                    QueueServerMetadata pooledServerMetadata = new QueueServerMetadata(serverMetadata, bufferSize);
+                    QueueServerMetadata pooledServerMetadata = new QueueServerMetadata(serverMetadata, bufferSize, lengthField);
                     try {
                         pooledServerMetadata.init();
                     } catch (Throwable e) {

@@ -54,6 +54,10 @@ public class PooledServerMetadata implements DisposableBean {
      * 接收缓冲区大小
      */
     protected int bufferSize;
+    /**
+     * 报文长度域
+     */
+    protected int lengthField;
 
     public PooledServerMetadata(ServerMetadata serverMetadata, int bufferSize) {
         this.serverMetadata = serverMetadata;
@@ -71,7 +75,7 @@ public class PooledServerMetadata implements DisposableBean {
      */
     public void init() {
         for (int i = 0; i < poolMaximumIdleConnections; i++) {
-            state.idleConnections.add(serverMetadata.fetchConnection(bufferSize));
+            state.idleConnections.add(serverMetadata.fetchConnection(bufferSize, lengthField));
         }
     }
 
@@ -141,7 +145,7 @@ public class PooledServerMetadata implements DisposableBean {
                     // 如果无空闲链接，则创建新的链接
                     if (state.activeConnections.size() < poolMaximumActiveConnections) {
                         // 活跃连接数没有超过最大活跃连接数，则创建新连接
-                        conn = serverMetadata.fetchConnection(bufferSize);
+                        conn = serverMetadata.fetchConnection(bufferSize, lengthField);
                         // 新建的连接，先ping一下
                         pingConnection(conn);
                         logger.info("暂无空闲连接且活跃连接小于{}，创建新连接：{}", poolMaximumActiveConnections, conn.hashCode());
@@ -163,7 +167,7 @@ public class PooledServerMetadata implements DisposableBean {
                             pushConnection(oldestActiveConnection);
                         } else {
                             // 老连接无效时新建连接，并回收老来连接
-                            conn = serverMetadata.fetchConnection(bufferSize);
+                            conn = serverMetadata.fetchConnection(bufferSize, lengthField);
                             logger.info("老连接无效，获取新连接：{}", conn.hashCode());
                             // 新建的连接，先ping一下
                             pingConnection(conn);

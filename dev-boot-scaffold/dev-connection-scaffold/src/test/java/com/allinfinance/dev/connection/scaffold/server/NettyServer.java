@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 /**
  * @Description:
@@ -32,15 +33,15 @@ public class NettyServer {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             //更换对应的handler
+                            ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(1024 * 64));
+
                             ch.pipeline()
+                                    .addLast(new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
                                     .addLast(new ByteToHexDecoder())
                                     .addLast(new HexToByteEncoder())
                                     .addLast(new EchoServerHandler());
                         }
                     })
-                    .option(ChannelOption.SO_RCVBUF, 1024 * 64)
-                    .option(ChannelOption.SO_SNDBUF, 1024 * 64)
-                    .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1024, 1024, 1024 * 64))
                     .option(ChannelOption.SO_BACKLOG, 8)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
