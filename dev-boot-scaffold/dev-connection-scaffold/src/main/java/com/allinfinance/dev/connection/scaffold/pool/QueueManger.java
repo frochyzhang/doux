@@ -46,7 +46,7 @@ public class QueueManger implements MessagePorter, DisposableBean {
             for (QueueServerMetadata serverMetadata : queueServerMetadataList) {
                 conn = (AbstractClientConnection) serverMetadata.popConnection();
                 if (conn != null) {
-                    if (System.currentTimeMillis() - conn.getLastUpdateTime() > 5 * 60 * 1000) {
+                    if (System.currentTimeMillis() - conn.getLastUpdateTime() > serverMetadata.requestTimeout) {
                         if (serverMetadata.pingConnection(conn)) {
                             logger.info("老头连接有效，返回该连接：{}", conn.hashCode());
                             pushConnection(conn, serverMetadata);

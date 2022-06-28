@@ -24,7 +24,7 @@ public class ByteToHexDecoder extends ByteToMessageDecoder {
         byte[] bytes = new byte[size];
         in.readBytes(bytes);
         String receive = HexUtil.encodeHexStr(bytes);
-        LogUtils.debug(logger, "接收到的报文大小：{}字节，响应内容：{}", size, receive);
+        LogUtils.debug(logger, "接收到的报文大小：{}字节，接收到的报文内容：{}", size, receive);
         out.add(receive);
     }
 

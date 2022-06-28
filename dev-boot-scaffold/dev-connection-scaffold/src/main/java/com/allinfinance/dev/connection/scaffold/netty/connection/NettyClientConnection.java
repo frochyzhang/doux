@@ -65,6 +65,7 @@ public class NettyClientConnection extends AbstractClientConnection {
             public void initChannel(SocketChannel ch) throws Exception {
                 ch.config()
                         .setRecvByteBufAllocator(new FixedRecvByteBufAllocator(bufferSize));
+                ch.config().setSendBufferSize(bufferSize);
                 ch.pipeline()
                         .addLast(new ByteToHexDecoder())
                         .addLast(new HexToByteEncoder())
@@ -113,7 +114,7 @@ public class NettyClientConnection extends AbstractClientConnection {
 
         String resp = get(defaultPromise);
         if (logger.isDebugEnabled()) {
-            logger.info("{}接受到响应：{}", uuid, resp);
+            logger.debug("{}接收到响应：{}", uuid, resp);
         }
         return resp;
     }
