@@ -1,5 +1,6 @@
 package com.allinfinance.dev.core.util.hsp;
 
+import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
@@ -15,7 +16,7 @@ public interface SignatureService {
      * @param requestDTO 签名参数
      * @return 签名信息
      */
-    SignatureGetBySM2PrivateKeyResponseDTO getSignatureBySM2PrivateKey(SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
+    HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
 
     /**
      * 用SM2公钥做验签--D307
@@ -23,5 +24,5 @@ public interface SignatureService {
      * @param requestDTO 验签参数
      * @return 验签结果
      */
-    boolean verifySignatureBySM2PublicKey(SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
+    HspBaseResponseDTO verifySignatureBySM2PublicKey(SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
 }

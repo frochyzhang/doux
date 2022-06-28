@@ -57,7 +57,7 @@ public class ValidateUtil {
                      */
                     if (v == null) {
                         //校验存在性
-                        throw new IllegalArgumentException(field + " 为空");
+                        throw new IllegalArgumentException(field + "为空");
                     }
                     /*
                     存在性验证结束
@@ -65,8 +65,12 @@ public class ValidateUtil {
                      */
                     if (v instanceof String) {
                         int byteNum = ((String) v).getBytes().length;
+                        if (check.length() > 0 && byteNum != check.length()) {
+                            throw new IllegalArgumentException(field + "长度不等于要求字节数" + check.length() + " 当前字节数为: " + byteNum);
+                        }
+
                         if (check.maxLength() > 0 && byteNum > check.maxLength()) {
-                            throw new IllegalArgumentException(field + " 长度大于最大字节数" + check.maxLength() + " 当前字节数为: " + byteNum);
+                            throw new IllegalArgumentException(field + "长度大于最大字节数" + check.maxLength() + " 当前字节数为: " + byteNum);
                         }
                     }
                 });

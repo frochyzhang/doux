@@ -8,19 +8,19 @@ import com.allinfinance.dev.core.util.validate.Check;
  */
 public class SignatureGetBySM2PrivateKeyRequestDTO {
     /**
-     * 外部输入密钥，HEX编码
+     * 外部输入密钥，HEX
      */
-    @Check(maxLength = 65535 / 2)
+    @Check(minLength = 1, maxLength = 65535 * 2)
     private String privateKey;
     /**
-     * 证书序列号
+     * 证书序列号，明文
      */
-    @Check(maxLength = 65535 / 2)
+    @Check(minLength = 1, maxLength = 65535 / 2)
     private String certId;
     /**
-     * 数据
+     * 数据，明文
      */
-    @Check(maxLength = 65535 / 2)
+    @Check(minLength = 1, maxLength = 65535 / 2)
     private String data;
 
     public String getPrivateKey() {

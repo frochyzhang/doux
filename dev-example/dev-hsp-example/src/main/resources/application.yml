@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: dev-hsp-example
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/public-hhf
+        bolt-port: 12204
+  allinfinance:
+    rpc:
+      reference-list:
+        - com.allinfinance.dev.core.util.hsp.SignatureService

@@ -6,21 +6,17 @@ import com.allinfinance.dev.core.util.validate.Check;
  * @author huanghf
  * @date 2022/6/19 14:46
  */
-public class SignatureGetBySM2PrivateKeyResponseDTO extends BaseResponseDTO {
+public class SignatureGetBySM2PrivateKeyResponseDTO {
     /**
-     * 签名结果的R部分
+     * 签名结果的R部分，HEX
      */
     @Check(length = 32 * 2)
     private String signatureR;
     /**
-     * 签名结果的S部分
+     * 签名结果的S部分，HEX
      */
     @Check(length = 32 * 2)
     private String signatureS;
-
-    public SignatureGetBySM2PrivateKeyResponseDTO(Boolean success) {
-        super(success);
-    }
 
     public String getSignatureR() {
         return signatureR;

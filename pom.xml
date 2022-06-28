@@ -18,7 +18,7 @@
         <module>dev-mq/dev-mq-rabbit</module>
         <module>dev-mq-rpc-portal</module>
         <module>dev-autoconfigure</module>
-        <!--        <module>dev-hsp</module>-->
+        <module>dev-hsp</module>
         <module>dev-rpc</module>
         <module>dev-rpc/dev-rpc-dubbo</module>
         <module>dev-rpc/dev-rpc-sofa</module>

@@ -8,6 +8,7 @@ import com.allinfinance.dev.hsp.constant.RespCodeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +21,9 @@ public class DigestUtil {
 
     @Autowired
     private MessagePorter messagePorter;
+
+    @Value("${com.allinfinance.enable-length-field}")
+    private boolean enableLengthField;
 
     /**
      * 获取摘要--D30A
@@ -36,6 +40,12 @@ public class DigestUtil {
                 .append(hashAlgorithmEnum.getCode())
                 .append(String.format("%04x", dataHex.length() / 2))
                 .append(dataHex);
+
+        if (enableLengthField) {
+            String lengthField = String.format("%04x", instruction.length() / 2);
+            logger.info("添加长度域，指令长度: {}", lengthField);
+            instruction.insert(0, lengthField);
+        }
 
         logger.debug("请求加密机报文: {}", instruction.toString());
         String response = messagePorter.writeAndFlush(instruction.toString());

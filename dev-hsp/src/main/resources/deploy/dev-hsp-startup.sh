@@ -5,7 +5,7 @@ if [ -z "$ACTIVE_PROFILE" ]; then
   exit 1
 fi
 # Base Folder Path like "/folder/packages"
-CURRENT_DIR=$(readlink -f "$0")
+CURRENT_DIR=$(readlink -f "$0")n
 BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
 # Shell Script file name after removing path like "start-yaml-validator.sh"
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
@@ -16,7 +16,7 @@ APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
 # JVM Parameters and Spring boot initialization parameters
 JVM_PARAM="-Xms512m -Xmx1024m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
 -Dspring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/
--Dlogging.config=/app/vctssappuat/apps/vctss-application/config/logback-spring.xml"
+-Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
 
 # skywalking相关配置
 SKY_WALKING_BACKEND_ADDRESS=""

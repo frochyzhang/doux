@@ -8,34 +8,34 @@ import com.allinfinance.dev.core.util.validate.Check;
  */
 public class SignatureVerifyBySM2PublicKeyRequestDTO {
     /**
-     * 公钥明文X
+     * 公钥明文X, HEX
      */
-    @Check(length = 32 / 2)
+    @Check(length = 32 * 2)
     private String plainPublicKeyX;
     /**
-     * 公钥明文Y
+     * 公钥明文Y, HEX
      */
-    @Check(length = 32 / 2)
+    @Check(length = 32 * 2)
     private String plainPublicKeyY;
     /**
-     * 签名结果R
+     * 签名结果R, HEX
      */
-    @Check(length = 32 / 2)
+    @Check(length = 32 * 2)
     private String signatureR;
     /**
-     * 签名结果S
+     * 签名结果S, HEX
      */
-    @Check(length = 32 / 2)
+    @Check(length = 32 * 2)
     private String signatureS;
     /**
-     * 用户标识
+     * 证书序列号，明文
      */
-    @Check(maxLength = 65535 / 2)
+    @Check(minLength = 1, maxLength = 65535 / 2)
     private String certId;
     /**
-     * 数据
+     * 数据，明文
      */
-    @Check(maxLength = 65535 / 2)
+    @Check(minLength = 1, maxLength = 65535 / 2)
     private String data;
 
     public String getPlainPublicKeyX() {
