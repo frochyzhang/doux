@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 
+import java.net.SocketException;
+
 /**
  * @author qipeng
  * @date 2022/6/22 16:41
@@ -139,7 +141,8 @@ public class QueueServerMetadata implements DisposableBean {
     public void forceCloseAll() {
         logger.info("强制关闭所有连接！");
         while (state.queue.size() > 0) {
-            state.queue.remove();
+            ClientConnection connection = state.queue.remove();
+            connection.close();
         }
     }
 
@@ -158,6 +161,7 @@ public class QueueServerMetadata implements DisposableBean {
                 result = pingWriteAndFlush(conn, poolPingQuery, poolPingVerify, requestTimeout);
             } catch (Exception e) {
                 logger.error("连接：{}异常，异常信息：{}", conn.hashCode(), e);
+                conn.setStatus(ConnectionStatus.INACTIVE);
                 conn.close();
             }
 
@@ -192,10 +196,11 @@ public class QueueServerMetadata implements DisposableBean {
      * @param spendTime  测试ping的耗时（单位：ms）
      * @return
      */
-    public boolean pingWriteAndFlush(ClientConnection connection, String msg, String result, int spendTime) {
+    public boolean pingWriteAndFlush(AbstractClientConnection connection, String msg, String result, int spendTime) throws SocketException {
         synchronized (connection) {
             long startTime = System.currentTimeMillis();
-            String response = connection.send(msg);
+            String response = null;
+            response = connection.send(msg);
             logger.info("ping报文响应：{}", response);
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {

@@ -1,6 +1,5 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import com.allinfinance.dev.connection.scaffold.api.ClientConnection;
 import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
 import com.allinfinance.dev.connection.scaffold.metadata.ServerMetadata;
 import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
@@ -9,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+
+import java.net.SocketException;
 
 /**
  * @author qipeng
@@ -281,10 +282,17 @@ public class PooledServerMetadata implements DisposableBean {
      * @param spendTime  测试ping的耗时（单位：ms）
      * @return
      */
-    public boolean pingWriteAndFlush(ClientConnection connection, String msg, String result, int spendTime) {
+    public boolean pingWriteAndFlush(AbstractClientConnection connection, String msg, String result, int spendTime) {
         synchronized (connection) {
             long startTime = System.currentTimeMillis();
-            String response = connection.send(msg);
+            String response = null;
+            try {
+                response = connection.send(msg);
+            } catch (SocketException e) {
+                connection.setStatus(ConnectionStatus.INACTIVE);
+                logger.error("请求发送异常");
+                return false;
+            }
             logger.info("ping报文响应：{}", response);
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {

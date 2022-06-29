@@ -1,5 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.api;
 
+import java.net.SocketException;
+
 /**
  * @Description:
  * @Author: qipeng
@@ -28,7 +30,7 @@ public interface ClientConnection {
      * @param msg 请求内容
      * @return 响应内容
      */
-    String send(String msg);
+    String send(String msg) throws SocketException;
 }
 
 

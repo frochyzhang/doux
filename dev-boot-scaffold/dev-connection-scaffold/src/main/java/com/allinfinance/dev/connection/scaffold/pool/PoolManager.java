@@ -1,9 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.pool;
 
-import cn.hutool.core.thread.NamedThreadFactory;
 import com.allinfinance.dev.connection.scaffold.config.constant.ConnectionStatus;
 import com.allinfinance.dev.connection.scaffold.netty.connection.AbstractClientConnection;
-import io.netty.channel.DefaultEventLoop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import java.net.SocketException;
 import java.util.List;
 import java.util.Random;
 
@@ -79,6 +78,9 @@ public class PoolManager implements MessagePorter, DisposableBean {
                 String response = realConnection.send(msg);
                 logger.info("接受到响应：{}", response);
                 return response;
+            } catch (SocketException e) {
+                realConnection.setStatus(ConnectionStatus.INACTIVE);
+                return null;
             } finally {
                 pushConnection(realConnection);
             }

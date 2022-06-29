@@ -18,6 +18,7 @@ import io.netty.util.concurrent.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -99,12 +100,15 @@ public class NettyClientConnection extends AbstractClientConnection {
      * @return
      */
     @Override
-    public String send(String msg) {
+    public String send(String msg) throws SocketException {
         UUID uuid = UUID.fastUUID();
         if (logger.isDebugEnabled()) {
             logger.debug("{}发送请求：{}", uuid, msg);
         }
         Channel channel = this.getChannelFuture().channel();
+        if (!channel.isActive()) {
+            throw new SocketException("连接异常");
+        }
 
         Promise<String> defaultPromise = NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP.newProgressivePromise();
 

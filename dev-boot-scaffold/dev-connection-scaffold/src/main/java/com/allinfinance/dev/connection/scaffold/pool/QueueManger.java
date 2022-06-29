@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -85,7 +86,14 @@ public class QueueManger implements MessagePorter, DisposableBean {
         AbstractClientConnection realConnection = popConnection();
 
         synchronized (realConnection) {
-            String response = realConnection.send(msg);
+            String response = null;
+            try {
+                response = realConnection.send(msg);
+            } catch (SocketException e) {
+                realConnection.setStatus(ConnectionStatus.INACTIVE);
+                logger.error("发送请求异常", e);
+                return null;
+            }
             logger.info("接受到响应：{}", response);
             return response;
         }
