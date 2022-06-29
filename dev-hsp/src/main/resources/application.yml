@@ -81,7 +81,6 @@ com:
       rpc:
         registry-address: nacos://10.250.28.142:8848/public-uat
         bolt-port: 12202
-        enabled-ip-range: 10.250.1.17
   allinfinance:
     rpc:
       provider-package: com.allinfinance.dev.hsp.service
@@ -115,7 +114,6 @@ com:
       rpc:
         registry-address: nacos://10.250.28.142:8848/public
         bolt-port: 12202
-        enabled-ip-range: 10.250.1.17
   allinfinance:
     rpc:
       provider-package: com.allinfinance.dev.hsp.service
