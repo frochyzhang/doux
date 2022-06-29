@@ -66,12 +66,20 @@ public class NettyClientConnection extends AbstractClientConnection {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline()
-                        .addLast(new LengthFieldBasedFrameDecoder(bufferSize, 0, lengthField, 0, 2))
-                        .addLast(new LengthFieldPrepender(lengthField))
-                        .addLast(new ByteToHexDecoder())
-                        .addLast(new HexToByteEncoder())
-                        .addLast(new DefaultHandler());
+                if (lengthField != 0) {
+                    // 长度域不为0时才注册长度解析的decoder和encoder
+                    ch.pipeline()
+                            .addLast(new LengthFieldBasedFrameDecoder(bufferSize, 0, lengthField, 0, 2))
+                            .addLast(new LengthFieldPrepender(lengthField))
+                            .addLast(new ByteToHexDecoder())
+                            .addLast(new HexToByteEncoder())
+                            .addLast(new DefaultHandler());
+                } else {
+                    ch.pipeline()
+                            .addLast(new ByteToHexDecoder())
+                            .addLast(new HexToByteEncoder())
+                            .addLast(new DefaultHandler());
+                }
             }
         });
 
@@ -132,7 +140,9 @@ public class NettyClientConnection extends AbstractClientConnection {
      * @return 响应体
      */
     private <V> V get(Future<V> future) {
-        logger.info("同步等待响应...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("同步等待响应...");
+        }
         if (future instanceof Promise) {
             Promise<V> promise = (Promise<V>) future;
             if (!promise.isDone()) {

@@ -50,21 +50,29 @@ public class QueueManger implements MessagePorter, DisposableBean {
                 if (conn != null) {
                     if (System.currentTimeMillis() - conn.getLastUpdateTime() > serverMetadata.idleConnectionCheckoutTime) {
                         if (serverMetadata.pingConnection(conn)) {
-                            logger.info("老头连接有效，返回该连接：{}", conn.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老头连接有效，返回该连接：{}", conn.hashCode());
+                            }
                             pushConnection(conn, serverMetadata);
                             break;
                         } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
                             // ping连接失败
-                            logger.warn("老头连接超时，等待重试：{}", conn.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老头连接超时，等待重试：{}", conn.hashCode());
+                            }
                             conn = null;
                         } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
                             // 连接重试失败，重新创建新连接
-                            logger.info("连接失效，新建连接");
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("连接失效，新建连接");
+                            }
                             serverMetadata.addConnection();
                             conn = null;
                         }
                     } else {
-                        logger.info("小鲜肉连接，返回该连接：{}", conn.hashCode());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("小鲜肉连接，返回该连接：{}", conn.hashCode());
+                        }
                         pushConnection(conn, serverMetadata);
                         break;
                     }
@@ -94,7 +102,9 @@ public class QueueManger implements MessagePorter, DisposableBean {
                 logger.error("发送请求异常", e);
                 return null;
             }
-            logger.info("接受到响应：{}", response);
+            if (logger.isDebugEnabled()) {
+                logger.debug("接受到响应：{}", response);
+            }
             return response;
         }
     }

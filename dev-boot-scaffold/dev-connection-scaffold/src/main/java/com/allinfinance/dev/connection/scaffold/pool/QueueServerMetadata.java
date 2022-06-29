@@ -112,15 +112,21 @@ public class QueueServerMetadata implements DisposableBean {
     protected void pushConnection(AbstractClientConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
             if (state.queue.size() < poolMaximumActiveConnections) {
-                logger.info("回收连接：{}", connection.hashCode());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("回收连接：{}", connection.hashCode());
+                }
                 state.queue.add(connection);
             } else {
                 // 否则，连接还比较充足，直接将connection关闭
                 connection.close();
-                logger.info("当前连接数充足，关闭连接：{}", connection.hashCode());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("当前连接数充足，关闭连接：{}", connection.hashCode());
+                }
             }
         } else {
-            logger.info("该连接：{}属于无效连接，直接关闭", connection.hashCode());
+            if (logger.isDebugEnabled()) {
+                logger.debug("该连接：{}属于无效连接，直接关闭", connection.hashCode());
+            }
             connection.close();
         }
     }
@@ -167,20 +173,25 @@ public class QueueServerMetadata implements DisposableBean {
             }
 
             if (result) {
-                logger.info("连接：{}正常！", conn.hashCode());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("连接：{}正常！", conn.hashCode());
+                }
                 conn.setStatus(ConnectionStatus.ACTIVE);
             } else {
                 logger.error("发送连接测试报文：{}失败，服务端响应错误或超时", poolPingQuery);
                 conn.setStatus(ConnectionStatus.TIMEOUT);
-                logger.info("重试次数：{}", conn.retryTimes.decrementAndGet());
                 if (conn.retryTimes.get() == 0) {
-                    logger.info("重试次数超限，此连接无效：{}", conn.hashCode());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("重试次数超限，此连接无效：{}", conn.hashCode());
+                    }
                     conn.setStatus(ConnectionStatus.INACTIVE);
                 }
             }
 
         } else {
-            logger.info("ping连接开关未打开，无需校验连接");
+            if (logger.isDebugEnabled()) {
+                logger.debug("ping连接开关未打开，无需校验连接");
+            }
             conn.setStatus(ConnectionStatus.ACTIVE);
             result = true;
         }
@@ -202,7 +213,9 @@ public class QueueServerMetadata implements DisposableBean {
             long startTime = System.currentTimeMillis();
             String response = null;
             response = connection.send(msg);
-            logger.info("ping报文响应：{}", response);
+            if (logger.isDebugEnabled()) {
+                logger.debug("ping报文响应：{}", response);
+            }
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {
                 //标准相应结果result不为空时进行ping相应的校验

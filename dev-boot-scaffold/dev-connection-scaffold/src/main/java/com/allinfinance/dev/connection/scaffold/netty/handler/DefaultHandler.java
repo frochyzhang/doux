@@ -18,10 +18,13 @@ public class DefaultHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("新建连接...");
         String channelId = ctx.channel().id().asLongText();
-        logger.info("通道id：{}", channelId);
-        logger.info("连接服务端成功，远程地址：{}", ctx.channel().remoteAddress());
-        logger.info("连接服务端成功，本地地址：{}", ctx.channel().localAddress());
+        if (logger.isDebugEnabled()) {
+            logger.debug("通道id：{}", channelId);
+            logger.debug("连接服务端成功，远程地址：{}", ctx.channel().remoteAddress());
+            logger.debug("连接服务端成功，本地地址：{}", ctx.channel().localAddress());
+        }
         super.channelActive(ctx);
     }
 

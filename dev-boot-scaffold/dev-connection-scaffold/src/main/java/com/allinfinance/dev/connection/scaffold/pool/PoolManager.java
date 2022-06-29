@@ -40,7 +40,9 @@ public class PoolManager implements MessagePorter, DisposableBean {
      * 获取连接
      */
     protected AbstractClientConnection popConnection() {
-        logger.info("从连接池中获取连接...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("从连接池中获取连接...");
+        }
         AbstractClientConnection conn = null;
 
         // 轮询遍历各个连接池，直到找到空闲连接
@@ -70,13 +72,17 @@ public class PoolManager implements MessagePorter, DisposableBean {
      */
     @Override
     public String writeAndFlush(String msg) {
-        logger.info("发送请求：{}", msg);
+        if (logger.isDebugEnabled()) {
+            logger.debug("发送请求：{}", msg);
+        }
         AbstractClientConnection realConnection = popConnection();
 
         synchronized (realConnection) {
             try {
                 String response = realConnection.send(msg);
-                logger.info("接受到响应：{}", response);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("接受到响应：{}", response);
+                }
                 return response;
             } catch (SocketException e) {
                 realConnection.setStatus(ConnectionStatus.INACTIVE);

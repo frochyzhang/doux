@@ -104,14 +104,18 @@ public class PooledServerMetadata implements DisposableBean {
                     }
 
                     // 通知其他线程可以来抢连接了
-//                    state.notifyAll();
+                    state.notifyAll();
                 } else {
                     // 否则，空闲链接还比较充足，直接将connection关闭
                     connection.close();
-                    logger.info("连接：{}已关闭", connection.hashCode());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("连接：{}已关闭", connection.hashCode());
+                    }
                 }
             } else {
-                logger.info("该连接：{}属于无效连接，直接关闭", connection.hashCode());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("该连接：{}属于无效连接，直接关闭", connection.hashCode());
+                }
                 connection.close();
             }
         }
@@ -145,7 +149,9 @@ public class PooledServerMetadata implements DisposableBean {
                 if (!state.idleConnections.isEmpty()) {
                     // 如果有空闲链接：返回第一个
                     conn = state.idleConnections.remove(0);
-                    logger.info("从空闲连接列表中获取连接：{}", conn.hashCode());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("从空闲连接列表中获取连接：{}", conn.hashCode());
+                    }
                     // 从空闲连接列表取出来的长连接要先ping一下
                     pingConnection(conn);
                 } else {
@@ -155,27 +161,39 @@ public class PooledServerMetadata implements DisposableBean {
                         conn = serverMetadata.fetchConnection(bufferSize, lengthField, requestTimeout);
                         // 新建的连接，先ping一下
                         pingConnection(conn);
-                        logger.info("暂无空闲连接且活跃连接小于{}，创建新连接：{}", poolMaximumActiveConnections, conn.hashCode());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("暂无空闲连接且活跃连接小于{}，创建新连接：{}", poolMaximumActiveConnections, conn.hashCode());
+                        }
                     } else {
                         // 活跃连接数已满
                         // 取得活跃链接列表的第一个，也就是最老的一个连接
-                        logger.info("取得活跃链接列表的第一个");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("取得活跃链接列表的第一个");
+                        }
                         AbstractClientConnection oldestActiveConnection = state.activeConnections.get(0);
                         //先判断老的连接是否有效
                         if (ConnectionStatus.ACTIVE.equals(oldestActiveConnection.getStatus())) {
                             // 老连接有效时直接赋值
-                            logger.info("老连接：{}有效，直接使用", oldestActiveConnection.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老连接：{}有效，直接使用", oldestActiveConnection.hashCode());
+                            }
                             conn = oldestActiveConnection;
                         } else if (ConnectionStatus.PENDING.equals(oldestActiveConnection.getStatus())) {
-                            logger.info("老连接：{}已使用，放回到空闲连接", oldestActiveConnection.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老连接：{}已使用，放回到空闲连接", oldestActiveConnection.hashCode());
+                            }
                             pushConnection(oldestActiveConnection);
                         } else if (ConnectionStatus.TIMEOUT.equals(oldestActiveConnection.getStatus())) {
-                            logger.info("老连接：{}超时，先回收", oldestActiveConnection.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老连接：{}超时，先回收", oldestActiveConnection.hashCode());
+                            }
                             pushConnection(oldestActiveConnection);
                         } else {
                             // 老连接无效时新建连接，并回收老来连接
                             conn = serverMetadata.fetchConnection(bufferSize, lengthField, requestTimeout);
-                            logger.info("老连接无效，获取新连接：{}", conn.hashCode());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("老连接无效，获取新连接：{}", conn.hashCode());
+                            }
                             // 新建的连接，先ping一下
                             pingConnection(conn);
                         }
@@ -185,15 +203,21 @@ public class PooledServerMetadata implements DisposableBean {
                 if (conn != null) {
                     // 获得到链接
                     if (ConnectionStatus.ACTIVE.equals(conn.getStatus())) {
-                        logger.info("获取到连接：{}", conn.hashCode());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("获取到连接：{}", conn.hashCode());
+                        }
                         if (!state.activeConnections.contains(conn)) {
                             state.activeConnections.add(conn);
                         }
                     } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
-                        logger.info("无效的连接：{}，直接关闭", conn.hashCode());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("无效的连接：{}，直接关闭", conn.hashCode());
+                        }
                         conn.close();
                     } else {
-                        logger.info("超时的连接：{}，尝试获取新连接", conn.hashCode());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("超时的连接：{}，尝试获取新连接", conn.hashCode());
+                        }
                         // 如果没拿到有效连接，将conn重新置为null，进行下一轮获取
                         conn = null;
                     }
@@ -241,31 +265,41 @@ public class PooledServerMetadata implements DisposableBean {
      * @return
      */
     protected boolean pingConnection(AbstractClientConnection conn) {
-        boolean result = false;
+        boolean result;
 
         if (poolPingEnabled) {
             try {
                 result = pingWriteAndFlush(conn, poolPingQuery, poolPingVerify, poolMaximumCheckoutTime);
             } catch (Exception e) {
-                logger.error("连接：{}异常，异常信息：{}", conn.hashCode(), e);
+                logger.error("连接：{}异常", conn.hashCode());
                 conn.close();
+                conn.setStatus(ConnectionStatus.INACTIVE);
+                return false;
             }
 
             if (result) {
-                logger.info("连接：{}正常！", conn.hashCode());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("连接：{}正常！", conn.hashCode());
+                }
                 conn.setStatus(ConnectionStatus.ACTIVE);
             } else {
                 logger.error("发送连接测试报文：{}失败，服务端相应错误或超时", poolPingQuery);
                 conn.setStatus(ConnectionStatus.TIMEOUT);
-                logger.info("重试次数：{}", conn.retryTimes.decrementAndGet());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("重试次数：{}", conn.retryTimes.decrementAndGet());
+                }
                 if (conn.retryTimes.get() == 0) {
-                    logger.info("重试次数超限，此连接无效：{}", conn.hashCode());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("重试次数超限，此连接无效：{}", conn.hashCode());
+                    }
                     conn.setStatus(ConnectionStatus.INACTIVE);
                 }
             }
 
         } else {
-            logger.info("ping连接开关未打开，无需校验连接");
+            if (logger.isDebugEnabled()) {
+                logger.debug("ping连接开关未打开，无需校验连接");
+            }
             conn.setStatus(ConnectionStatus.ACTIVE);
             result = true;
         }
@@ -293,7 +327,9 @@ public class PooledServerMetadata implements DisposableBean {
                 logger.error("请求发送异常");
                 return false;
             }
-            logger.info("ping报文响应：{}", response);
+            if (logger.isDebugEnabled()) {
+                logger.debug("ping报文响应：{}", response);
+            }
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(result)) {
                 //标准相应结果result不为空时进行ping相应的校验
