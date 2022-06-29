@@ -56,10 +56,10 @@ public class QueueManger implements MessagePorter, DisposableBean {
                         } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
                             // ping连接失败
                             logger.warn("老头连接超时，等待重试：{}", conn.hashCode());
+                            conn = null;
                         } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
                             // 连接重试失败，重新创建新连接
                             logger.info("连接失效，新建连接");
-                            conn.close();
                             serverMetadata.addConnection();
                             conn = null;
                         }

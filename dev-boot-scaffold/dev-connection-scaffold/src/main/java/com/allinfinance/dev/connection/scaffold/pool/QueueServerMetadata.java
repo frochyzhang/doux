@@ -154,15 +154,16 @@ public class QueueServerMetadata implements DisposableBean {
      * @return
      */
     protected boolean pingConnection(AbstractClientConnection conn) {
-        boolean result = false;
+        boolean result;
 
         if (poolPingEnabled) {
             try {
                 result = pingWriteAndFlush(conn, poolPingQuery, poolPingVerify, requestTimeout);
             } catch (Exception e) {
-                logger.error("连接：{}异常，异常信息：{}", conn.hashCode(), e);
+                logger.error("连接：{}异常", conn.hashCode());
                 conn.setStatus(ConnectionStatus.INACTIVE);
                 conn.close();
+                return false;
             }
 
             if (result) {
