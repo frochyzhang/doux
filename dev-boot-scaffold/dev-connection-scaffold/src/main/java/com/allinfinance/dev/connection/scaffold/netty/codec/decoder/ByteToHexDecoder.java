@@ -1,7 +1,6 @@
 package com.allinfinance.dev.connection.scaffold.netty.codec.decoder;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.connection.scaffold.util.LogUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -24,9 +23,9 @@ public class ByteToHexDecoder extends ByteToMessageDecoder {
         byte[] bytes = new byte[size];
         in.readBytes(bytes);
         String receive = HexUtil.encodeHexStr(bytes);
-        LogUtils.debug(logger, "接收到的报文大小：{}字节，接收到的报文内容：{}", size, receive);
+        if (logger.isDebugEnabled()) {
+            logger.debug("接收到的报文大小：{}字节，接收到的报文内容：{}", size, receive);
+        }
         out.add(receive);
     }
-
-
 }

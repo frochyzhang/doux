@@ -54,7 +54,7 @@ public class ServerMetadataConfig {
         return serverMetadataMap.values()
                 .stream().map(serverMetadata -> {
                     logger.info("服务端配置信息：{}", serverMetadata);
-                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata, bufferSize);
+                    PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(serverMetadata, bufferSize, lengthField);
                     try {
                         pooledServerMetadata.init();
                     } catch (Throwable e) {
@@ -96,11 +96,20 @@ public class ServerMetadataConfig {
         this.bufferSize = bufferSize;
     }
 
+    public Integer getLengthField() {
+        return lengthField;
+    }
+
+    public void setLengthField(Integer lengthField) {
+        this.lengthField = lengthField;
+    }
+
     @Override
     public String toString() {
         return "ServerMetadataConfig{" +
                 "poolType='" + poolType + '\'' +
                 ", bufferSize=" + bufferSize +
+                ", lengthField=" + lengthField +
                 ", serverMetadataMap=" + serverMetadataMap +
                 '}';
     }

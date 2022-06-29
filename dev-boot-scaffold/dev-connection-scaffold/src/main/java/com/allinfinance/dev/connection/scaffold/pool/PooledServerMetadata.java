@@ -59,7 +59,7 @@ public class PooledServerMetadata implements DisposableBean {
      */
     protected int lengthField;
 
-    public PooledServerMetadata(ServerMetadata serverMetadata, int bufferSize) {
+    public PooledServerMetadata(ServerMetadata serverMetadata, int bufferSize, int lengthField) {
         this.serverMetadata = serverMetadata;
         this.poolMaximumActiveConnections = serverMetadata.getMaxActiveConnection();
         this.poolMaximumIdleConnections = serverMetadata.getMaxIdleConnection();
@@ -67,6 +67,7 @@ public class PooledServerMetadata implements DisposableBean {
         this.poolPingEnabled = serverMetadata.getEnablePing();
         this.poolPingQuery = serverMetadata.getPingQueryMessage();
         this.poolPingVerify = serverMetadata.getPingVerifyMessage();
+        this.lengthField = lengthField;
         this.bufferSize = bufferSize;
     }
 
