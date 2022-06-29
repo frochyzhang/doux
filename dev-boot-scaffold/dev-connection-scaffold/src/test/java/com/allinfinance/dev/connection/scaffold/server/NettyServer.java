@@ -8,6 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 
 /**
  * @Description:
@@ -37,6 +38,7 @@ public class NettyServer {
 
                             ch.pipeline()
                                     .addLast(new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
+                                    .addLast(new LengthFieldPrepender(2))
                                     .addLast(new ByteToHexDecoder())
                                     .addLast(new HexToByteEncoder())
                                     .addLast(new EchoServerHandler());

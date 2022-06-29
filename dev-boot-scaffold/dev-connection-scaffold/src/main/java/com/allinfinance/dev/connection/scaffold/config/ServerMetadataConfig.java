@@ -24,17 +24,17 @@ import java.util.stream.Collectors;
 public class ServerMetadataConfig {
     private static final Logger logger = LoggerFactory.getLogger(ServerMetadataConfig.class);
     /**
-     * 连接池类型：
+     * 连接池类型：list或queue
      */
     private String poolType;
     /**
-     * 接收缓冲区大小
+     * 接收缓冲区大小，默认2KB
      */
-    private Integer bufferSize;
+    private Integer bufferSize = 2048;
     /**
-     * 报文长度域
+     * 报文长度域，默认无长度域
      */
-    private Integer lengthField;
+    private Integer lengthField = 0;
     /**
      * 服务端参数列表
      */

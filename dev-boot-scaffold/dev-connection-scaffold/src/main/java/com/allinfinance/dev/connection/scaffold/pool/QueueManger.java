@@ -47,7 +47,7 @@ public class QueueManger implements MessagePorter, DisposableBean {
             for (QueueServerMetadata serverMetadata : queueServerMetadataList) {
                 conn = (AbstractClientConnection) serverMetadata.popConnection();
                 if (conn != null) {
-                    if (System.currentTimeMillis() - conn.getLastUpdateTime() > serverMetadata.requestTimeout) {
+                    if (System.currentTimeMillis() - conn.getLastUpdateTime() > serverMetadata.idleConnectionCheckoutTime) {
                         if (serverMetadata.pingConnection(conn)) {
                             logger.info("老头连接有效，返回该连接：{}", conn.hashCode());
                             pushConnection(conn, serverMetadata);
@@ -55,14 +55,17 @@ public class QueueManger implements MessagePorter, DisposableBean {
                         } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
                             // ping连接失败
                             logger.warn("老头连接超时，等待重试：{}", conn.hashCode());
-                        } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())){
+                        } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
                             // 连接重试失败，重新创建新连接
+                            logger.info("连接失效，新建连接");
+                            conn.close();
+                            serverMetadata.addConnection();
+                            conn = null;
                         }
                     } else {
                         logger.info("小鲜肉连接，返回该连接：{}", conn.hashCode());
                         pushConnection(conn, serverMetadata);
                         break;
-
                     }
                 }
             }

@@ -18,8 +18,14 @@ public abstract class AbstractClientConnection implements ClientConnection {
      * 连接最后更新时间
      */
     private Long lastUpdateTime = System.currentTimeMillis();
-
+    /**
+     * 超时重试次数
+     */
     public AtomicInteger retryTimes = new AtomicInteger(0);
+    /**
+     * 超时请求时间
+     */
+    private Integer requestTimeout;
 
     public ConnectionStatus getStatus() {
         return status;
@@ -37,4 +43,11 @@ public abstract class AbstractClientConnection implements ClientConnection {
         this.lastUpdateTime = lastUpdateTime;
     }
 
+    public Integer getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(Integer requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
 }

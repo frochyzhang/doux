@@ -59,11 +59,12 @@ public class ServerMetadata {
      *
      * @return
      */
-    public AbstractClientConnection fetchConnection(int bufferSize, int lengthFiled) {
+    public AbstractClientConnection fetchConnection(int bufferSize, int lengthFiled, int requestTimeout) {
         // TODO: 2022/6/24  避免在这里与底层通信框架耦合
         AbstractClientConnection abstractClientConnection = new NettyClientConnection();
         abstractClientConnection.connect(serverIp, serverPort, retryTimes, bufferSize, lengthFiled);
         abstractClientConnection.setStatus(ConnectionStatus.ACTIVE);
+        abstractClientConnection.setRequestTimeout(requestTimeout);
         return abstractClientConnection;
     }
 

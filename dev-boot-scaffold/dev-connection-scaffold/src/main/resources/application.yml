@@ -3,12 +3,13 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
+      length-field: 2
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
+          server-ip: 127.0.0.1
+          server-port: 9001
+          timeout: 20000
           checkout-time: 300000
           retry-times: 3
           max-active-connection: 10

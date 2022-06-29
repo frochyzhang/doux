@@ -128,6 +128,7 @@ public class NettyClientConnection extends AbstractClientConnection {
      * @return 响应体
      */
     private <V> V get(Future<V> future) {
+        logger.info("同步等待响应...");
         if (future instanceof Promise) {
             Promise<V> promise = (Promise<V>) future;
             if (!promise.isDone()) {
@@ -145,7 +146,7 @@ public class NettyClientConnection extends AbstractClientConnection {
                 boolean interrupted = false;
                 if (!promise.isDone()) {
                     try {
-                        countDownLatch.await(1, TimeUnit.SECONDS);
+                        countDownLatch.await(this.getRequestTimeout(), TimeUnit.SECONDS);
                     } catch (InterruptedException e) {
                         logger.error("系统中断异常", e);
                         interrupted = true;
