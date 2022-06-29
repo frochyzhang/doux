@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,9 +33,6 @@ public class SignatureServiceImpl implements SignatureService {
 
     @Autowired
     private MessagePorter messagePorter;
-
-    @Value("${com.allinfinance.enable-length-field}")
-    private boolean enableLengthField;
 
     /**
      * 用SM2私钥做签名--D306
@@ -73,15 +69,14 @@ public class SignatureServiceImpl implements SignatureService {
                 .append(String.format("%04x", digest.length() / 2))
                 .append(digest);
 
-        if (enableLengthField) {
-            String lengthField = String.format("%04x", instruction.length() / 2);
-            logger.info("添加长度域，指令长度: {}", lengthField);
-            instruction.insert(0, lengthField);
-        }
-
         logger.debug("请求加密机报文: {}", instruction);
         String response = messagePorter.writeAndFlush(instruction.toString());
         logger.debug("加密机返回报文: {}", response);
+
+        if (StringUtils.isBlank(response)) {
+            logger.error("请求加密机获取签名响应为空");
+            return HspBaseResponseDTO.fail("请求加密机获取签名失败");
+        }
 
         int offset = 0;
         int div = 2;
@@ -139,15 +134,14 @@ public class SignatureServiceImpl implements SignatureService {
                 .append(String.format("%04x", digest.length() / 2))
                 .append(digest);
 
-        if (enableLengthField) {
-            String lengthField = String.format("%04x", instruction.length() / 2);
-            logger.info("添加长度域，指令长度: {}", lengthField);
-            instruction.insert(0, lengthField);
-        }
-
         logger.debug("请求加密机报文: {}", instruction);
         String response = messagePorter.writeAndFlush(instruction.toString());
         logger.debug("加密机返回报文: {}", response);
+
+        if (StringUtils.isBlank(response)) {
+            logger.error("请求加密机验签响应为空");
+            return HspBaseResponseDTO.fail("验签失败");
+        }
 
         int offset = 0;
         int div = 2;

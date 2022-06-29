@@ -20,56 +20,20 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
+      length-field: 2
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
-          server-ip: 10.250.28.138
-          server-port: 6666
+          server-ip: 10.252.64.45
+          server-port: 9001
           timeout: 200
-          checkout-time: 300000
+          checkout-time: 3000
           retry-times: 3
           max-active-connection: 10
           max-idle-connection: 5
-          enable-ping: false
+          enable-ping: true
           ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
-        server-2:
-          server-name: "加密机2号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
-          checkout-time: 300000
-          retry-times: 3
-          max-active-connection: 10
-          max-idle-connection: 5
-          enable-ping: false
-          ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
-        server-3:
-          server-name: "加密机3号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
-          checkout-time: 300000
-          retry-times: 3
-          max-active-connection: 10
-          max-idle-connection: 5
-          enable-ping: false
-          ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
-        server-4:
-          server-name: "加密机4号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
-          checkout-time: 300000
-          retry-times: 3
-          max-active-connection: 10
-          max-idle-connection: 5
-          enable-ping: false
-          ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
-    enable-length-field: false
+          ping-verify-message: ""
 
 ---
 spring:
@@ -90,6 +54,7 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
+      length-field: 2
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
@@ -103,7 +68,6 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
-    enable-length-field: false
 
 ---
 spring:
@@ -124,6 +88,7 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
+      length-field: 2
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
@@ -137,7 +102,6 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
-      enable-length-field: false
 
 ---
 spring:
@@ -158,6 +122,7 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
+      length-field: 2
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
@@ -171,4 +136,3 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
-      enable-length-field: false
