@@ -4,8 +4,8 @@ APP_NAME="${APP_NAME_INCLUDE_VERSION%-*-*}"
 
 # 备份，当入参包含Y/y时备份
 if [ "Y" == "$2" -o "y" == "$2" ]; then
-    tar -zcvf $APP_NAME_INCLUDE_VERSION-$(date "+%Y%m%d")-bak.tar.gz $HOME/bin $HOME/apps
-    rm -rf $HOME/apps $HOME/bin
+    tar -zcvf $APP_NAME_INCLUDE_VERSION-$(date "+%Y%m%d")-bak.tar.gz $HOME/bin/$APP_NAME $HOME/apps/$APP_NAME
+    rm -rf $HOME/apps/$APP_NAME $HOME/bin/$APP_NAME
 fi
 
 # 删除apps下对应应用的文件夹
@@ -15,9 +15,9 @@ fi
 
 # 换包
 tar -zxvf $APP_NAME_INCLUDE_VERSION-assembly.tar.gz -C $HOME
-mkdir -p $HOME/bin/
+mkdir -p $HOME/bin/$APP_NAME/
 mkdir -p $HOME/apps/
-mv $HOME/$APP_NAME_INCLUDE_VERSION/bin/* $HOME/bin/
+mv $HOME/$APP_NAME_INCLUDE_VERSION/bin/* $HOME/bin/$APP_NAME/
 mv $HOME/$APP_NAME_INCLUDE_VERSION/apps/* $HOME/apps/
 rm -rf $APP_NAME_INCLUDE_VERSION
 

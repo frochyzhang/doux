@@ -20,6 +20,10 @@ public class RpcConfigurationProperties {
      */
     private List<String> referenceList;
     /**
+     * 引用公共服务列表，以数组形式提供
+     */
+    private List<String> commonServiceList;
+    /**
      * provider的uniqueId
      */
     private String providerUniqueId;
@@ -40,6 +44,14 @@ public class RpcConfigurationProperties {
 
     public void setReferenceList(List<String> referenceList) {
         this.referenceList = referenceList;
+    }
+
+    public List<String> getCommonServiceList() {
+        return commonServiceList;
+    }
+
+    public void setCommonServiceList(List<String> commonServiceList) {
+        this.commonServiceList = commonServiceList;
     }
 
     public String getProviderUniqueId() {
