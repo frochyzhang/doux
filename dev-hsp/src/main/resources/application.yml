@@ -18,7 +18,7 @@ com:
     rpc:
       provider-package: com.allinfinance.dev.hsp.service
     connection:
-      pool-type: queue
+      pool-type: list
       buffer-size: 65536
       length-field: 2
       server-metadata-map:

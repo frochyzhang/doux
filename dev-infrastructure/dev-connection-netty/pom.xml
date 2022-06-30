@@ -3,22 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dev-example</artifactId>
+        <artifactId>dev-infrastructure</artifactId>
         <groupId>com.allinfinance.dev</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dev-hsp-example</artifactId>
+    <artifactId>dev-connection-netty</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
+            <artifactId>dev-connection-driver</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
     </dependencies>
 </project>

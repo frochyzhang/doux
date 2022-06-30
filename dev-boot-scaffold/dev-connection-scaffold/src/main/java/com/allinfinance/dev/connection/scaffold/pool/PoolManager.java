@@ -81,7 +81,7 @@ public class PoolManager implements MessagePorter, DisposableBean {
             try {
                 String response = realConnection.send(msg);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("接受到响应：{}", response);
+                    logger.debug("接收到响应：{}", response);
                 }
                 return response;
             } catch (SocketException e) {

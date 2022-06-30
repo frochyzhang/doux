@@ -9,16 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dev-hsp-example</artifactId>
+    <artifactId>dev-conn-wrapper-example</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
+            <artifactId>dev-connection-netty</artifactId>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+            <artifactId>dev-connection-wrapper</artifactId>
         </dependency>
     </dependencies>
 </project>

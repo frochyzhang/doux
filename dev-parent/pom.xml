@@ -134,6 +134,23 @@
                 <artifactId>dev-hsp</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+
+            <!-- dev framework -->
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-connection-driver</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-connection-wrapper</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-connection-netty</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

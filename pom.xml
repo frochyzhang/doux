@@ -30,6 +30,8 @@
         <module>dev-boot-scaffold</module>
         <module>dev-ccp</module>
         <module>dev-gateway</module>
+        <module>dev-framework</module>
+        <module>dev-infrastructure</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 
