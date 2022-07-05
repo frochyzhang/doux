@@ -138,6 +138,11 @@
             <!-- dev framework -->
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-extension</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-connection-driver</artifactId>
                 <version>${dev.version}</version>
             </dependency>

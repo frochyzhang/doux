@@ -38,15 +38,15 @@ public class PooledServerMetadata implements ServerMetadata {
     private final UnpooledServerMetadata metadata;
 
     // OPTIONAL CONFIGURATION FIELDS
-    protected int poolMaximumActiveConnections = 10;
-    protected int poolMaximumIdleConnections = 5;
-    protected int poolMaximumCheckoutTime = 10;
-    protected int poolTimeToWait = 10;
-    protected int poolMaximumLocalBadConnectionTolerance = 3;
-    protected String poolPingQuery = "NO PING QUERY SET";
-    protected boolean poolPingEnabled;
-    protected int poolPingConnectionsNotUsedFor;
-
+    protected int maxActiveConnections = 10;
+    protected int maxIdleConnections = 5;
+    protected int maxCheckoutTime = 10;
+    protected int retryTimeToWait = 10;
+    protected int maxLocalBadConnectionTolerance = 3;
+    protected String pingQueryContent = "NO PING QUERY SET";
+    protected String pingVerifyContent = "";
+    protected boolean pingEnabled;
+    protected int pingConnectionsNotUsed;
     private int expectedConnectionTypeCode;
 
     public PooledServerMetadata() {
@@ -72,6 +72,11 @@ public class PooledServerMetadata implements ServerMetadata {
         return popConnection(serverIp, serverPort).getProxyConnection();
     }
 
+    @Override
+    public String send(String msg) {
+        return getConnection().send(msg);
+    }
+
     public void setServerIp(String serverIp) {
         metadata.setServerIp(serverIp);
         forceCloseAll();
@@ -91,20 +96,20 @@ public class PooledServerMetadata implements ServerMetadata {
     /**
      * The maximum number of active connections.
      *
-     * @param poolMaximumActiveConnections The maximum number of active connections
+     * @param maxActiveConnections The maximum number of active connections
      */
-    public void setPoolMaximumActiveConnections(int poolMaximumActiveConnections) {
-        this.poolMaximumActiveConnections = poolMaximumActiveConnections;
+    public void setMaxActiveConnections(int maxActiveConnections) {
+        this.maxActiveConnections = maxActiveConnections;
         forceCloseAll();
     }
 
     /**
      * The maximum number of idle connections.
      *
-     * @param poolMaximumIdleConnections The maximum number of idle connections
+     * @param maxIdleConnections The maximum number of idle connections
      */
-    public void setPoolMaximumIdleConnections(int poolMaximumIdleConnections) {
-        this.poolMaximumIdleConnections = poolMaximumIdleConnections;
+    public void setMaxIdleConnections(int maxIdleConnections) {
+        this.maxIdleConnections = maxIdleConnections;
         forceCloseAll();
     }
 
@@ -112,52 +117,52 @@ public class PooledServerMetadata implements ServerMetadata {
      * The maximum number of tolerance for bad connection happens in one thread
      * which are applying for new {@link PooledConnection}.
      *
-     * @param poolMaximumLocalBadConnectionTolerance max tolerance for bad connection happens in one thread
+     * @param maxLocalBadConnectionTolerance max tolerance for bad connection happens in one thread
      * @since 3.4.5
      */
-    public void setPoolMaximumLocalBadConnectionTolerance(
-            int poolMaximumLocalBadConnectionTolerance) {
-        this.poolMaximumLocalBadConnectionTolerance = poolMaximumLocalBadConnectionTolerance;
+    public void setMaxLocalBadConnectionTolerance(
+            int maxLocalBadConnectionTolerance) {
+        this.maxLocalBadConnectionTolerance = maxLocalBadConnectionTolerance;
     }
 
     /**
      * The maximum time a connection can be used before it *may* be
      * given away again.
      *
-     * @param poolMaximumCheckoutTime The maximum time
+     * @param maxCheckoutTime The maximum time
      */
-    public void setPoolMaximumCheckoutTime(int poolMaximumCheckoutTime) {
-        this.poolMaximumCheckoutTime = poolMaximumCheckoutTime;
+    public void setMaxCheckoutTime(int maxCheckoutTime) {
+        this.maxCheckoutTime = maxCheckoutTime;
         forceCloseAll();
     }
 
     /**
      * The time to wait before retrying to get a connection.
      *
-     * @param poolTimeToWait The time to wait
+     * @param retryTimeToWait The time to wait
      */
-    public void setPoolTimeToWait(int poolTimeToWait) {
-        this.poolTimeToWait = poolTimeToWait;
+    public void setRetryTimeToWait(int retryTimeToWait) {
+        this.retryTimeToWait = retryTimeToWait;
         forceCloseAll();
     }
 
     /**
      * The query to be used to check a connection.
      *
-     * @param poolPingQuery The query
+     * @param pingQueryContent The query
      */
-    public void setPoolPingQuery(String poolPingQuery) {
-        this.poolPingQuery = poolPingQuery;
+    public void setPingQueryContent(String pingQueryContent) {
+        this.pingQueryContent = pingQueryContent;
         forceCloseAll();
     }
 
     /**
      * Determines if the ping query should be used.
      *
-     * @param poolPingEnabled True if we need to check a connection before using it
+     * @param pingEnabled True if we need to check a connection before using it
      */
-    public void setPoolPingEnabled(boolean poolPingEnabled) {
-        this.poolPingEnabled = poolPingEnabled;
+    public void setPingEnabled(boolean pingEnabled) {
+        this.pingEnabled = pingEnabled;
         forceCloseAll();
     }
 
@@ -167,8 +172,8 @@ public class PooledServerMetadata implements ServerMetadata {
      *
      * @param milliseconds the number of milliseconds of inactivity that will trigger a ping
      */
-    public void setPoolPingConnectionsNotUsedFor(int milliseconds) {
-        this.poolPingConnectionsNotUsedFor = milliseconds;
+    public void setPingConnectionsNotUsed(int milliseconds) {
+        this.pingConnectionsNotUsed = milliseconds;
         forceCloseAll();
     }
 
@@ -190,36 +195,40 @@ public class PooledServerMetadata implements ServerMetadata {
         return metadata.getDefaultNetworkTimeout();
     }
 
-    public int getPoolMaximumActiveConnections() {
-        return poolMaximumActiveConnections;
+    public int getMaxActiveConnections() {
+        return maxActiveConnections;
     }
 
-    public int getPoolMaximumIdleConnections() {
-        return poolMaximumIdleConnections;
+    public int getMaxIdleConnections() {
+        return maxIdleConnections;
     }
 
-    public int getPoolMaximumLocalBadConnectionTolerance() {
-        return poolMaximumLocalBadConnectionTolerance;
+    public int getMaxLocalBadConnectionTolerance() {
+        return maxLocalBadConnectionTolerance;
     }
 
-    public int getPoolMaximumCheckoutTime() {
-        return poolMaximumCheckoutTime;
+    public int getMaxCheckoutTime() {
+        return maxCheckoutTime;
     }
 
-    public int getPoolTimeToWait() {
-        return poolTimeToWait;
+    public int getRetryTimeToWait() {
+        return retryTimeToWait;
     }
 
-    public String getPoolPingQuery() {
-        return poolPingQuery;
+    public String getPingQueryContent() {
+        return pingQueryContent;
     }
 
-    public boolean isPoolPingEnabled() {
-        return poolPingEnabled;
+    public boolean isPingEnabled() {
+        return pingEnabled;
     }
 
-    public int getPoolPingConnectionsNotUsedFor() {
-        return poolPingConnectionsNotUsedFor;
+    public int getPingConnectionsNotUsed() {
+        return pingConnectionsNotUsed;
+    }
+
+    public UnpooledServerMetadata getMetadata() {
+        return metadata;
     }
 
     /**
@@ -269,7 +278,7 @@ public class PooledServerMetadata implements ServerMetadata {
         synchronized (state) {
             state.activeConnections.remove(conn);
             if (conn.isValid()) {
-                if (state.idleConnections.size() < poolMaximumIdleConnections && conn.getConnectionTypeCode() == expectedConnectionTypeCode) {
+                if (state.idleConnections.size() < maxIdleConnections && conn.getConnectionTypeCode() == expectedConnectionTypeCode) {
                     state.accumulatedCheckoutTime += conn.getCheckoutTime();
                     PooledConnection newConn = new PooledConnection(conn.getRealConnection(), this);
                     state.idleConnections.add(newConn);
@@ -313,7 +322,7 @@ public class PooledServerMetadata implements ServerMetadata {
                     }
                 } else {
                     // Pool does not have available connection
-                    if (state.activeConnections.size() < poolMaximumActiveConnections) {
+                    if (state.activeConnections.size() < maxActiveConnections) {
                         // Can create new connection
                         conn = new PooledConnection(metadata.getConnection(), this);
                         if (logger.isDebugEnabled()) {
@@ -323,7 +332,7 @@ public class PooledServerMetadata implements ServerMetadata {
                         // Cannot create new connection
                         PooledConnection oldestActiveConnection = state.activeConnections.get(0);
                         long longestCheckoutTime = oldestActiveConnection.getCheckoutTime();
-                        if (longestCheckoutTime > poolMaximumCheckoutTime) {
+                        if (longestCheckoutTime > maxCheckoutTime) {
                             // Can claim overdue connection
                             state.claimedOverdueConnectionCount++;
                             state.accumulatedCheckoutTimeOfOverdueConnections += longestCheckoutTime;
@@ -336,25 +345,26 @@ public class PooledServerMetadata implements ServerMetadata {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Claimed overdue connection " + conn.getRealHashCode() + ".");
                             }
-                        } else {
-                            // Must wait
-                            try {
-                                if (!countedWait) {
-                                    state.hadToWaitCount++;
-                                    countedWait = true;
-                                }
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("Waiting as long as " + poolTimeToWait + " milliseconds for connection.");
-                                }
-                                long wt = System.currentTimeMillis();
-                                state.wait(poolTimeToWait);
-                                state.accumulatedWaitTime += System.currentTimeMillis() - wt;
-                            } catch (InterruptedException e) {
-                                // set interrupt flag
-                                Thread.currentThread().interrupt();
-                                break;
-                            }
                         }
+//                        else {
+//                            // Must wait
+//                            try {
+//                                if (!countedWait) {
+//                                    state.hadToWaitCount++;
+//                                    countedWait = true;
+//                                }
+//                                if (logger.isDebugEnabled()) {
+//                                    logger.debug("Waiting as long as " + poolTimeToWait + " milliseconds for connection.");
+//                                }
+//                                long wt = System.currentTimeMillis();
+//                                state.wait(poolTimeToWait);
+//                                state.accumulatedWaitTime += System.currentTimeMillis() - wt;
+//                            } catch (InterruptedException e) {
+//                                // set interrupt flag
+//                                Thread.currentThread().interrupt();
+//                                break;
+//                            }
+//                        }
                     }
                 }
                 if (conn != null) {
@@ -373,7 +383,7 @@ public class PooledServerMetadata implements ServerMetadata {
                         state.badConnectionCount++;
                         localBadConnectionCount++;
                         conn = null;
-                        if (localBadConnectionCount > (poolMaximumIdleConnections + poolMaximumLocalBadConnectionTolerance)) {
+                        if (localBadConnectionCount > (maxIdleConnections + maxLocalBadConnectionTolerance)) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("PooledServerMetadata: Could not get a good connection to the database.");
                             }
@@ -413,8 +423,8 @@ public class PooledServerMetadata implements ServerMetadata {
             result = false;
         }
 
-        if (result && poolPingEnabled && poolPingConnectionsNotUsedFor >= 0
-                && conn.getTimeElapsedSinceLastUse() > poolPingConnectionsNotUsedFor) {
+        if (result && pingEnabled && pingConnectionsNotUsed >= 0
+                && conn.getTimeElapsedSinceLastUse() > pingConnectionsNotUsed) {
             try {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Testing connection " + conn.getRealHashCode() + " ...");
@@ -432,7 +442,7 @@ public class PooledServerMetadata implements ServerMetadata {
                     logger.debug("Connection " + conn.getRealHashCode() + " is GOOD!");
                 }
             } catch (Exception e) {
-                logger.warn("Execution of ping query '" + poolPingQuery + "' failed: " + e.getMessage());
+                logger.warn("Execution of ping query '" + pingQueryContent + "' failed: " + e.getMessage());
                 try {
                     conn.getRealConnection().close();
                 } catch (Exception e2) {

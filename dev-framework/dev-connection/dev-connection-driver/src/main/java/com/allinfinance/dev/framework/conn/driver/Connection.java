@@ -1,5 +1,7 @@
 package com.allinfinance.dev.framework.conn.driver;
 
+import com.allinfinance.dev.framework.extension.annotation.Extensible;
+
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
@@ -7,6 +9,7 @@ import java.util.concurrent.ExecutorService;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/6/29 14:27
  */
+@Extensible
 public interface Connection {
     void setNetworkTimeout(ExecutorService executor, Integer timeout);
 

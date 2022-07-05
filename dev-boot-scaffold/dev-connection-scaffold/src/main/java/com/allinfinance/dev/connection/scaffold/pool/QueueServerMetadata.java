@@ -33,10 +33,6 @@ public class QueueServerMetadata implements DisposableBean {
      */
     protected int poolMaximumActiveConnections = 10;
     /**
-     * 池里面的最大空闲连接数
-     */
-    protected int poolMaximumIdleConnections = 5;
-    /**
      * 连接请求超时时间，单位：ms
      */
     protected int requestTimeout = 20;
@@ -68,7 +64,6 @@ public class QueueServerMetadata implements DisposableBean {
     public QueueServerMetadata(ServerMetadata serverMetadata, int bufferSize, int lengthField) {
         this.serverMetadata = serverMetadata;
         this.poolMaximumActiveConnections = serverMetadata.getMaxActiveConnection();
-        this.poolMaximumIdleConnections = serverMetadata.getMaxIdleConnection();
         this.requestTimeout = serverMetadata.getTimeout();
         this.poolPingEnabled = serverMetadata.getEnablePing();
         this.poolPingQuery = serverMetadata.getPingQueryMessage();

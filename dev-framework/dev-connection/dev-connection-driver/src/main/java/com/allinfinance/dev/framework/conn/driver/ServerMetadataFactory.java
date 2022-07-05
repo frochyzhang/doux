@@ -15,11 +15,14 @@
  */
 package com.allinfinance.dev.framework.conn.driver;
 
+import com.allinfinance.dev.framework.extension.annotation.Extensible;
+
 import java.util.Properties;
 
 /**
  * @author Clinton Begin
  */
+@Extensible
 public interface ServerMetadataFactory {
 
     void setProperties(Properties props);

@@ -17,7 +17,8 @@ package com.allinfinance.dev.framework.conn.wrapper.unpooled;
 
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
-import com.allinfinance.dev.framework.conn.wrapper.manager.DriverManager;
+import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
+import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 
 import java.util.Properties;
 import java.util.concurrent.Executors;
@@ -33,6 +34,8 @@ public class UnpooledServerMetadata implements ServerMetadata {
     private String serverIp;
 
     private Integer serverPort;
+
+    private Properties additionalProperties;
 
     public UnpooledServerMetadata() {
     }
@@ -52,22 +55,16 @@ public class UnpooledServerMetadata implements ServerMetadata {
         return doGetConnection(serverIp, serverPort);
     }
 
-    /**
-     * Gets the default network timeout.
-     *
-     * @return the default network timeout
-     * @since 3.5.2
-     */
+    @Deprecated
+    @Override
+    public String send(String msg) {
+        return getConnection().send(msg);
+    }
+
     public Integer getDefaultNetworkTimeout() {
         return defaultNetworkTimeout;
     }
 
-    /**
-     * Sets the default network timeout value to wait for the database operation to complete. See {@link Connection#setNetworkTimeout(java.util.concurrent.Executor, int)}
-     *
-     * @param defaultNetworkTimeout The time in milliseconds to wait for the database operation to complete.
-     * @since 3.5.2
-     */
     public void setDefaultNetworkTimeout(Integer defaultNetworkTimeout) {
         this.defaultNetworkTimeout = defaultNetworkTimeout;
     }
@@ -88,6 +85,14 @@ public class UnpooledServerMetadata implements ServerMetadata {
         this.serverPort = serverPort;
     }
 
+    public Properties getAdditionalProperties() {
+        return additionalProperties;
+    }
+
+    public void setAdditionalProperties(Properties additionalProperties) {
+        this.additionalProperties = additionalProperties;
+    }
+
     private Connection doGetConnection(String serverIp, Integer serverPort) {
         Properties props = new Properties();
         if (serverIp != null) {
@@ -96,12 +101,17 @@ public class UnpooledServerMetadata implements ServerMetadata {
         if (serverPort != null) {
             props.setProperty("serverPort", serverPort + "");
         }
+        if (additionalProperties != null) {
+            props.putAll(additionalProperties);
+        }
         return doGetConnection(props);
     }
 
     private Connection doGetConnection(Properties properties) {
-        Connection connection = DriverManager.getConnection(properties);
+        ExtensionLoader<Connection> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Connection.class);
+        Connection connection = extensionLoader.getExtension(properties.getProperty("connectionDriver"));
         configureConnection(connection);
+        connection.connect(properties);
         return connection;
     }
 

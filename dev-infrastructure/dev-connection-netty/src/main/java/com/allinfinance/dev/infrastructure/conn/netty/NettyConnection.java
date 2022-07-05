@@ -18,6 +18,7 @@ package com.allinfinance.dev.infrastructure.conn.netty;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.allinfinance.dev.framework.conn.driver.Connection;
+import com.allinfinance.dev.framework.extension.annotation.Extension;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -38,6 +39,7 @@ import java.util.concurrent.*;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/6/29 20:10
  */
+@Extension(value = "netty")
 public class NettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(NettyConnection.class);
     

@@ -16,12 +16,14 @@
 package com.allinfinance.dev.framework.conn.wrapper.pooled;
 
 import com.allinfinance.dev.framework.conn.wrapper.unpooled.UnpooledServerMetadataFactory;
+import com.allinfinance.dev.framework.extension.annotation.Extension;
 
 import java.util.Properties;
 
 /**
  * @author Clinton Begin
  */
+@Extension(value = "pool")
 public class PooledServerMetadataFactory extends UnpooledServerMetadataFactory {
 
     public PooledServerMetadataFactory() {
@@ -33,17 +35,24 @@ public class PooledServerMetadataFactory extends UnpooledServerMetadataFactory {
         PooledServerMetadata pooledServerMetadata = new PooledServerMetadata(properties.getProperty("serverIp"),
                 Integer.parseInt(properties.getProperty("serverPort")));
 
+        /* POOL */
         pooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty("defaultNetworkTimeout", "30")));
-        pooledServerMetadata.setPoolMaximumCheckoutTime(Integer.parseInt(properties.getProperty("maximumCheckoutTime", "10")));
-        pooledServerMetadata.setPoolTimeToWait(Integer.parseInt(properties.getProperty("timeToWait", "10")));
+        pooledServerMetadata.setMaxCheckoutTime(Integer.parseInt(properties.getProperty("maximumCheckoutTime", "10")));
+        pooledServerMetadata.setRetryTimeToWait(Integer.parseInt(properties.getProperty("timeToWait", "10")));
 
-        pooledServerMetadata.setPoolMaximumActiveConnections(Integer.parseInt(properties.getProperty("maximumActiveConnections", "5")));
-        pooledServerMetadata.setPoolMaximumIdleConnections(Integer.parseInt(properties.getProperty("mMaximumIdleConnections", "5")));
+        pooledServerMetadata.setMaxActiveConnections(Integer.parseInt(properties.getProperty("maximumActiveConnections", "5")));
+        pooledServerMetadata.setMaxIdleConnections(Integer.parseInt(properties.getProperty("mMaximumIdleConnections", "5")));
 
-        pooledServerMetadata.setPoolPingEnabled(Boolean.parseBoolean(properties.getProperty("pingEnabled", "true")));
-        pooledServerMetadata.setPoolPingQuery(properties.getProperty("pingQuery", "hello"));
-        pooledServerMetadata.setPoolMaximumLocalBadConnectionTolerance(Integer.parseInt(properties.getProperty("maximumLocalBadConnectionTolerance", "3")));
-        pooledServerMetadata.setPoolPingConnectionsNotUsedFor(Integer.parseInt(properties.getProperty("pingConnectionsNotUsedFor", "10")));
+        pooledServerMetadata.setPingEnabled(Boolean.parseBoolean(properties.getProperty("pingEnabled", "true")));
+        pooledServerMetadata.setPingQueryContent(properties.getProperty("pingQuery", "hello"));
+        pooledServerMetadata.setMaxLocalBadConnectionTolerance(Integer.parseInt(properties.getProperty("maximumLocalBadConnectionTolerance", "3")));
+        pooledServerMetadata.setPingConnectionsNotUsed(Integer.parseInt(properties.getProperty("pingConnectionsNotUsedFor", "10")));
+
+        /* additional properties */
+        Properties additional = new Properties();
+        additional.setProperty("connectionDriver", ((String) properties.get("connectionDriver")));
+        pooledServerMetadata.getMetadata().setAdditionalProperties(additional);
+
         metadata = pooledServerMetadata;
     }
 }
