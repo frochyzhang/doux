@@ -19,7 +19,7 @@
     <appender name="GRPC-LOG" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
-                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
             </layout>
         </encoder>
     </appender>
@@ -27,17 +27,15 @@
     <!-- 文件输出 -->
     <appender name="HSP-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<Encoding>UTF-8</Encoding>-->
-        <file>${LOG_HOME}/dev-hsp.log</file>
+        <file>${LOG_HOME}/${APP_NAME}.log</file>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/dev-hsp.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>200MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <maxFileSize>200MB</maxFileSize>
         </rollingPolicy>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
-                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
             </layout>
         </encoder>
     </appender>
@@ -45,13 +43,23 @@
     <!-- 控制台输出 -->
     <appender name="HSP-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <level>info</level>
+            <level>${LOG_LEVEL}</level>
         </filter>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
-                <Pattern>%date %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
             </layout>
         </encoder>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="HSP-ALL"/>
     </appender>
 
     <!--开发环境配置-->
@@ -60,12 +68,8 @@
             <appender-ref ref="HSP-CONSOLE"/>
             <appender-ref ref="GRPC-LOG"/>
         </logger>
-        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="HSP-CONSOLE"/>
-            <appender-ref ref="GRPC-LOG"/>
-        </logger>
 
-        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
+        <logger name="com.alipay" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="HSP-CONSOLE"/>
             <appender-ref ref="GRPC-LOG"/>
         </logger>
@@ -75,7 +79,6 @@
             <appender-ref ref="GRPC-LOG"/>
         </root>
     </springProfile>
-
 
     <!--sit环境配置-->
     <springProfile name="sit">

@@ -2,11 +2,13 @@ package com.allinfinance.dev.core.dto.hsp;
 
 import com.allinfinance.dev.core.util.validate.Check;
 
+import java.io.Serializable;
+
 /**
  * @author huanghf
  * @date 2022/6/19 13:54
  */
-public class SignatureGetBySM2PrivateKeyRequestDTO {
+public class SignatureGetBySM2PrivateKeyRequestDTO implements Serializable {
     /**
      * 外部输入密钥，HEX
      */

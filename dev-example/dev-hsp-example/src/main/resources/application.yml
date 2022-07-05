@@ -12,3 +12,7 @@ com:
     rpc:
       reference-list:
         - com.allinfinance.dev.core.util.hsp.SignatureService
+
+hsp:
+  registry:
+    address: 10.250.28.142:8848/public

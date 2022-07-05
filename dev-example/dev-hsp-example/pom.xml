@@ -20,5 +20,13 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-rpc-dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
+        </dependency>
     </dependencies>
 </project>
