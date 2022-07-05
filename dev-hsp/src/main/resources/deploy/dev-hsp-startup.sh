@@ -5,7 +5,7 @@ if [ -z "$ACTIVE_PROFILE" ]; then
   exit 1
 fi
 # Base Folder Path like "/folder/packages"
-CURRENT_DIR=$(readlink -f "$0")n
+CURRENT_DIR=$(readlink -f "$0")
 BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
 # Shell Script file name after removing path like "start-yaml-validator.sh"
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
@@ -32,7 +32,6 @@ elif [ $ACTIVE_PROFILE == "prod" ]; then
 fi
 SKY_WALKING_PARAM="-javaagent:$BASE_PACKAGE/agent/skywalking-agent.jar -Dskywalking.agent.service_name=$APP_NAME -Dskywalking.collector.backend_service=$SKY_WALKING_BACKEND_ADDRESS"
 SKY_WALKING_PLUGIN_PARAM="-Dskywalking.plugin.toolkit.log.grpc.reporter.server_host=10.250.28.142 -Dskywalking.plugin.toolkit.log.grpc.reporter.server_port=11800"
-
 
 JVM_PARAM_EXT="--spring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/"
 PIDS=`ps aux |grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | awk {'print $2'}`
