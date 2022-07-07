@@ -1,15 +1,13 @@
 package com.allinfinance.dev.framework.conn.driver;
 
-import com.allinfinance.dev.framework.conn.driver.Connection;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.allinfinance.dev.framework.extension.annotation.Extensible;
 
 /**
  * @Description: 连接检查接口，用户需要自定义ping的校验逻辑
  * @Author: qipeng
  * @Date: 2022/7/1
  **/
+@Extensible
 public interface PingService {
 
     /**

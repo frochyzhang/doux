@@ -126,6 +126,11 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-connection-pool-scaffold</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-connection-boot-starter</artifactId>
                 <version>${dev.version}</version>
             </dependency>

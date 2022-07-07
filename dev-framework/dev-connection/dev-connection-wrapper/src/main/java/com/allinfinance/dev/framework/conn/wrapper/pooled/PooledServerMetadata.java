@@ -16,13 +16,18 @@
 package com.allinfinance.dev.framework.conn.wrapper.pooled;
 
 import com.allinfinance.dev.framework.conn.driver.Connection;
+import com.allinfinance.dev.framework.conn.driver.PingService;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
+import com.allinfinance.dev.framework.conn.wrapper.constant.ConnectionConfig;
 import com.allinfinance.dev.framework.conn.wrapper.unpooled.UnpooledServerMetadata;
+import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.Properties;
 
 /**
  * This is a simple, synchronous, thread-safe database connection pool.
@@ -38,14 +43,15 @@ public class PooledServerMetadata implements ServerMetadata {
     private final UnpooledServerMetadata metadata;
 
     // OPTIONAL CONFIGURATION FIELDS
+    protected PingService pingService;
     protected int maxActiveConnections = 10;
     protected int maxIdleConnections = 5;
-    protected int maxCheckoutTime = 10;
+    protected int maxCheckoutTime = 100;
     protected int retryTimeToWait = 10;
     protected int maxLocalBadConnectionTolerance = 3;
-    protected String pingQueryContent = "NO PING QUERY SET";
+    protected String pingQueryContent = "";
     protected String pingVerifyContent = "";
-    protected boolean pingEnabled;
+    protected boolean pingEnabled = true;
     protected int pingConnectionsNotUsed;
     private int expectedConnectionTypeCode;
 
@@ -229,6 +235,25 @@ public class PooledServerMetadata implements ServerMetadata {
 
     public UnpooledServerMetadata getMetadata() {
         return metadata;
+    }
+
+    public String getPingVerifyContent() {
+        return pingVerifyContent;
+    }
+
+    public void setPingVerifyContent(String pingVerifyContent) {
+        this.pingVerifyContent = pingVerifyContent;
+    }
+
+    /**
+     * 初始化pingService
+     */
+    public void init() {
+        Properties properties = metadata.getAdditionalProperties();
+        String pingServiceAlias = properties.getProperty(ConnectionConfig.PING_SERVICE);
+        // pingService提供自定义扩展后，优先使用自定义扩展
+        pingService = ExtensionLoaderFactory.getExtensionLoader(PingService.class)
+                .getExtension(StringUtils.isNotBlank(pingServiceAlias) ? pingServiceAlias : "default");
     }
 
     /**
@@ -430,14 +455,7 @@ public class PooledServerMetadata implements ServerMetadata {
                     logger.debug("Testing connection " + conn.getRealHashCode() + " ...");
                 }
                 Connection realConn = conn.getRealConnection();
-//                try (Statement statement = realConn.createStatement()) {
-//                    statement.executeQuery(poolPingQuery).close();
-//                }
-//                if (!realConn.getAutoCommit()) {
-//                    realConn.rollback();
-//                }
-                // FIXME: 2022/6/29 Ping的逻辑
-                result = true;
+                result = pingService.pingConnection(realConn, pingQueryContent, pingVerifyContent, getDefaultNetworkTimeout());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Connection " + conn.getRealHashCode() + " is GOOD!");
                 }

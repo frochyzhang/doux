@@ -2,6 +2,7 @@ package com.allinfinance.dev.framework.conn.wrapper.service.impl;
 
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.PingService;
+import com.allinfinance.dev.framework.extension.annotation.Extension;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * @Author: qipeng
  * @Date: 2022/7/1
  **/
+@Extension("default")
 public class DefaultPingServiceImpl implements PingService {
 
     /**

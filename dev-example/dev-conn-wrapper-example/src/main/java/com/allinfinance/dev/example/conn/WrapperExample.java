@@ -40,7 +40,7 @@ public class WrapperExample {
         queueProperties.setProperty(SERVER_PORT, "9999");
         queueProperties.setProperty(MAX_CHECKOUT_TIME, "3000");
         queueProperties.setProperty(ConnectionConfig.CONNECTION_DRIVER, "netty");
-        queueProperties.setProperty(ConnectionConfig.CONNECTION_POOL_TYPE, "queue");
+        queueProperties.setProperty(ConnectionConfig.CONNECTION_POOL_TYPE, "unPool");
 
         ExtensionLoader<ServerMetadataFactory> serverMetadataExtensionLoader = ExtensionLoaderFactory.getExtensionLoader(ServerMetadataFactory.class);
         ServerMetadataFactory queueMetadata = serverMetadataExtensionLoader.getExtension(queueProperties.getProperty(ConnectionConfig.CONNECTION_POOL_TYPE));

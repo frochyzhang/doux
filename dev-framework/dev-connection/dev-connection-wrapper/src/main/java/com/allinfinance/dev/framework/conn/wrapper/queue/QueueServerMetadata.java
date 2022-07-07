@@ -3,13 +3,16 @@ package com.allinfinance.dev.framework.conn.wrapper.queue;
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.PingService;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
+import com.allinfinance.dev.framework.conn.wrapper.constant.ConnectionConfig;
 import com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig;
 import com.allinfinance.dev.framework.conn.wrapper.constant.enums.ConnectionStatus;
 import com.allinfinance.dev.framework.conn.wrapper.unpooled.UnpooledServerMetadata;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -33,17 +36,13 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     protected int maxActiveConnections = 10;
     /**
-     * 连接请求超时时间，单位：ms
+     * 空闲连接检查时间，单位：ms，默认值5秒
      */
-    protected int maxRequestTimeout = 20;
-    /**
-     * 空闲连接检查时间，单位：ms，默认值5分钟
-     */
-    protected int maxCheckoutTime = 5 * 60 * 1000;
+    protected int maxCheckoutTime = 5000;
     /**
      * 连接检查请求内容
      */
-    protected String pingQueryContent;
+    protected String pingQueryContent = "";
     /**
      * 连接检查校验内容
      */
@@ -52,6 +51,10 @@ public class QueueServerMetadata implements ServerMetadata {
      * 开启或禁用侦测查询
      */
     protected boolean pingEnabled = true;
+    /**
+     * 连接测试服务，用于校验连接是否正常
+     */
+    protected PingService pingService;
 
     public QueueServerMetadata() {
     }
@@ -64,12 +67,17 @@ public class QueueServerMetadata implements ServerMetadata {
     }
 
     /**
-     * 初始化空闲连接池
+     * 初始化空闲连接池以及pingService
      */
     public void init() {
         for (int i = 0; i < maxActiveConnections; i++) {
             state.queue.add(new QueueConnection(this, metadata.getConnection()));
         }
+        Properties properties = metadata.getAdditionalProperties();
+        String pingServiceAlias = properties.getProperty(ConnectionConfig.PING_SERVICE);
+        // pingService提供自定义扩展后，优先使用自定义扩展
+        pingService = ExtensionLoaderFactory.getExtensionLoader(PingService.class)
+                .getExtension(StringUtils.isNotBlank(pingServiceAlias) ? pingServiceAlias : "default");
     }
 
     /**
@@ -112,7 +120,18 @@ public class QueueServerMetadata implements ServerMetadata {
      * @return
      */
     protected QueueConnection popConnection() {
-        return state.queue.poll();
+        QueueConnection queueConnection = state.queue.poll();
+//        synchronized (Objects.requireNonNull(queueConnection)) {
+//            if (this.maxCheckoutTime < System.currentTimeMillis() - queueConnection.getLastUsedTimestamp()) {
+//                // 超过检查时间后，先ping一下连接
+//                pingConnection(queueConnection);
+//            }
+//            if (ConnectionStatus.ACTIVE.equals(queueConnection.getStatus())) {
+//                pushConnection(queueConnection);
+//                return queueConnection;
+//            }
+//        }
+        return queueConnection;
     }
 
     /**
@@ -131,50 +150,28 @@ public class QueueServerMetadata implements ServerMetadata {
      * 连接检查
      *
      * @param conn
-     * @return
      */
     protected boolean pingConnection(QueueConnection conn) {
         boolean result;
-        PingService pingService = ExtensionLoaderFactory.getExtensionLoader(PingService.class).getExtension("pingService");
-        if (pingService != null) {
-            return pingService.pingConnection(conn.getProxyConnection(), pingQueryContent, pingVerifyContent, maxRequestTimeout);
+        try {
+            result = !pingEnabled || pingService.pingConnection(conn.getRealConnection(), pingQueryContent, pingVerifyContent, getDefaultNetworkTimeout());
+            if (!result) {
+                conn.setStatus(ConnectionStatus.TIMEOUT);
+            }
+        } catch (Throwable e) {
+            logger.warn("Execution of ping query '" + pingQueryContent + "' failed: " + e.getMessage());
+            try {
+                conn.getRealConnection().close();
+            } catch (Exception e2) {
+                // ignore
+            }
+            result = false;
+            conn.setStatus(ConnectionStatus.INACTIVE);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Connection " + conn.getRealConnection().hashCode() + " is BAD: " + e.getMessage());
+            }
         }
-        return true;
-//        if (pingEnabled) {
-//            try {
-//                result = (conn, pingQuery, pingVerify, requestTimeout);
-//            } catch (Exception e) {
-//                logger.error("连接：{}异常", conn.hashCode());
-//                conn.setStatus(ConnectionStatus.INACTIVE);
-//                conn.close();
-//                return false;
-//            }
-//
-//            if (result) {
-//                if (logger.isDebugEnabled()) {
-//                    logger.debug("连接：{}正常！", conn.hashCode());
-//                }
-//                conn.setStatus(ConnectionStatus.ACTIVE);
-//            } else {
-//                logger.error("发送连接测试报文：{}失败，服务端响应错误或超时", pingQuery);
-//                conn.setStatus(ConnectionStatus.TIMEOUT);
-//                if (conn.retryTimes.get() == 0) {
-//                    if (logger.isDebugEnabled()) {
-//                        logger.debug("重试次数超限，此连接无效：{}", conn.hashCode());
-//                    }
-//                    conn.setStatus(ConnectionStatus.INACTIVE);
-//                }
-//            }
-//
-//        } else {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("ping连接开关未打开，无需校验连接");
-//            }
-//            conn.setStatus(ConnectionStatus.ACTIVE);
-//            result = true;
-//        }
-
-//        return result;
+        return result;
     }
 
 
@@ -220,5 +217,53 @@ public class QueueServerMetadata implements ServerMetadata {
 
     public UnpooledServerMetadata getMetadata() {
         return metadata;
+    }
+
+    public int getMaxActiveConnections() {
+        return maxActiveConnections;
+    }
+
+    public void setMaxActiveConnections(int maxActiveConnections) {
+        this.maxActiveConnections = maxActiveConnections;
+    }
+
+    public Integer getDefaultNetworkTimeout() {
+        return metadata.getDefaultNetworkTimeout();
+    }
+
+    public void setDefaultNetworkTimeout(Integer defaultNetworkTimeout) {
+        metadata.setDefaultNetworkTimeout(defaultNetworkTimeout);
+    }
+
+    public int getMaxCheckoutTime() {
+        return maxCheckoutTime;
+    }
+
+    public void setMaxCheckoutTime(int maxCheckoutTime) {
+        this.maxCheckoutTime = maxCheckoutTime;
+    }
+
+    public String getPingQueryContent() {
+        return pingQueryContent;
+    }
+
+    public void setPingQueryContent(String pingQueryContent) {
+        this.pingQueryContent = pingQueryContent;
+    }
+
+    public String getPingVerifyContent() {
+        return pingVerifyContent;
+    }
+
+    public void setPingVerifyContent(String pingVerifyContent) {
+        this.pingVerifyContent = pingVerifyContent;
+    }
+
+    public boolean isPingEnabled() {
+        return pingEnabled;
+    }
+
+    public void setPingEnabled(boolean pingEnabled) {
+        this.pingEnabled = pingEnabled;
     }
 }

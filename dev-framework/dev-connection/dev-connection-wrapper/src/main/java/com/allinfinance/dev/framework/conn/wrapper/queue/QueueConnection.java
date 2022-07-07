@@ -20,6 +20,7 @@ public class QueueConnection implements InvocationHandler {
     private final QueueServerMetadata metadata;
     private final Connection realConnection;
     private final Connection proxyConnection;
+    private long lastUsedTimestamp;
     private ConnectionStatus status;
 
     public QueueConnection(QueueServerMetadata serverMetadata, Connection connection) {
@@ -27,6 +28,7 @@ public class QueueConnection implements InvocationHandler {
         this.realConnection = connection;
         this.metadata = serverMetadata;
         this.status = ConnectionStatus.ACTIVE;
+        this.lastUsedTimestamp = System.currentTimeMillis();
         this.proxyConnection = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), IFACES, this);
     }
 
@@ -39,8 +41,6 @@ public class QueueConnection implements InvocationHandler {
         }
         try {
             if (!Object.class.equals(method.getDeclaringClass())) {
-                // issue #579 toString() should never fail
-                // throw an SQLException instead of a Runtime
                 checkConnection();
             }
             return method.invoke(realConnection, args);
@@ -67,6 +67,14 @@ public class QueueConnection implements InvocationHandler {
 
     public void setStatus(ConnectionStatus status) {
         this.status = status;
+    }
+
+    public long getLastUsedTimestamp() {
+        return lastUsedTimestamp;
+    }
+
+    public void setLastUsedTimestamp(long lastUsedTimestamp) {
+        this.lastUsedTimestamp = lastUsedTimestamp;
     }
 
     private void checkConnection() throws RuntimeException {

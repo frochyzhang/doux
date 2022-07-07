@@ -19,6 +19,7 @@
         <module>dev-batch-scaffold</module>
         <module>dev-actuator-scaffold</module>
         <module>dev-connection-scaffold</module>
+        <module>dev-connection-pool-scaffold</module>
     </modules>
 
     <properties>

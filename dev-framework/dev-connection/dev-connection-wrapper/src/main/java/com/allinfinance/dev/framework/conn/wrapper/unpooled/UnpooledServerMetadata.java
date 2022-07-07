@@ -17,11 +17,15 @@ package com.allinfinance.dev.framework.conn.wrapper.unpooled;
 
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
+import com.allinfinance.dev.framework.conn.wrapper.constant.ConnectionConfig;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 
 import java.util.Properties;
 import java.util.concurrent.Executors;
+
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_IP;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_PORT;
 
 /**
  * @author Clinton Begin
@@ -96,10 +100,10 @@ public class UnpooledServerMetadata implements ServerMetadata {
     private Connection doGetConnection(String serverIp, Integer serverPort) {
         Properties props = new Properties();
         if (serverIp != null) {
-            props.setProperty("serverIp", serverIp);
+            props.setProperty(SERVER_IP, serverIp);
         }
         if (serverPort != null) {
-            props.setProperty("serverPort", serverPort + "");
+            props.setProperty(SERVER_PORT, serverPort + "");
         }
         if (additionalProperties != null) {
             props.putAll(additionalProperties);
@@ -109,7 +113,7 @@ public class UnpooledServerMetadata implements ServerMetadata {
 
     private Connection doGetConnection(Properties properties) {
         ExtensionLoader<Connection> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Connection.class);
-        Connection connection = extensionLoader.getExtension(properties.getProperty("connectionDriver"));
+        Connection connection = extensionLoader.getExtension(properties.getProperty(ConnectionConfig.CONNECTION_DRIVER));
         configureConnection(connection);
         connection.connect(properties);
         return connection;

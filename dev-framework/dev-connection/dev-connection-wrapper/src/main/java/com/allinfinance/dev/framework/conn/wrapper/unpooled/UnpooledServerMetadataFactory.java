@@ -17,12 +17,17 @@ package com.allinfinance.dev.framework.conn.wrapper.unpooled;
 
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadataFactory;
+import com.allinfinance.dev.framework.conn.wrapper.constant.ConnectionConfig;
+import com.allinfinance.dev.framework.extension.annotation.Extension;
 
 import java.util.Properties;
+
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.*;
 
 /**
  * @author Clinton Begin
  */
+@Extension("unPool")
 public class UnpooledServerMetadataFactory implements ServerMetadataFactory {
 
     protected ServerMetadata metadata;
@@ -32,9 +37,15 @@ public class UnpooledServerMetadataFactory implements ServerMetadataFactory {
 
     @Override
     public void setProperties(Properties properties) {
-        UnpooledServerMetadata unpooledServerMetadata = new UnpooledServerMetadata(properties.getProperty("serverIp"),
-                Integer.parseInt(properties.getProperty("serverPort")));
-        unpooledServerMetadata.setDefaultNetworkTimeout(30);
+        UnpooledServerMetadata unpooledServerMetadata = new UnpooledServerMetadata(properties.getProperty(SERVER_IP),
+                Integer.parseInt(properties.getProperty(SERVER_PORT)));
+        unpooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT,"30")));
+
+        Properties additional = new Properties();
+        additional.setProperty(ConnectionConfig.CONNECTION_DRIVER, properties.getProperty(ConnectionConfig.CONNECTION_DRIVER, "netty"));
+        additional.setProperty(ConnectionConfig.PING_SERVICE, properties.getProperty(ConnectionConfig.PING_SERVICE, "default"));
+        unpooledServerMetadata.setAdditionalProperties(additional);
+
         metadata = unpooledServerMetadata;
     }
 

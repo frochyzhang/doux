@@ -29,7 +29,7 @@ public class ServerMetadataConfig {
     /**
      * 最大的请求超时时间，超过该时间表示请求超时，单位：毫秒
      */
-    public static final String MAX_REQUEST_TIMEOUT = "maxRequestTimeout";
+    public static final String DEFAULT_NETWORK_TIMEOUT = "defaultNetworkTimeout";
     /**
      * 连接重试等待时间，单位：毫秒
      */
@@ -45,7 +45,7 @@ public class ServerMetadataConfig {
     /**
      * ping验证内容
      */
-    public static final String PING_VERIFY_CONTENT = "pingQueryContent";
+    public static final String PING_VERIFY_CONTENT = "pingVerifyContent";
     /**
      * ping开关
      */
@@ -54,8 +54,4 @@ public class ServerMetadataConfig {
      * 最近一次使用该连接的时间差，单位：毫秒
      */
     public static final String PING_CONNECTIONS_NOT_USED = "pingConnectionsNotUsed";
-    /**
-     * 所期望的连接类型，用于标记不同连接
-     */
-    public static final String EXPECTED_CONNECTION_TYPE_CODE = "expectedConnectionTypeCode";
 }
