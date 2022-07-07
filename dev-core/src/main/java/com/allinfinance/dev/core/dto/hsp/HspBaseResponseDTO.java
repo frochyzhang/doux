@@ -1,10 +1,12 @@
 package com.allinfinance.dev.core.dto.hsp;
 
+import java.io.Serializable;
+
 /**
  * @author huanghf
  * @date 2022/6/22 17:13
  */
-public class HspBaseResponseDTO<T> {
+public class HspBaseResponseDTO<T> implements Serializable {
     /**
      * 是否成功
      */

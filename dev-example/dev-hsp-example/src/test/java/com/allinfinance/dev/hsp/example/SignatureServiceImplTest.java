@@ -91,4 +91,9 @@ public class SignatureServiceImplTest extends AbstractBenchmark {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void testDubboHspService() {
+
+    }
 }

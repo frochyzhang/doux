@@ -12,7 +12,7 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public-hhf
+        registry-address: nacos://10.250.28.142:8848/public
         bolt-port: 12202
   allinfinance:
     rpc:
@@ -20,12 +20,12 @@ com:
     connection:
       pool-type: list
       buffer-size: 65536
-      length-field: 2
+      length-field: 0
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
-          server-ip: 10.252.64.45
-          server-port: 9001
+          server-ip: 10.250.28.138
+          server-port: 6666
           timeout: 200
           checkout-time: 3000
           retry-times: 3
@@ -34,18 +34,36 @@ com:
           enable-ping: true
           ping-query-message: "3132333435"
           ping-verify-message: ""
-
+dev:
+  dubbo:
+    application:
+      name: dev-hsp
+    registry:
+      address: 10.250.28.142:8848?namespace=public
+      protocol: nacos
+      timeout: 10000
+    protocol:
+      name: dubbo
+      port: 32245
+    provider:
+      timeout: 10000
+      retries: 0
+    consumer:
+      check: false
+      timeout: 10000
+      retries: 0
+    files: file:${HSP_HOME}/hsp-dubbo-config.xml
 ---
 spring:
   profiles: sit
   pid:
-    file: /data/hsp/config/${spring.application.name}/${spring.application.name}.pid
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public-hhf
+        registry-address: nacos://10.250.28.142:8848/public-sit
         bolt-port: 12202
         enabled-ip-range: 10.250.1.17
   allinfinance:
@@ -54,7 +72,7 @@ com:
     connection:
       pool-type: queue
       buffer-size: 65536
-      length-field: 2
+      length-field: 0
       server-metadata-map:
         server-1:
           server-name: "加密机1号"
@@ -68,12 +86,31 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
+dev:
+  dubbo:
+    application:
+      name: dev-hsp
+    registry:
+      address: 10.250.28.142:8848?namespace=public-sit
+      protocol: nacos
+      timeout: 10000
+    protocol:
+      name: dubbo
+      port: 32245
+    provider:
+      timeout: 10000
+      retries: 0
+    consumer:
+      check: false
+      timeout: 10000
+      retries: 0
+    files: file:${HOME}/apps/${spring.application.name}/config/hsp-dubbo-config.xml
 
 ---
 spring:
   profiles: uat
   pid:
-    file: /data/hsp/config/${spring.application.name}/${spring.application.name}.pid
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   alipay:
@@ -101,12 +138,31 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
+dev:
+  dubbo:
+    application:
+      name: dev-hsp
+    registry:
+      address: 10.250.28.142:8848?namespace=public-uat
+      protocol: nacos
+      timeout: 10000
+    protocol:
+      name: dubbo
+      port: 32245
+    provider:
+      timeout: 10000
+      retries: 0
+    consumer:
+      check: false
+      timeout: 10000
+      retries: 0
+    files: file:${HOME}/apps/${spring.application.name}/config/hsp-dubbo-config.xml
 
 ---
 spring:
   profiles: prod
   pid:
-    file: /data/hsp/config/${spring.application.name}/${spring.application.name}.pid
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   alipay:
@@ -134,3 +190,22 @@ com:
           enable-ping: false
           ping-query-message: "3132333435"
           ping-verify-message: "706f6e67"
+dev:
+  dubbo:
+    application:
+      name: dev-hsp
+    registry:
+      address: 10.250.28.142:8848?namespace=public
+      protocol: nacos
+      timeout: 10000
+    protocol:
+      name: dubbo
+      port: 32245
+    provider:
+      timeout: 10000
+      retries: 0
+    consumer:
+      check: false
+      timeout: 10000
+      retries: 0
+    files: file:${HOME}/apps/${spring.application.name}/config/hsp-dubbo-config.xml

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
  * @author huanghf
  * @date 2022/6/19 14:47
  */
-@Service
+@Service(value = "signatureService")
 public class SignatureServiceImpl implements SignatureService {
     private static final Logger logger = LoggerFactory.getLogger(SignatureServiceImpl.class);
 

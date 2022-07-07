@@ -11,7 +11,7 @@ SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-shutdown.sh}
 
 # Script to stop the application
-PID_PATH="$BASE_PACKAGE/config/$APP_NAME/$APP_NAME.pid"
+PID_PATH="$BASE_PACKAGE/pid/$APP_NAME/$APP_NAME.pid"
 
 if [ ! -f "$PID_PATH" ]; then
    echo "Process Id FilePath($PID_PATH) Not found"

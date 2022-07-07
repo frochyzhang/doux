@@ -7,4 +7,4 @@ tar -zxvf $1
 rm -r $HOME/bin/ $HOME/apps
 
 # 移动jar包、配置文件以及启停脚本
-mv $HOME$HOME/* $HOME/
+mv $HOME/$HOME/* $HOME/
