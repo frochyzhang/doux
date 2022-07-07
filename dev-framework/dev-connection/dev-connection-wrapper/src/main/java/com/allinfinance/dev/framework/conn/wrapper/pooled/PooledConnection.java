@@ -24,7 +24,7 @@ import java.lang.reflect.Proxy;
 /**
  * @author Clinton Begin
  */
-class PooledConnection implements InvocationHandler {
+public class PooledConnection implements InvocationHandler {
 
   private static final String CLOSE = "close";
   private static final Class<?>[] IFACES = new Class<?>[] { Connection.class };

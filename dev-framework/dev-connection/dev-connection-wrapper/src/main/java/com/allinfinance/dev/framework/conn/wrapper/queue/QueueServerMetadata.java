@@ -83,7 +83,7 @@ public class QueueServerMetadata implements ServerMetadata {
     /**
      * 新增连接
      */
-    protected void addConnection() {
+    public void addConnection() {
         state.queue.add(new QueueConnection(this, metadata.getConnection()));
     }
 
@@ -92,7 +92,7 @@ public class QueueServerMetadata implements ServerMetadata {
      *
      * @param connection
      */
-    protected void pushConnection(QueueConnection connection) {
+    public void pushConnection(QueueConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
             if (state.queue.size() < maxActiveConnections) {
                 if (logger.isDebugEnabled()) {
@@ -119,7 +119,7 @@ public class QueueServerMetadata implements ServerMetadata {
      *
      * @return
      */
-    protected QueueConnection popConnection() {
+    public QueueConnection popConnection() {
         QueueConnection queueConnection = state.queue.poll();
 //        synchronized (Objects.requireNonNull(queueConnection)) {
 //            if (this.maxCheckoutTime < System.currentTimeMillis() - queueConnection.getLastUsedTimestamp()) {
@@ -151,7 +151,7 @@ public class QueueServerMetadata implements ServerMetadata {
      *
      * @param conn
      */
-    protected boolean pingConnection(QueueConnection conn) {
+    public boolean pingConnection(QueueConnection conn) {
         boolean result;
         try {
             result = !pingEnabled || pingService.pingConnection(conn.getRealConnection(), pingQueryContent, pingVerifyContent, getDefaultNetworkTimeout());
