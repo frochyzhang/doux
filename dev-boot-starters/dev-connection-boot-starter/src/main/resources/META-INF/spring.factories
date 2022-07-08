@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.allinfinance.dev.connection.scaffold.ConnectionPoolAutoConfiguration
+  com.allinfinance.dev.connection.pool.scaffold.ConnectionPoolAutoConfiguration

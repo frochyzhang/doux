@@ -4,7 +4,6 @@ import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.PingService;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
 import com.allinfinance.dev.framework.conn.wrapper.constant.ConnectionConfig;
-import com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig;
 import com.allinfinance.dev.framework.conn.wrapper.constant.enums.ConnectionStatus;
 import com.allinfinance.dev.framework.conn.wrapper.unpooled.UnpooledServerMetadata;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -59,10 +57,8 @@ public class QueueServerMetadata implements ServerMetadata {
     public QueueServerMetadata() {
     }
 
-    public QueueServerMetadata(UnpooledServerMetadata metadata, Properties properties) {
+    public QueueServerMetadata(UnpooledServerMetadata metadata) {
         this.metadata = metadata;
-
-        this.maxCheckoutTime = Integer.parseInt(properties.getProperty(ServerMetadataConfig.MAX_CHECKOUT_TIME));
         state = new QueueState(this, this.maxActiveConnections);
     }
 
@@ -120,18 +116,37 @@ public class QueueServerMetadata implements ServerMetadata {
      * @return
      */
     public QueueConnection popConnection() {
-        QueueConnection queueConnection = state.queue.poll();
-//        synchronized (Objects.requireNonNull(queueConnection)) {
-//            if (this.maxCheckoutTime < System.currentTimeMillis() - queueConnection.getLastUsedTimestamp()) {
-//                // 超过检查时间后，先ping一下连接
-//                pingConnection(queueConnection);
-//            }
-//            if (ConnectionStatus.ACTIVE.equals(queueConnection.getStatus())) {
-//                pushConnection(queueConnection);
-//                return queueConnection;
-//            }
-//        }
-        return queueConnection;
+        QueueConnection conn = state.queue.poll();
+        if (conn != null) {
+            if (System.currentTimeMillis() - conn.getLastUsedTimestamp() > this.getMaxCheckoutTime()) {
+                if (this.pingConnection(conn)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("老头连接有效，返回该连接：{}", conn.hashCode());
+                    }
+                    pushConnection(conn);
+                } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
+                    // ping连接失败
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("老头连接超时，等待重试：{}", conn.hashCode());
+                    }
+                    conn = null;
+                } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
+                    // 连接重试失败，重新创建新连接
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("连接失效，新建连接");
+                    }
+                    this.addConnection();
+                    conn = null;
+                }
+            } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("小鲜肉连接，返回该连接：{}", conn.hashCode());
+                }
+                pushConnection(conn);
+            }
+        }
+
+        return conn;
     }
 
     /**

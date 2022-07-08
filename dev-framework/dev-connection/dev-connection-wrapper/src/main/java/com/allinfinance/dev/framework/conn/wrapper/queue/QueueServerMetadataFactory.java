@@ -25,7 +25,7 @@ public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
     public void setProperties(Properties properties) {
         UnpooledServerMetadata unpooledServerMetadata = new UnpooledServerMetadata(properties.getProperty(SERVER_IP),
                 Integer.parseInt(properties.getProperty(SERVER_PORT)));
-        QueueServerMetadata queueServerMetadata = new QueueServerMetadata(unpooledServerMetadata, properties);
+        QueueServerMetadata queueServerMetadata = new QueueServerMetadata(unpooledServerMetadata);
 
         queueServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30")));
         queueServerMetadata.setMaxActiveConnections(Integer.parseInt(properties.getProperty(MAX_ACTIVE_CONNECTIONS, "10")));

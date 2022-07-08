@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @Author: qipeng
  * @Date: 2022/7/7
  **/
-@Configuration
 public class ServerMetadataConfigure {
     /**
      * 服务端ip

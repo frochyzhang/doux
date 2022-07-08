@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-connection-scaffold</artifactId>
+            <artifactId>dev-connection-pool-scaffold</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -19,11 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-connection-netty</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-connection-wrapper</artifactId>
+            <artifactId>dev-connection-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>
