@@ -1,0 +1,1 @@
+defaultProcessService=com.allinfinance.dev.rpc.scaffold.service.DefaultProcessServiceImpl
