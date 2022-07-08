@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
+import com.allinfinance.dev.framework.extension.annotation.Extensible;
 import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
 import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessResponseDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
@@ -8,6 +9,7 @@ import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/1/28 09:35
  */
+@Extensible
 public interface ProcessService {
     /**
      * 注册到网关后的验证接口

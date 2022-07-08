@@ -192,24 +192,8 @@ public class AppProcessFactory {
                                         .collect(Collectors.toList());
                                 return CollectionUtils.isEmpty(bootstrapList);
                             }).collect(Collectors.toList());
-                    // TODO: 2022/5/6 其他应用已经监听此端口，那么关闭时不会进行shutdown，也就不会去除APP_SERVER_MAP中的httpserver，如何处理
+                    //切忌直接在流中修改collection结构
                     toBeClosedHttpServerList.forEach(httpServer -> httpServer.shutdown(appUniqueId));
-                    // FIXME: 2022/5/6 隐藏的bug，无语，以后再看
-                    //httpServerList
-                    //        .stream()
-                    //        .filter(httpServer -> {
-                    //            //是否有其它监听这个端口的应用
-                    //            List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
-                    //                    .stream()
-                    //                    .filter(bootstrap -> !appUniqueId.equals(bootstrap.getAppUniqueId())
-                    //                            && bootstrap.getAppList().stream()
-                    //                            .anyMatch(appConfigList -> appConfigList.getListenPort().equals(httpServer.getPort())))
-                    //                    .collect(Collectors.toList());
-                    //            return CollectionUtils.isEmpty(bootstrapList);
-                    //        }).forEach(httpServer -> {
-                    //    logger.info("{}待关闭", httpServer);
-                    //    httpServer.shutdown(appUniqueId);
-                    //});
                 });
         //移除tcp端口监听
         compares.get(appUniqueId)
