@@ -37,8 +37,8 @@ public class MessagePorterImpl implements MessagePorter {
         // 轮询遍历各个连接池，直到找到空闲连接
         while (conn == null) {
             int index = random.nextInt(serverMetadataList.size());
-            ServerMetadata pooledServerMetadata = serverMetadataList.get(index);
-            conn = pooledServerMetadata.getConnection();
+            ServerMetadata serverMetadata = serverMetadataList.get(index);
+            conn = serverMetadata.getConnection();
         }
 
         return conn;
@@ -69,13 +69,5 @@ public class MessagePorterImpl implements MessagePorter {
                 return null;
             }
         }
-    }
-
-    public List<ServerMetadata> getServerMetadataList() {
-        return serverMetadataList;
-    }
-
-    public void setServerMetadataList(List<ServerMetadata> serverMetadataList) {
-        this.serverMetadataList = serverMetadataList;
     }
 }

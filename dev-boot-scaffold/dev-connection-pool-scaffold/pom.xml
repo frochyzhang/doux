@@ -27,6 +27,10 @@
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-extension-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-connection-wrapper</artifactId>
         </dependency>
         <dependency>

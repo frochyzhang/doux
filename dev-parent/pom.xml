@@ -136,6 +136,11 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-extension-boot-starter</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-hsp</artifactId>
                 <version>${dev.version}</version>
             </dependency>
