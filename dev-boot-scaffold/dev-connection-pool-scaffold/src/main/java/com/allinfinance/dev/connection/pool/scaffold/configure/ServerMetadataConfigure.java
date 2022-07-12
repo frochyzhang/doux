@@ -1,8 +1,5 @@
 package com.allinfinance.dev.connection.pool.scaffold.configure;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
 /**
  * @Description:
  * @Author: qipeng
@@ -12,51 +9,59 @@ public class ServerMetadataConfigure {
     /**
      * 服务端ip
      */
-    public String serverIp;
+    private String serverIp;
     /**
      * 服务端端口
      */
-    public String serverPort;
+    private String serverPort;
     /**
      * 最大活跃连接数
      */
-    public String maxActiveConnections;
+    private String maxActiveConnections;
     /**
      * 最大空闲连接数
      */
-    public String maxIdleConnections;
+    private String maxIdleConnections;
     /**
      * 最大空闲连接检查时间，超过该时间后要检查连接活跃度，单位：毫秒
      */
-    public String maxCheckoutTime;
+    private String maxCheckoutTime;
     /**
      * 最大的请求超时时间，超过该时间表示请求超时，单位：毫秒
      */
-    public String defaultNetworkTimeout;
+    private String defaultNetworkTimeout;
     /**
      * 连接重试等待时间，单位：毫秒
      */
-    public String retryTimeToWait;
+    private String retryTimeToWait;
     /**
      * 本地能容忍的最大坏连接数
      */
-    public String maxLocalBadConnectionTolerance;
+    private String maxLocalBadConnectionTolerance;
     /**
      * ping请求内容
      */
-    public String pingQueryContent;
+    private String pingQueryContent;
     /**
      * ping验证内容
      */
-    public String pingVerifyContent;
+    private String pingVerifyContent;
     /**
      * ping开关
      */
-    public String pingEnabled;
+    private String pingEnabled;
     /**
      * 最近一次使用该连接的时间差，单位：毫秒
      */
-    public String pingConnectionsNotUsed;
+    private String pingConnectionsNotUsed;
+    /**
+     * 长度域长度，默认为: 2
+     */
+    private String lengthField;
+    /**
+     * 缓冲区大小，默认为: 65535
+     */
+    private String bufferSize;
 
     public String getServerIp() {
         return serverIp;
@@ -154,6 +159,22 @@ public class ServerMetadataConfigure {
         this.pingConnectionsNotUsed = pingConnectionsNotUsed;
     }
 
+    public String getLengthField() {
+        return lengthField;
+    }
+
+    public void setLengthField(String lengthField) {
+        this.lengthField = lengthField;
+    }
+
+    public String getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(String bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
     @Override
     public String toString() {
         return "ServerMetadataConfigure{" +
@@ -169,6 +190,8 @@ public class ServerMetadataConfigure {
                 ", pingVerifyContent='" + pingVerifyContent + '\'' +
                 ", pingEnabled='" + pingEnabled + '\'' +
                 ", pingConnectionsNotUsed='" + pingConnectionsNotUsed + '\'' +
+                ", lengthField='" + lengthField + '\'' +
+                ", bufferSize='" + bufferSize + '\'' +
                 '}';
     }
 }

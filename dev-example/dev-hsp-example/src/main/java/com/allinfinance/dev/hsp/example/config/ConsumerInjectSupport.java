@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @author huanghf
  * @date 2022/7/4 14:40
  */
-@Component
+//@Component("dubboConsumerInjectSupport")
 public class ConsumerInjectSupport implements InitializingBean, ApplicationContextAware {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerInjectSupport.class);
 

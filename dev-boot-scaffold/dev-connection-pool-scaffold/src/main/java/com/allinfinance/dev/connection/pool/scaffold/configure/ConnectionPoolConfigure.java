@@ -15,15 +15,15 @@ public class ConnectionPoolConfigure {
     /**
      * 连接池驱动。如：netty
      */
-    public String connectionDriver;
+    private String connectionDriver;
     /**
      * 连接池底层实现：双列表/阻塞队列
      */
-    public String connectionPoolType;
+    private String connectionPoolType;
     /**
      * 连接检查服务别名，默认提供：defaultPingService
      */
-    public String pingService;
+    private String pingService;
 
     public String getConnectionDriver() {
         return connectionDriver;

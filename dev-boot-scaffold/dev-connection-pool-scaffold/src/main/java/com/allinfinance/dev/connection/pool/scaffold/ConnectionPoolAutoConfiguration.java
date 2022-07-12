@@ -2,7 +2,6 @@ package com.allinfinance.dev.connection.pool.scaffold;
 
 import com.allinfinance.dev.connection.pool.scaffold.configure.ConnectionPoolConfigure;
 import com.allinfinance.dev.connection.pool.scaffold.configure.ScaffoldConfigure;
-import com.allinfinance.dev.connection.pool.scaffold.configure.ServerMetadataConfigure;
 import com.allinfinance.dev.connection.pool.scaffold.util.PropertiesParseUtils;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadataFactory;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  * @Author: qipeng
  * @Date: 2022/7/7
  **/
-@EnableConfigurationProperties({ConnectionPoolConfigure.class,ScaffoldConfigure.class})
+@EnableConfigurationProperties({ConnectionPoolConfigure.class, ScaffoldConfigure.class})
 @Configuration
 @ComponentScan("com.allinfinance.dev.connection.pool.scaffold")
 public class ConnectionPoolAutoConfiguration {
@@ -42,9 +41,11 @@ public class ConnectionPoolAutoConfiguration {
                 .stream().map(metadataConfigure -> {
                     logger.info("服务端配置信息：{}", metadataConfigure);
 
-                    Properties properties = PropertiesParseUtils.fromServerMetadataConfigure(metadataConfigure);
+                    Properties properties = new Properties();
+                    PropertiesParseUtils.fromServerMetadataConfigure(properties, metadataConfigure);
+                    PropertiesParseUtils.fromConnectionPoolConfigure(properties, connectionPoolConfigure);
                     ExtensionLoader<ServerMetadataFactory> serverMetadataExtensionLoader = ExtensionLoaderFactory.getExtensionLoader(ServerMetadataFactory.class);
-                    ServerMetadataFactory factory = serverMetadataExtensionLoader.getExtension(connectionPoolConfigure.connectionPoolType);
+                    ServerMetadataFactory factory = serverMetadataExtensionLoader.getExtension(connectionPoolConfigure.getConnectionPoolType());
 
                     factory.setProperties(properties);
                     return factory.getMetadata();

@@ -6,7 +6,7 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public-hhf
+        registry-address: nacos://10.250.28.142:8848/public
         bolt-port: 12204
   allinfinance:
     rpc:
@@ -16,3 +16,25 @@ com:
 hsp:
   registry:
     address: 10.250.28.142:8848/public
+
+dev:
+  dubbo:
+    application:
+      name: hsp-example
+    registry:
+      address: 10.250.20.81:8848?namespace=public
+      protocol: nacos
+      timeout: 10000
+    protocol:
+      name: dubbo
+      port: 31247
+    provider:
+      timeout: 10000
+      retries: 0
+    consumer:
+      check: false
+      timeout: 10000
+      retries: 0
+    files: file:${QPSP_HOME}/qps-p-dubboConfig.xml
+  http:
+    httpsTrust: true

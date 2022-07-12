@@ -3,7 +3,7 @@ com:
     connection:
       pool:
         connection-driver: netty
-        connection-pool-type: pool
+        connection-pool-type: queue
         ping-service: default
       scaffold:
         server-metadata-map:

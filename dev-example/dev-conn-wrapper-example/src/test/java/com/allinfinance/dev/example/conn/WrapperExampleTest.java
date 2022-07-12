@@ -23,24 +23,24 @@ class WrapperExampleTest {
 
     @Test
     public void testSendMsg() {
-//        StopWatchExpand.init();
-//        StopWatchExpand.start("first ");
+        StopWatchExpand.init();
+        StopWatchExpand.start("first ");
         logger.info(messagePorter.writeAndFlush("shiytrsi26ujyjyikjwaskldfjnmaksl;dfccasdakfasdjfasdpkfjae0iksaed-09ikwp0fuiwsad09dfuawed0fasdfsdsd"));
-//        StopWatchExpand.stop();
+        StopWatchExpand.stop();
 
-//        StopWatchExpand.start("second");
+        StopWatchExpand.start("second");
         logger.info(messagePorter.writeAndFlush("shiytrsi26ujyjyikjwaskldfjnmaksl;dfccasdakfasdjfasdpkfjae0iksaed-09ikwp0fuiwsad09dfuawed0fasdfsdsd"));
-//        StopWatchExpand.stop();
+        StopWatchExpand.stop();
 
 
-//        StopWatchExpand.start("third");
+        StopWatchExpand.start("third");
         logger.info(messagePorter.writeAndFlush("shiytrsi26ujyjyikjwaskldfjnmaksl;dfccasdakfasdjfasdpkfjae0iksaed-09ikwp0fuiwsad09dfuawed0fasdfsdsd"));
-//        StopWatchExpand.stop();
+        StopWatchExpand.stop();
 
 
-//        StopWatchExpand.start("fourth");
+        StopWatchExpand.start("fourth");
         logger.info(messagePorter.writeAndFlush("shiytrsi26ujyjyikjwaskldfjnmaksl;dfccasdakfasdjfasdpkfjae0iksaed-09ikwp0fuiwsad09dfuawed0fasdfsdsd"));
-//        StopWatchExpand.stop();
-//        logger.info(StopWatchExpand.prettyPrint());
+        StopWatchExpand.stop();
+        logger.info(StopWatchExpand.prettyPrint());
     }
 }

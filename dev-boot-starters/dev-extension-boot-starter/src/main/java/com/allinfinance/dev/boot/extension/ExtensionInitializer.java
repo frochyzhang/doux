@@ -1,4 +1,4 @@
-package com.allinfinance.dev.extension.boot.starter;
+package com.allinfinance.dev.boot.extension;
 
 import cn.hutool.core.io.FileUtil;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;

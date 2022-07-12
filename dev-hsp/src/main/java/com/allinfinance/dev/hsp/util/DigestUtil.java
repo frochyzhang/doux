@@ -1,7 +1,7 @@
 package com.allinfinance.dev.hsp.util;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.connection.scaffold.pool.MessagePorter;
+import com.allinfinance.dev.connection.pool.scaffold.api.MessagePorter;
 import com.allinfinance.dev.core.dto.hsp.constant.HashAlgorithmEnum;
 import com.allinfinance.dev.hsp.constant.InstructionEnum;
 import com.allinfinance.dev.hsp.constant.RespCodeEnum;

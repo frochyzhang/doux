@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.allinfinance.dev.extension.boot.starter.ExtensionInitializer
+  com.allinfinance.dev.boot.extension.ExtensionInitializer

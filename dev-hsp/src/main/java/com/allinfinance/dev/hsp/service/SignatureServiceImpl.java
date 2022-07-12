@@ -1,7 +1,7 @@
 package com.allinfinance.dev.hsp.service;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.connection.scaffold.pool.MessagePorter;
+import com.allinfinance.dev.connection.pool.scaffold.api.MessagePorter;
 import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;

@@ -39,10 +39,10 @@ import java.util.concurrent.*;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/6/29 20:10
  */
-@Extension(value = "netty")
-public class NettyConnection implements Connection {
-    private static final Logger logger = LoggerFactory.getLogger(NettyConnection.class);
-    
+@Extension(value = "default")
+public class DefaultNettyConnection implements Connection {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultNettyConnection.class);
+
     private final EventLoopGroup loopGroup = new NioEventLoopGroup();
 
     private ChannelFuture channelFuture;
@@ -91,37 +91,6 @@ public class NettyConnection implements Connection {
         throw new RuntimeException("获取响应异常");
     }
 
-    private <V> V get(Promise<V> promise) {
-        if (!promise.isDone()) {
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-            promise.addListener(future -> {
-                if (future.isDone()) {
-                    countDownLatch.countDown();
-                }
-            });
-
-            boolean interrupted = false;
-
-            if (!promise.isDone()) {
-                try {
-                    countDownLatch.await(1, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    interrupted = true;
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (interrupted) {
-                Thread.currentThread().interrupt();
-            }
-
-        }
-        if (promise.isSuccess()) {
-            return promise.getNow();
-        }
-        return null;
-    }
-
     @Override
     public void connect(Properties properties) {
         String serverIp = properties.getProperty("serverIp");
@@ -149,26 +118,6 @@ public class NettyConnection implements Connection {
                     }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static class RequestContext {
-        private final String requestId;
-
-        private final Promise<String> respPromise;
-
-
-        public RequestContext(String requestId, Promise<String> respPromise) {
-            this.requestId = requestId;
-            this.respPromise = respPromise;
-        }
-
-        public String getRequestId() {
-            return requestId;
-        }
-
-        public Promise<String> getRespPromise() {
-            return respPromise;
         }
     }
 }

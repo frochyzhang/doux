@@ -21,7 +21,7 @@ public abstract class AbstractBenchmark {
                 .warmupIterations(3)
                 .measurementIterations(3)
                 .forks(0)
-                .threads(10)
+                .threads(1)
                 .shouldDoGC(true)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.JSON)

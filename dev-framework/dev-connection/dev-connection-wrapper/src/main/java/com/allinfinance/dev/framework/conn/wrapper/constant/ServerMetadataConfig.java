@@ -54,4 +54,12 @@ public class ServerMetadataConfig {
      * 最近一次使用该连接的时间差，单位：毫秒
      */
     public static final String PING_CONNECTIONS_NOT_USED = "pingConnectionsNotUsed";
+    /**
+     * 长度域长度，默认为: 2
+     */
+    public static final String LENGTH_FIELD = "lengthField";
+    /**
+     * 缓冲区大小，默认为: 65535
+     */
+    public static final String BUFFER_SIZE = "bufferSize";
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ImportResource;
  * @date 2022/6/27 14:40
  */
 @SpringBootApplication(scanBasePackages = "com.allinfinance")
-@ImportResource(locations = {"classpath:dubboConfig.xml"})
+//@ImportResource(locations = {"classpath:dubboConfig.xml"})
 public class HspExampleApplication {
     public static void main(String[] args) {
         SpringApplication.run(HspExampleApplication.class);
