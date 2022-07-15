@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/6/29 14:27
  */
-@Extensible
+@Extensible(singleton = false)
 public interface Connection {
     void setNetworkTimeout(ExecutorService executor, Integer timeout);
 

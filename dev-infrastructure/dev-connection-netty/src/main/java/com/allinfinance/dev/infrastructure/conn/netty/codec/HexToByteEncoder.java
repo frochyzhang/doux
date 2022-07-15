@@ -2,6 +2,7 @@ package com.allinfinance.dev.infrastructure.conn.netty.codec;
 
 import cn.hutool.core.util.HexUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;

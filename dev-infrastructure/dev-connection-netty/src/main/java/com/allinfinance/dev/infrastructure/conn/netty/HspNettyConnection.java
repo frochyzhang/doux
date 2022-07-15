@@ -1,6 +1,5 @@
 package com.allinfinance.dev.infrastructure.conn.netty;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
@@ -13,16 +12,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.ProgressivePromise;
+import io.netty.util.concurrent.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @Description:
@@ -38,9 +35,11 @@ public class HspNettyConnection implements Connection {
 
     private ChannelFuture channelFuture;
 
+    public static ConcurrentHashMap<Long, Promise<String>> promiseMap = new ConcurrentHashMap<>();
+
     private static final DefaultEventLoop NETTY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
-    private static final AttributeKey<RequestContext> REQUEST_CONTEXT_ATTRIBUTE_KEY = AttributeKey.valueOf("REQUEST_CONTEXT_ATTRIBUTE_KEY");
+    private int timeout;
 
     @Override
     public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
@@ -61,23 +60,23 @@ public class HspNettyConnection implements Connection {
     public String send(String msg) {
         Channel channel = channelFuture.channel();
 
-        ProgressivePromise<String> promise = NETTY_EVENT_LOOP.newProgressivePromise();
+        Promise<String> promise = NETTY_EVENT_LOOP.newPromise();
 
-        RequestContext requestContext = new RequestContext(UUID.fastUUID().toString(), promise);
-        channel.attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).set(requestContext);
-
+        long requestId = System.nanoTime();
+        msg = String.format("%016x", requestId) + msg;
+        promiseMap.put(requestId, promise);
         channel.writeAndFlush(msg);
 
-        // FIXME: 2022/6/30 记得处理我
         try {
-            return promise.get(1, TimeUnit.SECONDS);
+            return promise.get();
         } catch (InterruptedException e) {
             logger.error("处理中断");
         } catch (ExecutionException e) {
             logger.error("处理异常");
-        } catch (TimeoutException e) {
-            logger.error("获取响应超时");
         }
+//        catch (TimeoutException e) {
+//            logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
+//        }
         throw new RuntimeException("获取响应异常");
     }
 
@@ -87,6 +86,7 @@ public class HspNettyConnection implements Connection {
         int serverPort = Integer.parseInt(properties.getProperty("serverPort"));
         int lengthField = Integer.parseInt(properties.getProperty("lengthField"));
         int bufferSize = Integer.parseInt(properties.getProperty("bufferSize"));
+        this.timeout = Integer.parseInt(properties.getProperty("defaultNetworkTimeout"));
 
         try {
             channelFuture = new Bootstrap()
@@ -106,8 +106,7 @@ public class HspNettyConnection implements Connection {
                                         .addLast(new ChannelInboundHandlerAdapter() {
                                             @Override
                                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                                RequestContext requestContext = ctx.channel().attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).get();
-                                                requestContext.getRespPromise().setSuccess((String) msg);
+                                                ctx.fireChannelReadComplete();
                                             }
                                         });
                             } else {
@@ -117,18 +116,10 @@ public class HspNettyConnection implements Connection {
                                         .addLast(new ChannelInboundHandlerAdapter() {
                                             @Override
                                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                                RequestContext requestContext = ctx.channel().attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).get();
-                                                requestContext.getRespPromise().setSuccess((String) msg);
+                                                ctx.fireChannelReadComplete();
                                             }
                                         });
                             }
-//                            ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-//                                @Override
-//                                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//                                    RequestContext requestContext = ctx.channel().attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).get();
-//                                    requestContext.getRespPromise().setSuccess((String) msg);
-//                                }
-//                            });
                         }
                     }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {

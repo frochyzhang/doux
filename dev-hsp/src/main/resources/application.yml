@@ -20,19 +20,19 @@ com:
     connection:
       pool:
         connection-driver: hsp
-        connection-pool-type: queue
+        connection-pool-type: pool
         ping-service: default
       scaffold:
         server-metadata-map:
           server-1:
-            server-ip: 127.0.0.1
-            server-port: 9999
+            server-ip: 10.250.28.239
+            server-port: 6666
             ping-enabled: false
             ping-query-content: "3132333435"
             ping-verify-message: ""
             length-field: 2
             buffer-size: 65536
-            default-network-timeout: 1000
+            default-network-timeout: 5000
 
 dev:
   dubbo:

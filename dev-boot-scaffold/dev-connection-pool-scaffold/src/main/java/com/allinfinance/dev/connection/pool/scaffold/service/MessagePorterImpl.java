@@ -65,8 +65,9 @@ public class MessagePorterImpl implements MessagePorter {
                 }
                 return response;
             } catch (Throwable e) {
-                connection.close();
                 return null;
+            } finally {
+                connection.close();
             }
         }
     }

@@ -58,6 +58,7 @@ public class PooledServerMetadataFactory extends UnpooledServerMetadataFactory {
         additional.setProperty(ConnectionConfig.PING_SERVICE, properties.getProperty(ConnectionConfig.PING_SERVICE, "default"));
         additional.setProperty(LENGTH_FIELD, properties.getProperty(LENGTH_FIELD, "2"));
         additional.setProperty(BUFFER_SIZE, properties.getProperty(BUFFER_SIZE, "65535"));
+        additional.setProperty(DEFAULT_NETWORK_TIMEOUT, properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30"));
         pooledServerMetadata.getMetadata().setAdditionalProperties(additional);
 
         pooledServerMetadata.init();

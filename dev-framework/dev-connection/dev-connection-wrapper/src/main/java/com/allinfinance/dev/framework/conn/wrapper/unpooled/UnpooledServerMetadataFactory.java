@@ -39,13 +39,14 @@ public class UnpooledServerMetadataFactory implements ServerMetadataFactory {
     public void setProperties(Properties properties) {
         UnpooledServerMetadata unpooledServerMetadata = new UnpooledServerMetadata(properties.getProperty(SERVER_IP),
                 Integer.parseInt(properties.getProperty(SERVER_PORT)));
-        unpooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT,"30")));
+        unpooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30")));
 
         Properties additional = new Properties();
-        additional.setProperty(ConnectionConfig.CONNECTION_DRIVER, properties.getProperty(ConnectionConfig.CONNECTION_DRIVER, "netty"));
+        additional.setProperty(ConnectionConfig.CONNECTION_DRIVER, properties.getProperty(ConnectionConfig.CONNECTION_DRIVER, "default"));
         additional.setProperty(ConnectionConfig.PING_SERVICE, properties.getProperty(ConnectionConfig.PING_SERVICE, "default"));
         additional.setProperty(LENGTH_FIELD, properties.getProperty(LENGTH_FIELD, "2"));
         additional.setProperty(BUFFER_SIZE, properties.getProperty(BUFFER_SIZE, "65535"));
+        additional.setProperty(DEFAULT_NETWORK_TIMEOUT, properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30"));
         unpooledServerMetadata.setAdditionalProperties(additional);
 
         metadata = unpooledServerMetadata;

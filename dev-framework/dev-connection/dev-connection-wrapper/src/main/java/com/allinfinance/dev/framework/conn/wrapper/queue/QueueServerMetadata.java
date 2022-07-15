@@ -99,15 +99,16 @@ public class QueueServerMetadata implements ServerMetadata {
                 // 否则，连接还比较充足，直接将connection关闭
                 connection.setStatus(ConnectionStatus.INACTIVE);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("当前连接数充足，关闭连接：{}", connection.hashCode());
+                    logger.debug("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
                 }
             }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("该连接：{}属于无效连接，直接关闭", connection.hashCode());
-            }
-            connection.getRealConnection().close();
         }
+//        } else {
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("该连接：{}属于无效连接，直接关闭", connection.hashCode());
+//            }
+//            connection.getRealConnection().close();
+//        }
     }
 
     /**
@@ -123,7 +124,7 @@ public class QueueServerMetadata implements ServerMetadata {
                     if (logger.isDebugEnabled()) {
                         logger.debug("老头连接有效，返回该连接：{}", conn.hashCode());
                     }
-                    pushConnection(conn);
+//                    pushConnection(conn);
                 } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
                     // ping连接失败
                     if (logger.isDebugEnabled()) {
@@ -142,7 +143,7 @@ public class QueueServerMetadata implements ServerMetadata {
                 if (logger.isDebugEnabled()) {
                     logger.debug("小鲜肉连接，返回该连接：{}", conn.hashCode());
                 }
-                pushConnection(conn);
+//                pushConnection(conn);
             }
         }
 
@@ -227,7 +228,10 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     @Override
     public String send(String msg) {
-        return getConnection().send(msg);
+        Connection connection = getConnection();
+        String response = connection.send(msg);
+        pushConnection((QueueConnection) connection);
+        return response;
     }
 
     public UnpooledServerMetadata getMetadata() {
