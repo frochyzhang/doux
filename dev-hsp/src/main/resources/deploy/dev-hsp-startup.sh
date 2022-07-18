@@ -19,19 +19,21 @@ JVM_PARAM="-Xms512m -Xmx1024m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.w
 -Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
 
 # skywalking相关配置
-SKY_WALKING_BACKEND_ADDRESS=""
-if [ $ACTIVE_PROFILE == "sit" ]; then
-    SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
-    echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
-elif [ $ACTIVE_PROFILE == "uat" ]; then
-    SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
-    echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
-elif [ $ACTIVE_PROFILE == "prod" ]; then
-    SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
-    echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
+if [ "$2" == "sw" ];then
+  SKY_WALKING_BACKEND_ADDRESS=""
+  if [ $ACTIVE_PROFILE == "sit" ]; then
+      SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
+      echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
+  elif [ $ACTIVE_PROFILE == "uat" ]; then
+      SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
+      echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
+  elif [ $ACTIVE_PROFILE == "prod" ]; then
+      SKY_WALKING_BACKEND_ADDRESS="10.250.28.142:11800"
+      echo "skywalking backend_service_address: $SKY_WALKING_BACKEND_ADDRESS"
+  fi
+  SKY_WALKING_PARAM="-javaagent:$BASE_PACKAGE/agent/skywalking-agent.jar -Dskywalking.agent.service_name=$APP_NAME -Dskywalking.collector.backend_service=$SKY_WALKING_BACKEND_ADDRESS"
+  SKY_WALKING_PLUGIN_PARAM="-Dskywalking.plugin.toolkit.log.grpc.reporter.server_host=10.250.28.142 -Dskywalking.plugin.toolkit.log.grpc.reporter.server_port=11800"
 fi
-SKY_WALKING_PARAM="-javaagent:$BASE_PACKAGE/agent/skywalking-agent.jar -Dskywalking.agent.service_name=$APP_NAME -Dskywalking.collector.backend_service=$SKY_WALKING_BACKEND_ADDRESS"
-SKY_WALKING_PLUGIN_PARAM="-Dskywalking.plugin.toolkit.log.grpc.reporter.server_host=10.250.28.142 -Dskywalking.plugin.toolkit.log.grpc.reporter.server_port=11800"
 
 JVM_PARAM_EXT="--spring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/"
 PIDS=`ps aux |grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | awk {'print $2'}`

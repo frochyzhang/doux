@@ -11,7 +11,7 @@ SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-shutdown.sh}
 
 # Script to stop the application
-PID_PATH="$BASE_PACKAGE/config/$APP_NAME/$APP_NAME.pid"
+PID_PATH="$BASE_PACKAGE/pid/$APP_NAME/$APP_NAME.pid"
 
 if [ ! -f "$PID_PATH" ]; then
    echo "Process Id FilePath($PID_PATH) Not found"
@@ -23,13 +23,15 @@ else
         kill $PROCESS_ID;
         echo "Gracefully stopping $APP_NAME with PROCESS_ID:$PROCESS_ID..."
         sleep 5s
+        exit
     fi
 fi
 PIDS=`/bin/ps aux |/bin/grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/awk {'print $2'}`
 if [ -z "$PIDS" ]; then
   echo "All instances of $APP_NAME with profile:$ACTIVE_PROFILE has has been successfully stopped now..." 1>&2
 else
-  for PROCESS_ID in $PIDS; do
+  for PROCESS_ID in $PIDS
+  do
     counter=149
     until [ $counter -gt 150 ]
         do
