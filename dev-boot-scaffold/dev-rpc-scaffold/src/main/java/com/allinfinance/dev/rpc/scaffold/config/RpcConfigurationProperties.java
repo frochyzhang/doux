@@ -143,7 +143,7 @@ public class RpcConfigurationProperties {
         /**
          * ProcessService扩展实现
          */
-        private String processServiceExtension = "defaultProcessService";
+        private String processServiceExtension = "default";
         /**
          * 注册应用详情
          */

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractProcessService implements ProcessService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractProcessService.class);
-    //@Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
 

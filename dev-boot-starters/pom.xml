@@ -19,7 +19,6 @@
         <module>dev-dispatch-scaffold-boot-starter</module>
         <module>dev-rpc-scaffold-boot-starter</module>
         <module>dev-connection-boot-starter</module>
-        <module>dev-extension-boot-starter</module>
     </modules>
     <artifactId>dev-boot-starters</artifactId>
 

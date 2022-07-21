@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/16 15:16
  */
-@Extension("defaultProcessService")
+@Extension("default")
 public class DefaultProcessServiceImpl extends AbstractProcessService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultProcessServiceImpl.class);
 

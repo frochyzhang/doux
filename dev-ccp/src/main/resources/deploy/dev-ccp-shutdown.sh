@@ -36,7 +36,7 @@ else
     until [ $counter -gt 150 ]
         do
             if ps -p $PROCESS_ID > /dev/null; then
-                echo "Waiting for the process($PROCESS_ID) to finish on it's own for $(( 300 - $(( $counter*5)) ))seconds..."
+                echo "Waiting for the process($PROCESS_ID) to finish on it's own for $(( 300 - $(( $counter*2)) ))seconds..."
                 sleep 2s
                 ((counter++))
             else
