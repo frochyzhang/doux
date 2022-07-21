@@ -141,6 +141,10 @@ public class RpcConfigurationProperties {
          */
         private String appUniqueId;
         /**
+         * ProcessService扩展实现
+         */
+        private String processServiceExtension = "default";
+        /**
          * 注册应用详情
          */
         private List<AppConfigList> appList = new ArrayList<>();
@@ -167,6 +171,14 @@ public class RpcConfigurationProperties {
 
         public void setAppUniqueId(String appUniqueId) {
             this.appUniqueId = appUniqueId;
+        }
+
+        public String getProcessServiceExtension() {
+            return processServiceExtension;
+        }
+
+        public void setProcessServiceExtension(String processServiceExtension) {
+            this.processServiceExtension = processServiceExtension;
         }
 
         public List<AppConfigList> getAppList() {

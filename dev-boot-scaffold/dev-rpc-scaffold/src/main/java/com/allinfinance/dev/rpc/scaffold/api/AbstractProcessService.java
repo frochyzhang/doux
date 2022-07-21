@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractProcessService implements ProcessService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractProcessService.class);
-    @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
 
@@ -35,5 +34,10 @@ public abstract class AbstractProcessService implements ProcessService {
     @Override
     public RpcConfigurationProperties.Bootstrap init() {
         return rpcConfigurationProperties.getBootstrap();
+    }
+
+    @Autowired
+    public void setRpcConfigurationProperties(RpcConfigurationProperties rpcConfigurationProperties) {
+        this.rpcConfigurationProperties = rpcConfigurationProperties;
     }
 }

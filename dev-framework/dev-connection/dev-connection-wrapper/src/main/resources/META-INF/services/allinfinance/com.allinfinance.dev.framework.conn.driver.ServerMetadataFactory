@@ -1,0 +1,3 @@
+pool=com.allinfinance.dev.framework.conn.wrapper.pooled.PooledServerMetadataFactory
+unPool=com.allinfinance.dev.framework.conn.wrapper.unpooled.UnpooledServerMetadataFactory
+queue=com.allinfinance.dev.framework.conn.wrapper.queue.QueueServerMetadataFactory

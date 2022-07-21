@@ -1,0 +1,2 @@
+default=com.allinfinance.dev.infrastructure.conn.netty.DefaultNettyConnection
+hsp=com.allinfinance.dev.infrastructure.conn.netty.HspNettyConnection
