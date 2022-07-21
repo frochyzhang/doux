@@ -24,6 +24,10 @@ public class ConnectionPoolConfigure {
      * 连接检查服务别名，默认提供：defaultPingService
      */
     private String pingService;
+    /**
+     * 是否开启预热
+     */
+    private String warmup;
 
     public String getConnectionDriver() {
         return connectionDriver;
@@ -49,12 +53,21 @@ public class ConnectionPoolConfigure {
         this.pingService = pingService;
     }
 
+    public String getWarmup() {
+        return warmup;
+    }
+
+    public void setWarmup(String warmup) {
+        this.warmup = warmup;
+    }
+
     @Override
     public String toString() {
         return "ConnectionPoolConfigure{" +
                 "connectionDriver='" + connectionDriver + '\'' +
                 ", connectionPoolType='" + connectionPoolType + '\'' +
                 ", pingService='" + pingService + '\'' +
+                ", warmup=" + warmup +
                 '}';
     }
 }

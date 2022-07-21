@@ -17,9 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 /**
  * @Description:
@@ -30,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 public class HspNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(HspNettyConnection.class);
 
-    private final EventLoopGroup loopGroup = new NioEventLoopGroup(10,
+    private final EventLoopGroup loopGroup = new NioEventLoopGroup(1,
             new NamedThreadFactory("hsp-netty-", false));
 
     private ChannelFuture channelFuture;
@@ -65,18 +63,19 @@ public class HspNettyConnection implements Connection {
         long requestId = System.nanoTime();
         msg = String.format("%016x", requestId) + msg;
         promiseMap.put(requestId, promise);
-        channel.writeAndFlush(msg);
+        synchronized (channel) {
+            channel.writeAndFlush(msg);
+        }
 
         try {
-            return promise.get();
+            return promise.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            logger.error("处理中断");
+            logger.error("处理中断", e);
         } catch (ExecutionException e) {
-            logger.error("处理异常");
+            logger.error("处理异常", e);
+        } catch (TimeoutException e) {
+            logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
         }
-//        catch (TimeoutException e) {
-//            logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
-//        }
         throw new RuntimeException("获取响应异常");
     }
 
