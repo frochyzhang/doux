@@ -29,6 +29,8 @@ public class ServiceHeaderDTO {
     protected String versionId;
     @XStreamAlias("MAC")
     protected String mac;
+    @XStreamAlias("INNER_SYSTEM_IND")
+    protected String innerSystemInd;
     @XStreamAlias("RES_SERVICE_SN")
     protected String resServiceSn;
     @XStreamAlias("RES_SERVICE_TIME")
@@ -36,21 +38,19 @@ public class ServiceHeaderDTO {
     @XStreamAlias("SERV_RESPONSE")
     protected ServResponse servResponse;
 
-    @Override
-    public String toString() {
-        return "ServiceHeaderDTO{" +
-                "serviceSn='" + serviceSn + '\'' +
-                ", serviceId='" + serviceId + '\'' +
-                ", org='" + org + '\'' +
-                ", channelId='" + channelId + '\'' +
-                ", opId='" + opId + '\'' +
-                ", requestTime='" + requestTime + '\'' +
-                ", versionId='" + versionId + '\'' +
-                ", mac='" + mac + '\'' +
-                ", resServiceSn='" + resServiceSn + '\'' +
-                ", resServiceTime='" + resServiceTime + '\'' +
-                ", servResponse=" + servResponse +
-                '}';
+    public ServiceHeaderDTO(String serviceSn, String serviceId, String org, String channelId, String opId, String requestTime, String versionId, String mac, String innerSystemInd, String resServiceSn, String resServiceTime, ServResponse servResponse) {
+        this.serviceSn = serviceSn;
+        this.serviceId = serviceId;
+        this.org = org;
+        this.channelId = channelId;
+        this.opId = opId;
+        this.requestTime = requestTime;
+        this.versionId = versionId;
+        this.mac = mac;
+        this.innerSystemInd = innerSystemInd;
+        this.resServiceSn = resServiceSn;
+        this.resServiceTime = resServiceTime;
+        this.servResponse = servResponse;
     }
 
     public String getServiceSn() {
@@ -117,6 +117,14 @@ public class ServiceHeaderDTO {
         this.mac = mac;
     }
 
+    public String getInnerSystemInd() {
+        return innerSystemInd;
+    }
+
+    public void setInnerSystemInd(String innerSystemInd) {
+        this.innerSystemInd = innerSystemInd;
+    }
+
     public String getResServiceSn() {
         return resServiceSn;
     }
@@ -141,21 +149,22 @@ public class ServiceHeaderDTO {
         this.servResponse = servResponse;
     }
 
-    public ServiceHeaderDTO() {
-    }
-
-    public ServiceHeaderDTO(String serviceSn, String serviceId, String org, String channelId, String opId, String requestTime, String versionId, String mac, String resServiceSn, String resServiceTime, ServResponse servResponse) {
-        this.serviceSn = serviceSn;
-        this.serviceId = serviceId;
-        this.org = org;
-        this.channelId = channelId;
-        this.opId = opId;
-        this.requestTime = requestTime;
-        this.versionId = versionId;
-        this.mac = mac;
-        this.resServiceSn = resServiceSn;
-        this.resServiceTime = resServiceTime;
-        this.servResponse = servResponse;
+    @Override
+    public String toString() {
+        return "ServiceHeaderDTO{" +
+                "serviceSn='" + serviceSn + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                ", org='" + org + '\'' +
+                ", channelId='" + channelId + '\'' +
+                ", opId='" + opId + '\'' +
+                ", requestTime='" + requestTime + '\'' +
+                ", versionId='" + versionId + '\'' +
+                ", mac='" + mac + '\'' +
+                ", innerSystemInd='" + innerSystemInd + '\'' +
+                ", resServiceSn='" + resServiceSn + '\'' +
+                ", resServiceTime='" + resServiceTime + '\'' +
+                ", servResponse=" + servResponse +
+                '}';
     }
 
     public static ServiceHeaderDTO.ServiceHeaderDTOBuilder builder() {
@@ -171,6 +180,7 @@ public class ServiceHeaderDTO {
         private String requestTime;
         private String versionId;
         private String mac;
+        protected String innerSystemInd;
         private String resServiceSn;
         private String resServiceTime;
         private ServResponse servResponse;
@@ -223,6 +233,12 @@ public class ServiceHeaderDTO {
             return this;
         }
 
+        public ServiceHeaderDTO.ServiceHeaderDTOBuilder innerSystemInd(String innerSystemInd) {
+            this.innerSystemInd = innerSystemInd;
+            return this;
+        }
+
+
         public ServiceHeaderDTO.ServiceHeaderDTOBuilder resServiceTime(String resServiceTime) {
             this.resServiceTime = resServiceTime;
             return this;
@@ -234,11 +250,25 @@ public class ServiceHeaderDTO {
         }
 
         public ServiceHeaderDTO build() {
-            return new ServiceHeaderDTO(this.serviceSn, this.serviceId, this.org, this.channelId, this.opId, this.requestTime, this.versionId, this.mac, this.resServiceSn, this.resServiceTime, this.servResponse);
+            return new ServiceHeaderDTO(this.serviceSn, this.serviceId, this.org, this.channelId, this.opId, this.requestTime, this.versionId, this.mac,this.innerSystemInd,this.resServiceSn, this.resServiceTime, this.servResponse);
         }
 
+        @Override
         public String toString() {
-            return "ServiceHeaderDTO.ServiceHeaderDTOBuilder(serviceSn=" + this.serviceSn + ", serviceId=" + this.serviceId + ", org=" + this.org + ", channelId=" + this.channelId + ", opId=" + this.opId + ", requestTime=" + this.requestTime + ", versionId=" + this.versionId + ", mac=" + this.mac + ", resServiceSn=" + this.resServiceSn + ", resServiceTime=" + this.resServiceTime + ", servResponse=" + this.servResponse + ")";
+            return "ServiceHeaderDTOBuilder{" +
+                    "serviceSn='" + serviceSn + '\'' +
+                    ", serviceId='" + serviceId + '\'' +
+                    ", org='" + org + '\'' +
+                    ", channelId='" + channelId + '\'' +
+                    ", opId='" + opId + '\'' +
+                    ", requestTime='" + requestTime + '\'' +
+                    ", versionId='" + versionId + '\'' +
+                    ", mac='" + mac + '\'' +
+                    ", innerSystemInd='" + innerSystemInd + '\'' +
+                    ", resServiceSn='" + resServiceSn + '\'' +
+                    ", resServiceTime='" + resServiceTime + '\'' +
+                    ", servResponse=" + servResponse +
+                    '}';
         }
     }
 }
