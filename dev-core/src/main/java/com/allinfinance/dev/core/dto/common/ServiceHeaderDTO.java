@@ -38,6 +38,9 @@ public class ServiceHeaderDTO {
     @XStreamAlias("SERV_RESPONSE")
     protected ServResponse servResponse;
 
+    public ServiceHeaderDTO() {
+    }
+
     public ServiceHeaderDTO(String serviceSn, String serviceId, String org, String channelId, String opId, String requestTime, String versionId, String mac, String innerSystemInd, String resServiceSn, String resServiceTime, ServResponse servResponse) {
         this.serviceSn = serviceSn;
         this.serviceId = serviceId;
