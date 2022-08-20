@@ -19,6 +19,11 @@ com:
         bolt-port: 12204
         consumer-repeated-reference-limit: 100
 
+dev:
+  gateway:
+    retries: 3
+    interval: 200
+
 ---
 spring:
   profiles: sit
@@ -33,6 +38,11 @@ com:
         registry-address: nacos://10.250.28.142:8848/public-sit
         bolt-port: 12204
         consumer-repeated-reference-limit: 100
+
+dev:
+  gateway:
+    retries: 3
+    interval: 200
 
 ---
 spring:
@@ -49,6 +59,10 @@ com:
         bolt-port: 12304
         consumer-repeated-reference-limit: 100
 
+dev:
+  gateway:
+    retries: 3
+    interval: 200
 
 ---
 spring:
@@ -64,3 +78,8 @@ com:
         registry-address: nacos://10.250.28.142:8848/public
         bolt-port: 12204
         consumer-repeated-reference-limit: 100
+
+dev:
+  gateway:
+    retries: 3
+    interval: 200

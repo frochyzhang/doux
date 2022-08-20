@@ -15,10 +15,12 @@ import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -32,6 +34,18 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     private AppProcessFactory appProcessFactory;
 
     private ReferenceClient referenceClient;
+
+    /**
+     * 网关拉取provider列表时的重试次数
+     */
+    @Value("${dev.gateway.reties:3}")
+    private Integer retries;
+
+    /**
+     * 网关拉取provider列表时的重试间隔，单位毫秒
+     */
+    @Value("${dev.gateway.interval:300}")
+    private Integer interval;
 
     @Override
     public void setClientFactory(ClientFactory clientFactory) {
@@ -47,25 +61,30 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     public boolean registerConsumer(String uniqueId) {
         logger.info("开始订阅[ {} ]业务处理服务", uniqueId);
         ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-        ProcessService processService = referenceClient.reference(processServiceParam);
-        try {
-            if (processService.verify()) {
-                logger.info("[ {} ]业务处理服务验证成功，开始监听端口", uniqueId);
-                appProcessFactory.registerProcessService(uniqueId, processService);
-                RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
-                logger.info("应用注册参数: {}", bootstrap);
-                // 监听端口
-                monitorPort(bootstrap);
-                return true;
-            } else {
-                logger.error("[ {} ]业务处理服务验证失败", uniqueId);
-                return false;
+        for (int r = 0; r < retries; r++) {
+            ProcessService processService = referenceClient.reference(processServiceParam);
+            try {
+                if (processService.verify()) {
+                    logger.info("[ {} ]业务处理服务验证成功，开始监听端口", uniqueId);
+                    appProcessFactory.registerProcessService(uniqueId, processService);
+                    RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
+                    logger.info("应用注册参数: {}", bootstrap);
+                    // 监听端口
+                    monitorPort(bootstrap);
+                    return true;
+                }
+            } catch (Exception e) {
+                logger.warn("调用[ {} ]应用ProcessService服务异常，等待重试...", uniqueId);
+                logger.info("总重试次数：{}，重试间隔：{}ms，当前重试次数：{}", retries, interval, r);
+                appProcessFactory.removeReference(processServiceParam);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(interval);
+                } catch (InterruptedException ignore) {
+                }
             }
-        } catch (SofaRouteException e) {
-            logger.warn("调用{}应用ProcessService服务异常,移除订阅!", uniqueId, e);
-            appProcessFactory.removeReference(processServiceParam);
-            return Boolean.FALSE;
         }
+        logger.error("调用[ {} ]应用ProcessService服务异常,移除订阅!", uniqueId);
+        return false;
     }
 
     /*
@@ -100,39 +119,31 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             logger.info("[ {} ]应用首次注册，开始保存配置信息，监听端口", uniqueId);
             //不存在则保存ProcessService和配置信息，监听端口
             ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-            ProcessService processService = referenceClient.reference(processServiceParam);
-            try {
-                if (processService.verify()) {
-                    logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
-                    appProcessFactory.registerProcessService(bootstrap.getAppUniqueId(), processService);
-                    monitorPort(bootstrap);
+            for (int i = 0; i < retries; i++) {
+                ProcessService processService = referenceClient.reference(processServiceParam);
+                try {
+                    if (processService.verify()) {
+                        logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
+                        appProcessFactory.registerProcessService(bootstrap.getAppUniqueId(), processService);
+                        monitorPort(bootstrap);
+                        logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
+                        return Boolean.TRUE;
+                    }
+                } catch (SofaRouteException e) {
+                    logger.warn("调用[ {} ]应用ProcessService服务异常，等待重试...", uniqueId);
+                    logger.info("总重试次数：{}，重试间隔：{}ms，当前重试次数：{}", retries, interval, i);
+                    appProcessFactory.removeReference(processServiceParam);
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(interval);
+                    } catch (InterruptedException ignore) {
+                    }
                 }
-            } catch (SofaRouteException e) {
-                logger.warn("调用[ {} ]应用ProcessService服务异常,移除订阅!", uniqueId, e);
-                appProcessFactory.removeReference(processServiceParam);
-                return Boolean.FALSE;
             }
+            logger.error("调用[ {} ]应用ProcessService服务异常，重试失败！", uniqueId);
+            return Boolean.FALSE;
         }
         logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
         return Boolean.TRUE;
-        //ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-        //ProcessService processService = referenceClient.reference(processServiceParam);
-        //try {
-        //    //TimeUnit.SECONDS.sleep(10);
-        //    if (processService.verify()) {
-        //        logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
-        //        monitorPort(bootstrap, processService);
-        //        return Boolean.TRUE;
-        //    }
-        //    return Boolean.FALSE;
-        //} catch (SofaRouteException e) {
-        //    logger.warn("调用{}应用ProcessService服务异常,移除订阅!", uniqueId, e);
-        //    appProcessFactory.removeReference(processServiceParam);
-        //    return Boolean.FALSE;
-        //} catch (InterruptedException e) {
-        //    logger.error("订阅[ {} ]业务处理服务失败", uniqueId, e);
-        //    return Boolean.FALSE;
-        //}
     }
 
     private ReferenceParam<ProcessService> getProcessServiceParam(String uniqueId) {
