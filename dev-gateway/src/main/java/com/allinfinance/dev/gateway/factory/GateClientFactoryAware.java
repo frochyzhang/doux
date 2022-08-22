@@ -119,7 +119,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             logger.info("[ {} ]应用首次注册，开始保存配置信息，监听端口", uniqueId);
             //不存在则保存ProcessService和配置信息，监听端口
             ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-            for (int i = 0; i < retries; i++) {
+            for (int i = 1; i <= retries; i++) {
                 ProcessService processService = referenceClient.reference(processServiceParam);
                 try {
                     if (processService.verify()) {
