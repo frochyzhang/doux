@@ -60,11 +60,11 @@ public class ExporterClosedListener implements InitializingBean {
                     } else {
                         logger.info("[ {} ]应用未全部下线", uniqueId);
                     }
-                    try {
-                        TimeUnit.MINUTES.sleep(1);
-                    } catch (InterruptedException ignore) {
-                    }
                 });
+                try {
+                    TimeUnit.MINUTES.sleep(1);
+                } catch (InterruptedException ignore) {
+                }
             }
         }, "exporter-monitor-thread").start();
     }
