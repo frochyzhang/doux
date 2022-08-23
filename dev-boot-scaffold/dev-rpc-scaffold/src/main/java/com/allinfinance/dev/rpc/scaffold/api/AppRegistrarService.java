@@ -8,6 +8,4 @@ import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
  */
 public interface AppRegistrarService {
     Boolean register(RpcConfigurationProperties.Bootstrap bootstrap);
-
-    void signExporterClosedEvent(RpcConfigurationProperties.Bootstrap bootstrap);
 }

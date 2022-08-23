@@ -1,6 +1,5 @@
 package com.allinfinance.dev.gateway.service;
 
-import com.allinfinance.dev.gateway.event.ExporterClosedEvent;
 import com.allinfinance.dev.gateway.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
@@ -32,10 +31,5 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
         }
         logger.error("[ {} ]应用注册失败!", bootstrap.getAppUniqueId());
         return Boolean.FALSE;
-    }
-
-    @Override
-    public void signExporterClosedEvent(RpcConfigurationProperties.Bootstrap bootstrap) {
-        applicationEventPublisher.publishEvent(new ExporterClosedEvent(new Object(), bootstrap));
     }
 }
