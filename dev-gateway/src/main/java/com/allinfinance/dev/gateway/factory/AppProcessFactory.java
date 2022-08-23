@@ -145,7 +145,7 @@ public class AppProcessFactory {
                 .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
                 .getRequestMethod();
         if (requestMethod.equals(HttpMethod.valueOf(request.method().name()))) {
-            return ((HttpResponseDTO) processors.get(appUniqueId).process(processRequestDTO).getResponseDTO());
+            return ((HttpResponseDTO) processService.process(processRequestDTO).getResponseDTO());
         } else {
             throw new IllegalArgumentException("不合法的请求类型: " + request.method());
         }
@@ -196,15 +196,11 @@ public class AppProcessFactory {
                     toBeClosedHttpServerList.forEach(httpServer -> httpServer.shutdown(appUniqueId));
                 });
         //移除tcp端口监听
-        compares.get(appUniqueId)
-                .getAppList()
-                .stream()
-                .filter(appConfigList -> RpcConfigurationProperties.Bootstrap.AppConfigList.Type.TCP.equals(appConfigList.getType()))
-                .forEach(appConfigList -> {
-                    MinaSocketBean minaSocketBean = new MinaSocketBean();
-                    minaSocketBean.setPort(appConfigList.getListenPort());
-                    new ShortSwitchServer().closeMinaServer(minaSocketBean);
-                });
+        Optional.ofNullable(compares.get(appUniqueId))
+                .ifPresent(bootstrap -> bootstrap.getAppList()
+                        .stream()
+                        .filter(appConfigList -> RpcConfigurationProperties.Bootstrap.AppConfigList.Type.TCP.equals(appConfigList.getType()))
+                        .forEach(appConfigList -> ShortSwitchServer.closeMinaServer(appConfigList.getListenPort())));
     }
 
     public void removeReference(ReferenceParam<ProcessService> referenceParam) {

@@ -57,4 +57,4 @@ FINAL_EXEC="$JAVA_EXEC $JVM_PARAM $SKY_WALKING_PARAM $SKY_WALKING_PLUGIN_PARAM -
 # Making executable command using tilde symbol and running completely detached from terminal
 `$FINAL_EXEC  </dev/null >/dev/null 2>&1 &`
 #`nohup $FINAL_EXEC >> ../logs/$APP_NAME/$APP_NAME.log 2>&1 &`
-echo "$APP_NAME start script is  completed."
+echo "$APP_NAME start script is completed."

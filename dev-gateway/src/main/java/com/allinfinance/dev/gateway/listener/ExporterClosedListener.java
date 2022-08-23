@@ -63,6 +63,8 @@ public class ExporterClosedListener implements ApplicationListener<ExporterClose
             appProcessFactory.removeReference(referenceParam);
             //移除端口监听
             appProcessFactory.removePortMonitor(uniqueId);
+            //移除配置信息，包括compares和appUrlMap
+            appProcessFactory.removeBootstrap(uniqueId);
         } else {
             logger.info("[ {} ]应用未全部下线", uniqueId);
         }

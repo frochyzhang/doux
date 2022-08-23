@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 /**
@@ -129,10 +130,12 @@ public class ShortSwitchServer implements DisposableBean {
         logger.info("socket server thread pool is shutting down!");
     }
 
-    public void closeMinaServer(MinaSocketBean minaSocketBean) {
-        IoAcceptor acceptor = IO_ACCEPTOR_MAP.get(minaSocketBean.getPort());
-        acceptor.unbind();
-        IO_ACCEPTOR_MAP.remove(minaSocketBean.getPort());
+    public static void closeMinaServer(int port) {
+        Optional.ofNullable(IO_ACCEPTOR_MAP.get(port))
+                .ifPresent(ioAcceptor -> {
+                    ioAcceptor.unbind();
+                    IO_ACCEPTOR_MAP.remove(port);
+                });
         logger.info("Mina Server Has Been Shutdown ............");
     }
 }

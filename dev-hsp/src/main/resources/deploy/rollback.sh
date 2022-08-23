@@ -1,11 +1,11 @@
-# 输入参数：备份包全名 ${spring.applicaiton.name}-${version}-yyyyMMdd-bak.tar.gz
+# 输入参数：备份包全名 ${spring.application.name}-${version}-yyyyMMdd-bak.tar.gz
 BAK_PACKAGE_FULL_NAME=$1
 if [ ! -f $HOME/bak/$BAK_PACKAGE_FULL_NAME ]; then
     echo "Bak package does not exist!" 1>&2
     exit 1
 fi
 APP_NAME_INCLUDE_VERSION_DATE="${BAK_PACKAGE_FULL_NAME%-bak.tar.gz}"
-# ${spring.applicaiton.name}
+# ${spring.application.name}
 APP_NAME="${APP_NAME_INCLUDE_VERSION_DATE%-*-*-*}"
 
 # 解压备份包
