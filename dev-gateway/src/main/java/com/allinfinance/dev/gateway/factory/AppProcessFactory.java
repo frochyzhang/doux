@@ -5,7 +5,6 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
-import com.allinfinance.dev.core.bean.MinaSocketBean;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
@@ -209,10 +208,10 @@ public class AppProcessFactory {
 
         ProcessService removeRet = processors.remove(uniqueId);
         if (removeRet != null) {
-            logger.warn("appUniqueId:{}网关缓冲池已移除，准备移除sofa订阅", uniqueId);
+            logger.warn("网关缓存应用[{}]的ProcessService已移除，准备移除sofa订阅", uniqueId);
             gateClientFactoryAware.getReferenceClient().removeReference(referenceParam);
         } else {
-            logger.info("应用[{}]不存在", uniqueId);
+            logger.info("未缓存应用[{}]的ProcessService服务，无需移除sofa订阅", uniqueId);
         }
     }
 
