@@ -27,6 +27,8 @@ dev:
 ---
 spring:
   profiles: sit
+  pid:
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   allinfinance:
@@ -47,6 +49,8 @@ dev:
 ---
 spring:
   profiles: uat
+  pid:
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   allinfinance:
@@ -67,6 +71,8 @@ dev:
 ---
 spring:
   profiles: prod
+  pid:
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   allinfinance:
