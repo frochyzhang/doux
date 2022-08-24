@@ -100,6 +100,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             return NettyHttpResponse.makeError(e);
         }
         logger.info("[{}]请求处理结束, 开始组装响应。", appUniqueId);
+        if (httpResponseDTO == null) {
+            logger.error("[{}]应用前置响应为空", appUniqueId);
+            return NettyHttpResponse.makeError(new RuntimeException("应用前置响应为空"));
+        }
         Map<String, String> headers = httpResponseDTO.getHeaders();
         return NettyHttpResponse.ok(headers, httpResponseDTO.getResponseMsg());
     }

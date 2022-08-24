@@ -65,6 +65,19 @@ public class XStreamUtils {
         return o;
     }
 
+    public static <T> T xmlToBean(String xml, Class<T> load, boolean omitFlag, String alias) {
+        if (!omitFlag) {
+            xs = xsFriendly;
+        }
+        xs.autodetectAnnotations(true);
+        xs.alias(alias, load);
+        if (xs.getMapper() instanceof CachingMapper) {
+            CachingMapper cachingMapper = (CachingMapper) xs.getMapper();
+            cachingMapper.flushCache();
+        }
+        return (T) xs.fromXML(xml);
+    }
+
     public static String beanToXml(Object object, String encoding) {
 //        try {
 //            BeanConvertValidator.beanVerify(object, encoding);
