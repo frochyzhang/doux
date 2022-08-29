@@ -20,9 +20,6 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     @Autowired
     private GateClientFactoryAware gateClientFactoryAware;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-
     @Override
     public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
         if (gateClientFactoryAware.registerConsumer(bootstrap)) {
