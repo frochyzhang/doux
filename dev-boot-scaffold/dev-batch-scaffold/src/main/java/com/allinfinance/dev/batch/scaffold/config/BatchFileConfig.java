@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 @Configuration
 @ConfigurationProperties(prefix = "com.allinfinance.batch")
+@ConditionalOnProperty(prefix = "com.allinfinance.batch", name = "verifyEnabled", havingValue = "true")
 public class BatchFileConfig implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(BatchFileConfig.class);
 
@@ -34,25 +36,23 @@ public class BatchFileConfig implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         Iterator<Map.Entry<String, FileConfig>> iterator = this.fileConfigMap.entrySet().iterator();
         //文件路径校验
-        if (!ObjectUtils.isEmpty(this.verifyEnabled) && this.verifyEnabled) {
-            while (iterator.hasNext()) {
-                FileConfig fileConfig = iterator.next().getValue();
-                Assert.notNull(fileConfig.getSourceFilePath(), "批量源文件路径不能为空！");
-                Assert.notNull(fileConfig.getTargetFilePath(), "批量目标文件路径不能为空！");
-                File sourcePath = new File(fileConfig.getSourceFilePath());
-                File targetPath = new File(fileConfig.getTargetFilePath());
-                if (!sourcePath.exists() || !sourcePath.isDirectory()) {
-                    logger.error("源文件路径有误：{}", fileConfig.getSourceFilePath());
-                    throw new RuntimeException("源文件路径有误");
-                } else if (!targetPath.exists() || !targetPath.isDirectory()) {
-                    logger.error("目标文件路径有误：{}", fileConfig.getTargetFilePath());
-                    throw new RuntimeException("目标文件路径有误");
-                }
-                //文件跳行校验，为空或为负数时置为0
-                if (ObjectUtils.isEmpty(fileConfig.getSkipLines()) || fileConfig.getSkipLines() < 0) {
-                    logger.info("参数[skipLines]有误，已重置为0！");
-                    fileConfig.setSkipLines(0);
-                }
+        while (iterator.hasNext()) {
+            FileConfig fileConfig = iterator.next().getValue();
+            Assert.notNull(fileConfig.getSourceFilePath(), "批量源文件路径不能为空！");
+            Assert.notNull(fileConfig.getTargetFilePath(), "批量目标文件路径不能为空！");
+            File sourcePath = new File(fileConfig.getSourceFilePath());
+            File targetPath = new File(fileConfig.getTargetFilePath());
+            if (!sourcePath.exists() || !sourcePath.isDirectory()) {
+                logger.error("源文件路径有误：{}", fileConfig.getSourceFilePath());
+                throw new RuntimeException("源文件路径有误");
+            } else if (!targetPath.exists() || !targetPath.isDirectory()) {
+                logger.error("目标文件路径有误：{}", fileConfig.getTargetFilePath());
+                throw new RuntimeException("目标文件路径有误");
+            }
+            //文件跳行校验，为空或为负数时置为0
+            if (ObjectUtils.isEmpty(fileConfig.getSkipLines()) || fileConfig.getSkipLines() < 0) {
+                logger.info("参数[skipLines]有误，已重置为0！");
+                fileConfig.setSkipLines(0);
             }
         }
 

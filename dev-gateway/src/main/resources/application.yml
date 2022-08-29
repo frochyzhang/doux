@@ -65,7 +65,7 @@ com:
 
 dev:
   gateway:
-    retries: 3
+    retries: 100
     interval: 200
 
 ---

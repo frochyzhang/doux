@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.processor;
 
+import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,6 @@ public abstract class AbstractBusinessProcessor implements BusinessProcessor {
 
     @PostConstruct
     public void init() {
-        businessProcessedFactory.register(this);
+        businessProcessedFactory.register(SpringUtil.getBean(this.getClass()));
     }
 }
