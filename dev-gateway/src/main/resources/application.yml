@@ -21,7 +21,7 @@ com:
 
 dev:
   gateway:
-    retries: 3
+    retries: 100
     interval: 200
 
 ---
@@ -43,7 +43,7 @@ com:
 
 dev:
   gateway:
-    retries: 3
+    retries: 100
     interval: 200
 
 ---
@@ -87,5 +87,5 @@ com:
 
 dev:
   gateway:
-    retries: 3
+    retries: 100
     interval: 200

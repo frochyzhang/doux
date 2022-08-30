@@ -38,7 +38,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     /**
      * 网关拉取provider列表时的重试次数
      */
-    @Value("${dev.gateway.reties:3}")
+    @Value("${dev.gateway.retries:3}")
     private Integer retries;
 
     /**

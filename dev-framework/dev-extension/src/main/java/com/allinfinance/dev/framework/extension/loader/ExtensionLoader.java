@@ -428,6 +428,7 @@ public class ExtensionLoader<T> {
         if (extensionClass == null) {
             throw new RuntimeException("没找到对应扩展!" + alias);
         } else {
+            LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, alias);
             if (extensible.singleton() && factory != null) {
                 T t = factory.get(alias);
                 if (t == null) {

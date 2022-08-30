@@ -36,23 +36,25 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
         AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 30000, "foreach", 3);
         Thread gateRegistryThread = new Thread(() -> {
             Boolean registerResult = null;
-            while (null == registerResult) {
+            while (true) {
                 try {
                     registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap());
                 } catch (SofaRouteException sofaRouteException) {
                     logger.warn("网关不存在，10s后重试+1");
                 }
-                try {
-                    TimeUnit.SECONDS.sleep(10);
-                } catch (InterruptedException e) {
-                    logger.error("调用网关注册服务失败!", e);
+                if (registerResult == null) {
+                    try {
+                        TimeUnit.SECONDS.sleep(10);
+                    } catch (InterruptedException e) {
+                        logger.error("调用网关注册服务失败!", e);
+                    }
+                } else if (registerResult) {
+                    logger.info("应用{}注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    break;
+                } else {
+                    logger.error("应用{}注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    throw new RuntimeException("应用注册失败!");
                 }
-            }
-            if (registerResult) {
-                logger.info("应用{}注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-            } else {
-                logger.error("应用{}注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-                throw new RuntimeException("应用注册失败!");
             }
         }, "gate-registry-thread");
 
