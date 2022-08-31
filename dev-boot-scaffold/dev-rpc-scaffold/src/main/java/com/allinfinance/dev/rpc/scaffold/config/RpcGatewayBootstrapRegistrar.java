@@ -45,6 +45,9 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             logger.info("开始发布应用{}的ProcessService服务到注册中心", bootstrap.getAppUniqueId());
             ApplicationConfig applicationConfig = new ApplicationConfig();
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+            if (rpcConfigurationProperties.getBootstrap().getExporterPort() == null) {
+                throw new NullPointerException("exporter端口配置为空");
+            }
             ServerConfig serverConfig = SofaAPIConfig.getServerConfig(rpcConfigurationProperties.getBootstrap().getExporterPort());
 
             SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
