@@ -1,6 +1,5 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
-import cn.hutool.core.net.NetUtil;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
@@ -46,7 +45,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             logger.info("开始发布应用{}的ProcessService服务到注册中心", bootstrap.getAppUniqueId());
             ApplicationConfig applicationConfig = new ApplicationConfig();
             applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(NetUtil.getUsableLocalPort(12001, 12999));
+            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(rpcConfigurationProperties.getBootstrap().getExporterPort());
 
             SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
 

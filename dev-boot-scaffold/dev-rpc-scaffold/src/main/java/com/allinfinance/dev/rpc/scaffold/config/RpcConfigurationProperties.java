@@ -133,6 +133,10 @@ public class RpcConfigurationProperties {
          */
         private Boolean enable;
         /**
+         * exporter端口
+         */
+        private Integer exporterPort;
+        /**
          * TCP网关注册中心地址
          */
         private String gateRegistry;
@@ -155,6 +159,14 @@ public class RpcConfigurationProperties {
 
         public void setEnable(Boolean enable) {
             this.enable = enable;
+        }
+
+        public Integer getExporterPort() {
+            return exporterPort;
+        }
+
+        public void setExporterPort(Integer exporterPort) {
+            this.exporterPort = exporterPort;
         }
 
         public String getGateRegistry() {
@@ -544,8 +556,10 @@ public class RpcConfigurationProperties {
         public String toString() {
             return "Bootstrap{" +
                     "enable=" + enable +
+                    ", exporterPort=" + exporterPort +
                     ", gateRegistry='" + gateRegistry + '\'' +
                     ", appUniqueId='" + appUniqueId + '\'' +
+                    ", processServiceExtension='" + processServiceExtension + '\'' +
                     ", appList=" + appList +
                     '}';
         }
