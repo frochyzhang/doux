@@ -35,6 +35,8 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
                     String uniqueId = service.split(":")[1];
                     if (gateClientFactoryAware.registerConsumer(uniqueId)) {
                         logger.info("[ {} ]应用注册成功!", uniqueId);
+                    } else {
+                        logger.error("[ {} ]应用注册失败!", uniqueId);
                     }
                 });
         logger.info("应用业务处理服务订阅完成");

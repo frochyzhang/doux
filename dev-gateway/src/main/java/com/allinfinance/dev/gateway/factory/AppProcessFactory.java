@@ -206,6 +206,10 @@ public class AppProcessFactory {
         String uniqueId = referenceParam.getUniqueId();
         logger.warn("准备移除[appUniqueId:{}, interfaceType:{}]订阅", uniqueId, referenceParam.getInterfaceType());
 
+        RpcConfigurationProperties.Bootstrap removeBootstrap = compares.remove(uniqueId);
+        if (removeBootstrap != null) {
+            logger.warn("网关缓存应用[{}]的配置信息已移除", uniqueId);
+        }
         ProcessService removeRet = processors.remove(uniqueId);
         if (removeRet != null) {
             logger.warn("网关缓存应用[{}]的ProcessService已移除，准备移除sofa订阅", uniqueId);

@@ -6,7 +6,6 @@ import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,14 +19,16 @@ public class AppRegistrarServiceImpl implements AppRegistrarService {
     @Autowired
     private GateClientFactoryAware gateClientFactoryAware;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-
     @Override
     public Boolean register(RpcConfigurationProperties.Bootstrap bootstrap) {
-        if (gateClientFactoryAware.registerConsumer(bootstrap)) {
-            logger.info("[ {} ]应用注册成功!", bootstrap.getAppUniqueId());
-            return Boolean.TRUE;
+        try {
+            if (gateClientFactoryAware.registerConsumer(bootstrap)) {
+                logger.info("[ {} ]应用注册成功!", bootstrap.getAppUniqueId());
+                return Boolean.TRUE;
+            }
+        } catch (Exception e) {
+            logger.error("[ {} ]应用注册异常!", bootstrap.getAppUniqueId(), e);
+            return Boolean.FALSE;
         }
         logger.error("[ {} ]应用注册失败!", bootstrap.getAppUniqueId());
         return Boolean.FALSE;

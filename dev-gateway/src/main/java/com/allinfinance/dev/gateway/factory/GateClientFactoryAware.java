@@ -61,7 +61,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     public boolean registerConsumer(String uniqueId) {
         logger.info("开始订阅[ {} ]业务处理服务", uniqueId);
         ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-        for (int r = 0; r < retries; r++) {
+        for (int r = 1; r <= retries; r++) {
             ProcessService processService = referenceClient.reference(processServiceParam);
             try {
                 if (processService.verify()) {
@@ -73,17 +73,21 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                     monitorPort(bootstrap);
                     return true;
                 }
-            } catch (Exception e) {
+            } catch (SofaRouteException e) {
                 logger.warn("调用[ {} ]应用ProcessService服务异常，等待重试...", uniqueId);
                 logger.info("总重试次数：{}，重试间隔：{}ms，当前重试次数：{}", retries, interval, r);
-                appProcessFactory.removeReference(processServiceParam);
                 try {
                     TimeUnit.MILLISECONDS.sleep(interval);
                 } catch (InterruptedException ignore) {
                 }
+            } catch (Exception e) {
+                logger.error("订阅[ {} ]业务处理服务异常,移除订阅!", uniqueId, e);
+                appProcessFactory.removeReference(processServiceParam);
+                return false;
             }
         }
-        logger.error("调用[ {} ]应用ProcessService服务异常,移除订阅!", uniqueId);
+        appProcessFactory.removeReference(processServiceParam);
+        logger.error("调用[ {} ]应用ProcessService服务异常", uniqueId);
         return false;
     }
 
@@ -132,13 +136,17 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 } catch (SofaRouteException e) {
                     logger.warn("调用[ {} ]应用ProcessService服务异常，等待重试...", uniqueId);
                     logger.info("总重试次数：{}，重试间隔：{}ms，当前重试次数：{}", retries, interval, i);
-                    appProcessFactory.removeReference(processServiceParam);
                     try {
                         TimeUnit.MILLISECONDS.sleep(interval);
                     } catch (InterruptedException ignore) {
                     }
+                } catch (Exception e) {
+                    logger.error("订阅[ {} ]业务处理服务异常,移除订阅!", uniqueId, e);
+                    appProcessFactory.removeReference(processServiceParam);
+                    return false;
                 }
             }
+            appProcessFactory.removeReference(processServiceParam);
             logger.error("调用[ {} ]应用ProcessService服务异常，重试失败！", uniqueId);
             return Boolean.FALSE;
         }
@@ -162,16 +170,20 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             RpcConfigurationProperties.Bootstrap.AppConfigList.Type type = appConfigList.getType();
             switch (type) {
                 case TCP:
+                    if (ShortSwitchServer.getInstance(appConfigList.getListenPort()) != null) {
+                        logger.error("该端口已被其他应用监听，注册失败！");
+                        throw new RuntimeException("Port " + appConfigList.getListenPort() + " already in use");
+                    }
                     MinaSocketBean minaSocketBean = AppPropertiesMapper.INSTANCE.convertToMinaSocketBean(appConfigList.getTcpConfig());
                     minaSocketBean.setName(bootstrap.getAppUniqueId());
                     minaSocketBean.setPort(appConfigList.getListenPort());
                     minaSocketBean.setKeepAlive(false);
                     minaSocketBean.setSoLinger(false);
-                    // 监听完成
                     try {
                         new ShortSwitchServer().initMinaServer(minaSocketBean);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IOException e) {
                         logger.error("启动socket监听失败!", e);
+                        throw new RuntimeException(e);
                     }
                     break;
                 case HTTP:

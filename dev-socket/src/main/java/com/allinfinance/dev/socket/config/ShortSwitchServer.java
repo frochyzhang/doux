@@ -138,4 +138,8 @@ public class ShortSwitchServer implements DisposableBean {
                 });
         logger.info("Mina Server Has Been Shutdown ............");
     }
+
+    public static IoAcceptor getInstance(int port) {
+        return IO_ACCEPTOR_MAP.get(port);
+    }
 }
