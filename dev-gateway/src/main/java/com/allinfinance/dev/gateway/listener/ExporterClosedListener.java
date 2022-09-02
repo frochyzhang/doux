@@ -51,10 +51,10 @@ public class ExporterClosedListener implements InitializingBean {
                         referenceParam.setBindingParam(boltBindingParam);
                         referenceParam.setInterfaceType(ProcessService.class);
                         referenceParam.setUniqueId(uniqueId);
-                        //移除网关订阅
-                        appProcessFactory.removeReference(referenceParam);
                         //移除端口监听
                         appProcessFactory.removePortMonitor(uniqueId);
+                        //移除网关订阅
+                        appProcessFactory.removeReference(referenceParam);
                         //移除配置信息，包括compares和appUrlMap
                         appProcessFactory.removeBootstrap(uniqueId);
                     } else {
