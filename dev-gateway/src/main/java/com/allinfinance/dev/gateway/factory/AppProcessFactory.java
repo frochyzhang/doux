@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
@@ -206,10 +207,6 @@ public class AppProcessFactory {
         String uniqueId = referenceParam.getUniqueId();
         logger.warn("准备移除[appUniqueId:{}, interfaceType:{}]订阅", uniqueId, referenceParam.getInterfaceType());
 
-        RpcConfigurationProperties.Bootstrap removeBootstrap = compares.remove(uniqueId);
-        if (removeBootstrap != null) {
-            logger.warn("网关缓存应用[{}]的配置信息已移除", uniqueId);
-        }
         ProcessService removeRet = processors.remove(uniqueId);
         if (removeRet != null) {
             logger.warn("网关缓存应用[{}]的ProcessService已移除，准备移除sofa订阅", uniqueId);
@@ -217,6 +214,21 @@ public class AppProcessFactory {
         } else {
             logger.info("未缓存应用[{}]的ProcessService服务，无需移除sofa订阅", uniqueId);
         }
+    }
+
+    public void removeAll(String uniqueId) {
+        //移除端口监听
+        removePortMonitor(uniqueId);
+        //移除网关订阅
+        ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
+        BoltBindingParam boltBindingParam = new BoltBindingParam();
+        boltBindingParam.setLoadBalancer("roundRobin");
+        referenceParam.setBindingParam(boltBindingParam);
+        referenceParam.setInterfaceType(ProcessService.class);
+        referenceParam.setUniqueId(uniqueId);
+        removeReference(referenceParam);
+        //移除配置信息，包括compares和appUrlMap
+        removeBootstrap(uniqueId);
     }
 
     public Map<String, ProcessService> getProcessors() {

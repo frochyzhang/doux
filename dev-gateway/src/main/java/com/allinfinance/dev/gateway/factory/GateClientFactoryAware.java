@@ -81,13 +81,13 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 } catch (InterruptedException ignore) {
                 }
             } catch (Exception e) {
-                logger.error("订阅[ {} ]业务处理服务异常,移除订阅!", uniqueId, e);
-                appProcessFactory.removeReference(processServiceParam);
+                logger.error("订阅[ {} ]业务处理服务异常,移除订阅、端口监听和配置信息!", uniqueId, e);
+                appProcessFactory.removeAll(uniqueId);
                 return false;
             }
         }
-        appProcessFactory.removeReference(processServiceParam);
-        logger.error("调用[ {} ]应用ProcessService服务异常", uniqueId);
+        logger.error("调用[ {} ]应用ProcessService服务异常,移除订阅、端口监听和配置信息!", uniqueId);
+        appProcessFactory.removeAll(uniqueId);
         return false;
     }
 
@@ -141,13 +141,13 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                     } catch (InterruptedException ignore) {
                     }
                 } catch (Exception e) {
-                    logger.error("订阅[ {} ]业务处理服务异常,移除订阅!", uniqueId, e);
-                    appProcessFactory.removeReference(processServiceParam);
+                    logger.error("订阅[ {} ]业务处理服务异常,移除订阅、端口监听和配置信息!", uniqueId, e);
+                    appProcessFactory.removeAll(uniqueId);
                     return false;
                 }
             }
-            appProcessFactory.removeReference(processServiceParam);
-            logger.error("调用[ {} ]应用ProcessService服务异常，重试失败！", uniqueId);
+            logger.error("调用[ {} ]应用ProcessService服务异常，重试失败，移除订阅、端口监听和配置信息！", uniqueId);
+            appProcessFactory.removeAll(uniqueId);
             return Boolean.FALSE;
         }
         logger.info("[ {} ]业务处理服务订阅成功", uniqueId);

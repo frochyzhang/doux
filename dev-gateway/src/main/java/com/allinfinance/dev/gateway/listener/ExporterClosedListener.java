@@ -1,14 +1,11 @@
 package com.allinfinance.dev.gateway.listener;
 
 import com.alipay.sofa.rpc.boot.container.ConsumerConfigContainer;
-import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.rpc.bootstrap.Bootstraps;
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.alipay.sofa.runtime.spi.binding.Binding;
 import com.allinfinance.dev.gateway.factory.AppProcessFactory;
-import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,19 +41,8 @@ public class ExporterClosedListener implements InitializingBean {
                                 return bootstrap.subscribe().size();
                             }).sum();
                     if (subscribeSize == 0) {
-                        logger.warn("所有{}的应用均已下线，移除网关订阅，取消端口监听!", uniqueId);
-                        ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
-                        BoltBindingParam boltBindingParam = new BoltBindingParam();
-                        boltBindingParam.setLoadBalancer("roundRobin");
-                        referenceParam.setBindingParam(boltBindingParam);
-                        referenceParam.setInterfaceType(ProcessService.class);
-                        referenceParam.setUniqueId(uniqueId);
-                        //移除端口监听
-                        appProcessFactory.removePortMonitor(uniqueId);
-                        //移除网关订阅
-                        appProcessFactory.removeReference(referenceParam);
-                        //移除配置信息，包括compares和appUrlMap
-                        appProcessFactory.removeBootstrap(uniqueId);
+                        logger.warn("所有{}的应用均已下线，移除网关订阅和配置信息，取消端口监听!", uniqueId);
+                        appProcessFactory.removeAll(uniqueId);
                     } else {
                         logger.info("[ {} ]应用未全部下线", uniqueId);
                     }
