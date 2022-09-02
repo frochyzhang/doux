@@ -14,7 +14,7 @@ SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 # App name after removing start/stop strings like "yaml-validator"
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
 # JVM Parameters and Spring boot initialization parameters
-JVM_PARAM="-Xms512m -Xmx1024m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
+JVM_PARAM="-Xms2048m -Xmx4096m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
 -Dspring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/
 -Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
 

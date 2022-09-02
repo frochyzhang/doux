@@ -59,13 +59,13 @@ public class QueueServerMetadata implements ServerMetadata {
 
     public QueueServerMetadata(UnpooledServerMetadata metadata) {
         this.metadata = metadata;
-        state = new QueueState(this, this.maxActiveConnections);
     }
 
     /**
      * 初始化空闲连接池以及pingService
      */
     public void init() {
+        state = new QueueState(this, this.maxActiveConnections);
         for (int i = 0; i < maxActiveConnections; i++) {
             state.queue.add(new QueueConnection(this, metadata.getConnection()));
         }

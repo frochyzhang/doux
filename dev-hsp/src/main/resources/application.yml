@@ -20,11 +20,21 @@ com:
     connection:
       pool:
         connection-driver: hsp
-        connection-pool-type: queue
+        connection-pool-type: pool
         ping-service: default
       scaffold:
         server-metadata-map:
           server-1:
+            server-ip: 10.250.28.239
+            server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+          server-2:
             server-ip: 10.250.28.239
             server-port: 6666
             ping-enabled: false
@@ -33,6 +43,8 @@ com:
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
+    hsp:
+      dubbo-enabled: true
 
 dev:
   dubbo:
@@ -80,6 +92,16 @@ com:
           server-1:
             server-ip: 10.250.28.239
             server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+          server-2:
+            server-ip: 10.250.28.239
+            server-port: 6666
             ping-enabled: false
             ping-query-content: "00"
             ping-verify-message: ""
@@ -124,22 +146,35 @@ com:
     rpc:
       provider-package: com.allinfinance.dev.hsp.service
     connection:
-      pool-type: queue
-      buffer-size: 65536
-      length-field: 2
-      server-metadata-map:
-        server-1:
-          server-name: "加密机1号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
-          checkout-time: 300000
-          retry-times: 3
-          max-active-connection: 10
-          max-idle-connection: 5
-          enable-ping: false
-          ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
+      pool:
+        connection-driver: hsp
+        connection-pool-type: queue
+        ping-service: default
+        warmup: true
+      scaffold:
+        server-metadata-map:
+          server-1:
+            server-ip: 10.250.28.239
+            server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+          server-2:
+            server-ip: 10.250.28.239
+            server-port: 6666
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+    hsp:
+      dubbo-enabled: true
+
 dev:
   dubbo:
     application:
@@ -170,40 +205,53 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public
-        bolt-port: 12202
-        enabled-ip-range: 10.250.1.17
+        registry-address: nacos://10.200.1.192:8848/public
+        bolt-port: 8001
   allinfinance:
     rpc:
       provider-package: com.allinfinance.dev.hsp.service
     connection:
-      pool-type: queue
-      buffer-size: 65536
-      length-field: 2
-      server-metadata-map:
-        server-1:
-          server-name: "加密机1号"
-          server-ip: 10.250.28.138
-          server-port: 6666
-          timeout: 200
-          checkout-time: 300000
-          retry-times: 3
-          max-active-connection: 10
-          max-idle-connection: 5
-          enable-ping: false
-          ping-query-message: "3132333435"
-          ping-verify-message: "706f6e67"
+      pool:
+        connection-driver: hsp
+        connection-pool-type: queue
+        ping-service: default
+        warmup: true
+      scaffold:
+        server-metadata-map:
+          server-1:
+            server-ip: 10.200.4.133
+            server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+          server-2:
+            server-ip: 10.200.4.134
+            server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+    hsp:
+      dubbo-enabled: true
+
 dev:
   dubbo:
     application:
       name: dev-hsp
     registry:
-      address: 10.250.28.142:8848?namespace=public
+      address: 10.200.1.192:8848?namespace=public
       protocol: nacos
       timeout: 10000
     protocol:
       name: dubbo
-      port: 32245
+      port: 7001
     provider:
       timeout: 10000
       retries: 0

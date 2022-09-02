@@ -65,18 +65,19 @@ public class HspNettyConnection implements Connection {
         promiseMap.put(requestId, promise);
         synchronized (channel) {
             channel.writeAndFlush(msg);
+            try {
+                String result = promise.get(timeout, TimeUnit.MILLISECONDS);
+//                promiseMap.remove(requestId);
+                return result;
+            } catch (InterruptedException e) {
+                logger.error("处理中断", e);
+            } catch (ExecutionException e) {
+                logger.error("处理异常", e);
+            } catch (TimeoutException e) {
+                logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
+            }
+            throw new RuntimeException("获取响应异常");
         }
-
-        try {
-            return promise.get(timeout, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            logger.error("处理中断", e);
-        } catch (ExecutionException e) {
-            logger.error("处理异常", e);
-        } catch (TimeoutException e) {
-            logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
-        }
-        throw new RuntimeException("获取响应异常");
     }
 
     @Override
