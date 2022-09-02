@@ -30,7 +30,6 @@ public class HspApplication {
     @Configuration
     @ImportResource(locations = {"${dev.dubbo.files}"})
     @EnableConfigurationProperties
-    @ConfigurationProperties(prefix = "com.allinfinance.hsp")
     public static class DubboEnable {
         /**
          * 是否启用DUBBO
