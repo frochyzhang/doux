@@ -3,20 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dev-parent</artifactId>
+        <artifactId>dev-framework</artifactId>
         <groupId>com.allinfinance.dev</groupId>
         <version>${revision}</version>
-        <relativePath>../dev-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dev-framework</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dev-connection</module>
-        <module>dev-extension</module>
-        <module>dev-framework-socket</module>
-    </modules>
+    <artifactId>dev-framework-socket</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
