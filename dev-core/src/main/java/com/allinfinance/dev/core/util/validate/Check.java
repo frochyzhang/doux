@@ -7,6 +7,7 @@ import java.lang.annotation.*;
  * @description
  * @date 2020/12/7 20:59
  */
+@Deprecated
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

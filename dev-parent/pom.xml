@@ -161,6 +161,38 @@
                 <artifactId>dev-connection-netty</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+
+            <!--dev-common-->
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-common-dictionary</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-common-util</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-api</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-hsp-api</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-http-api</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-transmit-api</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * @description
  * @date 2020/12/7 23:24
  */
+@Deprecated
 public class BeanConvertValidator {
     private static final Logger logger = LoggerFactory.getLogger(BeanConvertValidator.class);
 

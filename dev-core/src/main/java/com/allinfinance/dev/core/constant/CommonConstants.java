@@ -6,6 +6,7 @@ import java.util.Locale;
  * @author 张勇
  * @date 2020-11-28 01:25
  */
+@Deprecated
 public class CommonConstants {
 
     public static final String STRING_CLASS_NAME = String.class.getName();

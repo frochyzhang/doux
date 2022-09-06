@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @description 统一返回封装
  * @date 2020/5/17 02:12
  */
+@Deprecated
 public class Result implements Serializable {
 
     private Boolean success;

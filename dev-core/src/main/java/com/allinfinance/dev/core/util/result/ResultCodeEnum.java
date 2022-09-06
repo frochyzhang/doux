@@ -7,6 +7,7 @@ import java.util.Arrays;
  * @description 状态返回吗及描述
  * @date 2020/5/17 02:07
  */
+@Deprecated
 public enum ResultCodeEnum implements ResultCode {
     /*成功状态码*/
     SUCCESS("0", "成功"),

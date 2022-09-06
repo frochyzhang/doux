@@ -10,6 +10,7 @@ import java.util.Map;
  * @author 张勇
  * @date 2020-11-28 01:25
  */
+@Deprecated
 public enum SocketBeanLoaderEnum {
     /* 应用名 */
     DEV_SOCKKET_APP_NAME("dev.socket.appName", "dev01"),

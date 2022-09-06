@@ -1,6 +1,6 @@
 package com.allinfinance.dev.core.util.result;
 
-
+@Deprecated
 public enum OperTypeEnum {
 
     QUERY("query", "查询"),
