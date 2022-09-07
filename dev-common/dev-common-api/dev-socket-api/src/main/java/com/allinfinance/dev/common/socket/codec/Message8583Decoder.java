@@ -8,18 +8,25 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
  * @date 2022/09/06 16:26
  */
 public class Message8583Decoder extends ByteToMessageDecoder {
+    private ArrayBlockingQueue<String> queue;
     private Logger logger = LoggerFactory.getLogger(com.allinfinance.dev.core.util.socket.codec.Message8583Decoder.class);
 
+    public Message8583Decoder(ArrayBlockingQueue<String> queue){
+        this.queue = queue;
+    }
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         if (byteBuf.readableBytes() != 0){
+            logger.debug("开始对消息进行解码");
             if (byteBuf.readableBytes() >= 4){
                 byteBuf.markReaderIndex();
                 byte[] bLen = new byte[4];
@@ -28,19 +35,24 @@ public class Message8583Decoder extends ByteToMessageDecoder {
                 try {
                     len = Integer.parseInt(new String(bLen));
                 }catch (NumberFormatException ex){
-                    logger.debug("报文长度含有非数字内容，关闭连接:  " + bLen);
+                    logger.debug("报文长度含有非数字内容，关闭连接:  " + Arrays.toString(bLen));
                     channelHandlerContext.channel().closeFuture();
                 }
                 if (len == 0) {
+                    logger.debug("消息为空，无需处理");
                     return;
                 }
                 if (byteBuf.readableBytes() < len) {
+                    logger.debug("长度与消息真实长度不符，重置读");
                     byteBuf.resetReaderIndex();
                     return;
                 }
                 byte[] bBody = new byte[len];
                 byteBuf.readBytes(bBody);
-                list.add(EncodeUtil.hex(bBody));
+                if (queue != null) {
+                    logger.debug("使用阻塞消息队列，异步获取结果");
+                    queue.offer(EncodeUtil.hex(bBody));
+                }
                 channelHandlerContext.channel().closeFuture();
             }else {
                 logger.debug("报文长度未到齐:  " + byteBuf.readableBytes());
