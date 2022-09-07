@@ -1,15 +1,13 @@
-package com.allinfinance.dev.common.api.http.dto;
-
-import java.util.HashMap;
+package com.allinfinance.dev.framework.http.driver.dto;
 
 /**
  * @author qipeng
- * @date 2022/9/7 10:11
- * @desc http客户端返回给调用方DTO
+ * @date 2022/9/7 16:29
+ * @desc
  */
-public class HttpResponseDTO {
+public class HttpResponse {
     /**
-     * http调用是否成功
+     * 响应是否成功
      */
     private Boolean success;
     /**
@@ -17,12 +15,12 @@ public class HttpResponseDTO {
      */
     private String response;
 
-    public HttpResponseDTO(Boolean success, String response) {
-        this.success = success;
-        this.response = response;
+    public HttpResponse() {
     }
 
-    public HttpResponseDTO() {
+    public HttpResponse(Boolean success, String response) {
+        this.success = success;
+        this.response = response;
     }
 
     public Boolean getSuccess() {
@@ -33,17 +31,17 @@ public class HttpResponseDTO {
         this.success = success;
     }
 
-    public String getBody() {
+    public String getResponse() {
         return response;
     }
 
-    public void setBody(String body) {
-        this.response = body;
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     @Override
     public String toString() {
-        return "HttpResponseDTO{" +
+        return "HttpResponse{" +
                 "success=" + success +
                 ", response='" + response + '\'' +
                 '}';

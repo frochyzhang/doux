@@ -3,24 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dev-parent</artifactId>
+        <artifactId>dev-http</artifactId>
         <groupId>com.allinfinance.dev</groupId>
         <version>${revision}</version>
-        <relativePath>../dev-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dev-framework</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dev-connection</module>
-        <module>dev-extension</module>
-        <module>dev-http</module>
-    </modules>
+    <artifactId>dev-http-driver</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-extension</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

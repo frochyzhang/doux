@@ -1,19 +1,17 @@
-package com.allinfinance.dev.common.api.http.dto;
-
-import com.allinfinance.dev.common.api.http.constant.HttpMethod;
+package com.allinfinance.dev.framework.http.driver.dto;
 
 import java.util.HashMap;
 
 /**
  * @author qipeng
- * @date 2022/9/7 10:11
- * @desc http请求客户端接收调用方的DTO
+ * @date 2022/9/7 16:25
+ * @desc
  */
-public class HttpRequestDTO {
+public class HttpRequest {
     /**
-     * http请求方法
+     * http请求方法，参数需大写
      */
-    private HttpMethod httpMethod;
+    private String httpMethod;
     /**
      * http header内容
      */
@@ -31,19 +29,15 @@ public class HttpRequestDTO {
      */
     private String url;
     /**
-     * 重试次数
-     */
-    private Integer retryTime;
-    /**
      * 超时时间，单位：秒
      */
     private Integer timeout;
 
-    public HttpMethod getHttpMethod() {
+    public String getHttpMethod() {
         return httpMethod;
     }
 
-    public void setHttpMethod(HttpMethod httpMethod) {
+    public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
     }
 
@@ -79,14 +73,6 @@ public class HttpRequestDTO {
         this.url = url;
     }
 
-    public Integer getRetryTime() {
-        return retryTime;
-    }
-
-    public void setRetryTime(Integer retryTime) {
-        this.retryTime = retryTime;
-    }
-
     public Integer getTimeout() {
         return timeout;
     }
@@ -97,13 +83,12 @@ public class HttpRequestDTO {
 
     @Override
     public String toString() {
-        return "HttpRequestDTO{" +
-                "httpMethod=" + httpMethod +
+        return "HttpRequest{" +
+                "httpMethod='" + httpMethod + '\'' +
                 ", header=" + header +
                 ", mediaType='" + mediaType + '\'' +
                 ", body='" + body + '\'' +
                 ", url='" + url + '\'' +
-                ", retryTime=" + retryTime +
                 ", timeout=" + timeout +
                 '}';
     }
