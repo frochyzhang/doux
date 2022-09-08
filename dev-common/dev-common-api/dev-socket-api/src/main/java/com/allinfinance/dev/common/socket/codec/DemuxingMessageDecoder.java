@@ -1,6 +1,8 @@
 package com.allinfinance.dev.common.socket.codec;
 
+import com.allinfinance.dev.common.socket.client.pojo.SocketResponseDTO;
 import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
+import com.allinfinance.dev.core.util.convert.simple8583.util.EncodeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -20,7 +22,7 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
 
     private Integer msgLengthSize;
     private String msgEncode;
-    private ArrayBlockingQueue<String> queue;
+    private ArrayBlockingQueue<SocketResponseDTO> queue;
 
 
     public DemuxingMessageDecoder() {
@@ -33,7 +35,7 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
         this.msgEncode = msgEncode;
     }
 
-    public DemuxingMessageDecoder(Integer msgLengthSize, String msgEncode, ArrayBlockingQueue<String> queue) {
+    public DemuxingMessageDecoder(Integer msgLengthSize, String msgEncode, ArrayBlockingQueue<SocketResponseDTO> queue) {
         this.msgLengthSize = msgLengthSize;
         this.msgEncode = msgEncode;
         this.queue = queue;
@@ -51,12 +53,13 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                 try {
                     len = Integer.parseInt(new String(bLen));
                 } catch (NumberFormatException ex) {
-                    logger.debug("报文长度含有非数字内容，关闭连接:  " + bLen);
+                    logger.debug("报文长度含有非数字内容，关闭连接: {} ", bLen);
                     channelHandlerContext.channel().closeFuture();
                 }
-                if (len == 0) {
-                    logger.debug("消息为空，无需处理");return;
-                }
+//                if (len == 0) {
+//                    logger.debug("消息为空，无需处理");
+//                    return;
+//                }
                 if (byteBuf.readableBytes() < len) {
                     logger.debug("长度与消息真实长度不符，重置读");
                     byteBuf.resetReaderIndex();
@@ -65,11 +68,12 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                 byte[] bBody = new byte[len];
                 byteBuf.readBytes(bBody);
                 if (queue != null) {
-                    logger.debug("使用消息队列，异步获取结果");
-                    queue.offer(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
+                    logger.debug("使用消息队列，获取结果");
+                    queue.offer(new SocketResponseDTO(true, ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1)));
+                } else {
+                    // 服务端
+                    list.add(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
                 }
-                list.add(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
-                channelHandlerContext.channel().closeFuture();
             } else {
                 logger.debug("报文长度未到齐:  " + byteBuf.readableBytes());
             }

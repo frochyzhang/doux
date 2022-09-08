@@ -1,5 +1,6 @@
 package com.allinfinance.dev.common.socket.codec;
 
+import com.allinfinance.dev.common.socket.client.pojo.SocketResponseDTO;
 import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
 import com.allinfinance.dev.core.util.convert.simple8583.util.EncodeUtil;
 import io.netty.buffer.ByteBuf;
@@ -17,10 +18,10 @@ import java.util.concurrent.ArrayBlockingQueue;
  * @date 2022/09/06 16:26
  */
 public class Message8583Decoder extends ByteToMessageDecoder {
-    private ArrayBlockingQueue<String> queue;
+    private ArrayBlockingQueue<SocketResponseDTO> queue;
     private Logger logger = LoggerFactory.getLogger(com.allinfinance.dev.core.util.socket.codec.Message8583Decoder.class);
 
-    public Message8583Decoder(ArrayBlockingQueue<String> queue){
+    public Message8583Decoder(ArrayBlockingQueue<SocketResponseDTO> queue){
         this.queue = queue;
     }
     @Override
@@ -50,8 +51,8 @@ public class Message8583Decoder extends ByteToMessageDecoder {
                 byte[] bBody = new byte[len];
                 byteBuf.readBytes(bBody);
                 if (queue != null) {
-                    logger.debug("使用阻塞消息队列，异步获取结果");
-                    queue.offer(EncodeUtil.hex(bBody));
+                    logger.debug("使用阻塞消息队列，获取结果");
+                    queue.offer(new SocketResponseDTO(true,EncodeUtil.hex(bBody)));
                 }
                 channelHandlerContext.channel().closeFuture();
             }else {

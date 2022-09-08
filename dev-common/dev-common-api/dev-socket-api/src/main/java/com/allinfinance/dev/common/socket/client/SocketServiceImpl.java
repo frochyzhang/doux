@@ -1,5 +1,7 @@
 package com.allinfinance.dev.common.socket.client;
 
+import com.allinfinance.dev.common.socket.client.pojo.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.client.pojo.SocketResponseDTO;
 import com.allinfinance.dev.common.socket.codec.*;
 import com.allinfinance.dev.common.socket.server.HreatBeatServerHandler;
 import com.allinfinance.dev.core.util.socket.client.ISocketClientService;
@@ -22,13 +24,13 @@ import java.util.concurrent.TimeUnit;
  * @date 2022/09/06 16:24
  */
 @Service("socketService")
-public class SocketServiceImpl implements ISocketClientService {
+public class SocketServiceImpl implements ISocketClient {
     private Logger logger = LoggerFactory.getLogger(com.allinfinance.dev.core.util.socket.client.SocketServiceImpl.class);
 
     @Override
-    public String clientRequest(String remoteIp, int remotePort, String clientAppName, int timeOutSeconds, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
+    public SocketResponseDTO clientRequest(SocketRequestDTO socketRequestDTO) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
+        ArrayBlockingQueue<SocketResponseDTO> queue = new ArrayBlockingQueue<>(1);
         try {
             Bootstrap b = new Bootstrap();
             b.group(workerGroup);
@@ -37,30 +39,28 @@ public class SocketServiceImpl implements ISocketClientService {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    if ("8583".equals(clientAppName)) {
+                    if ("8583".equals(socketRequestDTO.getClientAppName())) {
                         ch.pipeline().addLast(new Message8583Encoder());
                         ch.pipeline().addLast(new Message8583Decoder(queue));
                     } else {
-                        ch.pipeline().addLast(new DemuxingMessageDecoder(msgLengthSize, msgEncode, queue))
-                                .addLast(new DemuxingMessageEncoder(msgLengthSize, msgEncode));
-
+                        ch.pipeline().addLast(new DemuxingMessageDecoder(socketRequestDTO.getMsgLengthSize(), socketRequestDTO.getMsgEncode(), queue))
+                                .addLast(new DemuxingMessageEncoder(socketRequestDTO.getMsgLengthSize(), socketRequestDTO.getMsgEncode()));
                     }
-//                    ch.pipeline().addLast(new IdleStateHandler(5, 10, 20, TimeUnit.SECONDS));
-//                    ch.pipeline().addLast(new HreatBeatClientHandler());
+                    ch.pipeline().addLast(new IdleStateHandler(5, 10, 20, TimeUnit.SECONDS));
+                    ch.pipeline().addLast(new HreatBeatClientHandler());
                 }
             });
-            ChannelFuture f = b.connect(remoteIp, remotePort).sync();
-            f.channel().writeAndFlush(message);
-            String result = queue.poll(timeOutSeconds, TimeUnit.SECONDS);
-            f.channel().closeFuture().sync();
-            logger.info("客户端收到消息=={}",result);
+            ChannelFuture f = b.connect(socketRequestDTO.getRemoteIp(), socketRequestDTO.getRemotePort()).sync();
+            f.channel().writeAndFlush(socketRequestDTO.getMessage());
+            SocketResponseDTO result = queue.poll(socketRequestDTO.getTimeOutSeconds(), TimeUnit.SECONDS);
+            logger.info("客户端收到消息=={}", result);
             return result;
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return new SocketResponseDTO();
         } finally {
             workerGroup.shutdownGracefully();
         }
-        return null;
     }
 
     public static void main(String[] args) {
@@ -76,7 +76,8 @@ public class SocketServiceImpl implements ISocketClientService {
                     "    <REQUEST_TIME>20170612113133</REQUEST_TIME>\n" +
                     "    <RESERVED></RESERVED>\n" +
                     "</SMS>";
-            String response1 = client.clientRequest("127.0.0.1", 4396, "sms", 30, false, reqMess, 4, "UTF-8");
+            SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", 4396, "sms", 30, false, reqMess, 4, "UTF-8", false);
+            SocketResponseDTO response1 = client.clientRequest(socketRequestDTO);
             System.out.println("resultResp:" + response1);
         } finally {
             System.out.println("end");

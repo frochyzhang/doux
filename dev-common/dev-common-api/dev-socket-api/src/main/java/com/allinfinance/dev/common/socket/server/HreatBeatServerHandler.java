@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
  * @date 2022/09/07 9:55
+ *
  */
 public class HreatBeatServerHandler extends ChannelInboundHandlerAdapter {
     private AtomicInteger count = new AtomicInteger(0);
@@ -27,7 +28,6 @@ public class HreatBeatServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf byteBuf = (ByteBuf)msg;
         String s = byteBuf.toString(StandardCharsets.UTF_8);
         if ("ping".equals(s)){
-
             byteBuf.clear();
             byteBuf.writeBytes("pong".getBytes());
             ctx.writeAndFlush(byteBuf);
@@ -48,11 +48,9 @@ public class HreatBeatServerHandler extends ChannelInboundHandlerAdapter {
                     break;
                 case WRITER_IDLE:
                     System.out.println("写空闲");
-                    count.incrementAndGet();
                     break;
                 case ALL_IDLE:
                     System.out.println("读写空闲");
-                    count.incrementAndGet();
                     break;
             }
             if (count.get()>3){
