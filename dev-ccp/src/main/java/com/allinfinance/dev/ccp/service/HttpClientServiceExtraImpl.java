@@ -28,7 +28,7 @@ public class HttpClientServiceExtraImpl implements HttpClientService, Initializi
     /**
      * 默认使用okhttp作为客户端实现
      */
-    @Value("dev.ccp.driver:okhttp")
+    @Value("${dev.ccp.driver:okhttp}")
     private String driver;
 
     /**
@@ -47,9 +47,9 @@ public class HttpClientServiceExtraImpl implements HttpClientService, Initializi
             httpResponseDTO = new HttpResponseDTO(false, "请求url为空");
             return httpResponseDTO;
         }
-        HttpResponse httpResponse =null;
-        Integer retryTime = httpRequestDTO.getRetryTime();
-        while (retryTime-- > 0 && httpResponse==null) {
+        HttpResponse httpResponse = null;
+        int retryTime = httpRequestDTO.getRetryTime();
+        while (retryTime-- > 0 && httpResponse == null) {
             httpResponse = simpleHttp.execute(DTOMapper.INSTANCE.convertToHttpRequest(httpRequestDTO));
         }
         httpResponseDTO = DTOMapper.INSTANCE.convertToHttpResponseDTO(httpResponse);

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.infrastructure.http.okhttp;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;
 import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
@@ -21,10 +22,6 @@ import java.util.concurrent.TimeUnit;
 @Extension("okhttp")
 public class SimpleOkHttpImpl implements SimpleHttp {
     private OkHttpClient.Builder okHttpClientBuilder;
-    /**
-     * 5分钟之后没有访问过的url就会被删除
-     */
-    private Cache<String, Call> callCache;
 
     /**
      * 初始化客户端基本的配置
@@ -32,9 +29,6 @@ public class SimpleOkHttpImpl implements SimpleHttp {
     @Override
     public void init() {
         this.okHttpClientBuilder = new OkHttpClient.Builder();
-        this.callCache = Caffeine.newBuilder()
-                .expireAfterAccess(Duration.ofMinutes(5L))
-                .build();
     }
 
     /**
@@ -46,11 +40,7 @@ public class SimpleOkHttpImpl implements SimpleHttp {
     @Override
     public HttpResponse execute(HttpRequest httpRequest) {
         HttpResponse httpResponse = new HttpResponse();
-        Call call = callCache.getIfPresent(httpRequest.getUrl());
-        if (ObjectUtils.isEmpty(call)) {
-            call = createCall(httpRequest);
-            callCache.put(httpRequest.getUrl(), call);
-        }
+        Call call = createCall(httpRequest);
         String response = null;
         try {
             Response execute = call.execute();
@@ -58,9 +48,11 @@ public class SimpleOkHttpImpl implements SimpleHttp {
         } catch (IOException e) {
             httpResponse.setSuccess(false);
             httpResponse.setResponse("网络IO异常");
+            return httpResponse;
         } catch (NullPointerException e) {
             httpResponse.setSuccess(false);
             httpResponse.setResponse("获取响应为空");
+            return httpResponse;
         }
         httpResponse.setSuccess(true);
         httpResponse.setResponse(response);
@@ -69,7 +61,9 @@ public class SimpleOkHttpImpl implements SimpleHttp {
 
     private Call createCall(HttpRequest httpRequest) {
         Request.Builder builder = new Request.Builder().url(httpRequest.getUrl());
-        httpRequest.getHeader().forEach(builder::header);
+        if (CollectionUtil.isNotEmpty(httpRequest.getHeader())) {
+            httpRequest.getHeader().forEach(builder::header);
+        }
         String httpMethod = httpRequest.getHttpMethod();
         Request request = null;
         switch (httpMethod) {
@@ -83,8 +77,7 @@ public class SimpleOkHttpImpl implements SimpleHttp {
                 break;
             // TODO: 2022/9/7 暂时只做了get/post两种请求，后续可继续完善
             default:
-                //默认发送get请求，请求类型判断交给服务端来鉴别
-                request = builder.url(httpRequest.getUrl()).build();
+                request = builder.build();
                 break;
         }
 

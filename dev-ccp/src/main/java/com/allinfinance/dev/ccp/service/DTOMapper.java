@@ -19,6 +19,6 @@ public interface DTOMapper {
 
     HttpRequest convertToHttpRequest(HttpRequestDTO requestDTO);
 
-    @Mapping(source = "body", target = "response")
+    @Mapping(source = "response", target = "body")
     HttpResponseDTO convertToHttpResponseDTO(HttpResponse response);
 }
