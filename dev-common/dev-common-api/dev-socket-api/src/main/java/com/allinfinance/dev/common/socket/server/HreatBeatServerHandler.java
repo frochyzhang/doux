@@ -29,8 +29,8 @@ public class HreatBeatServerHandler extends ChannelInboundHandlerAdapter {
         String s = byteBuf.toString(StandardCharsets.UTF_8);
         if ("ping".equals(s)){
             byteBuf.clear();
-            byteBuf.writeBytes("pong".getBytes());
-            ctx.writeAndFlush(byteBuf);
+//            byteBuf.writeBytes("pong".getBytes());
+//            ctx.writeAndFlush(byteBuf);
             byteBuf.release();
         }else {
             ctx.fireChannelRead(msg);

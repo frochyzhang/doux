@@ -11,7 +11,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
-import org.apache.mina.core.service.IoAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.*;
@@ -31,12 +28,12 @@ import java.util.concurrent.*;
  * @date 2022/09/08 10:00
  */
 @Configuration
-public class ShortSwitchServer implements DisposableBean{
+public class ShortSwitchServer implements DisposableBean, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(ShortSwitchServer.class);
 
     @Autowired
-    private List<NettySocketBean> socketBeans;
+    private List<NettySocketBean> nettySocketBeans;
 
     private static ThreadPoolExecutor threadPoolExecutor;
 
@@ -46,29 +43,29 @@ public class ShortSwitchServer implements DisposableBean{
     @Bean
     @Order
     public void init() {
-
-        CountDownLatch countDownLatch = new CountDownLatch(socketBeans.size());
-        ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                .setNamePrefix("socket-server-pool-")
-                .setDaemon(true)
-                .build();
-        threadPoolExecutor = new ThreadPoolExecutor(socketBeans.size(), socketBeans.size(), 0L,
-                TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
-
-        logger.info("正在启动应用，请稍后!");
-        socketBeans.forEach(nettySocketBean -> {
-            threadPoolExecutor.submit(() -> {
-                try {
-                    initNettyServer(nettySocketBean);
-                } catch (Exception e) {
-                    logger.error("[ {}] 启动服务失败! 参数为{}", nettySocketBean.getName(), nettySocketBean, e);
-                    System.exit(0);
-                }
-
-                countDownLatch.countDown();
-                logger.info("{}-Server Thread start!", nettySocketBean.getName());
-            });
-        });
+        System.out.println("----------------init----------------");
+//        CountDownLatch countDownLatch = new CountDownLatch(nettySocketBeans.size());
+//        ThreadFactory threadFactory = new ThreadFactoryBuilder()
+//                .setNamePrefix("socket-server-pool-")
+//                .setDaemon(true)
+//                .build();
+//        threadPoolExecutor = new ThreadPoolExecutor(nettySocketBeans.size(), nettySocketBeans.size(), 0L,
+//                TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+//
+//        logger.info("正在启动应用，请稍后!");
+//        nettySocketBeans.forEach(nettySocketBean -> {
+//            threadPoolExecutor.submit(() -> {
+//                try {
+//                    initNettyServer(nettySocketBean);
+//                } catch (Exception e) {
+//                    logger.error("[ {}] 启动服务失败! 参数为{}", nettySocketBean.getName(), nettySocketBean, e);
+//                    System.exit(0);
+//                }
+//
+//                countDownLatch.countDown();
+//                logger.info("{}-Server Thread start!", nettySocketBean.getName());
+//            });
+//        });
     }
 
     private void initNettyServer(NettySocketBean nettySocketBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -111,14 +108,6 @@ public class ShortSwitchServer implements DisposableBean{
                         pipeline.addLast(messageDecoder)
                                 .addLast(messageEncoder)
                                 .addLast(Handler);
-
-
-                        pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                            @Override
-                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                ctx.writeAndFlush("收到消息！！");
-                            }
-                        });
                     }
                 });
         logger.debug("服务端初始化完成");
@@ -137,5 +126,31 @@ public class ShortSwitchServer implements DisposableBean{
     @Override
     public void destroy() throws Exception {
 
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        CountDownLatch countDownLatch = new CountDownLatch(nettySocketBeans.size());
+        ThreadFactory threadFactory = new ThreadFactoryBuilder()
+                .setNamePrefix("socket-server-pool-")
+                .setDaemon(true)
+                .build();
+        threadPoolExecutor = new ThreadPoolExecutor(nettySocketBeans.size(), nettySocketBeans.size(), 0L,
+                TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+
+        logger.info("正在启动应用，请稍后!");
+        nettySocketBeans.forEach(nettySocketBean -> {
+            threadPoolExecutor.submit(() -> {
+                try {
+                    initNettyServer(nettySocketBean);
+                } catch (Exception e) {
+                    logger.error("[ {}] 启动服务失败! 参数为{}", nettySocketBean.getName(), nettySocketBean, e);
+                    System.exit(0);
+                }
+
+                countDownLatch.countDown();
+                logger.info("{}-Server Thread start!", nettySocketBean.getName());
+            });
+        });
     }
 }

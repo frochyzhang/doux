@@ -21,14 +21,12 @@ public class Message8583Encoder  extends MessageToByteEncoder {
     protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, ByteBuf byteBuf) throws Exception {
         if (StringUtils.isEmpty(msg.toString())) {
             logger.debug("消息为空，发送长度为0的消息头");
-           //byteBuf.writeBytes("0000".getBytes());
             return;
         }
         logger.debug("编码前消息：content[" + msg.toString() + "]");
         byte[] body = EncodeUtil.bcd((String) msg);
         int bodyLen = 0;
         bodyLen = body.length;
-        //byteBuf.writeBytes(String.format("%0" + 4 + "d", bodyLen).getBytes());
         byteBuf.writeBytes(body);
     }
 }
