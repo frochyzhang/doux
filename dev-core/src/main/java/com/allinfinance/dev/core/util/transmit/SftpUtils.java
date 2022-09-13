@@ -16,6 +16,7 @@ import java.util.Properties;
  * @author hongmr
  * @date 2017/2/22
  */
+@Deprecated
 public class SftpUtils {
     private static Logger logger = LoggerFactory.getLogger(SftpUtils.class);
 

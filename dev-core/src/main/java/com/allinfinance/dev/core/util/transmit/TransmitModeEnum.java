@@ -8,6 +8,7 @@ import java.util.Arrays;
  * @author hongmr
  * @date 2017/2/22
  */
+@Deprecated
 public enum TransmitModeEnum {
     MODE_FTP("00", "FTP"),
     MODE_SFTP("01", "SFTP");

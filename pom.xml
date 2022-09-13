@@ -67,6 +67,8 @@
         <mybatis.version>2.2.1</mybatis.version>
         <skywalking.version>8.6.0</skywalking.version>
         <dom4j.version>2.1.3</dom4j.version>
+        <sshj.version>0.34.0</sshj.version>
+        <camel.version>3.18.1</camel.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
         <jmh.version>1.35</jmh.version>
@@ -557,6 +559,21 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>1.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hierynomus</groupId>
+                <artifactId>sshj</artifactId>
+                <version>${sshj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-ftp</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-catalog</artifactId>
+                <version>${camel.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

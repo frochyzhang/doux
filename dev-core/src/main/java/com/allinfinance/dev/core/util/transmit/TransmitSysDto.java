@@ -8,6 +8,7 @@ import java.io.Serializable;
  * @author hongmr
  * @date 2017/2/22
  */
+@Deprecated
 public class TransmitSysDto implements Serializable {
     private String orgId;
     private String sysSource;

@@ -6,6 +6,7 @@ package com.allinfinance.dev.core.util.transmit;
  * @author hongmr
  * @date 2017/3/30
  */
+@Deprecated
 public interface TransmitService {
 
     boolean fileDownload(TransmitSysDto sourceSys, String sourcePath, String fileName);

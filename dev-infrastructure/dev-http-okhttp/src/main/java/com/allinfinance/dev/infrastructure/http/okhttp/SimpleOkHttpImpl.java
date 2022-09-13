@@ -5,13 +5,9 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;
 import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
 import com.allinfinance.dev.framework.http.driver.dto.HttpResponse;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import okhttp3.*;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**

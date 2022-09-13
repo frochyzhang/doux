@@ -1,6 +1,6 @@
 package com.allinfinance.dev.ccp.service;
 
-import com.alibaba.nacos.common.http.client.request.HttpClientRequest;
+import cn.hutool.extra.spring.SpringUtil;
 import com.allinfinance.dev.common.api.http.HttpClientService;
 import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 import com.allinfinance.dev.common.api.http.dto.HttpRequestDTO;
@@ -8,21 +8,20 @@ import com.allinfinance.dev.common.api.http.dto.HttpResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openjdk.jmh.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.bind.annotation.RestController;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.TimeUnit;
 
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.All)
+@OutputTimeUnit(TimeUnit.SECONDS)
 @SpringBootTest
-class HttpClientServiceExtraImplTest {
+public class HttpClientServiceExtraImplTest extends AbstractBenchmark {
 
     @Autowired
     private HttpClientService httpClientService;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void request_get() {
@@ -37,8 +36,9 @@ class HttpClientServiceExtraImplTest {
         Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
     }
 
-    @Test
-    void request_post() {
+    @Benchmark
+    public void request_post() {
+        httpClientService = SpringUtil.getBean(HttpClientService.class);
         HttpRequestDTO requestDTO = new HttpRequestDTO();
         requestDTO.setUrl("http://localhost:8001/test/post/zhangsan");
         requestDTO.setHttpMethod(HttpMethod.POST);
@@ -51,8 +51,8 @@ class HttpClientServiceExtraImplTest {
         requestDTO.setRetryTime(3);
         HttpResponseDTO responseDTO = httpClientService.request(requestDTO);
         System.out.println(responseDTO);
-        Assertions.assertNotNull(responseDTO, "响应dto为空");
-        Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
+//        Assertions.assertNotNull(responseDTO, "响应dto为空");
+//        Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
     }
 
     @Test

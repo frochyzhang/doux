@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 /**
- * FtpUtils
+ * 该模块将于1.6.0版本中删除，请及时更新。
+ * 详见{@link com.allinfinance.dev.common.util.transmit.FtpUtils}
  *
  * @author hongmr
  * @date 2017/1/10
  */
+@Deprecated
 public class FtpUtils {
     private static Logger logger = LoggerFactory.getLogger(FtpUtils.class);
 
@@ -35,7 +37,6 @@ public class FtpUtils {
                                      String password, String ftpPath, String ftpFileName,
                                      InputStream input) throws Exception {
         FTPClient ftp = new FTPClient();
-
         try {
             int replyCode;
             ftp.connect(host, port);
