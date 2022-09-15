@@ -15,7 +15,8 @@
     <modules>
         <module>dev-connection</module>
         <module>dev-extension</module>
-        <module>dev-framework-socket</module>
+        <module>dev-socket-server</module>
+        <module>dev-socket-client</module>
     </modules>
 
     <properties>

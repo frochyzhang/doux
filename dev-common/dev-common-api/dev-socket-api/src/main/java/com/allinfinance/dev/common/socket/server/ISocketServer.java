@@ -38,7 +38,7 @@ public class ISocketServer {
                         pipeline.addLast(new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                ctx.writeAndFlush("收到消息！！");
+                                ctx.writeAndFlush(msg);
                             }
                         });
                     }

@@ -21,6 +21,18 @@
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-client-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-client-netty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-core</artifactId>
         </dependency>
     </dependencies>

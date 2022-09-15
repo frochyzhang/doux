@@ -136,7 +136,7 @@ public class ShortSwitchServer implements DisposableBean {
     @Override
     public void destroy() {
         threadPoolExecutor.shutdown();
-        logger.info("socket server thread pool is shutting down!");
+        logger.info("socket MinaServer thread pool is shutting down!");
     }
 
     public static void closeMinaServer(int port) {

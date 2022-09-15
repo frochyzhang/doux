@@ -161,6 +161,36 @@
                 <artifactId>dev-connection-netty</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-server</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-common-util</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-client-driver</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-client-wrapper</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-server-driver</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-client-netty</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

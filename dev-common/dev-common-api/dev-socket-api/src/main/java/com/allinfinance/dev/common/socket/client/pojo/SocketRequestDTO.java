@@ -12,7 +12,7 @@ public class SocketRequestDTO {
     /**
      * 目标端口
      */
-    private int remotePort;
+    private String remotePort;
     /**
      * 客户端名称（作为hashMap的key），例如：无卡非金融-qpsDiy，无卡金融：qps8583
      */
@@ -20,42 +20,51 @@ public class SocketRequestDTO {
     /**
      * 服务端超时时间
      */
-    private int timeOutSeconds;
+    private String timeOutSeconds = "30";
     /**
      * 是否检查mac
      */
-    private boolean checkMac;
-    /**
-     * 报文内容
-     */
-    private String message;
+    private String checkMac = "false";
     /**
      * 报文长度
      */
-    private int msgLengthSize;
+    private String msgLengthSize = "6";
     /**
      * 报文编码格式
      */
-    private String msgEncode;
+    private String msgEncode = "UTF-8";
     /**
-     * 目标端口
+     * 底层实现的选择
      */
-    // todo
-    private Boolean keepAlive;
+    private String connectionDriver = "socketNetty";
+    /**
+     * 客户端实现
+     */
+    private String socketClient = "default";
 
     public SocketRequestDTO() {
     }
 
-    public SocketRequestDTO(String remoteIp, int remotePort, String clientAppName, int timeOutSeconds, boolean checkMac, String message, int msgLengthSize, String msgEncode, Boolean keepAlive) {
+    public SocketRequestDTO(String remoteIp, String remotePort, String clientAppName) {
         this.remoteIp = remoteIp;
         this.remotePort = remotePort;
         this.clientAppName = clientAppName;
-        this.timeOutSeconds = timeOutSeconds;
-        this.checkMac = checkMac;
-        this.message = message;
+    }
+
+    public SocketRequestDTO(String remoteIp, String remotePort, String clientAppName, String msgLengthSize, String msgEncode) {
+        this.remoteIp = remoteIp;
+        this.remotePort = remotePort;
+        this.clientAppName = clientAppName;
         this.msgLengthSize = msgLengthSize;
         this.msgEncode = msgEncode;
-        this.keepAlive = keepAlive;
+    }
+
+    public String getConnectionDriver() {
+        return connectionDriver;
+    }
+
+    public void setConnectionDriver(String connectionDriver) {
+        this.connectionDriver = connectionDriver;
     }
 
     public String getRemoteIp() {
@@ -66,11 +75,11 @@ public class SocketRequestDTO {
         this.remoteIp = remoteIp;
     }
 
-    public int getRemotePort() {
+    public String getRemotePort() {
         return remotePort;
     }
 
-    public void setRemotePort(int remotePort) {
+    public void setRemotePort(String remotePort) {
         this.remotePort = remotePort;
     }
 
@@ -82,35 +91,27 @@ public class SocketRequestDTO {
         this.clientAppName = clientAppName;
     }
 
-    public int getTimeOutSeconds() {
+    public String getTimeOutSeconds() {
         return timeOutSeconds;
     }
 
-    public void setTimeOutSeconds(int timeOutSeconds) {
+    public void setTimeOutSeconds(String timeOutSeconds) {
         this.timeOutSeconds = timeOutSeconds;
     }
 
-    public boolean isCheckMac() {
+    public String getCheckMac() {
         return checkMac;
     }
 
-    public void setCheckMac(boolean checkMac) {
+    public void setCheckMac(String checkMac) {
         this.checkMac = checkMac;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getMsgLengthSize() {
+    public String getMsgLengthSize() {
         return msgLengthSize;
     }
 
-    public void setMsgLengthSize(int msgLengthSize) {
+    public void setMsgLengthSize(String msgLengthSize) {
         this.msgLengthSize = msgLengthSize;
     }
 
@@ -122,12 +123,12 @@ public class SocketRequestDTO {
         this.msgEncode = msgEncode;
     }
 
-    public Boolean getKeepAlive() {
-        return keepAlive;
+    public String getSocketClient() {
+        return socketClient;
     }
 
-    public void setKeepAlive(Boolean keepAlive) {
-        this.keepAlive = keepAlive;
+    public void setSocketClient(String socketClient) {
+        this.socketClient = socketClient;
     }
 
     @Override
@@ -138,10 +139,9 @@ public class SocketRequestDTO {
                 ", clientAppName='" + clientAppName + '\'' +
                 ", timeOutSeconds=" + timeOutSeconds +
                 ", checkMac=" + checkMac +
-                ", message='" + message + '\'' +
                 ", msgLengthSize=" + msgLengthSize +
                 ", msgEncode='" + msgEncode + '\'' +
-                ", keepAlive=" + keepAlive +
+                ", socketClient='" + socketClient + '\'' +
                 '}';
     }
 }

@@ -39,10 +39,6 @@ public class Message8583Decoder extends ByteToMessageDecoder {
                     logger.debug("报文长度含有非数字内容，关闭连接:  " + Arrays.toString(bLen));
                     channelHandlerContext.channel().closeFuture();
                 }
-                if (len == 0) {
-                    logger.debug("消息为空，无需处理");
-                    return;
-                }
                 if (byteBuf.readableBytes() < len) {
                     logger.debug("长度与消息真实长度不符，重置读");
                     byteBuf.resetReaderIndex();
@@ -53,8 +49,10 @@ public class Message8583Decoder extends ByteToMessageDecoder {
                 if (queue != null) {
                     logger.debug("使用阻塞消息队列，获取结果");
                     queue.offer(new SocketResponseDTO(true,EncodeUtil.hex(bBody)));
+                }else {
+                    // 服务端
+                    list.add(EncodeUtil.hex(bBody));
                 }
-                channelHandlerContext.channel().closeFuture();
             }else {
                 logger.debug("报文长度未到齐:  " + byteBuf.readableBytes());
             }

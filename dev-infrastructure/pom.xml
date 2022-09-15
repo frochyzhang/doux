@@ -14,6 +14,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>dev-connection-netty</module>
+        <module>dev-socket-server-netty</module>
+        <module>dev-socket-client-netty</module>
     </modules>
 
     <properties>

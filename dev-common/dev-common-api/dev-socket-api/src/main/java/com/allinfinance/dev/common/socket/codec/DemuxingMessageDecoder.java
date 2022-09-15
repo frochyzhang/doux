@@ -56,10 +56,6 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                     logger.debug("报文长度含有非数字内容，关闭连接: {} ", bLen);
                     channelHandlerContext.channel().closeFuture();
                 }
-//                if (len == 0) {
-//                    logger.debug("消息为空，无需处理");
-//                    return;
-//                }
                 if (byteBuf.readableBytes() < len) {
                     logger.debug("长度与消息真实长度不符，重置读");
                     byteBuf.resetReaderIndex();

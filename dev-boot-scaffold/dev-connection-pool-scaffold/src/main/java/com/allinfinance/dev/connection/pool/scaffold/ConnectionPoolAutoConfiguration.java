@@ -1,8 +1,8 @@
 package com.allinfinance.dev.connection.pool.scaffold;
 
+import com.allinfinance.dev.common.util.convert.PropertiesParseUtils;
 import com.allinfinance.dev.connection.pool.scaffold.configure.ConnectionPoolConfigure;
 import com.allinfinance.dev.connection.pool.scaffold.configure.ScaffoldConfigure;
-import com.allinfinance.dev.connection.pool.scaffold.util.PropertiesParseUtils;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadataFactory;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
@@ -42,8 +42,8 @@ public class ConnectionPoolAutoConfiguration {
                     logger.info("服务端配置信息：{}", metadataConfigure);
 
                     Properties properties = new Properties();
-                    PropertiesParseUtils.fromServerMetadataConfigure(properties, metadataConfigure);
-                    PropertiesParseUtils.fromConnectionPoolConfigure(properties, connectionPoolConfigure);
+                    PropertiesParseUtils.fromBean(properties, metadataConfigure);
+                    PropertiesParseUtils.fromBean(properties, connectionPoolConfigure);
                     ExtensionLoader<ServerMetadataFactory> serverMetadataExtensionLoader = ExtensionLoaderFactory.getExtensionLoader(ServerMetadataFactory.class);
                     ServerMetadataFactory factory = serverMetadataExtensionLoader.getExtension(connectionPoolConfigure.getConnectionPoolType());
 

@@ -25,8 +25,6 @@ public class Message8583Encoder  extends MessageToByteEncoder {
         }
         logger.debug("编码前消息：content[" + msg.toString() + "]");
         byte[] body = EncodeUtil.bcd((String) msg);
-        int bodyLen = 0;
-        bodyLen = body.length;
         byteBuf.writeBytes(body);
     }
 }

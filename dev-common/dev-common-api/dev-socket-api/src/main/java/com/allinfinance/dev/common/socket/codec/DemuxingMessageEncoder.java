@@ -32,8 +32,7 @@ public class DemuxingMessageEncoder extends MessageToByteEncoder<String> {
     protected void encode(ChannelHandlerContext channelHandlerContext, String msg, ByteBuf byteBuf) throws Exception {
         if (StringUtils.isEmpty(msg)) {
             if (this.getMsgLengthSize() != 0) {
-                logger.debug("消息为空，发送长度为0的消息头");
-                //byteBuf.writeBytes(String.format("%0" + this.getMsgLengthSize() + "d", 0).getBytes());
+                logger.debug("消息为空，无需发送");
             }
             return;
         }
