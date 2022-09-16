@@ -1,5 +1,7 @@
 package com.allinfinance.dev.connection.scaffold.server;
 
+import com.allinfinance.dev.connection.scaffold.coder.DefaultDecoder;
+import com.allinfinance.dev.connection.scaffold.coder.DefaultEncoder;
 import com.allinfinance.dev.connection.scaffold.netty.codec.decoder.ByteToHexDecoder;
 import com.allinfinance.dev.connection.scaffold.netty.codec.encoder.HexToByteEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -35,16 +37,19 @@ public class NettyServer {
                         public void initChannel(SocketChannel ch) throws Exception {
                             //更换对应的handler
                             ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(1024 * 64));
+                            ch.pipeline().addLast(new DefaultEncoder())
+                                    .addLast(new DefaultDecoder());
 
-                            ch.pipeline()
-                                    .addLast(new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
-                                    .addLast(new LengthFieldPrepender(2))
-                                    .addLast(new ByteToHexDecoder())
-                                    .addLast(new HexToByteEncoder())
-                                    .addLast(new EchoServerHandler());
+//                            ch.pipeline()
+//                                    .addLast(new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
+//                                    .addLast(new LengthFieldPrepender(2))
+//                                    .addLast(new ByteToHexDecoder())
+//                                    .addLast(new HexToByteEncoder())
+//                                    .addLast(new EchoServerHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 8)
+                    .option(ChannelOption.SO_LINGER,0)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             // Bind and start to accept incoming connections.

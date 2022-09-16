@@ -160,4 +160,34 @@ public class SftpUtils {
         return true;
     }
 
+
+    /**
+     *
+     * @param remoteIp
+     * @param remotePort
+     * @param username
+     * @param password
+     * @param timeout
+     * @param isPasswordFree
+     * @return
+     * @throws IOException
+     */
+    private static SFTPClient getSFTPClient(String remoteIp, int remotePort, String username, String password,
+                                            int timeout, boolean isPasswordFree) throws IOException {
+        SSHClient ssh = new SSHClient();
+        ssh.loadKnownHosts();
+        ssh.setConnectTimeout(timeout);
+        ssh.loadKnownHosts();
+        ssh.addHostKeyVerifier(new PromiscuousVerifier());
+        ssh.connect(remoteIp, remotePort);
+
+        if (isPasswordFree) {
+            logger.debug("使用ssh免密登录");
+            ssh.authPublickey(username);
+        } else {
+            logger.debug("使用密码验证登录");
+            ssh.authPassword(username, password);
+        }
+        return ssh.newSFTPClient();
+    }
 }

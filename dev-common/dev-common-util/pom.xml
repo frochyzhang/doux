@@ -62,13 +62,5 @@
             <groupId>com.hierynomus</groupId>
             <artifactId>sshj</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-ftp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-catalog</artifactId>
-        </dependency>
     </dependencies>
 </project>
