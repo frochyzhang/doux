@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 public class SocketNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(SocketNettyConnection.class);
 
-    private final EventLoopGroup loopGroup = new NioEventLoopGroup();
+    private final EventLoopGroup loopGroup = new NioEventLoopGroup(16);
 
     private ChannelFuture channelFuture;
 
@@ -81,6 +81,8 @@ public class SocketNettyConnection implements Connection {
                     .group(loopGroup)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.AUTO_CLOSE,true)
+                    // TODO: 2022/9/22 避免使用SO_LINGER
+                    .option(ChannelOption.SO_LINGER,0)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {

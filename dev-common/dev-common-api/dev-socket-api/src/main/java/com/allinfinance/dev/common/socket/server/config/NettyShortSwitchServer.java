@@ -2,7 +2,6 @@ package com.allinfinance.dev.common.socket.server.config;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import com.allinfinance.dev.common.socket.server.Bean.NettySocketBean;
-import com.allinfinance.dev.common.socket.server.HreatBeatServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -67,11 +66,6 @@ public class NettyShortSwitchServer implements DisposableBean, InitializingBean 
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
-                        if (nettySocketBean.getKeepAlive()){
-                            logger.info("开启服务端保持连接!");
-                            pipeline.addLast(new IdleStateHandler(5, 10, 0, TimeUnit.SECONDS))
-                                    .addLast(new HreatBeatServerHandler());
-                        }
                         pipeline.addLast(messageDecoder)
                                 .addLast(messageEncoder)
                                 .addLast(handler);
@@ -114,7 +108,6 @@ public class NettyShortSwitchServer implements DisposableBean, InitializingBean 
                 logger.error("[ {}] 启动服务失败! 参数为{}", nettySocketBean.getName(), nettySocketBean, e);
                 System.exit(0);
             }
-
             countDownLatch.countDown();
             logger.info("{}-Server Thread start!", nettySocketBean.getName());
         }));

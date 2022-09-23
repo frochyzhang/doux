@@ -1,5 +1,6 @@
 package com.allinfinace.dev.infrastrustructure.socket.client.netty.codec;
 
+import com.allinfinance.dev.common.util.convert.EncodeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -17,13 +18,11 @@ public class Message8583Encoder  extends MessageToByteEncoder {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, ByteBuf byteBuf) throws Exception {
         if (StringUtils.isEmpty(msg.toString())) {
-            logger.debug("消息为空，发送长度为0的消息头");
+            logger.debug("消息为空，直接返回");
             return;
         }
         logger.debug("编码前消息：content[" + msg.toString() + "]");
-//        byte[] body = EncodeUtil.bcd((String) msg);
-//        String s = Integer.toHexString(Integer.parseInt((String) msg));
-//        byte[] bytes = s.getBytes();
-//        byteBuf.writeBytes(body);
+        byte[] body = EncodeUtil.bcd((String) msg);
+        byteBuf.writeBytes(body);
     }
 }

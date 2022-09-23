@@ -24,7 +24,6 @@
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-socket-client-netty</artifactId>
-            <version>1.5.0-RELEASE</version>
         </dependency>
     </dependencies>
 </project>

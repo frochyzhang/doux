@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.socket.server;
+package com.allinfinance.dev.common.socket.server.config;
 
 import com.allinfinance.dev.common.socket.codec.DemuxingMessageDecoder;
 import com.allinfinance.dev.common.socket.codec.DemuxingMessageEncoder;
@@ -25,7 +25,8 @@ public class ISocketServer {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_LINGER, 0)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -33,11 +34,10 @@ public class ISocketServer {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new DemuxingMessageDecoder(4, "UTF-8"))
                                 .addLast(new DemuxingMessageEncoder(4, "UTF-8"));
-//                        pipeline.addLast(new IdleStateHandler(5, 10, 20, TimeUnit.SECONDS));
-//                        pipeline.addLast(new HreatBeatServerHandler());
                         pipeline.addLast(new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                System.out.println(ctx.channel().id());
                                 ctx.writeAndFlush(msg);
                             }
                         });

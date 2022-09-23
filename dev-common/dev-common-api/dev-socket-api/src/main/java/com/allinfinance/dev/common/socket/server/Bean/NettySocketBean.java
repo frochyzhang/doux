@@ -8,20 +8,17 @@ public class NettySocketBean {
 
     private String name;
     private Integer port;
-
     private Integer processorCount;
     private Integer threadCount;
-
     private Integer decodeMsgLength;
     private Integer encodeMsgLength;
     private String decodeCharset;
     private String encodeCharset;
-
     private Integer bufferSize;
     private Integer timeOut;
 
     /**
-     * 具体业务处理
+     * 具体业务处理器
      */
     private String handlerClassName;
     /**

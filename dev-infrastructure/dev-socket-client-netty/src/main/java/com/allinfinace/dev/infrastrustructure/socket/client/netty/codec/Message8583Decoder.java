@@ -1,5 +1,6 @@
 package com.allinfinace.dev.infrastrustructure.socket.client.netty.codec;
 
+import com.allinfinance.dev.common.util.convert.EncodeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -42,8 +43,8 @@ public class Message8583Decoder extends ByteToMessageDecoder {
                 }
                 byte[] bBody = new byte[len];
                 byteBuf.readBytes(bBody);
-                logger.debug("解码结果,result={}",new BigInteger(1, bBody).toString(16));
-                list.add(new BigInteger(1, bBody).toString(16));
+                logger.debug("解码结果,result={}",EncodeUtil.hex(bBody));
+                list.add(EncodeUtil.hex(bBody));
             }else {
                 logger.debug("报文长度未到齐:  " + byteBuf.readableBytes());
             }

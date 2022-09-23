@@ -26,7 +26,7 @@ public abstract class AbstractBenchmark {
                 .forks(0)
                 .threads(8)
                 .shouldDoGC(true)
-                .shouldFailOnError(true)
+                .shouldFailOnError(false)
                 .resultFormat(ResultFormatType.JSON)
                 .result("./result.json")
                 .jvmArgs("-server")

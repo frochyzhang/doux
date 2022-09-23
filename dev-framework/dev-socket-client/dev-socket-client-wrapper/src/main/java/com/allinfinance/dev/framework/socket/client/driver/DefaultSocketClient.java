@@ -13,8 +13,8 @@ import java.util.Properties;
  * @date 2022/09/15 10:27
  */
 @Extension("default")
-public class defaultSocketClient implements SocketClient {
-    private static Logger logger = LoggerFactory.getLogger(defaultSocketClient.class);
+public class DefaultSocketClient implements SocketClient {
+    private static Logger logger = LoggerFactory.getLogger(DefaultSocketClient.class);
     /**
      * 请求信息发送
      *
