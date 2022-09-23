@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dev-boot-scaffold</artifactId>
         <groupId>com.allinfinance.dev</groupId>
-        <version>1.5.0-RELEASE</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-extension</artifactId>
+            <artifactId>dev-socket-server-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -42,7 +42,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>

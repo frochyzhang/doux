@@ -42,8 +42,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.5.0-RELEASE</revision>
-        <dev.version>1.5.0-RELEASE</dev.version>
+        <revision>1.5.0-SNAPSHOT</revision>
+        <dev.version>1.5.0-SNAPSHOT</dev.version>
         <nds.version>2.2.149854</nds.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

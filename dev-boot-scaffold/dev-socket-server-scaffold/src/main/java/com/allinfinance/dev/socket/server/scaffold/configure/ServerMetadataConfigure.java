@@ -12,23 +12,23 @@ public class ServerMetadataConfigure {
     /**
      * 服务端端口
      */
-    private Integer port;
+    private String port;
     /**
      * 解码报文头长度：4 、 6
      */
-    private Integer decodeMsgLength;
+    private String decodeMsgLength = "6";
     /**
      * 编码报文头长度：4 、 6
      */
-    private Integer encodeMsgLength;
+    private String encodeMsgLength = "6";
     /**
      * 服务端解码格式 ：UTF-8
      */
-    private String decodeCharset;
+    private String decodeCharset = "UTF-8";
     /**
      * 服务端编码格式 ：UTF-8
      */
-    private String encodeCharset;
+    private String encodeCharset = "UTF-8";
     /**
      * 具体业务处理器
      */
@@ -36,19 +36,15 @@ public class ServerMetadataConfigure {
     /**
      * 解码器
      */
-    private String decoderClassName;
+    private String decoderClassName = "com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageDecoder";
     /**
      * 编码器
      */
-    private String encoderClassName;
+    private String encoderClassName = "com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageEncoder";
     /**
      * 服务端驱动：netty
      */
-    private String serverDriver;
-    /**
-     * 服务端底层实现类：default
-     */
-    private String socketServer;
+    private String serverDriver = "netty";
 
     public ServerMetadataConfigure() {
     }
@@ -61,27 +57,27 @@ public class ServerMetadataConfigure {
         this.name = name;
     }
 
-    public Integer getPort() {
+    public String getPort() {
         return port;
     }
 
-    public void setPort(Integer port) {
+    public void setPort(String port) {
         this.port = port;
     }
 
-    public Integer getDecodeMsgLength() {
+    public String getDecodeMsgLength() {
         return decodeMsgLength;
     }
 
-    public void setDecodeMsgLength(Integer decodeMsgLength) {
+    public void setDecodeMsgLength(String decodeMsgLength) {
         this.decodeMsgLength = decodeMsgLength;
     }
 
-    public Integer getEncodeMsgLength() {
+    public String getEncodeMsgLength() {
         return encodeMsgLength;
     }
 
-    public void setEncodeMsgLength(Integer encodeMsgLength) {
+    public void setEncodeMsgLength(String encodeMsgLength) {
         this.encodeMsgLength = encodeMsgLength;
     }
 
@@ -133,14 +129,6 @@ public class ServerMetadataConfigure {
         this.serverDriver = serverDriver;
     }
 
-    public String getSocketServer() {
-        return socketServer;
-    }
-
-    public void setSocketServer(String socketServer) {
-        this.socketServer = socketServer;
-    }
-
     @Override
     public String toString() {
         return "ServerMetadataConfigure{" +
@@ -154,7 +142,6 @@ public class ServerMetadataConfigure {
                 ", decoderClassName='" + decoderClassName + '\'' +
                 ", encoderClassName='" + encoderClassName + '\'' +
                 ", ServerDriver='" + serverDriver + '\'' +
-                ", socketServer='" + socketServer + '\'' +
                 '}';
     }
 }

@@ -168,11 +168,6 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-server</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-common-util</artifactId>
                 <version>${dev.version}</version>
             </dependency>
@@ -193,7 +188,17 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-server-wrapper</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket-server-driver</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-server-boot-starter</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>

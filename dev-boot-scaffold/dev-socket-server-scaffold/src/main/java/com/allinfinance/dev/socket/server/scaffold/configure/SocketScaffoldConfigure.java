@@ -3,6 +3,7 @@ package com.allinfinance.dev.socket.server.scaffold.configure;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -14,20 +15,20 @@ public class SocketScaffoldConfigure {
     /**
      * Socket服务端参数列表
      */
-    private List<ServerMetadataConfigure> serverMetadataMap;
+    private List<ServerMetadataConfigure> serverMetadataList;
 
-    public void setServerMetadataMap(List<ServerMetadataConfigure> serverMetadataMap) {
-        this.serverMetadataMap = serverMetadataMap;
+    public void setServerMetadataList(List<ServerMetadataConfigure> serverMetadataList) {
+        this.serverMetadataList = serverMetadataList;
     }
 
-    public List<ServerMetadataConfigure> getServerMetadataMap() {
-        return serverMetadataMap;
+    public List<ServerMetadataConfigure> getServerMetadataList() {
+        return serverMetadataList;
     }
 
     @Override
     public String toString() {
         return "SocketScaffoldConfigure{" +
-                "serverMetadataMap=" + serverMetadataMap +
+                "serverMetadataMap=" + serverMetadataList +
                 '}';
     }
 }

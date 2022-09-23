@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 @Extension("default")
 public class DefaultSocketClient implements SocketClient {
-    private static Logger logger = LoggerFactory.getLogger(DefaultSocketClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSocketClient.class);
     /**
      * 请求信息发送
      *
