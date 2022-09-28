@@ -15,6 +15,7 @@ import java.util.Properties;
 @Extension("default")
 public class DefaultSocketClient implements SocketClient {
     private static final Logger logger = LoggerFactory.getLogger(DefaultSocketClient.class);
+
     /**
      * 请求信息发送
      *
@@ -35,6 +36,7 @@ public class DefaultSocketClient implements SocketClient {
             }
             return response;
         } catch (Throwable e) {
+            logger.error("响应消息为空", e);
             return null;
         }
     }

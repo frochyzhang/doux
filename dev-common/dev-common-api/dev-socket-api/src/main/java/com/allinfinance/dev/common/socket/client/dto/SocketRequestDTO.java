@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.socket.client.pojo;
+package com.allinfinance.dev.common.socket.client.dto;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -20,7 +20,7 @@ public class SocketRequestDTO {
     /**
      * 服务端超时时间
      */
-    private String timeOutSeconds = "30";
+    private String timeout = "30000";
     /**
      * 是否检查mac
      */
@@ -41,6 +41,10 @@ public class SocketRequestDTO {
      * 客户端实现
      */
     private String socketClient = "default";
+    /**
+     * 是否开启SO_LINGER
+     */
+    private String soLingerEnable = "false";
 
     public SocketRequestDTO() {
     }
@@ -57,6 +61,14 @@ public class SocketRequestDTO {
         this.clientAppName = clientAppName;
         this.msgLengthSize = msgLengthSize;
         this.msgEncode = msgEncode;
+    }
+
+    public String getSoLingerEnable() {
+        return soLingerEnable;
+    }
+
+    public void setSoLingerEnable(String soLingerEnable) {
+        this.soLingerEnable = soLingerEnable;
     }
 
     public String getConnectionDriver() {
@@ -91,12 +103,12 @@ public class SocketRequestDTO {
         this.clientAppName = clientAppName;
     }
 
-    public String getTimeOutSeconds() {
-        return timeOutSeconds;
+    public String getTimeout() {
+        return timeout;
     }
 
-    public void setTimeOutSeconds(String timeOutSeconds) {
-        this.timeOutSeconds = timeOutSeconds;
+    public void setTimeout(String timeout) {
+        this.timeout = timeout;
     }
 
     public String getCheckMac() {
@@ -135,13 +147,15 @@ public class SocketRequestDTO {
     public String toString() {
         return "SocketRequestDTO{" +
                 "remoteIp='" + remoteIp + '\'' +
-                ", remotePort=" + remotePort +
+                ", remotePort='" + remotePort + '\'' +
                 ", clientAppName='" + clientAppName + '\'' +
-                ", timeOutSeconds=" + timeOutSeconds +
-                ", checkMac=" + checkMac +
-                ", msgLengthSize=" + msgLengthSize +
+                ", timeout='" + timeout + '\'' +
+                ", checkMac='" + checkMac + '\'' +
+                ", msgLengthSize='" + msgLengthSize + '\'' +
                 ", msgEncode='" + msgEncode + '\'' +
+                ", connectionDriver='" + connectionDriver + '\'' +
                 ", socketClient='" + socketClient + '\'' +
+                ", soLingerEnable='" + soLingerEnable + '\'' +
                 '}';
     }
 }

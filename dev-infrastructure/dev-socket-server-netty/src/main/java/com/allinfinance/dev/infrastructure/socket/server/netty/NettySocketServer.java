@@ -9,15 +9,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -26,33 +24,33 @@ import java.util.concurrent.ConcurrentHashMap;
 @Extension("netty")
 public class NettySocketServer implements SocketServer {
 
-    private Logger logger = LoggerFactory.getLogger(NettySocketServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(NettySocketServer.class);
 
     private static final ConcurrentHashMap<Integer, List<EventLoopGroup>> EVENT_LOOP_GROUP_MAP = new ConcurrentHashMap<>();
 
+    /**
+     * 根据传入properties配置开启具体服务端口
+     *
+     * @param properties 服务端口配置参数
+     */
     @Override
     public void start(Properties properties) {
-
-        String decoderClassName = properties.getProperty("decoderClassName");
-        String decodeCharset = properties.getProperty("decodeCharset");
-        String encoderClassName = properties.getProperty("encoderClassName");
-        int encodeMsgLength = Integer.parseInt(properties.getProperty("encodeMsgLength"));
-        String encodeCharset = properties.getProperty("encodeCharset");
-        String handlerClassName = properties.getProperty("handlerClassName");
         String name = properties.getProperty("name");
         int port = Integer.parseInt(properties.getProperty("port"));
+        String encodeCharset = properties.getProperty("encodeCharset");
+        String decodeCharset = properties.getProperty("decodeCharset");
+        String encoderClassName = properties.getProperty("encoderClassName");
+        String decoderClassName = properties.getProperty("decoderClassName");
+        String handlerClassName = properties.getProperty("handlerClassName");
         int decodeMsgLength = Integer.parseInt(properties.getProperty("decodeMsgLength"));
+        int encodeMsgLength = Integer.parseInt(properties.getProperty("encodeMsgLength"));
 
-        /**
-         * 配置服务端并启动
-         */
         List<EventLoopGroup> nioEventLoopGroupList = new ArrayList<>();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_REUSEADDR, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_LINGER, 0)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -66,14 +64,17 @@ public class NettySocketServer implements SocketServer {
                                 .addLast((MessageToByteEncoder) Class.forName(encoderClassName)
                                         .getConstructor(Integer.class, String.class)
                                         .newInstance(encodeMsgLength, encodeCharset))
-                                .addLast((ChannelInboundHandlerAdapter) Class.forName(handlerClassName).getConstructor(String.class)
+                                .addLast((ChannelInboundHandlerAdapter) Class.forName(handlerClassName)
+                                        .getConstructor(String.class)
                                         .newInstance(name));
                     }
                 });
         nioEventLoopGroupList.add(workerGroup);
         nioEventLoopGroupList.add(bossGroup);
         EVENT_LOOP_GROUP_MAP.putIfAbsent(port, nioEventLoopGroupList);
-        logger.debug("{}Netty服务端初始化完成", name);
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}Netty服务端初始化完成", name);
+        }
         try {
             ChannelFuture future = serverBootstrap.bind(port).sync();
             future.channel().closeFuture().sync();
@@ -85,15 +86,21 @@ public class NettySocketServer implements SocketServer {
         }
     }
 
+    /**
+     * 关闭服务端口
+     *
+     * @param port 关闭端口号
+     */
     @Override
     public void close(Integer port) {
+        logger.info("开始关闭端口：{}", port);
         Optional.ofNullable(EVENT_LOOP_GROUP_MAP.get(port))
                 .ifPresent(eventLoopGroups -> {
                     for (EventLoopGroup eventLoopGroup : eventLoopGroups) {
                         eventLoopGroup.shutdownGracefully();
                     }
                     EVENT_LOOP_GROUP_MAP.remove(port);
-                    logger.info("Netty socket server prot = {} has been shutdown ...", port);
+                    logger.info("Netty socket server port = {} has been shutdown ...", port);
                 });
     }
 }

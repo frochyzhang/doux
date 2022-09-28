@@ -2,15 +2,12 @@ package com.allinfinance.dev.ccp.service;
 
 import com.allinfinance.dev.ccp.CcpApplication;
 import com.allinfinance.dev.common.socket.client.ISocketService;
-import com.allinfinance.dev.common.socket.client.pojo.SocketRequestDTO;
-import com.allinfinance.dev.common.socket.client.pojo.SocketResponseDTO;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.All)
@@ -27,7 +24,7 @@ public class SocketServiceImplTest extends AbstractBenchmark{
 
     @Benchmark
    public void clientRequest() {
-        SocketResponseDTO socketResponseDTO = socketService.clientRequest(new SocketRequestDTO("127.0.0.1", "4396", "aldksfalk", "4", "UTF-8"), "hello world");
+        SocketResponseDTO socketResponseDTO = socketService.clientRequest(new SocketRequestDTO("127.0.0.1", "4396", "8583", "4", "UTF-8"), "hello world");
 //        Assertions.assertEquals(true,socketResponseDTO.getSuccess());
     }
 }

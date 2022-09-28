@@ -50,6 +50,7 @@ public class EncodeUtil {
      * 2）将字节左移4位取得高四位字节数值，获取对应的char类型数组编码
      * 3）将字节与0x0F按位与，从而获取第四位的字节，同样获取编码
      */
+    @Deprecated
     public static String hex(byte[] bParam) {
         StringBuilder accum = new StringBuilder();
         for (byte bt : bParam) {

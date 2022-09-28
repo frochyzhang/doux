@@ -1,5 +1,7 @@
 package com.allinfinance.dev.common.socket.server.config;
 
+import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.Message8583Decoder;
+import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.Message8583Encoder;
 import com.allinfinance.dev.common.socket.codec.DemuxingMessageDecoder;
 import com.allinfinance.dev.common.socket.codec.DemuxingMessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -18,10 +20,8 @@ public class ISocketServer {
     private static Logger logger = LoggerFactory.getLogger(ISocketServer.class);
 
     public static void main(String[] args) {
-
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
@@ -32,12 +32,11 @@ public class ISocketServer {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
-                        pipeline.addLast(new DemuxingMessageDecoder(4, "UTF-8"))
-                                .addLast(new DemuxingMessageEncoder(4, "UTF-8"));
+                        pipeline.addLast(new Message8583Decoder())
+                                .addLast(new Message8583Encoder());
                         pipeline.addLast(new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                System.out.println(ctx.channel().id());
                                 ctx.writeAndFlush(msg);
                             }
                         });

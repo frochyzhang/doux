@@ -27,10 +27,6 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-extension</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-common-util</artifactId>
-        </dependency>
     </dependencies>
 
     <properties>

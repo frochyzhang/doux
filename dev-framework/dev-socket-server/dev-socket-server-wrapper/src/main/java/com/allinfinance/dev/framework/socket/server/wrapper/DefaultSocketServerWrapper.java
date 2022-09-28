@@ -20,16 +20,20 @@ import java.util.concurrent.*;
 @Extension("default")
 public class DefaultSocketServerWrapper implements SocketServerWrapper {
 
-    private static Logger logger = LoggerFactory.getLogger(DefaultSocketServerWrapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSocketServerWrapper.class);
 
     private static ThreadPoolExecutor threadPoolExecutor;
 
     private SocketServer socketServer;
+
+    /**
+     * 根据配置开启服务端口
+     *
+     * @param propertyList 服务端配置集合
+     */
     @Override
     public void start(List<Properties> propertyList) {
-
         ExtensionLoader<SocketServer> loader = ExtensionLoaderFactory.getExtensionLoader(SocketServer.class);
-
         CountDownLatch countDownLatch = new CountDownLatch(propertyList.size());
         ThreadFactory threadFactory = new ThreadFactoryBuilder()
                 .setNamePrefix("netty-server-pool-")
@@ -53,17 +57,26 @@ public class DefaultSocketServerWrapper implements SocketServerWrapper {
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("中断异常", e);
         }
     }
 
+    /**
+     * 关闭服务端口
+     *
+     * @param port 关闭端口号
+     */
     @Override
     public void close(Integer port) {
         socketServer.close(port);
     }
 
+    /**
+     * 关闭此服务所有端口
+     */
     @Override
     public void closeAll() {
+        logger.info("开始关闭此服务所有端口");
         threadPoolExecutor.shutdown();
         logger.info("socket server thread pool is shutting down!");
     }

@@ -9,4 +9,12 @@ public interface ISocketServerService {
      * 根据配置开启多端口服务端
      */
     void start();
+
+    /**
+     * 关闭服务端口号
+     *
+     * @param port 需要关闭的端口号
+     */
+    void close(Integer port);
+
 }

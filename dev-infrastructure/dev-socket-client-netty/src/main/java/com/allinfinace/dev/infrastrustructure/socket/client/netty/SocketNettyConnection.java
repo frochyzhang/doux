@@ -15,13 +15,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ProgressivePromise;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -44,23 +43,19 @@ public class SocketNettyConnection implements Connection {
     @Override
     public String send(String msg) {
         Channel channel = channelFuture.channel();
-
         ProgressivePromise<String> promise = NETTY_EVENT_LOOP.newProgressivePromise();
-
         NettyRequestContext requestContext = new NettyRequestContext(UUID.fastUUID().toString(), promise);
         channel.attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).set(requestContext);
-
         ChannelFuture future = channel.writeAndFlush(msg);
-
         try {
-            return promise.get(timeout, TimeUnit.SECONDS);
+            return promise.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.error("处理中断");
         } catch (ExecutionException e) {
             logger.error("处理异常");
         } catch (TimeoutException e) {
-            logger.error("获取响应超时, 超时时间：{}s", this.timeout);
-        }finally {
+            logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
+        } finally {
             future.awaitUninterruptibly();
             future.channel().close();
             future.channel().closeFuture().awaitUninterruptibly();
@@ -75,14 +70,20 @@ public class SocketNettyConnection implements Connection {
         int msgLengthSize = Integer.parseInt(properties.getProperty("msgLengthSize"));
         String msgEncode = properties.getProperty("msgEncode");
         String clientAppName = properties.getProperty("clientAppName");
-        this.timeout = Integer.parseInt(properties.getProperty("timeOutSeconds"));
+        String soLingerEnable = properties.getProperty("soLingerEnable");
+        this.timeout = Integer.parseInt(properties.getProperty("timeout"));
         try {
-            channelFuture = new Bootstrap()
+            Bootstrap option = new Bootstrap()
                     .group(loopGroup)
                     .channel(NioSocketChannel.class)
-                    .option(ChannelOption.AUTO_CLOSE,true)
-                    // TODO: 2022/9/22 避免使用SO_LINGER
-                    .option(ChannelOption.SO_LINGER,0)
+                    .option(ChannelOption.AUTO_CLOSE, true);
+            if ("true".equals(soLingerEnable)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("开启SO_LINGER");
+                }
+                option.option(ChannelOption.SO_LINGER, 0);
+            }
+            channelFuture = option
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
@@ -99,6 +100,7 @@ public class SocketNettyConnection implements Connection {
                                     NettyRequestContext requestContext = ctx.channel().attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).get();
                                     requestContext.getRespPromise().setSuccess((String) msg);
                                 }
+
                                 @Override
                                 public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
                                     ctx.channel().close();

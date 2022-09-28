@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.socket.client.pojo;
+package com.allinfinance.dev.common.socket.client.dto;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
