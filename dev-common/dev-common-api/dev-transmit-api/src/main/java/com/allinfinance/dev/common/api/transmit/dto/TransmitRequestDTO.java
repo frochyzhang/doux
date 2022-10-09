@@ -23,6 +23,10 @@ public class TransmitRequestDTO {
      */
     private RemoteMessage target;
     /**
+     * 本地文件存放路径
+     */
+    private String localPath;
+    /**
      * 文件名
      */
     private String fileName;
@@ -39,7 +43,7 @@ public class TransmitRequestDTO {
         /**
          * 远程用户名
          */
-        private String user;
+        private String username;
         /**
          * 远程用户密码
          */
@@ -65,12 +69,12 @@ public class TransmitRequestDTO {
             this.port = port;
         }
 
-        public String getUser() {
-            return user;
+        public String getUsername() {
+            return username;
         }
 
-        public void setUser(String user) {
-            this.user = user;
+        public void setUsername(String username) {
+            this.username = username;
         }
 
         public String getPassword() {
@@ -88,6 +92,17 @@ public class TransmitRequestDTO {
         public void setPath(String path) {
             this.path = path;
         }
+
+        @Override
+        public String toString() {
+            return "RemoteMessage{" +
+                    "ip='" + ip + '\'' +
+                    ", port=" + port +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    ", path='" + path + '\'' +
+                    '}';
+        }
     }
 
     @Override
@@ -97,6 +112,7 @@ public class TransmitRequestDTO {
                 ", usingMethod=" + usingMethod +
                 ", source=" + source +
                 ", target=" + target +
+                ", localPath='" + localPath + '\'' +
                 ", fileName='" + fileName + '\'' +
                 '}';
     }

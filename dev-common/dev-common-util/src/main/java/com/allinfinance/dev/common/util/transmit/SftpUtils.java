@@ -19,161 +19,93 @@ public class SftpUtils {
     private static final Logger logger = LoggerFactory.getLogger(SftpUtils.class);
 
     /**
-     * 使用用户密码验证下载文件
+     * 下载文件
      *
-     * @param remoteIp   远程ip
-     * @param remotePort 远程端口
-     * @param username   用户名
-     * @param password   密码
-     * @param remotePath 远程路径
-     * @param localPath  本地路径
-     * @param fileName   文件名
-     * @param timeout    连接超时时间
+     * @param remoteIp       远程ip
+     * @param remotePort     远程端口
+     * @param username       用户名
+     * @param password       密码
+     * @param remotePath     远程路径
+     * @param localPath      本地路径
+     * @param fileName       文件名
+     * @param timeout        连接超时时间
+     * @param isPasswordFree 是否使用免密登录
      * @return 下载成功返回true
-     * @throws IOException 连接异常
      */
-    public static boolean downloadWithPassword(String remoteIp, int remotePort, String username, String password,
-                                               String remotePath, String localPath, String fileName, int timeout) throws IOException {
-        SSHClient ssh = new SSHClient();
-        ssh.setConnectTimeout(timeout);
-        ssh.loadKnownHosts();
-        ssh.addHostKeyVerifier(new PromiscuousVerifier());
-        ssh.connect(remoteIp, remotePort);
-        ssh.authPassword(username, password);
+    public static boolean download(String remoteIp, int remotePort, String username, String password, String remotePath,
+                                   String localPath, String fileName, int timeout, boolean isPasswordFree) {
+        logger.info("开始下载文件...");
+        SFTPClient sftpClient;
         try {
-
-            try (SFTPClient sftp = ssh.newSFTPClient()) {
-                String absoluteFile = StringUtils.isNotBlank(fileName) ? remotePath + fileName : remotePath;
-                sftp.get(absoluteFile, new FileSystemFile(localPath));
-            } catch (IOException e) {
-                logger.error("文件下载过程中发生IO异常", e);
-            }
-        } finally {
-            ssh.disconnect();
+            sftpClient = getSftpClient(remoteIp, remotePort, username, password, timeout, isPasswordFree);
+        } catch (IOException e) {
+            logger.error("建立连接远程异常，请检查远程连接配置，remoteIp：{}，remotePort：{}，username：{}，password：{}，是否免密：{}",
+                    remoteIp, remotePort, username, password, isPasswordFree, e);
+            return false;
         }
+        String remoteAbsoluteFile = StringUtils.endsWith(remotePath, "/") ? remotePath + fileName : remotePath + "/" + fileName;
+        try {
+            sftpClient.get(remoteAbsoluteFile, new FileSystemFile(localPath));
+        } catch (IOException e) {
+            logger.error("下载远程文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
+            return false;
+        }
+        logger.info("上传文件成功！");
         return true;
     }
 
     /**
-     * 免密下载文件
+     * 上传文件
      *
-     * @param remoteIp   远程ip
-     * @param remotePort 远程端口
-     * @param username   用户名
-     * @param remotePath 远程路径
-     * @param localPath  本地路径
-     * @param fileName   文件名
-     * @param timeout    连接超时时间
-     * @return 下载成功返回true
-     * @throws IOException 连接异常
-     */
-    public static boolean downloadWithPublicKey(String remoteIp, int remotePort, String username, String remotePath, String localPath,
-                                                String fileName, int timeout) throws IOException {
-        SSHClient ssh = new SSHClient();
-        ssh.loadKnownHosts();
-        ssh.setConnectTimeout(timeout);
-        ssh.loadKnownHosts();
-        ssh.addHostKeyVerifier(new PromiscuousVerifier());
-        ssh.connect(remoteIp, remotePort);
-        try {
-            ssh.authPublickey(username);
-            try (SFTPClient sftp = ssh.newSFTPClient()) {
-                String absoluteFile = StringUtils.isNotBlank(fileName) ? remotePath + fileName : remotePath;
-                sftp.get(absoluteFile, new FileSystemFile(localPath));
-            } catch (IOException e) {
-                logger.error("文件下载过程中发生IO异常", e);
-            }
-        } finally {
-            ssh.disconnect();
-        }
-        return true;
-    }
-
-    /**
-     * 使用用户密码验证上传文件
-     *
-     * @param remoteIp   远程ip
-     * @param remotePort 远程端口
-     * @param username   用户名
-     * @param password   密码
-     * @param remotePath 远程路径
-     * @param localPath  本地路径
-     * @param fileName   文件名
-     * @param timeout    连接超时时间
+     * @param remoteIp       远程ip
+     * @param remotePort     远程端口
+     * @param username       用户名
+     * @param password       密码
+     * @param remotePath     远程路径
+     * @param localPath      本地路径
+     * @param fileName       文件名
+     * @param timeout        连接超时时间
+     * @param isPasswordFree 是否使用免密登录
      * @return 上传成功返回true
-     * @throws IOException 连接异常
      */
-    public static boolean uploadWithPassword(String remoteIp, int remotePort, String username, String password,
-                                             String remotePath, String localPath, String fileName, int timeout) throws IOException {
-        SSHClient ssh = new SSHClient();
-        ssh.setConnectTimeout(timeout);
-        ssh.loadKnownHosts();
-        ssh.addHostKeyVerifier(new PromiscuousVerifier());
-        ssh.connect(remoteIp, remotePort);
-        ssh.authPassword(username, password);
+    public static boolean upload(String remoteIp, int remotePort, String username, String password, String remotePath,
+                                 String localPath, String fileName, int timeout, boolean isPasswordFree) {
+        logger.info("开始上传文件...");
+        SFTPClient sftpClient;
         try {
-            try (SFTPClient sftp = ssh.newSFTPClient()) {
-                String absoluteFile = StringUtils.isNotBlank(fileName) ? localPath + fileName : localPath;
-                sftp.put(new FileSystemFile(absoluteFile), remotePath);
-            } catch (IOException e) {
-                logger.error("文件上传过程中发生IO异常", e);
-            }
-        } finally {
-            ssh.disconnect();
+            sftpClient = getSftpClient(remoteIp, remotePort, username, password, timeout, isPasswordFree);
+        } catch (IOException e) {
+            logger.error("建立连接远程异常，请检查远程连接配置，remoteIp：{}，remotePort：{}，username：{}，password：{}，是否免密：{}",
+                    remoteIp, remotePort, username, password, isPasswordFree, e);
+            return false;
         }
 
+        String remoteAbsoluteFile = StringUtils.endsWith(remotePath, "/") ? remotePath + fileName : remotePath + "/" + fileName;
+        try {
+            sftpClient.put(new FileSystemFile(remoteAbsoluteFile), remotePath);
+        } catch (IOException e) {
+            logger.error("上传本地文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
+            return false;
+        }
+        logger.info("上传文件成功！");
         return true;
     }
 
     /**
-     * 免密上传文件
+     * 获取sftp客户端对象
      *
-     * @param remoteIp   远程ip
-     * @param remotePort 远程端口
-     * @param username   用户名
-     * @param remotePath 远程路径
-     * @param localPath  本地路径
-     * @param fileName   文件名
-     * @param timeout    连接超时时间
-     * @return 上传成功返回true
-     * @throws IOException 连接异常
+     * @param remoteIp       远程ip
+     * @param remotePort     远程短裤
+     * @param username       用户名
+     * @param password       密码（免密登录时，可不填）
+     * @param timeout        建立连接的超时时间
+     * @param isPasswordFree 是否使用免密登录
+     * @return SftpClient
+     * @throws IOException 连接异常或获取sftp客户端异常是抛出
      */
-    public static boolean uploadWithPublicKey(String remoteIp, int remotePort, String username, String remotePath,
-                                              String localPath, String fileName, int timeout) throws IOException {
-        SSHClient ssh = new SSHClient();
-        ssh.loadKnownHosts();
-        ssh.setConnectTimeout(timeout);
-        ssh.loadKnownHosts();
-        ssh.addHostKeyVerifier(new PromiscuousVerifier());
-        ssh.connect(remoteIp, remotePort);
-        try {
-            ssh.authPublickey(username);
-            try (SFTPClient sftp = ssh.newSFTPClient()) {
-                String absoluteFile = StringUtils.isNotBlank(fileName) ? localPath + fileName : localPath;
-                sftp.put(new FileSystemFile(absoluteFile), remotePath);
-            } catch (IOException e) {
-                logger.error("文件上传过程中发生IO异常", e);
-            }
-        } finally {
-            ssh.disconnect();
-        }
-        return true;
-    }
-
-
-    /**
-     *
-     * @param remoteIp
-     * @param remotePort
-     * @param username
-     * @param password
-     * @param timeout
-     * @param isPasswordFree
-     * @return
-     * @throws IOException
-     */
-    private static SFTPClient getSFTPClient(String remoteIp, int remotePort, String username, String password,
+    private static SFTPClient getSftpClient(String remoteIp, int remotePort, String username, String password,
                                             int timeout, boolean isPasswordFree) throws IOException {
+        logger.debug("开始建立ssh连接，并获取sftp客户端...");
         SSHClient ssh = new SSHClient();
         ssh.loadKnownHosts();
         ssh.setConnectTimeout(timeout);
@@ -182,12 +114,20 @@ public class SftpUtils {
         ssh.connect(remoteIp, remotePort);
 
         if (isPasswordFree) {
-            logger.debug("使用ssh免密登录");
+            if (logger.isDebugEnabled()) {
+                logger.debug("使用ssh免密登录");
+            }
             ssh.authPublickey(username);
         } else {
-            logger.debug("使用密码验证登录");
+            if (logger.isDebugEnabled()) {
+                logger.debug("使用密码验证登录");
+            }
             ssh.authPassword(username, password);
         }
-        return ssh.newSFTPClient();
+        SFTPClient sftpClient = ssh.newSFTPClient();
+        if (logger.isDebugEnabled()) {
+            logger.debug("获取sftp客户端成功！");
+        }
+        return sftpClient;
     }
 }
