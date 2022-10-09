@@ -3,14 +3,23 @@ com:
     rpc:
       provider-package: com.allinfinance.dev.example.socket.service
     dev:
+      common:
+        socket:
+          name: "nettyTest1"
+          port: 12345
+          handler-class-name: "com.allinfinance.dev.example.socket.TestNettyHandler"
+          ext-config:
+            - name: "nettyTest2"
+              port: 12346
+              handler-class-name: "com.allinfinance.dev.example.socket.TestNettyHandler"
       socket:
         name: "test1"
         port: 13454
         handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
-        ext-config:
-          - name: "test2"
-            port: 13455
-            handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
+#        ext-config:
+#          - name: "test2"
+#            port: 13455
+#            handler-class-name: "com.allinfinance.dev.example.socket.TestIOHandler"
   alipay:
     sofa:
       rpc:
@@ -22,3 +31,4 @@ spring:
     name: socket-example
 
 
+debug: true

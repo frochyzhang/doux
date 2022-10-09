@@ -10,6 +10,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dev-socket-api</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-client-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-client-netty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-core</artifactId>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

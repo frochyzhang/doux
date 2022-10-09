@@ -15,6 +15,10 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-socket</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

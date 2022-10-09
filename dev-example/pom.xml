@@ -24,6 +24,7 @@
         <module>dev-rpc-scaffold-boot-starter-sample</module>
         <module>dev-hsp-example</module>
         <module>dev-conn-wrapper-example</module>
+        <module>dev-socket-server-example</module>
     </modules>
 
     <properties>

@@ -1,0 +1,1 @@
+socketNetty=com.allinfinace.dev.infrastrustructure.socket.client.netty.SocketNettyConnection

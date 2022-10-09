@@ -12,6 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({SocketConfigAutoConfiguration.class, ShortSwitchServer.class})
+@Import({SocketConfigAutoConfiguration.class, ShortSwitchServer.class,
+        com.allinfinance.dev.common.socket.server.config.NettyShortSwitchServer.class})
 public @interface EnableSocketServer {
 }

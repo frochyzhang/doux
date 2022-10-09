@@ -81,21 +81,30 @@ public class ShortSwitchServer implements DisposableBean {
     public void initMinaServer(MinaSocketBean minaSocketBean) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNamePrefix(minaSocketBean.getName() + "-pool-").build();
+
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(minaSocketBean.getThreadCount(), minaSocketBean.getThreadCount(),
                 0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1), namedThreadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+
         MessageDecoder messageDecoder = (MessageDecoder) Class.forName(minaSocketBean.getDecoderClassName())
                 .getConstructor(Integer.class, String.class)
                 .newInstance(minaSocketBean.getDecodeMsgLength(), minaSocketBean.getDecodeCharset());
+
         MessageEncoder messageEncoder = (MessageEncoder) Class.forName(minaSocketBean.getEncoderClassName())
                 .getConstructor(Integer.class, String.class)
                 .newInstance(minaSocketBean.getEncodeMsgLength(), minaSocketBean.getEncodeCharset());
+
         IoAcceptor acceptor = new NioSocketAcceptor(minaSocketBean.getProcessorCount());
+
         acceptor.getFilterChain().addLast("MsgCodec",
                 new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder)));
+
         acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(threadPoolExecutor));
+
         acceptor.setHandler((IoHandler) Class.forName(minaSocketBean.getHandlerClassName()).getConstructor(String.class)
                 .newInstance(minaSocketBean.getName()));
+
         acceptor.getSessionConfig().setReadBufferSize(minaSocketBean.getBufferSize());
+
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, minaSocketBean.getTimeOut());
         // TODO: 2021/3/22 长链接处理逻辑
         if (minaSocketBean.getKeepAlive()) {
@@ -127,7 +136,7 @@ public class ShortSwitchServer implements DisposableBean {
     @Override
     public void destroy() {
         threadPoolExecutor.shutdown();
-        logger.info("socket server thread pool is shutting down!");
+        logger.info("socket MinaServer thread pool is shutting down!");
     }
 
     public static void closeMinaServer(int port) {
