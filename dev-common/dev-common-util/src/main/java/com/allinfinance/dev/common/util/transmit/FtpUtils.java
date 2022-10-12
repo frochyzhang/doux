@@ -84,10 +84,10 @@ public class FtpUtils {
      * @param remotePath 远程路径
      * @param localPath  本地路径
      * @param fileName   文件名
-     * @return 下载成功返回true
+     * @return 上传成功返回true
      */
     public static boolean upload(String remoteIp, int remotePort, String username, String password, String remotePath,
-                                  String fileName, String localPath) throws IOException {
+                                 String fileName, String localPath) throws IOException {
         FTPClient ftpClient = getFtpClient(remoteIp, remotePort, username, password);
         if (ObjectUtils.isEmpty(ftpClient)) {
             logger.error("ftp连接失败！");
@@ -101,12 +101,6 @@ public class FtpUtils {
         }
 
         ftpClient.enterLocalPassiveMode();
-
-        FTPFile[] files = ftpClient.listFiles(fileName);
-        if (files == null || files.length != 1) {
-            logger.warn("远程文件不存在或不唯一: " + fileName);
-            return false;
-        }
 
         String localAbsoluteFile = StringUtils.endsWith(localPath, "/") ? localPath + fileName : localPath + "/" + fileName;
         try (FileInputStream fileInputStream = new FileInputStream(localAbsoluteFile)) {

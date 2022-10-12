@@ -28,7 +28,7 @@ public class SftpUtils {
      * @param remotePath     远程路径
      * @param localPath      本地路径
      * @param fileName       文件名
-     * @param timeout        连接超时时间
+     * @param timeout        连接超时时间(ms)
      * @param isPasswordFree 是否使用免密登录
      * @return 下载成功返回true
      */
@@ -50,7 +50,7 @@ public class SftpUtils {
             logger.error("下载远程文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
             return false;
         }
-        logger.info("上传文件成功！");
+        logger.info("下载文件成功！");
         return true;
     }
 
@@ -64,7 +64,7 @@ public class SftpUtils {
      * @param remotePath     远程路径
      * @param localPath      本地路径
      * @param fileName       文件名
-     * @param timeout        连接超时时间
+     * @param timeout        连接超时时间(ms)
      * @param isPasswordFree 是否使用免密登录
      * @return 上传成功返回true
      */
@@ -80,9 +80,9 @@ public class SftpUtils {
             return false;
         }
 
-        String remoteAbsoluteFile = StringUtils.endsWith(remotePath, "/") ? remotePath + fileName : remotePath + "/" + fileName;
+        String localAbsoluteFile = StringUtils.endsWith(localPath, "/") ? localPath + fileName : localPath + "/" + fileName;
         try {
-            sftpClient.put(new FileSystemFile(remoteAbsoluteFile), remotePath);
+            sftpClient.put(new FileSystemFile(localAbsoluteFile), remotePath);
         } catch (IOException e) {
             logger.error("上传本地文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
             return false;

@@ -1,6 +1,14 @@
 spring:
   application:
     name: http-test
+  profiles:
+    active: dev
 
 server:
   port: 8001
+
+dev:
+  ccp:
+    file:
+      local-path: C:\\temp
+

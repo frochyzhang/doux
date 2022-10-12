@@ -23,6 +23,7 @@ dev:
     driver: okhttp
     file:
       local-sys-path: Z:\work\dev-new\dev\dev-ccp\src\main\resources
+      local-path: C:\\temp
 
 ---
 spring:

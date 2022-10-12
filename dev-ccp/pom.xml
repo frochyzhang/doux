@@ -41,6 +41,10 @@
             <artifactId>apm-toolkit-logback-1.x</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-socket-api</artifactId>
         </dependency>

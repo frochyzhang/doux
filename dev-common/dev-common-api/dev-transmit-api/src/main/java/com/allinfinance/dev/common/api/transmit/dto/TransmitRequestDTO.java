@@ -7,14 +7,6 @@ package com.allinfinance.dev.common.api.transmit.dto;
  */
 public class TransmitRequestDTO {
     /**
-     * 传输方式：ftp、sftp
-     */
-    private TransmitMode transmitMode;
-    /**
-     * 服务使用方式：仅上传、仅下载、上传＋下载
-     */
-    private UsingMethod usingMethod;
-    /**
      * 远程源信息，download和both必填
      */
     private RemoteMessage source;
@@ -30,6 +22,10 @@ public class TransmitRequestDTO {
      * 文件名
      */
     private String fileName;
+    /**
+     * 超时时间(ms)
+     */
+    private Integer timeout = 3000;
 
     public static class RemoteMessage {
         /**
@@ -52,6 +48,18 @@ public class TransmitRequestDTO {
          * 远程文件路径
          */
         private String path;
+        /**
+         * 传输方式：ftp、sftp
+         */
+        private TransmitMode transmitMode;
+
+        public TransmitMode getTransmitMode() {
+            return transmitMode;
+        }
+
+        public void setTransmitMode(TransmitMode transmitMode) {
+            this.transmitMode = transmitMode;
+        }
 
         public String getIp() {
             return ip;
@@ -101,19 +109,59 @@ public class TransmitRequestDTO {
                     ", username='" + username + '\'' +
                     ", password='" + password + '\'' +
                     ", path='" + path + '\'' +
+                    ", transmitMode=" + transmitMode +
                     '}';
         }
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
+    }
+
+    public RemoteMessage getSource() {
+        return source;
+    }
+
+    public void setSource(RemoteMessage source) {
+        this.source = source;
+    }
+
+    public RemoteMessage getTarget() {
+        return target;
+    }
+
+    public void setTarget(RemoteMessage target) {
+        this.target = target;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
     public String toString() {
         return "TransmitRequestDTO{" +
-                "transmitMode=" + transmitMode +
-                ", usingMethod=" + usingMethod +
-                ", source=" + source +
+                "source=" + source +
                 ", target=" + target +
                 ", localPath='" + localPath + '\'' +
                 ", fileName='" + fileName + '\'' +
+                ", timeout=" + timeout +
                 '}';
     }
 }
