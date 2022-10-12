@@ -39,20 +39,21 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
         if (StringUtils.hasText(bootstrap.getAppUniqueId())
                 && StringUtils.hasText(bootstrap.getGateRegistry())) {
 
-            RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
+            RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(bootstrap.getGateRegistry());
 
             // 1 processService注册到注册中心，需以uniqueId区分不同系统
             logger.info("开始发布应用{}的ProcessService服务到注册中心", bootstrap.getAppUniqueId());
             ApplicationConfig applicationConfig = new ApplicationConfig();
-            applicationConfig.setAppName(rpcConfigurationProperties.getBootstrap().getAppUniqueId());
-            if (rpcConfigurationProperties.getBootstrap().getExporterPort() == null) {
+            applicationConfig.setAppName(bootstrap.getAppUniqueId());
+            if (bootstrap.getExporterPort() == null) {
                 throw new NullPointerException("exporter端口配置为空");
             }
-            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(rpcConfigurationProperties.getBootstrap().getExporterPort());
+            ServerConfig serverConfig = SofaAPIConfig.getServerConfig(bootstrap.getExporterPort());
 
-            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, rpcConfigurationProperties.getBootstrap().getAppUniqueId(), processService);
+            SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, bootstrap.getAppUniqueId(), processService);
 
-            ProcessService testProcessService = SofaAPIConfig.referProxyConsumerRef(rpcConfigurationProperties.getBootstrap().getAppUniqueId(), registryConfig, ProcessService.class, 3000, "foreach", 3);
+            ProcessService testProcessService = SofaAPIConfig.referProxyConsumerRef(bootstrap.getAppUniqueId(),
+                    registryConfig, ProcessService.class, bootstrap.getTimeout(), "foreach", bootstrap.getRetries());
 
             Boolean verifyResult = null;
             while (true) {
@@ -62,7 +63,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
                     logger.warn("ProcessService未发布成功，等待10s后重试");
                 }
                 if (verifyResult != null) {
-                    logger.info("{}业务处理服务发布成功", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.info("{}业务处理服务发布成功", bootstrap.getAppUniqueId());
                     break;
                 }
                 try {

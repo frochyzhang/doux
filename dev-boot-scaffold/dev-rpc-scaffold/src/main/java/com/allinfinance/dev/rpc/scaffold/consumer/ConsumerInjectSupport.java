@@ -86,16 +86,18 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
     public void afterPropertiesSet() {
         List<String> commonServiceList = rpcConfigurationProperties.getCommonServiceList();
         if (CollectionUtils.isNotEmpty(commonServiceList)) {
-            if (StringUtils.isBlank(rpcConfigurationProperties.getBootstrap().getGateRegistry())) {
+            RpcConfigurationProperties.Bootstrap bootstrap = rpcConfigurationProperties.getBootstrap();
+            if (StringUtils.isBlank(bootstrap.getGateRegistry())) {
                 logger.error("未配置公共服务注册中心地址，请检查配置项");
                 return;
             }
             logger.info("开始注入公共服务，服务列表: {}", commonServiceList);
-            RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
+            RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(bootstrap.getGateRegistry());
             commonServiceList
                     .forEach(commonService -> {
                         try {
-                            Object consumerRef = SofaAPIConfig.referProxyConsumerRef(registryConfig, Class.forName(commonService), 3000);
+                            Object consumerRef = SofaAPIConfig.referProxyConsumerRef(registryConfig, Class.forName(commonService),
+                                    bootstrap.getTimeout(), bootstrap.getCluster(), bootstrap.getRetries());
                             customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(commonService), consumerRef);
                             logger.info("公共服务【{}】注入完成", commonService);
                         } catch (ClassNotFoundException e) {
