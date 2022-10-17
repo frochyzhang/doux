@@ -26,23 +26,8 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-boot-starter</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-batch</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-dal</artifactId>
-                <version>${dev.version}</version>
+                <version>1.4.0-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
@@ -51,18 +36,8 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-mq-rpc-portal</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-autoconfigure</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-rpc-dubbo</artifactId>
-                <version>${dev.version}</version>
+                <version>1.4.0-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>

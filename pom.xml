@@ -9,20 +9,9 @@
     <packaging>pom</packaging>
     <version>${revision}</version>
     <modules>
-        <module>dev-socket</module>
         <module>dev-core</module>
-        <module>dev-batch</module>
         <module>dev-example</module>
-        <module>dev-dal</module>
-        <module>dev-mq</module>
-        <module>dev-mq/dev-mq-rabbit</module>
-        <module>dev-mq-rpc-portal</module>
-        <module>dev-autoconfigure</module>
         <module>dev-hsp</module>
-        <module>dev-rpc</module>
-        <module>dev-rpc/dev-rpc-dubbo</module>
-        <module>dev-rpc/dev-rpc-sofa</module>
-        <!--        <module>dev-nds</module>-->
         <module>dev-ccs</module>
         <module>dev-parent</module>
         <module>dev-xxl-job</module>
@@ -44,7 +33,6 @@
     <properties>
         <revision>1.5.0-SNAPSHOT</revision>
         <dev.version>1.5.0-SNAPSHOT</dev.version>
-        <nds.version>2.2.149854</nds.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.3.9.RELEASE</springframework.boot.version>
@@ -218,11 +206,6 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>3.5.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.18</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>

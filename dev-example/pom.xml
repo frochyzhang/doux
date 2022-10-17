@@ -13,11 +13,7 @@
     <artifactId>dev-example</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>dev-dubbo-example</module>
-        <module>dev-mq-rabbit-example</module>
-        <module>dev-socket-example</module>
         <module>dev-redis-example</module>
-        <module>dev-batch-example</module>
         <module>dev-http-example</module>
         <module>dev-batch-scaffold-boot-starter-sample</module>
         <module>dev-datasource-scaffold-boot-starter-sample</module>

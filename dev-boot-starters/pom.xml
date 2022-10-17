@@ -13,7 +13,6 @@
 
     <name>${project.artifactId} - boot-starters</name>
     <modules>
-        <module>dev-socket-boot-starter</module>
         <module>dev-batch-scaffold-boot-starter</module>
         <module>dev-datasource-scaffold-boot-starter</module>
         <module>dev-dispatch-scaffold-boot-starter</module>

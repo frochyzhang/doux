@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-socket-boot-starter</artifactId>
-            <version>${dev.version}</version>
+            <version>1.4.0-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
