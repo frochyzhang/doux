@@ -1,6 +1,6 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import com.allinfinance.dev.xxl.job.admin.constant.XxlJobResultCodeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.model.XxlJobGroup;
 import com.allinfinance.dev.xxl.job.admin.dao.XxlJobGroupDao;
@@ -10,7 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.xxl.job.core.enums.RegistryConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -25,6 +25,18 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-extension</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-dictionary</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-http-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-api</artifactId>
+        </dependency>
 
         <!--nacos注册中心-->
         <dependency>
@@ -35,10 +47,9 @@
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-api</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
 

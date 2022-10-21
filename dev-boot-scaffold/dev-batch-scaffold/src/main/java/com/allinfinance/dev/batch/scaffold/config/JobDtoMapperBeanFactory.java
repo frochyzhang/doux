@@ -1,7 +1,7 @@
 package com.allinfinance.dev.batch.scaffold.config;
 
 import com.allinfinance.dev.batch.scaffold.util.ApplicationContextUtil;
-import com.allinfinance.dev.core.util.common.BeanUtils;
+import com.allinfinance.dev.common.util.common.BeanUtils;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.beans.BeansException;

@@ -31,8 +31,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.5.0-SNAPSHOT</revision>
-        <dev.version>1.5.0-SNAPSHOT</dev.version>
+        <revision>1.5.0.trial-RELEASE</revision>
+        <dev.version>1.5.0.trial-RELEASE</dev.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.3.9.RELEASE</springframework.boot.version>
@@ -60,6 +60,7 @@
         <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
         <jmh.version>1.35</jmh.version>
         <junit-launcher.version>1.6.3</junit-launcher.version>
+        <sun.jaxb.version>2.2.11</sun.jaxb.version>
     </properties>
 
     <developers>
@@ -546,6 +547,16 @@
                 <groupId>com.hierynomus</groupId>
                 <artifactId>sshj</artifactId>
                 <version>${sshj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${sun.jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${sun.jaxb.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

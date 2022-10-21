@@ -5,6 +5,7 @@ package com.allinfinance.dev.core.bean;
  * @description
  * @date 2020/12/1 21:45
  */
+@Deprecated
 public class BatchConfigBean {
     private String driverClassName;
     private String url;

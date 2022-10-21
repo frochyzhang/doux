@@ -1,6 +1,6 @@
 package com.allinfinance.dev.xxl.job.admin.config;
 
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

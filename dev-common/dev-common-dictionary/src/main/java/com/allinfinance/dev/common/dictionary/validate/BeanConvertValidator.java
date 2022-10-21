@@ -1,7 +1,7 @@
 package com.allinfinance.dev.common.dictionary.validate;
 
 import cn.hutool.extra.spring.SpringUtil;
-import com.allinfinance.dev.common.dictionary.constant.CommonConstants;
+import com.allinfinance.dev.common.util.constant.CommonConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,33 +69,11 @@ public class BeanConvertValidator {
         return Boolean.TRUE;
     }
 
-    // TODO: 2021/1/22 此处待优化
     static {
-//        Configurations configurations = new Configurations();
-//
-//        String fileParentPath = System.getProperty(CommonConstants.FILE_PARENT_PATH);
-//        String[] configFiles = new File(fileParentPath).list((dir, name) -> {
-//            if (name.endsWith(CommonConstants.FILE_SUF_FIX)) {
-//                return Boolean.TRUE;
-//            }
-//            return Boolean.FALSE;
-//        });
-//
-//        if (ArrayUtils.isNotEmpty(configFiles)) {
-//            for (String fileName : configFiles) {
-//                PropertiesConfiguration properties = null;
-//                try {
-//                    properties = configurations.properties(fileParentPath + fileName);
-//                } catch (ConfigurationException e) {
-//                    e.printStackTrace();
-//                }
         String value = SpringUtil.getProperty(CommonConstants.XML_BEAN_VALIDATOR_REQUIRE);
         if (null != value) {
             required = Boolean.valueOf(value);
         }
-//            }
-//        }
-
         logger.info("获取字段校验开关--dev.xml.field.verify:{}", BeanConvertValidator.required);
     }
 }

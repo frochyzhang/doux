@@ -1,6 +1,6 @@
 package com.allinfinance.dev.ccs.security.handler;
 
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

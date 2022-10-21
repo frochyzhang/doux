@@ -1,17 +1,17 @@
 package com.allinfinance.dev.rpc.scaffold.consumer;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
-import com.allinfinance.dev.core.util.common.BeanUtils;
-import com.allinfinance.dev.core.util.http.client.IHttpClientService;
-import com.allinfinance.dev.core.util.socket.client.ISocketClientService;
+import com.allinfinance.dev.common.api.http.HttpClientService;
+import com.allinfinance.dev.common.socket.client.ISocketService;
+import com.allinfinance.dev.common.util.common.BeanUtils;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.rpc.scaffold.config.SofaAPIConfig;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +64,8 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         referenceParam.setBindingParam(refBindingParam);
 
         for (String className : rpcConfigurationProperties.getReferenceList()) {
-            if (className.equals(IHttpClientService.class.getName())
-                    || className.equals(ISocketClientService.class.getName())) {
+            if (className.equals(HttpClientService.class.getName())
+                    || className.equals(ISocketService.class.getName())) {
                 continue;
             }
             try {
@@ -103,17 +103,5 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
                         }
                     });
         }
-        //if (StringUtils.isBlank(rpcConfigurationProperties.getBootstrap().getGateRegistry())) {
-        //    return;
-        //}
-        //RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
-        //
-        //IHttpClientService iHttpClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, IHttpClientService.class, 3000);
-        //customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(IHttpClientService.class.getName()), iHttpClientService);
-        //logger.info("注入HttpClientService完成！");
-        //
-        //ISocketClientService iSocketClientService = SofaAPIConfig.referProxyConsumerRef(registryConfig, ISocketClientService.class, 3000);
-        //customBeanFactoryPostProcessor.getConfigurableListableBeanFactory().registerSingleton(BeanUtils.getBeanNameWithImpl(ISocketClientService.class.getName()), iSocketClientService);
-        //logger.info("注入ISocketClientService完成！");
     }
 }

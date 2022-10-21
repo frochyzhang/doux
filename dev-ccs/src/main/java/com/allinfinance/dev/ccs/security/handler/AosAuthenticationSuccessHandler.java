@@ -8,7 +8,7 @@ import com.allinfinance.dev.ccs.dal.respdto.LoginSeccessRespDto;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.dal.service.TblUserService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

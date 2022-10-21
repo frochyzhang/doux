@@ -5,6 +5,7 @@ package com.allinfinance.dev.core.bean;
  * @description
  * @date 2020/12/9 20:12
  */
+@Deprecated
 public class BatchJobDto {
     private String jobName;
     private Long jobExecutionId;

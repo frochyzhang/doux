@@ -1,7 +1,7 @@
 package com.allinfinance.dev.hsp.util;
 
 import cn.hutool.core.util.ReflectUtil;
-import com.allinfinance.dev.core.util.validate.Check;
+import com.allinfinance.dev.common.dictionary.validate.Check;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

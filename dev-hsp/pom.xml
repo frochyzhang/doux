@@ -51,6 +51,14 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-hsp-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-dictionary</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

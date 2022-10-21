@@ -4,6 +4,7 @@ package com.allinfinance.dev.core.bean;
  * @author 张勇
  * @date 2020-11-28 01:25
  */
+@Deprecated
 public class MinaSocketBean {
 
     private String name;

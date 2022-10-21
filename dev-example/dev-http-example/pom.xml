@@ -17,7 +17,19 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
+            <artifactId>dev-common-dictionary</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-http-okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-http-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 

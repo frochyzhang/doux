@@ -1,6 +1,7 @@
 package com.allinfinance.dev.xxl.job.admin.constant;
 
-import com.allinfinance.dev.core.util.result.ResultCode;
+
+import com.allinfinance.dev.common.dictionary.result.ResultCode;
 
 /**
  * @author huanghf

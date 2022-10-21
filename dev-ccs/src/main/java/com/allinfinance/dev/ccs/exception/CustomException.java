@@ -1,6 +1,6 @@
 package com.allinfinance.dev.ccs.exception;
 
-import com.allinfinance.dev.core.util.result.ResultCodeEnum;
+import com.allinfinance.dev.common.dictionary.result.ResultCodeEnum;
 
 /**
  * @author 张勇

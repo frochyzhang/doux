@@ -1,10 +1,10 @@
 package com.allinfinance.dev.hsp;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
-import com.allinfinance.dev.core.util.hsp.SignatureService;
+import com.allinfinance.dev.common.hsp.api.SignatureService;
+import com.allinfinance.dev.common.hsp.api.dto.HspBaseResponseDTO;
+import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyRequestDTO;
+import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyResponseDTO;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.openjdk.jmh.annotations.*;

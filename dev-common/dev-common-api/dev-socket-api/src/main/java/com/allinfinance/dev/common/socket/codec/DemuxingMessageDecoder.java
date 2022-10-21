@@ -1,7 +1,7 @@
 package com.allinfinance.dev.common.socket.codec;
 
 import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
-import com.allinfinance.dev.core.util.convert.common.ConvertUtils;
+import com.allinfinance.dev.common.util.convert.common.ConvertUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;

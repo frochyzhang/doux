@@ -6,7 +6,6 @@ import com.allinfinance.dev.common.api.http.dto.HttpResponseDTO;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;
-import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
 import com.allinfinance.dev.framework.http.driver.dto.HttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author qipeng
@@ -49,7 +50,13 @@ public class HttpClientServiceExtraImpl implements HttpClientService, Initializi
         }
         HttpResponse httpResponse = null;
         int retryTime = httpRequestDTO.getRetryTime();
-        while (retryTime-- > 0 && httpResponse == null) {
+        AtomicInteger count = new AtomicInteger(0);
+        httpResponse = simpleHttp.execute(DTOMapper.INSTANCE.convertToHttpRequest(httpRequestDTO));
+        while (retryTime > count.get() && httpResponse == null) {
+            count.incrementAndGet();
+            if (logger.isDebugEnabled()) {
+                logger.debug("开启重试，当前重试次数：{}", count.get());
+            }
             httpResponse = simpleHttp.execute(DTOMapper.INSTANCE.convertToHttpRequest(httpRequestDTO));
         }
         httpResponseDTO = DTOMapper.INSTANCE.convertToHttpResponseDTO(httpResponse);

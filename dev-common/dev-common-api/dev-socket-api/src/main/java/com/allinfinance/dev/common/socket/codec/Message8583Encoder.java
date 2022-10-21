@@ -1,12 +1,10 @@
 package com.allinfinance.dev.common.socket.codec;
 
-import com.allinfinance.dev.core.util.convert.simple8583.util.EncodeUtil;
-import com.allinfinance.dev.core.util.socket.codec.Message8583Decoder;
+import com.allinfinance.dev.common.util.convert.simple8583.util.EncodeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

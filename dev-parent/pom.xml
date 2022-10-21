@@ -143,16 +143,6 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-common-util</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-api</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket-client-driver</artifactId>
                 <version>${dev.version}</version>
             </dependency>
@@ -227,6 +217,16 @@
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-http-okhttp</artifactId>
                 <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${sun.jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${sun.jaxb.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

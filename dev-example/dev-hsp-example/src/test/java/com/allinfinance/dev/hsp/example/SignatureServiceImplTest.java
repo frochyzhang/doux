@@ -1,11 +1,12 @@
 package com.allinfinance.dev.hsp.example;
 
 import cn.hutool.core.util.HexUtil;
-import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
-import com.allinfinance.dev.core.util.hsp.SignatureService;
+
+import com.allinfinance.dev.common.hsp.api.SignatureService;
+import com.allinfinance.dev.common.hsp.api.dto.HspBaseResponseDTO;
+import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyRequestDTO;
+import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyResponseDTO;
+import com.allinfinance.dev.common.hsp.api.dto.SignatureVerifyBySM2PublicKeyRequestDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;

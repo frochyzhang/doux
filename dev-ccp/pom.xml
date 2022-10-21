@@ -22,10 +22,6 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
         </dependency>
         <dependency>

@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.security.handler;
 
-import com.allinfinance.dev.core.util.result.Result;
-import com.allinfinance.dev.core.util.result.ResultCodeEnum;
+import com.allinfinance.dev.common.dictionary.result.Result;
+import com.allinfinance.dev.common.dictionary.result.ResultCodeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

@@ -1,7 +1,8 @@
 package com.allinfinance.dev.hsp.example.config;
 
-import com.allinfinance.dev.core.util.common.BeanUtils;
-import com.allinfinance.dev.core.util.hsp.SignatureService;
+
+import com.allinfinance.dev.common.hsp.api.SignatureService;
+import com.allinfinance.dev.common.util.common.BeanUtils;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ReferenceBean;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 /**
  * @author huanghf
@@ -24,7 +24,7 @@ public class ConsumerInjectSupport implements InitializingBean, ApplicationConte
 
     private ApplicationContext applicationContext;
 
-    private final String NACOS_PROTOCOL = "nacos";
+    private static final String NACOS_PROTOCOL = "nacos";
 
     @Autowired
     private QpsBeanFactoryPostProcessor qpsBeanFactoryPostProcessor;

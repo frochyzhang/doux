@@ -29,7 +29,7 @@ public class HttpClientServiceExtraImplTest extends AbstractBenchmark {
         requestDTO.setUrl("http://localhost:8001/test/get/zhangsan");
         requestDTO.setHttpMethod(HttpMethod.GET);
         requestDTO.setTimeout(1);
-        requestDTO.setRetryTime(3);
+//        requestDTO.setRetryTime(3);
         HttpResponseDTO responseDTO = httpClientService.request(requestDTO);
         System.out.println(responseDTO);
         Assertions.assertNotNull(responseDTO, "响应dto为空");

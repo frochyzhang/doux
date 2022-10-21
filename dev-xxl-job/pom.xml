@@ -34,10 +34,6 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-dal</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
-        </dependency>
         <!-- mysql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -74,6 +70,14 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-dictionary</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-common-util</artifactId>
         </dependency>
     </dependencies>
 </project>

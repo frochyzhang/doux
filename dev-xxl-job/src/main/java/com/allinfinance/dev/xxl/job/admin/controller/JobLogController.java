@@ -1,7 +1,7 @@
 package com.allinfinance.dev.xxl.job.admin.controller;
 
-import com.allinfinance.dev.core.util.common.DateUtils;
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
+import com.allinfinance.dev.common.util.common.DateUtils;
 import com.allinfinance.dev.xxl.job.admin.constant.ClearLogTypeEnum;
 import com.allinfinance.dev.xxl.job.admin.constant.XxlJobResultCodeEnum;
 import com.allinfinance.dev.xxl.job.admin.core.complete.XxlJobCompleter;

@@ -10,7 +10,7 @@ import com.allinfinance.dev.ccs.dal.service.LoginService;
 import com.allinfinance.dev.ccs.dal.service.TblRoleService;
 import com.allinfinance.dev.ccs.security.handler.util.JwtUtil;
 import com.allinfinance.dev.ccs.utils.annotation.OperLog;
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,9 @@
 package com.allinfinance.dev.hsp.service;
 
 import cn.hutool.core.util.HexUtil;
+import com.allinfinance.dev.common.hsp.api.SignatureService;
+import com.allinfinance.dev.common.hsp.api.dto.*;
 import com.allinfinance.dev.connection.pool.scaffold.api.MessagePorter;
-import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
-import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
-import com.allinfinance.dev.core.dto.hsp.constant.HashAlgorithmEnum;
-import com.allinfinance.dev.core.util.hsp.SignatureService;
 import com.allinfinance.dev.hsp.constant.AlgorithmEnum;
 import com.allinfinance.dev.hsp.constant.HashFlagEnum;
 import com.allinfinance.dev.hsp.constant.InstructionEnum;

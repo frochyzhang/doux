@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccs.dal.service;
 
 import com.allinfinance.dev.ccs.dal.paramvo.SecondCheckPassVo;
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;

@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-core</artifactId>
+            <artifactId>dev-common-util</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,8 +1,8 @@
 package com.allinfinance.dev.common.dictionary.desensitized;
 
-import com.allinfinance.dev.common.dictionary.constant.CommonConstants;
 import com.allinfinance.dev.common.dictionary.desensitized.processor.DesensitizedFactory;
 import com.allinfinance.dev.common.dictionary.logger.LogUtil;
+import com.allinfinance.dev.common.util.constant.CommonConstants;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

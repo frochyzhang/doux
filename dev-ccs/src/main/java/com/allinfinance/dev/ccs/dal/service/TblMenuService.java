@@ -4,7 +4,7 @@ package com.allinfinance.dev.ccs.dal.service;
 import com.allinfinance.dev.ccs.dal.model.TblMenu;
 import com.allinfinance.dev.ccs.dal.paramvo.MenusReqParam;
 import com.allinfinance.dev.ccs.dal.respdto.CurrentMenusDto;
-import com.allinfinance.dev.core.util.result.Result;
+import com.allinfinance.dev.common.dictionary.result.Result;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletRequest;
