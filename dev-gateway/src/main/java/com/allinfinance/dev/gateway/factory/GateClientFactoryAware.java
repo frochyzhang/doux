@@ -158,6 +158,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
         ReferenceParam<ProcessService> referenceParam = new ReferenceParam<>();
         BoltBindingParam boltBindingParam = new BoltBindingParam();
         boltBindingParam.setLoadBalancer("roundRobin");
+        boltBindingParam.setTimeout(30000);
         referenceParam.setBindingParam(boltBindingParam);
         referenceParam.setInterfaceType(ProcessService.class);
         referenceParam.setUniqueId(uniqueId);
