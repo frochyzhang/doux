@@ -22,6 +22,7 @@
         <module>dev-framework</module>
         <module>dev-infrastructure</module>
         <module>dev-common</module>
+        <module>dev-tools</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 
@@ -557,6 +558,16 @@
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>${sun.jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-hsp-api</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+                <version>${dev.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
