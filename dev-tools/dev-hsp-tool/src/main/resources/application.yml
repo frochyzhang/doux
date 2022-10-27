@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: dev-hsp-tool
+
+server:
+  port: 10000
+
+nacos:
+  config:
+    namespace: public-sit
+    server-addr: 10.250.28.142:8848
+    username: wk2021
+    password: wk2021
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/wk2021
+        bolt-port: 10001
+  allinfinance:
+    rpc:
+      reference-list:
+        - com.allinfinance.dev.core.util.hsp.SignatureService

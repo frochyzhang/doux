@@ -569,6 +569,11 @@
                 <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-common-util</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
