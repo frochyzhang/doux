@@ -1,7 +1,7 @@
 package com.allinfinance.dev.tools.hsp;
 
-import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyRequestDTO;
-import com.allinfinance.dev.common.hsp.api.dto.SignatureVerifyBySM2PublicKeyRequestDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
 import com.allinfinance.dev.tools.hsp.config.HspConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

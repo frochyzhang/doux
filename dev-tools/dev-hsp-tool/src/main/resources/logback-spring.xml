@@ -13,7 +13,7 @@
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
     <springProperty scope="context" name="LOG_HOME" source="dev-hsp-tool.log.base-path"
                     defaultValue="${HOME}/logs/${APP_NAME}/"/>
-    <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="debug"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="info"/>
 
     <!-- 控制台输出 -->
     <appender name="HSP-TOOL-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

@@ -1,11 +1,11 @@
 package com.allinfinance.dev.tools.hsp.listener;
 
 import com.alibaba.nacos.spring.context.event.config.NacosConfigReceivedEvent;
-import com.allinfinance.dev.common.hsp.api.SignatureService;
-import com.allinfinance.dev.common.hsp.api.dto.HspBaseResponseDTO;
-import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyRequestDTO;
-import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyResponseDTO;
-import com.allinfinance.dev.common.hsp.api.dto.SignatureVerifyBySM2PublicKeyRequestDTO;
+import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
+import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
+import com.allinfinance.dev.core.util.hsp.SignatureService;
 import com.allinfinance.dev.tools.hsp.DTOMapper;
 import com.allinfinance.dev.tools.hsp.config.HspConfig;
 import org.slf4j.Logger;
