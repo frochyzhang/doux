@@ -27,10 +27,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.allinfinance.dev</groupId>-->
-<!--            <artifactId>dev-hsp-api</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
@@ -40,16 +36,6 @@
             <artifactId>nacos-config-spring-boot-starter</artifactId>
             <version>${nacos.config.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-configuration-processor</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.allinfinance.dev</groupId>-->
-<!--            <artifactId>dev-common-util</artifactId>-->
-<!--            <version>${dev.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-core</artifactId>

@@ -13,7 +13,6 @@ import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureVerifyBySM2PublicKeyRequestDTO;
 import com.allinfinance.dev.core.util.hsp.SignatureService;
-import com.allinfinance.dev.tools.hsp.DTOMapper;
 import com.allinfinance.dev.tools.hsp.config.HspConfig;
 import com.allinfinance.dev.tools.hsp.util.Sm2CertUtils;
 import org.apache.commons.codec.binary.Base64;
