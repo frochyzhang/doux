@@ -53,7 +53,12 @@
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-core</artifactId>
-            <version>${dev.version}</version>
+            <version>1.4.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.56</version>
         </dependency>
     </dependencies>
 
@@ -72,22 +77,6 @@
                 </executions>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptors>src/main/assembly/assembly.xml</descriptors>
                 </configuration>
             </plugin>
         </plugins>

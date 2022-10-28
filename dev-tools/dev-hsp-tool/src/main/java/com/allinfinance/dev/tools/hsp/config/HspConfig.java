@@ -90,21 +90,9 @@ public class HspConfig {
          */
         private Boolean start;
         /**
-         * 公钥明文X, HEX
+         * 签名结果, base64
          */
-        private String plainPublicKeyX;
-        /**
-         * 公钥明文Y, HEX
-         */
-        private String plainPublicKeyY;
-        /**
-         * 签名结果R, HEX
-         */
-        private String signatureR;
-        /**
-         * 签名结果S, HEX
-         */
-        private String signatureS;
+        private String signatureResult;
         /**
          * 证书序列号，明文
          */
@@ -122,36 +110,12 @@ public class HspConfig {
             this.start = start;
         }
 
-        public String getPlainPublicKeyX() {
-            return plainPublicKeyX;
+        public String getSignatureResult() {
+            return signatureResult;
         }
 
-        public void setPlainPublicKeyX(String plainPublicKeyX) {
-            this.plainPublicKeyX = plainPublicKeyX;
-        }
-
-        public String getPlainPublicKeyY() {
-            return plainPublicKeyY;
-        }
-
-        public void setPlainPublicKeyY(String plainPublicKeyY) {
-            this.plainPublicKeyY = plainPublicKeyY;
-        }
-
-        public String getSignatureR() {
-            return signatureR;
-        }
-
-        public void setSignatureR(String signatureR) {
-            this.signatureR = signatureR;
-        }
-
-        public String getSignatureS() {
-            return signatureS;
-        }
-
-        public void setSignatureS(String signatureS) {
-            this.signatureS = signatureS;
+        public void setSignatureResult(String signatureResult) {
+            this.signatureResult = signatureResult;
         }
 
         public String getCertId() {
@@ -174,15 +138,11 @@ public class HspConfig {
         public String toString() {
             return "VerifyConfig{" +
                     "start=" + start +
-                    ", plainPublicKeyX='" + plainPublicKeyX + '\'' +
-                    ", plainPublicKeyY='" + plainPublicKeyY + '\'' +
-                    ", signatureR='" + signatureR + '\'' +
-                    ", signatureS='" + signatureS + '\'' +
+                    ", signatureResult='" + signatureResult + '\'' +
                     ", certId='" + certId + '\'' +
                     ", data='" + data + '\'' +
                     '}';
         }
-
     }
 
     public SignConfig getSignConfig() {
