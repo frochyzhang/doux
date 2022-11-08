@@ -1,5 +1,6 @@
 package com.allinfinance.dev.dispatch.scaffold.executor;
 
+import com.allinfinance.dev.dispatch.scaffold.api.AbstractJobHandler;
 import com.allinfinance.dev.dispatch.scaffold.api.IJobHandler;
 import com.xxl.job.core.executor.XxlJobExecutor;
 import com.xxl.job.core.handler.impl.MethodJobHandler;
@@ -23,6 +24,10 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
     private static final Logger logger = LoggerFactory.getLogger(XxlJobCustomExecutor.class);
 
     private List<IJobHandler> xxlJobBeanList = new ArrayList<>();
+
+    private Integer poolCoreSize;
+
+    private Integer poolMaximumSize;
 
     @Override
     public void start() {
@@ -59,7 +64,13 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
             Method executeMethod = null;
             try {
-                executeMethod = bean.getClass().getDeclaredMethod("execute");
+                Class<? extends IJobHandler> beanClass = bean.getClass();
+                if (AbstractJobHandler.class.isAssignableFrom(beanClass)) {
+                    executeMethod = beanClass.getSuperclass().getDeclaredMethod("wrappedExecute");
+                } else {
+                    executeMethod = beanClass.getDeclaredMethod("execute");
+                }
+
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -75,5 +86,21 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
     public void setXxlJobBeanList(List<IJobHandler> xxlJobBeanList) {
         this.xxlJobBeanList = xxlJobBeanList;
+    }
+
+    public Integer getPoolCoreSize() {
+        return poolCoreSize;
+    }
+
+    public void setPoolCoreSize(Integer poolCoreSize) {
+        this.poolCoreSize = poolCoreSize;
+    }
+
+    public Integer getPoolMaximumSize() {
+        return poolMaximumSize;
+    }
+
+    public void setPoolMaximumSize(Integer poolMaximumSize) {
+        this.poolMaximumSize = poolMaximumSize;
     }
 }
