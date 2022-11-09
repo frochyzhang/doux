@@ -23,7 +23,7 @@ public abstract class AbstractJobHandler implements IJobHandler, InitializingBea
     private static ExecutorService executor;
 
 
-    public void wrappedExecute() {
+    public final void wrappedExecute() {
         executor.execute(() -> {
             try {
                 this.execute();
