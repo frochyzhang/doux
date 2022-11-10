@@ -1,6 +1,5 @@
 package com.allinfinance.dev.dispatch.scaffold.executor;
 
-import com.allinfinance.dev.dispatch.scaffold.api.AbstractJobHandler;
 import com.allinfinance.dev.dispatch.scaffold.api.IJobHandler;
 import com.xxl.job.core.executor.XxlJobExecutor;
 import com.xxl.job.core.handler.impl.MethodJobHandler;
@@ -65,14 +64,13 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
             Method executeMethod = null;
             try {
                 Class<? extends IJobHandler> beanClass = bean.getClass();
-                if (AbstractJobHandler.class.isAssignableFrom(beanClass)) {
-                    executeMethod = beanClass.getSuperclass().getDeclaredMethod("wrappedExecute");
-                } else {
+                try {
                     executeMethod = beanClass.getDeclaredMethod("execute");
+                } catch (NoSuchMethodException e) {
+                    executeMethod = beanClass.getSuperclass().getDeclaredMethod("execute");
                 }
-
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error("获取execute方法失败", e);
             }
 
             // registry jobHandler
