@@ -436,6 +436,10 @@ public class RpcConfigurationProperties {
                  */
                 private Integer soSndBuf = 2048;
                 /**
+                 * 处理http请求核心线程池大小
+                 */
+                private Integer threadCount = Runtime.getRuntime().availableProcessors();
+                /**
                  * 处理的URL列表
                  */
                 private List<UrlConfig> urlList;
@@ -515,6 +519,14 @@ public class RpcConfigurationProperties {
                     this.soSndBuf = soSndBuf;
                 }
 
+                public Integer getThreadCount() {
+                    return threadCount;
+                }
+
+                public void setThreadCount(Integer threadCount) {
+                    this.threadCount = threadCount;
+                }
+
                 public List<UrlConfig> getUrlList() {
                     return urlList;
                 }
@@ -531,6 +543,7 @@ public class RpcConfigurationProperties {
                             ", soKeepAlive=" + soKeepAlive +
                             ", soRcvBuf=" + soRcvBuf +
                             ", soSndBuf=" + soSndBuf +
+                            ", threadCount=" + threadCount +
                             ", urlList=" + urlList +
                             '}';
                 }

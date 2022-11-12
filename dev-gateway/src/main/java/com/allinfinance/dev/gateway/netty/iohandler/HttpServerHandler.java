@@ -54,7 +54,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     private final Integer port;
 
-    public HttpServerHandler(String uniqueId, int port) {
+    public HttpServerHandler(String uniqueId, int port, int threadCount) {
         this.appUniqueId = uniqueId;
         this.port = port;
 
@@ -62,8 +62,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 .setNamePrefix(uniqueId + "-server-pool-")
                 .setDaemon(true)
                 .build();
-        executor = new ThreadPoolExecutor(30, 30, 0L,
-                TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>(1), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+        executor = new ThreadPoolExecutor(threadCount, threadCount * 2, 0L,
+                TimeUnit.MICROSECONDS, new SynchronousQueue<>(), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     @Override
@@ -81,7 +81,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private void onReceivedRequest(ChannelHandlerContext context, NettyHttpRequest request) {
         FullHttpResponse response = handleHttpRequest(request);
         context.writeAndFlush(response).addListener(future -> logger.info("Response sent and flushed"));
-        ReferenceCountUtil.release(request);
+        if (ReferenceCountUtil.release(request)) {
+            logger.error("回收请求成功");
+        } else {
+            logger.info("回收请求失败");
+        }
     }
 
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {

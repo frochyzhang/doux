@@ -61,6 +61,12 @@ public class HttpServer {
                 .allowedRequestMethods(GET, POST, PUT)
                 .allowCredentials().build();
         /* 跨域处理结束 */
+        HttpServerHandler handler = new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount());
+        HttpServerCodec codec = new HttpServerCodec();
+        HttpObjectAggregator aggregator = new HttpObjectAggregator(512 * 1024);
+        CorsHandler corsHandler = new CorsHandler(config);
+        FilterLogginglHandler logginglHandler = new FilterLogginglHandler();
+        InterceptorHandler interceptorHandler = new InterceptorHandler();
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -72,12 +78,12 @@ public class HttpServer {
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) {
-                ch.pipeline().addLast("codec", new HttpServerCodec());
-                ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
-                ch.pipeline().addLast("corsHandler", new CorsHandler(config));
-                ch.pipeline().addLast("logging", new FilterLogginglHandler());
-                ch.pipeline().addLast("interceptor", new InterceptorHandler());
-                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port));
+                ch.pipeline().addLast("codec", codec);
+                ch.pipeline().addLast("aggregator", aggregator);
+                ch.pipeline().addLast("corsHandler", corsHandler);
+                ch.pipeline().addLast("logging", logginglHandler);
+                ch.pipeline().addLast("interceptor", interceptorHandler);
+                ch.pipeline().addLast("bizHandler", handler);
             }
         })
         ;
