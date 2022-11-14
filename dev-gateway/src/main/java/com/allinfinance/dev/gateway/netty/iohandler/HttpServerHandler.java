@@ -26,7 +26,6 @@ import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
 import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -43,12 +42,10 @@ import java.util.concurrent.*;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/18 13:34
  */
-@ChannelHandler.Sharable
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
-
-    private static ExecutorService executor = null;
+    private static final Map<String, ExecutorService> EXECUTOR_SERVICE_MAP = new ConcurrentHashMap<>();
 
     private final String appUniqueId;
 
@@ -62,8 +59,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 .setNamePrefix(uniqueId + "-server-pool-")
                 .setDaemon(true)
                 .build();
-        executor = new ThreadPoolExecutor(threadCount, threadCount * 2, 0L,
-                TimeUnit.MICROSECONDS, new SynchronousQueue<>(), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+        EXECUTOR_SERVICE_MAP.putIfAbsent(appUniqueId, new ThreadPoolExecutor(threadCount, threadCount, 0L,
+                TimeUnit.SECONDS, new SynchronousQueue<>(), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy()));
     }
 
     @Override
@@ -74,7 +71,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) {
         FullHttpRequest copyRequest = request.copy();
-        executor.execute(() -> onReceivedRequest(ctx, new NettyHttpRequest(copyRequest)));
+        EXECUTOR_SERVICE_MAP.get(appUniqueId).execute(() -> onReceivedRequest(ctx, new NettyHttpRequest(copyRequest)));
     }
 
 
@@ -91,11 +88,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
         logger.info("接收[{}]请求开始!", appUniqueId);
 
-//        boolean verifyRet = crossOriginVerify(request);
-//
-//        if (verifyRet) {
-//            return NettyHttpResponse.ok(null);
-//        }
         HttpResponseDTO httpResponseDTO;
         try {
             httpResponseDTO = AppProcessFactory.httpProcessed(appUniqueId, request, port);

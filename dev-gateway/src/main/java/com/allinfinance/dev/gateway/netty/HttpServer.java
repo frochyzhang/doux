@@ -1,8 +1,7 @@
 package com.allinfinance.dev.gateway.netty;
 
-import com.allinfinance.dev.gateway.netty.iohandler.FilterLogginglHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.FilterLoggingHandler;
 import com.allinfinance.dev.gateway.netty.iohandler.HttpServerHandler;
-import com.allinfinance.dev.gateway.netty.iohandler.InterceptorHandler;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -61,12 +60,7 @@ public class HttpServer {
                 .allowedRequestMethods(GET, POST, PUT)
                 .allowCredentials().build();
         /* 跨域处理结束 */
-        HttpServerHandler handler = new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount());
-        HttpServerCodec codec = new HttpServerCodec();
-        HttpObjectAggregator aggregator = new HttpObjectAggregator(512 * 1024);
-        CorsHandler corsHandler = new CorsHandler(config);
-        FilterLogginglHandler logginglHandler = new FilterLogginglHandler();
-        InterceptorHandler interceptorHandler = new InterceptorHandler();
+        FilterLoggingHandler loggingHandler = new FilterLoggingHandler();
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -78,12 +72,11 @@ public class HttpServer {
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) {
-                ch.pipeline().addLast("codec", codec);
-                ch.pipeline().addLast("aggregator", aggregator);
-                ch.pipeline().addLast("corsHandler", corsHandler);
-                ch.pipeline().addLast("logging", logginglHandler);
-                ch.pipeline().addLast("interceptor", interceptorHandler);
-                ch.pipeline().addLast("bizHandler", handler);
+                ch.pipeline().addLast("codec", new HttpServerCodec());
+                ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
+                ch.pipeline().addLast("corsHandler", new CorsHandler(config));
+                ch.pipeline().addLast("logging", loggingHandler);
+                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount()));
             }
         })
         ;
