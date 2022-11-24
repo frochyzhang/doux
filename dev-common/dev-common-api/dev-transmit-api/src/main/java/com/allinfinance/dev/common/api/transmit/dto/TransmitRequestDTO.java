@@ -26,6 +26,12 @@ public class TransmitRequestDTO {
      * 超时时间(ms)
      */
     private Integer timeout = 3000;
+    /**
+     * localPath是否为追加目录
+     * true则在默认目录基础上追加localPath
+     * false则(localPath)为自定义目录
+     */
+    private Boolean append;
 
     public static class RemoteMessage {
         /**
@@ -112,6 +118,14 @@ public class TransmitRequestDTO {
                     ", transmitMode=" + transmitMode +
                     '}';
         }
+    }
+
+    public Boolean getAppend() {
+        return append;
+    }
+
+    public void setAppend(Boolean append) {
+        this.append = append;
     }
 
     public Integer getTimeout() {

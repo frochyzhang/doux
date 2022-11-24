@@ -17,6 +17,22 @@ import java.util.Random;
  */
 public class StrUtils {
     /**
+     * 直接获取xml指定标签内容
+     * @param xmlContent xml报文
+     * @param label xml标签(如：<label>)
+     * @return 所需标签值
+     */
+    public static String getLabelValue(String xmlContent, String label) {
+        String sTail = label.charAt(0) + "/" + label.substring(1);
+        if (!xmlContent.contains(label)) {
+            return "";
+        } else {
+            int beginIndex = xmlContent.indexOf(label) + label.length();
+            int endIndex = xmlContent.indexOf(sTail);
+            return xmlContent.substring(beginIndex, endIndex);
+        }
+    }
+    /**
      * 已分隔符来输出传入的字符串
      *
      * @param split

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.provider;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
@@ -7,6 +8,8 @@ import com.alipay.sofa.runtime.api.client.ServiceClient;
 import com.alipay.sofa.runtime.api.client.param.BindingParam;
 import com.alipay.sofa.runtime.api.client.param.ServiceParam;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -44,16 +47,32 @@ public class ProviderScanSupport implements BeanPostProcessor, ClientFactoryAwar
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (rpcConfigurationProperties.getProviderPackage() == null) {
+
+        if (ObjectUtils.isEmpty(rpcConfigurationProperties.getProvider())) {
             if (logger.isDebugEnabled()) {
                 logger.debug("provider 配置未找到！");
             }
             return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
         }
+        RpcConfigurationProperties.Provider provider = rpcConfigurationProperties.getProvider();
+        if (StringUtils.isBlank(provider.getServicePackage())) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("提供方的包路径 配置未找到！");
+            }
+            return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+        }
 
         String beanType = bean.getClass().getName();
-        String providerPackage = rpcConfigurationProperties.getProviderPackage();
+        String providerPackage = provider.getServicePackage();
         if (beanType.contains(providerPackage)) {
+            if (CollectionUtils.isNotEmpty(provider.getExcludeServiceList())) {
+                if (provider.getExcludeServiceList().contains(beanType)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("该Bean不发布: beanName=[{}], beanType=[{}]", beanName, beanType);
+                    }
+                    return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+                }
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug("发布Bean: beanName=[{}], beanType=[{}]", beanName, beanType);
             }
@@ -64,7 +83,7 @@ public class ProviderScanSupport implements BeanPostProcessor, ClientFactoryAwar
             Class<?>[] interfaces = bean.getClass().getInterfaces();
             if (interfaces.length != 0) {
                 serviceParam.setInterfaceType(interfaces[0]);
-                Optional.ofNullable(rpcConfigurationProperties.getProviderUniqueId())
+                Optional.ofNullable(provider.getUniqueId())
                         .ifPresent(serviceParam::setUniqueId);
 
                 List<BindingParam> params = new ArrayList<>();

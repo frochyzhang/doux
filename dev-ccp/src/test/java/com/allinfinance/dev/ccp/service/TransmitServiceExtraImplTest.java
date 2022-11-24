@@ -49,7 +49,8 @@ class TransmitServiceExtraImplTest {
         source.setPath("/app/wkftp/Temp");
         source.setTransmitMode(TransmitMode.SFTP);
         transmitRequestDTO.setSource(source);
-        transmitRequestDTO.setLocalPath("C:\\\\temp");
+        transmitRequestDTO.setLocalPath("C:\\temp\\tmp");
+        transmitRequestDTO.setAppend(false);
         transmitRequestDTO.setFileName("test3");
         transmitRequestDTO.setTimeout(5000);
         TransmitResponseDTO responseDTO = transmitServiceExtra.download(transmitRequestDTO);
@@ -68,8 +69,9 @@ class TransmitServiceExtraImplTest {
         target.setPath("/app/wkftp");
         target.setTransmitMode(TransmitMode.SFTP);
         transmitRequestDTO.setTarget(target);
-        transmitRequestDTO.setLocalPath("C:\\temp\\testt");
-        transmitRequestDTO.setFileName("test");
+        transmitRequestDTO.setLocalPath("test");
+        transmitRequestDTO.setFileName("test001.txt");
+        transmitRequestDTO.setAppend(true);
         transmitRequestDTO.setTimeout(5000);
         TransmitResponseDTO responseDTO = transmitServiceExtra.upload(transmitRequestDTO);
         Assertions.assertEquals(true, responseDTO.getSuccess());
@@ -99,8 +101,9 @@ class TransmitServiceExtraImplTest {
 
         transmitRequestDTO.setTarget(target);
         transmitRequestDTO.setSource(source);
-//        transmitRequestDTO.setLocalPath("C:\\\\temp");
-        transmitRequestDTO.setFileName("test3");
+        transmitRequestDTO.setAppend(true);
+        transmitRequestDTO.setLocalPath("tmp");
+        transmitRequestDTO.setFileName("test001");
         transmitRequestDTO.setTimeout(5000);
         TransmitResponseDTO responseDTO = transmitServiceExtra.transmit(transmitRequestDTO);
         Assertions.assertEquals(true, responseDTO.getSuccess());
@@ -186,6 +189,8 @@ class TransmitServiceExtraImplTest {
 
         transmitRequestDTO.setTarget(target);
         transmitRequestDTO.setSource(source);
+        transmitRequestDTO.setAppend(true);
+        transmitRequestDTO.setLocalPath("double\\sdfds");
         transmitRequestDTO.setFileName("test3");
         transmitRequestDTO.setTimeout(5000);
         TransmitResponseDTO responseDTO = transmitServiceExtra.transmit(transmitRequestDTO);

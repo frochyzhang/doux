@@ -36,10 +36,19 @@ public class TransmitServiceExtraImpl implements TransmitService {
     public TransmitResponseDTO upload(TransmitRequestDTO requestDTO) {
         logger.info(requestDTO.toString());
         TransmitResponseDTO transmitResponseDTO = new TransmitResponseDTO();
-        String realLocalPath = localPath;
-        if (StringUtils.isNoneBlank(requestDTO.getLocalPath())) {
+        String realLocalPath = null;
+        if (requestDTO.getAppend()) {
+            realLocalPath = localPath + File.separator + requestDTO.getLocalPath();
+        } else {
+            if (StringUtils.isBlank(requestDTO.getLocalPath())) {
+                logger.error("localPath不能为空");
+                transmitResponseDTO.setSuccess(false);
+                transmitResponseDTO.setReason("localPath为空");
+                return transmitResponseDTO;
+            }
             realLocalPath = requestDTO.getLocalPath();
         }
+        logger.info("本地文件路径={}", realLocalPath);
         TransmitRequestDTO.RemoteMessage target = requestDTO.getTarget();
         TransmitMode mode = target.getTransmitMode();
         if (mode.matches("FTP")) {
@@ -76,10 +85,20 @@ public class TransmitServiceExtraImpl implements TransmitService {
         TransmitResponseDTO transmitResponseDTO = new TransmitResponseDTO();
         TransmitRequestDTO.RemoteMessage source = requestDTO.getSource();
         TransmitMode mode = source.getTransmitMode();
-        String realLocalPath = localPath;
-        if (StringUtils.isNoneBlank(requestDTO.getLocalPath())) {
+
+        String realLocalPath = null;
+        if (requestDTO.getAppend()) {
+            realLocalPath = localPath + File.separator + requestDTO.getLocalPath();
+        } else {
+            if (StringUtils.isBlank(requestDTO.getLocalPath())) {
+                logger.error("localPath不能为空");
+                transmitResponseDTO.setSuccess(false);
+                transmitResponseDTO.setReason("localPath为空");
+                return transmitResponseDTO;
+            }
             realLocalPath = requestDTO.getLocalPath();
         }
+        logger.info("本地文件路径={}", realLocalPath);
         if (mode.matches("FTP")) {
             logger.info("开始进行FTP模式下载文件");
             try {
@@ -114,8 +133,16 @@ public class TransmitServiceExtraImpl implements TransmitService {
     public TransmitResponseDTO transmit(TransmitRequestDTO requestDTO) {
         TransmitResponseDTO transmitResponseDTO = new TransmitResponseDTO();
         TransmitResponseDTO downloadResult = download(requestDTO);
-        String realLocalPath = localPath;
-        if (StringUtils.isNoneBlank(requestDTO.getLocalPath())) {
+        String realLocalPath = null;
+        if (requestDTO.getAppend()) {
+            realLocalPath = localPath + File.separator + requestDTO.getLocalPath();
+        } else {
+            if (StringUtils.isBlank(requestDTO.getLocalPath())) {
+                logger.error("自定义localPath不能为空");
+                transmitResponseDTO.setSuccess(false);
+                transmitResponseDTO.setReason("自定义localPath为空");
+                return transmitResponseDTO;
+            }
             realLocalPath = requestDTO.getLocalPath();
         }
         File folder = new File(realLocalPath);

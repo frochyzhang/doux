@@ -84,7 +84,7 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
 
     @Override
     public void afterPropertiesSet() {
-        List<String> commonServiceList = rpcConfigurationProperties.getCommonServiceList();
+        List<String> commonServiceList = rpcConfigurationProperties.getCommonReferenceList();
         if (CollectionUtils.isNotEmpty(commonServiceList)) {
             if (StringUtils.isBlank(rpcConfigurationProperties.getBootstrap().getGateRegistry())) {
                 logger.error("未配置公共服务注册中心地址，请检查配置项");

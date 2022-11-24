@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
@@ -22,19 +23,15 @@ public class RpcConfigurationProperties {
     /**
      * 引用公共服务列表，以数组形式提供
      */
-    private List<String> commonServiceList;
-    /**
-     * provider的uniqueId
-     */
-    private String providerUniqueId;
-    /**
-     * 服务提供方的包路径
-     */
-    private String providerPackage;
+    private List<String> commonReferenceList;
     /**
      * RPC客户端配置
      */
     private Consumer consumer;
+    /**
+     * 服务提供方配置
+     */
+    private Provider provider;
 
     private Bootstrap bootstrap = new Bootstrap();
 
@@ -46,28 +43,12 @@ public class RpcConfigurationProperties {
         this.referenceList = referenceList;
     }
 
-    public List<String> getCommonServiceList() {
-        return commonServiceList;
+    public List<String> getCommonReferenceList() {
+        return commonReferenceList;
     }
 
-    public void setCommonServiceList(List<String> commonServiceList) {
-        this.commonServiceList = commonServiceList;
-    }
-
-    public String getProviderUniqueId() {
-        return providerUniqueId;
-    }
-
-    public void setProviderUniqueId(String providerUniqueId) {
-        this.providerUniqueId = providerUniqueId;
-    }
-
-    public String getProviderPackage() {
-        return providerPackage;
-    }
-
-    public void setProviderPackage(String providerPackage) {
-        this.providerPackage = providerPackage;
+    public void setCommonReferenceList(List<String> commonReferenceList) {
+        this.commonReferenceList = commonReferenceList;
     }
 
     public Consumer getConsumer() {
@@ -78,12 +59,68 @@ public class RpcConfigurationProperties {
         this.consumer = consumer;
     }
 
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
     public Bootstrap getBootstrap() {
         return bootstrap;
     }
 
     public void setBootstrap(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
+    }
+
+    public static class Provider{
+        /**
+         * 剔除不想对外暴露服务，以数组方式提供
+         */
+        private Set<String> excludeServiceList;
+        /**
+         * provider的uniqueId
+         */
+        private String uniqueId;
+        /**
+         * 服务提供方的包路径
+         */
+        private String servicePackage;
+
+        public Set<String> getExcludeServiceList() {
+            return excludeServiceList;
+        }
+
+        public void setExcludeServiceList(Set<String> excludeServiceList) {
+            this.excludeServiceList = excludeServiceList;
+        }
+
+        public String getUniqueId() {
+            return uniqueId;
+        }
+
+        public void setUniqueId(String uniqueId) {
+            this.uniqueId = uniqueId;
+        }
+
+        public String getServicePackage() {
+            return servicePackage;
+        }
+
+        public void setServicePackage(String servicePackage) {
+            this.servicePackage = servicePackage;
+        }
+
+        @Override
+        public String toString() {
+            return "Provider{" +
+                    "excludeServiceList=" + excludeServiceList +
+                    ", uniqueId='" + uniqueId + '\'' +
+                    ", servicePackage='" + servicePackage + '\'' +
+                    '}';
+        }
     }
 
     public static class Consumer {
