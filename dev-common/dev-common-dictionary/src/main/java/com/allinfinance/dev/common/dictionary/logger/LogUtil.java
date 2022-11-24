@@ -87,7 +87,7 @@ public class LogUtil {
 
     static {
         try {
-            desensitizedSpi = SpringUtil.getBean("com.allinfinance.dev.core.util.logger.DesensitizedSpi");
+            desensitizedSpi = SpringUtil.getBean(DesensitizedSpi.class);
             System.out.println("脱敏服务注册成功" + desensitizedSpi.getClass().getName());
         } catch (Exception e) {
             System.err.println("脱敏服务注册失败" + e.getMessage());

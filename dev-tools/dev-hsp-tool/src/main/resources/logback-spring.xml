@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!--
+    说明：
+        1. 文件的命名和加载顺序有关
+           logback.xml早于application.yml加载，logback-spring.xml晚于application.yml加载
+           如果logback配置需要使用application.yml中的属性，需要命名为logback-spring.xml
+        2. logback使用application.yml中的属性
+           使用springProperty才可使用application.yml中的值 可以设置默认值
+    -->
+    <!-- 通用参数配置 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="LOG_HOME" source="dev-hsp-tool.log.base-path"
+                    defaultValue="${HOME}/logs/${APP_NAME}/"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="dev-ccp.log.level" defaultValue="info"/>
+
+    <!-- 控制台输出 -->
+    <appender name="HSP-TOOL-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <appender name="HSP-TOOL-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/dev-hsp-tool.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/dev-hsp-tool.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>200MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--开发环境配置-->
+    <springProfile name="dev">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-CONSOLE"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-CONSOLE"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-TOOL-CONSOLE"/>
+        </root>
+    </springProfile>
+
+
+    <!--sit环境配置-->
+    <springProfile name="sit">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </root>
+    </springProfile>
+
+    <!--uat环境配置-->
+    <springProfile name="uat">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </root>
+    </springProfile>
+
+    <!--生产环境配置-->
+    <springProfile name="prod">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </root>
+    </springProfile>
+</configuration>

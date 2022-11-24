@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: dev-hsp-tool
+  profiles:
+    active: dev
+
+server:
+  port: 10000
+
+nacos:
+  config:
+    auto-refresh: true
+    bootstrap:
+      enable: true
+    config-long-poll-timeout: 46000
+    config-retry-time: 3000
+    enable-remote-sync-config: true
+    group: DEFAULT_GROUP
+    max-retry: 10
+    remote-first: true
+    type: yaml
+    namespace: public-sit
+    server-addr: 10.250.28.142:8848
+    username: iasp-lzk
+    password: iasp-lzk
+    data-id: dev-hsp-tool
+
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/wk2021
+        bolt-port: 10001
+  allinfinance:
+    rpc:
+      reference-list:
+        - com.allinfinance.dev.core.util.hsp.SignatureService
