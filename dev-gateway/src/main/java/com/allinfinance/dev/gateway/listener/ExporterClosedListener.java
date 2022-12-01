@@ -32,7 +32,7 @@ public class ExporterClosedListener implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         new Thread(() -> {
             while (true) {
-                appProcessFactory.getProcessors().keySet().forEach(uniqueId -> {
+                appProcessFactory.getPROCESS_SYNC_CACHE().keySet().forEach(uniqueId -> {
                     ConcurrentMap<Binding, ConsumerConfig> consumerConfigMap = consumerConfigContainer.getConsumerConfigMap();
                     int subscribeSize = consumerConfigMap.values().stream()
                             .filter(cc -> cc.getUniqueId().equals(uniqueId))

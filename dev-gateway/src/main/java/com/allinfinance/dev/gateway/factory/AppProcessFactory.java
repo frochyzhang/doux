@@ -6,6 +6,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
+import com.allinfinance.dev.gateway.cache.SyncCache;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
@@ -32,9 +33,9 @@ import java.util.stream.Collectors;
  */
 @Component
 public class AppProcessFactory {
-    private static final Map<String, ProcessService> processors = new ConcurrentHashMap<>();
-    private static final Map<String, RpcConfigurationProperties.Bootstrap> compares = new ConcurrentHashMap<>();
-    private static final Map<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> appUrlMap = new ConcurrentHashMap<>();
+    private static final SyncCache<String, ProcessService> PROCESS_SYNC_CACHE = new SyncCache<>();
+    private static final SyncCache<String, RpcConfigurationProperties.Bootstrap> BOOTSTRAP_SYNC_CACHE = new SyncCache<>();
+    private static final SyncCache<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> URL_SYNC_CACHE = new SyncCache<>();
 
     private static final Logger logger = LoggerFactory.getLogger(AppProcessFactory.class);
 
@@ -42,40 +43,40 @@ public class AppProcessFactory {
     private GateClientFactoryAware gateClientFactoryAware;
 
     public void registerProcessService(String appUniqueId, ProcessService processService) {
-        processors.put(appUniqueId, processService);
-        compares.put(appUniqueId, processService.init());
+        PROCESS_SYNC_CACHE.put(appUniqueId, processService);
+        BOOTSTRAP_SYNC_CACHE.put(appUniqueId, processService.init());
     }
 
     public void registerUrlList(String appUniqueId, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urls) {
-        if (appUrlMap.containsKey(appUniqueId)) {
-            urls.addAll(appUrlMap.get(appUniqueId));
+        if (URL_SYNC_CACHE.containsKey(appUniqueId)) {
+            urls.addAll(URL_SYNC_CACHE.get(appUniqueId));
         }
-        appUrlMap.put(appUniqueId, urls);
+        URL_SYNC_CACHE.put(appUniqueId, urls);
     }
 
     public void registerBootstrap(RpcConfigurationProperties.Bootstrap bootstrap) {
-        compares.put(bootstrap.getAppUniqueId(), bootstrap);
+        BOOTSTRAP_SYNC_CACHE.put(bootstrap.getAppUniqueId(), bootstrap);
     }
 
     public Boolean checkIfExist(String appUniqueId, RpcConfigurationProperties.Bootstrap bootstrap) {
 
-        return (processors.containsKey(appUniqueId) &&
-                bootstrap.toString().equals(compares.get(appUniqueId).toString()));
+        return (PROCESS_SYNC_CACHE.containsKey(appUniqueId) &&
+                bootstrap.toString().equals(BOOTSTRAP_SYNC_CACHE.get(appUniqueId).toString()));
 
     }
 
     public boolean checkProcessServiceIfExist(String appUniqueId) {
-        return processors.containsKey(appUniqueId);
+        return PROCESS_SYNC_CACHE.containsKey(appUniqueId);
     }
 
     public boolean checkBootstrapIfEqual(RpcConfigurationProperties.Bootstrap bootstrap) {
-        return bootstrap.toString().equals(compares.get(bootstrap.getAppUniqueId()).toString());
+        return bootstrap.toString().equals(BOOTSTRAP_SYNC_CACHE.get(bootstrap.getAppUniqueId()).toString());
     }
 
     public static String tcpProcessed(String appUniqueId, String requestMsg) {
         ProcessRequestDTO processRequestDTO = new ProcessRequestDTO(RequestTypeEnum.TCP);
         processRequestDTO.setRequestDTO(new TcpRequestDTO(requestMsg));
-        return processors.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
+        return PROCESS_SYNC_CACHE.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
     }
 
     private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
@@ -109,21 +110,21 @@ public class AppProcessFactory {
         processRequestDTO.setRequestDTO(httpRequestDTO);
 
         //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
-        List<String> urlList = appUrlMap.get(appUniqueId)
+        List<String> urlList = URL_SYNC_CACHE.get(appUniqueId)
                 .stream()
                 .map(RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig::getUrl)
                 .collect(Collectors.toList());
         if (!urlList.contains(url)) {
             //2、不包含url则去寻找其他监听了这个端口的应用
             String finalAppUniqueId = appUniqueId;
-            List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
+            List<RpcConfigurationProperties.Bootstrap> bootstrapList = BOOTSTRAP_SYNC_CACHE.values()
                     .stream()
                     .filter(bootstrap -> !finalAppUniqueId.equals(bootstrap.getAppUniqueId()) && bootstrap.getAppList().stream()
                             .anyMatch(appConfigList -> appConfigList.getListenPort().equals(port)))
                     .collect(Collectors.toList());
             //3、遍历监听了这个端口的应用列表，判断是否包含url，如果包含则直接调用
             appUniqueId = bootstrapList.stream()
-                    .filter(bootstrap -> appUrlMap.get(bootstrap.getAppUniqueId())
+                    .filter(bootstrap -> URL_SYNC_CACHE.get(bootstrap.getAppUniqueId())
                             .stream()
                             .map(RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig::getUrl)
                             .collect(Collectors.toList())
@@ -132,13 +133,13 @@ public class AppProcessFactory {
                     .orElseThrow(() -> new IllegalArgumentException("请求地址" + url + "不在应用注册列表内"))
                     .getAppUniqueId();
         }
-        ProcessService processService = processors.get(appUniqueId);
+        ProcessService processService = PROCESS_SYNC_CACHE.get(appUniqueId);
         if (processService == null) {
             logger.error("未找到对应http请求处理服务, appUniqueId: {}", appUniqueId);
             throw new IllegalArgumentException("调用http请求处理服务失败");
         }
         //判断请求类型是否与配置的一致
-        HttpMethod requestMethod = appUrlMap.get(appUniqueId)
+        HttpMethod requestMethod = URL_SYNC_CACHE.get(appUniqueId)
                 .stream()
                 .filter(urlConfig -> url.equals(urlConfig.getUrl()))
                 .findFirst()
@@ -170,9 +171,9 @@ public class AppProcessFactory {
 
     public void removeBootstrap(String uniqueId) {
         logger.info("开始移除[ {} ]应用配置", uniqueId);
-        RpcConfigurationProperties.Bootstrap removeBootstrap = compares.remove(uniqueId);
+        RpcConfigurationProperties.Bootstrap removeBootstrap = BOOTSTRAP_SYNC_CACHE.remove(uniqueId);
         logger.info("旧的配置项: {}", removeBootstrap);
-        List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> removeUrlConfigList = appUrlMap.remove(uniqueId);
+        List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> removeUrlConfigList = URL_SYNC_CACHE.remove(uniqueId);
         logger.info("旧的URL列表信息: {}", removeUrlConfigList);
     }
 
@@ -184,7 +185,7 @@ public class AppProcessFactory {
                             .stream()
                             .filter(httpServer -> {
                                 //是否有其它监听这个端口的应用
-                                List<RpcConfigurationProperties.Bootstrap> bootstrapList = compares.values()
+                                List<RpcConfigurationProperties.Bootstrap> bootstrapList = BOOTSTRAP_SYNC_CACHE.values()
                                         .stream()
                                         .filter(bootstrap -> !appUniqueId.equals(bootstrap.getAppUniqueId())
                                                 && bootstrap.getAppList().stream()
@@ -196,7 +197,7 @@ public class AppProcessFactory {
                     toBeClosedHttpServerList.forEach(httpServer -> httpServer.shutdown(appUniqueId));
                 });
         //移除tcp端口监听
-        Optional.ofNullable(compares.get(appUniqueId))
+        Optional.ofNullable(BOOTSTRAP_SYNC_CACHE.get(appUniqueId))
                 .ifPresent(bootstrap -> bootstrap.getAppList()
                         .stream()
                         .filter(appConfigList -> RpcConfigurationProperties.Bootstrap.AppConfigList.Type.TCP.equals(appConfigList.getType()))
@@ -207,7 +208,7 @@ public class AppProcessFactory {
         String uniqueId = referenceParam.getUniqueId();
         logger.warn("准备移除[appUniqueId:{}, interfaceType:{}]订阅", uniqueId, referenceParam.getInterfaceType());
 
-        ProcessService removeRet = processors.remove(uniqueId);
+        ProcessService removeRet = PROCESS_SYNC_CACHE.remove(uniqueId);
         if (removeRet != null) {
             logger.warn("网关缓存应用[{}]的ProcessService已移除，准备移除sofa订阅", uniqueId);
             gateClientFactoryAware.getReferenceClient().removeReference(referenceParam);
@@ -231,15 +232,16 @@ public class AppProcessFactory {
         removeBootstrap(uniqueId);
     }
 
-    public Map<String, ProcessService> getProcessors() {
-        return processors;
+
+    public SyncCache<String, ProcessService> getPROCESS_SYNC_CACHE() {
+        return PROCESS_SYNC_CACHE;
     }
 
-    public Map<String, RpcConfigurationProperties.Bootstrap> getCompares() {
-        return compares;
+    public SyncCache<String, RpcConfigurationProperties.Bootstrap> getBOOTSTRAP_SYNC_CACHE() {
+        return BOOTSTRAP_SYNC_CACHE;
     }
 
-    public Map<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> getAppUrlMap() {
-        return appUrlMap;
+    public SyncCache<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> getURL_SYNC_CACHE() {
+        return URL_SYNC_CACHE;
     }
 }

@@ -7,6 +7,8 @@ spring:
 ---
 spring:
   profiles: dev
+  pid:
+    file: ${spring.application.name}.pid
 
 com:
   allinfinance:
