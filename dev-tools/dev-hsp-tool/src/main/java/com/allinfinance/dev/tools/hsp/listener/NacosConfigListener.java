@@ -48,7 +48,6 @@ public class NacosConfigListener implements ApplicationListener<NacosConfigRecei
     public void onApplicationEvent(NacosConfigReceivedEvent event) {
         logger.info("接收到配置更新, dataId={}, content={}", event.getDataId(), event.getContent());
 
-        logger.info("-- 签名/验签操作 --");
         if (hspConfig.getSignConfig().getStart()) {
             logger.info("签名开始...");
             SignatureGetBySM2PrivateKeyRequestDTO requestDTO = new SignatureGetBySM2PrivateKeyRequestDTO();

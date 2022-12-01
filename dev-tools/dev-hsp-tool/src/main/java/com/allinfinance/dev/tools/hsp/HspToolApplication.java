@@ -12,5 +12,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HspToolApplication {
     public static void main(String[] args) {
         SpringApplication.run(HspToolApplication.class, args);
+        System.out.println(Runtime.getRuntime().availableProcessors());
     }
 }

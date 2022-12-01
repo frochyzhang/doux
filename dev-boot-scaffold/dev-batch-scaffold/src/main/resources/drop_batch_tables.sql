@@ -1,5 +1,4 @@
 -- 按外键依赖顺序删除batch相关的表
-use `common-platform`;
 drop table batch_step_execution_context;
 drop table batch_step_execution_seq;
 drop table batch_step_execution;
