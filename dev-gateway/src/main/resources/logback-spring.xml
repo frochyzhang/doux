@@ -65,7 +65,47 @@
     </appender>
 
     <!--开发环境配置-->
-    <springProfile name="dev">
+    <springProfile name="dev-1">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </root>
+    </springProfile>
+    <springProfile name="dev-2">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <logger name="java.sql" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="GATE-CONSOLE"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </root>
+    </springProfile>
+    <springProfile name="dev-3">
         <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="GATE-CONSOLE"/>
             <appender-ref ref="GRPC-LOG"/>

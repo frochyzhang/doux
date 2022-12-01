@@ -1,4 +1,4 @@
-package com.allinfinance.dev.gateway.listener;
+package com.allinfinance.dev.gateway.raft;
 
 import com.alipay.sofa.jraft.Node;
 import com.alipay.sofa.jraft.RaftGroupService;
@@ -8,26 +8,17 @@ import com.alipay.sofa.jraft.option.NodeOptions;
 import com.alipay.sofa.jraft.rpc.RaftRpcServerFactory;
 import com.alipay.sofa.jraft.rpc.RpcServer;
 import com.allinfinance.dev.gateway.config.GatewayClusterConfig;
-import com.allinfinance.dev.gateway.raft.AppRegistrarProcessor;
-import com.allinfinance.dev.gateway.raft.ExporterOfflineProcessor;
-import com.allinfinance.dev.gateway.raft.GatewayStateMachine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 /**
  * @author huanghf
- * @date 2022/4/26 19:33
+ * @date 2022/11/24 9:38
  */
-@Component
-public class GatewayStartedListener implements ApplicationListener<ApplicationStartedEvent> {
-    private static final Logger logger = LoggerFactory.getLogger(GatewayStartedListener.class);
-
+//@Component
+public class GatewayServer implements InitializingBean {
     private RaftGroupService raftGroupService;
     private Node node;
     private GatewayStateMachine fsm;
@@ -36,8 +27,6 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
     private GatewayClusterConfig gatewayClusterConfig;
     @Autowired
     private AppRegistrarProcessor appRegistrarProcessor;
-    @Autowired
-    private ExporterOfflineProcessor exporterOfflineProcessor;
     @Autowired
     private GatewayStateMachine gatewayStateMachine;
 
@@ -54,12 +43,11 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
     }
 
     @Override
-    public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
-        logger.info("网关启动完成，开始加载raft节点配置");
+    public void afterPropertiesSet() throws Exception {
         NodeOptions nodeOptions = new NodeOptions();
-        nodeOptions.setElectionTimeoutMs(gatewayClusterConfig.getElectionTimoutMs());
+        nodeOptions.setElectionTimeoutMs(1000);
         nodeOptions.setDisableCli(false);
-        nodeOptions.setSnapshotIntervalSecs(gatewayClusterConfig.getSnapshotIntervalSec());
+        nodeOptions.setSnapshotIntervalSecs(30);
 
         PeerId peerId = new PeerId();
         if (!peerId.parse(gatewayClusterConfig.getServerAddr())) {
@@ -73,7 +61,6 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
 
         RpcServer raftRpcServer = RaftRpcServerFactory.createRaftRpcServer(peerId.getEndpoint());
         raftRpcServer.registerProcessor(appRegistrarProcessor);
-        raftRpcServer.registerProcessor(exporterOfflineProcessor);
         this.fsm = gatewayStateMachine;
         nodeOptions.setFsm(gatewayStateMachine);
         nodeOptions.setLogUri(gatewayClusterConfig.getDataPath() + File.separator + "log");
@@ -81,6 +68,5 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
         nodeOptions.setSnapshotUri(gatewayClusterConfig.getDataPath() + File.separator + "snapshot");
         this.raftGroupService = new RaftGroupService(gatewayClusterConfig.getClusterGroupId(), peerId, nodeOptions, raftRpcServer);
         this.node = this.raftGroupService.start();
-        logger.info("raft节点配置加载完成");
     }
 }

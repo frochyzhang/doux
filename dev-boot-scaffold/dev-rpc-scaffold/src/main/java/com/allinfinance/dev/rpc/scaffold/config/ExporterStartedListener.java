@@ -1,8 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
-import com.alipay.sofa.rpc.config.RegistryConfig;
-import com.alipay.sofa.rpc.core.exception.SofaRouteException;
-import com.allinfinance.dev.rpc.scaffold.api.AppRegistrarService;
+import com.alipay.sofa.jraft.error.RemotingException;
+import com.allinfinance.dev.rpc.scaffold.dto.ExporterRegistrarRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com">frochyZhang</a>
@@ -25,22 +25,22 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
+    @Autowired
+    private RaftRpcClientConfig raftRpcClientConfig;
+
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         logger.info("applicationStartedEvent fired!");
 
-        RegistryConfig registryConfig = SofaAPIConfig.getRegistryConfig(rpcConfigurationProperties.getBootstrap().getGateRegistry());
-
-        // 2 调用网关的注册服务
+        // 调用网关的注册服务
         logger.info("开始调用网关注册服务");
-        AppRegistrarService appRegistrarService = SofaAPIConfig.referProxyConsumerRef(registryConfig, AppRegistrarService.class, 30000, "foreach", 3);
         Thread gateRegistryThread = new Thread(() -> {
             Boolean registerResult = null;
             while (true) {
                 try {
-                    registerResult = appRegistrarService.register(rpcConfigurationProperties.getBootstrap());
-                } catch (SofaRouteException sofaRouteException) {
-                    logger.warn("网关不存在，10s后重试+1");
+                    registerResult = raftRpcClientConfig.invokeSync(new ExporterRegistrarRequest(rpcConfigurationProperties.getBootstrap()), 5000);
+                } catch (InterruptedException | TimeoutException | RemotingException e) {
+                    logger.error("调用网关注册服务异常", e);
                 }
                 if (registerResult == null) {
                     try {
@@ -49,10 +49,10 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
                         logger.error("调用网关注册服务失败!", e);
                     }
                 } else if (registerResult) {
-                    logger.info("应用{}注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.info("应用[{}]注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
                     break;
                 } else {
-                    logger.error("应用{}注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.error("应用[{}]注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
                     throw new RuntimeException("应用注册失败!");
                 }
             }
