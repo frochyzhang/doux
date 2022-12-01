@@ -49,6 +49,10 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-common-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-dispatch-scaffold-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

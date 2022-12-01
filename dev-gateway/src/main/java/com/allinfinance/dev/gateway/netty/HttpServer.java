@@ -1,8 +1,7 @@
 package com.allinfinance.dev.gateway.netty;
 
-import com.allinfinance.dev.gateway.netty.iohandler.FilterLogginglHandler;
+import com.allinfinance.dev.gateway.netty.iohandler.FilterLoggingHandler;
 import com.allinfinance.dev.gateway.netty.iohandler.HttpServerHandler;
-import com.allinfinance.dev.gateway.netty.iohandler.InterceptorHandler;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -61,6 +60,7 @@ public class HttpServer {
                 .allowedRequestMethods(GET, POST, PUT)
                 .allowCredentials().build();
         /* 跨域处理结束 */
+        FilterLoggingHandler loggingHandler = new FilterLoggingHandler();
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -75,9 +75,8 @@ public class HttpServer {
                 ch.pipeline().addLast("codec", new HttpServerCodec());
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
                 ch.pipeline().addLast("corsHandler", new CorsHandler(config));
-                ch.pipeline().addLast("logging", new FilterLogginglHandler());
-                ch.pipeline().addLast("interceptor", new InterceptorHandler());
-                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port));
+                ch.pipeline().addLast("logging", loggingHandler);
+                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount()));
             }
         })
         ;

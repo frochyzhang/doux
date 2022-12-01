@@ -24,6 +24,10 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
     private List<IJobHandler> xxlJobBeanList = new ArrayList<>();
 
+    private Integer poolCoreSize;
+
+    private Integer poolMaximumSize;
+
     @Override
     public void start() {
         // init JobHandler Repository (for method)
@@ -59,9 +63,14 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
             Method executeMethod = null;
             try {
-                executeMethod = bean.getClass().getDeclaredMethod("execute");
+                Class<? extends IJobHandler> beanClass = bean.getClass();
+                try {
+                    executeMethod = beanClass.getDeclaredMethod("execute");
+                } catch (NoSuchMethodException e) {
+                    executeMethod = beanClass.getSuperclass().getDeclaredMethod("execute");
+                }
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error("获取execute方法失败", e);
             }
 
             // registry jobHandler
@@ -75,5 +84,21 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
     public void setXxlJobBeanList(List<IJobHandler> xxlJobBeanList) {
         this.xxlJobBeanList = xxlJobBeanList;
+    }
+
+    public Integer getPoolCoreSize() {
+        return poolCoreSize;
+    }
+
+    public void setPoolCoreSize(Integer poolCoreSize) {
+        this.poolCoreSize = poolCoreSize;
+    }
+
+    public Integer getPoolMaximumSize() {
+        return poolMaximumSize;
+    }
+
+    public void setPoolMaximumSize(Integer poolMaximumSize) {
+        this.poolMaximumSize = poolMaximumSize;
     }
 }

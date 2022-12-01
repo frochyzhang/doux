@@ -189,6 +189,18 @@ public class RpcConfigurationProperties {
          * 注册应用详情
          */
         private List<AppConfigList> appList = new ArrayList<>();
+        /**
+         * 消费端调用超时时间，默认与核心超时时间保持一致30s
+         */
+        private Integer timeout = 30000;
+        /**
+         * 默认不开启消费端超时重试
+         */
+        private Integer retries = 0;
+        /**
+         * 集群模式默认为failover
+         */
+        private String cluster = "failover";
 
         public Boolean getEnable() {
             return enable;
@@ -236,6 +248,30 @@ public class RpcConfigurationProperties {
 
         public void setAppList(List<AppConfigList> appList) {
             this.appList = appList;
+        }
+
+        public Integer getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(Integer timeout) {
+            this.timeout = timeout;
+        }
+
+        public Integer getRetries() {
+            return retries;
+        }
+
+        public void setRetries(Integer retries) {
+            this.retries = retries;
+        }
+
+        public String getCluster() {
+            return cluster;
+        }
+
+        public void setCluster(String cluster) {
+            this.cluster = cluster;
         }
 
         public static class AppConfigList {
@@ -437,6 +473,10 @@ public class RpcConfigurationProperties {
                  */
                 private Integer soSndBuf = 2048;
                 /**
+                 * 处理http请求核心线程池大小
+                 */
+                private Integer threadCount = Runtime.getRuntime().availableProcessors();
+                /**
                  * 处理的URL列表
                  */
                 private List<UrlConfig> urlList;
@@ -516,6 +556,14 @@ public class RpcConfigurationProperties {
                     this.soSndBuf = soSndBuf;
                 }
 
+                public Integer getThreadCount() {
+                    return threadCount;
+                }
+
+                public void setThreadCount(Integer threadCount) {
+                    this.threadCount = threadCount;
+                }
+
                 public List<UrlConfig> getUrlList() {
                     return urlList;
                 }
@@ -532,6 +580,7 @@ public class RpcConfigurationProperties {
                             ", soKeepAlive=" + soKeepAlive +
                             ", soRcvBuf=" + soRcvBuf +
                             ", soSndBuf=" + soSndBuf +
+                            ", threadCount=" + threadCount +
                             ", urlList=" + urlList +
                             '}';
                 }
@@ -590,23 +639,13 @@ public class RpcConfigurationProperties {
         }
 
         @Override
-        public String toString() {
-            return "Bootstrap{" +
-                    "enable=" + enable +
-                    ", exporterPort=" + exporterPort +
-                    ", gateRegistry='" + gateRegistry + '\'' +
-                    ", appUniqueId='" + appUniqueId + '\'' +
-                    ", processServiceExtension='" + processServiceExtension + '\'' +
-                    ", appList=" + appList +
-                    '}';
-        }
-
-        @Override
         public boolean equals(Object o) {
-            if (this == o)
+            if (this == o) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (o == null || getClass() != o.getClass()) {
                 return false;
+            }
             AtomicReference<Boolean> result = new AtomicReference<>(true);
             Arrays.stream(o.getClass().getDeclaredFields()).forEach(field -> {
                 field.setAccessible(true);
@@ -626,7 +665,20 @@ public class RpcConfigurationProperties {
             return result.get();
         }
 
-
+        @Override
+        public String toString() {
+            return "Bootstrap{" +
+                    "enable=" + enable +
+                    ", exporterPort=" + exporterPort +
+                    ", gateRegistry='" + gateRegistry + '\'' +
+                    ", appUniqueId='" + appUniqueId + '\'' +
+                    ", processServiceExtension='" + processServiceExtension + '\'' +
+                    ", appList=" + appList +
+                    ", timeout=" + timeout +
+                    ", retries=" + retries +
+                    ", cluster='" + cluster + '\'' +
+                    '}';
+        }
     }
 
 }

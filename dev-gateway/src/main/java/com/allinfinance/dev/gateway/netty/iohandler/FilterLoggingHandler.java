@@ -1,5 +1,6 @@
 package com.allinfinance.dev.gateway.netty.iohandler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpRequest;
@@ -15,8 +16,9 @@ import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/18 13:34
  */
-public class FilterLogginglHandler extends LoggingHandler {
-    public FilterLogginglHandler() {
+@ChannelHandler.Sharable
+public class FilterLoggingHandler extends LoggingHandler {
+    public FilterLoggingHandler() {
         super(LogLevel.INFO);
     }
 

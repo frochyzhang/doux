@@ -1,5 +1,8 @@
 package com.allinfinance.dev.rpc.scaffold.api.dto;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,6 +15,12 @@ public class HttpResponseDTO extends AbstractResponseDTO {
 
     public HttpResponseDTO(String responseMsg) {
         super(responseMsg);
+    }
+
+    public void fillHeader(@NonNull String key, @NonNull String value) {
+        if (StringUtils.isNotEmpty(value)) {
+            this.headers.put(key, value);
+        }
     }
 
     public Map<String, String> getHeaders() {
