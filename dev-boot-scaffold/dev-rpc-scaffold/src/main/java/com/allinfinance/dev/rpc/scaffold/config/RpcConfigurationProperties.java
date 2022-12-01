@@ -3,6 +3,7 @@ package com.allinfinance.dev.rpc.scaffold.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,7 +122,7 @@ public class RpcConfigurationProperties {
         }
     }
 
-    public static class Bootstrap {
+    public static class Bootstrap implements Serializable {
 
         public static final String BOOT_ENABLE = "com.allinfinance.rpc.bootstrap.enable";
 
@@ -148,6 +149,14 @@ public class RpcConfigurationProperties {
          * ProcessService扩展实现
          */
         private String processServiceExtension = "default";
+        /**
+         * 集群分组标识
+         */
+        private String groupId;
+        /**
+         * 网关集群地址
+         */
+        private String gateClusterAddress;
         /**
          * 注册应用详情
          */
@@ -193,6 +202,22 @@ public class RpcConfigurationProperties {
             this.processServiceExtension = processServiceExtension;
         }
 
+        public String getGroupId() {
+            return groupId;
+        }
+
+        public void setGroupId(String groupId) {
+            this.groupId = groupId;
+        }
+
+        public String getGateClusterAddress() {
+            return gateClusterAddress;
+        }
+
+        public void setGateClusterAddress(String gateClusterAddress) {
+            this.gateClusterAddress = gateClusterAddress;
+        }
+
         public List<AppConfigList> getAppList() {
             return appList;
         }
@@ -201,19 +226,19 @@ public class RpcConfigurationProperties {
             this.appList = appList;
         }
 
-        public static class AppConfigList {
+        public static class AppConfigList implements Serializable {
             private Type type;
             private String appDesc;
             private Integer listenPort;
             private TcpConfig tcpConfig = new TcpConfig();
             private HttpConfig httpConfig = new HttpConfig();
 
-            public enum Type {
+            public enum Type implements Serializable {
                 TCP, HTTP;
 
             }
 
-            public static class TcpConfig {
+            public static class TcpConfig implements Serializable {
                 /**
                  * 请求受理线程数量
                  */
@@ -378,7 +403,7 @@ public class RpcConfigurationProperties {
                 }
             }
 
-            public static class HttpConfig {
+            public static class HttpConfig implements Serializable {
                 /**
                  * 是否开启TCP_NODELAY
                  */
@@ -404,7 +429,7 @@ public class RpcConfigurationProperties {
                  */
                 private List<UrlConfig> urlList;
 
-                public static class UrlConfig {
+                public static class UrlConfig implements Serializable {
                     /**
                      * URL
                      */
@@ -560,6 +585,8 @@ public class RpcConfigurationProperties {
                     ", gateRegistry='" + gateRegistry + '\'' +
                     ", appUniqueId='" + appUniqueId + '\'' +
                     ", processServiceExtension='" + processServiceExtension + '\'' +
+                    ", groupId='" + groupId + '\'' +
+                    ", gateClusterAddress='" + gateClusterAddress + '\'' +
                     ", appList=" + appList +
                     '}';
         }

@@ -10,8 +10,11 @@ spring:
 
 com:
   allinfinance:
-    rpc:
-      provider-package: com.allinfinance.dev.gateway.service
+    gateway:
+      data-path: C:\Users\huanghf\Desktop\jiuzaizhelijian1
+      server-addr: 127.0.0.1:8081
+      cluster-group-id: gateway
+      cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
@@ -32,8 +35,11 @@ spring:
 
 com:
   allinfinance:
-    rpc:
-      provider-package: com.allinfinance.dev.gateway.service
+    gateway:
+      data-path: ${HOME}/raft
+      server-addr: 127.0.0.1:8081
+      cluster-group-id: gateway
+      cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
@@ -53,9 +59,6 @@ spring:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
-  allinfinance:
-    rpc:
-      provider-package: com.allinfinance.dev.gateway.service
   alipay:
     sofa:
       rpc:
@@ -75,9 +78,6 @@ spring:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
-  allinfinance:
-    rpc:
-      provider-package: com.allinfinance.dev.gateway.service
   alipay:
     sofa:
       rpc:

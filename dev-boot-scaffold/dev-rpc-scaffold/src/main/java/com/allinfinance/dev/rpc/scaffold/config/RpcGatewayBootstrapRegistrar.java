@@ -6,8 +6,10 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
+import com.allinfinance.dev.rpc.scaffold.dto.ExporterOfflineRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,13 +24,16 @@ import java.util.concurrent.TimeUnit;
  */
 @ConditionalOnProperty(value = RpcConfigurationProperties.Bootstrap.BOOT_ENABLE, havingValue = "true")
 @Configuration
-public class RpcGatewayBootstrapRegistrar implements InitializingBean {
+public class RpcGatewayBootstrapRegistrar implements InitializingBean, DisposableBean {
     private static final Logger logger = LoggerFactory.getLogger(RpcGatewayBootstrapRegistrar.class);
     @Autowired
     private RpcConfigurationProperties rpcConfigurationProperties;
 
     @Autowired(required = false)
     private ProcessService processService;
+
+    @Autowired
+    private RaftRpcClientConfig raftRpcClientConfig;
 
     @Override
     public void afterPropertiesSet() throws NacosException {
@@ -73,6 +78,17 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean {
             }
         } else {
             throw new RuntimeException("TCP网关注册开关已打开，未设置必要参数!");
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        logger.info("Exporter starts close");
+        boolean offlineResult = raftRpcClientConfig.invokeSync(new ExporterOfflineRequest(rpcConfigurationProperties.getBootstrap().getAppUniqueId()), 5000);
+        if (offlineResult) {
+            logger.info("Exporter offline success");
+        } else {
+            logger.error("Exporter offline failed");
         }
     }
 }

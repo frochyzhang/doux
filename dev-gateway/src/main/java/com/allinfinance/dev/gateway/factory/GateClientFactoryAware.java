@@ -53,6 +53,24 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     }
 
     /**
+     * 验证exporter是否正常（下线）
+     *
+     * @param uniqueId
+     * @return
+     */
+    public boolean verifyExporter(String uniqueId) {
+        logger.info("开始验证[{}]应用是否正常", uniqueId);
+        ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
+        try {
+            ProcessService processService = referenceClient.reference(processServiceParam);
+            return processService.verify();
+        } catch (Exception e) {
+            logger.info("[{}]应用异常", uniqueId);
+            return false;
+        }
+    }
+
+    /**
      * 网关重启时调用，订阅exporter业务处理服务
      *
      * @param uniqueId ProcessService uniqueId

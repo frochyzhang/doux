@@ -49,6 +49,11 @@ public class DemuxingMessageEncoder extends MessageToByteEncoder<String> {
             bodyLen = body.length;
             byteBuf.writeBytes(String.format("%0" + this.getMsgLengthSize() + "d", bodyLen).getBytes());
             byteBuf.writeBytes(body);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("对消息进行编码发送");
+            }
+            byteBuf.writeBytes(body);
         }
     }
 
