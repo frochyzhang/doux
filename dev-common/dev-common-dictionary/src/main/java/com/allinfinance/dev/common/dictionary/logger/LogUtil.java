@@ -12,6 +12,7 @@ import java.text.MessageFormat;
  */
 public class LogUtil {
     private static DesensitizedSpi desensitizedSpi = null;
+    private static final String DESENSITIZE_ENABLE_KEY = "com.allinfinance.dev.log.desensitize.enable";
 
     public static void debug(Logger logger, String template, Object... parameters) {
         String tpl = processTemplate(template);
@@ -32,7 +33,7 @@ public class LogUtil {
     }
 
     private static void processParams(Object[] parameters) {
-        if (desensitizedSpi != null) {
+        if (desensitizedSpi != null && Boolean.parseBoolean(SpringUtil.getProperty(DESENSITIZE_ENABLE_KEY))) {
             for (int i = 0; i < parameters.length; ++i) {
                 String s = desensitizedSpi.convert(parameters[i]);
                 if (s == null) {
