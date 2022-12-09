@@ -58,7 +58,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
             SofaAPIConfig.initProviderConfig(serverConfig, registryConfig, applicationConfig, bootstrap.getAppUniqueId(), processService);
 
             ProcessService testProcessService = SofaAPIConfig.referProxyConsumerRef(bootstrap.getAppUniqueId(),
-                    registryConfig, ProcessService.class, bootstrap.getTimeout(), "foreach", bootstrap.getRetries());
+                    registryConfig, ProcessService.class, "foreach");
 
             Boolean verifyResult = null;
             while (true) {
