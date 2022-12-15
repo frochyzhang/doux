@@ -14,7 +14,6 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <nacos.config.version>0.2.10</nacos.config.version>
         <start-class>com.allinfinance.dev.tools.hsp.HspToolApplication</start-class>
     </properties>
 
@@ -34,7 +33,6 @@
         <dependency>
             <groupId>com.alibaba.boot</groupId>
             <artifactId>nacos-config-spring-boot-starter</artifactId>
-            <version>${nacos.config.version}</version>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>

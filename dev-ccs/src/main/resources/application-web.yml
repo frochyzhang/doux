@@ -1,5 +1,0 @@
-server:
-  port: 8082
-logging:
-  level:
-     com.allinfinance.dev.ccs.dal.mapper: debug

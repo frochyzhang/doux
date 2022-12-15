@@ -43,28 +43,7 @@ com:
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
-    hsp:
-      dubbo-enabled: true
 
-dev:
-  dubbo:
-    application:
-      name: dev-hsp
-    registry:
-      address: 10.250.28.142:8848?namespace=public
-      protocol: nacos
-      timeout: 10000
-    protocol:
-      name: dubbo
-      port: 32245
-    provider:
-      timeout: 10000
-      retries: 0
-    consumer:
-      check: false
-      timeout: 10000
-      retries: 0
-    files: file:${HSP_HOME}/hsp-dubbo-config.xml
 ---
 spring:
   profiles: sit
@@ -108,27 +87,6 @@ com:
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
-
-dev:
-  dubbo:
-    application:
-      name: dev-hsp
-    registry:
-      address: 10.250.28.142:8848?namespace=public
-      protocol: nacos
-      timeout: 10000
-    protocol:
-      name: dubbo
-      port: 32245
-    provider:
-      timeout: 10000
-      retries: 0
-    consumer:
-      check: false
-      timeout: 10000
-      retries: 0
-    files: file:${HSP_HOME}/hsp-dubbo-config.xml
-
 ---
 spring:
   profiles: uat
@@ -172,29 +130,6 @@ com:
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
-    hsp:
-      dubbo-enabled: true
-
-dev:
-  dubbo:
-    application:
-      name: dev-hsp
-    registry:
-      address: 10.250.28.142:8848?namespace=public-uat
-      protocol: nacos
-      timeout: 10000
-    protocol:
-      name: dubbo
-      port: 32245
-    provider:
-      timeout: 10000
-      retries: 0
-    consumer:
-      check: false
-      timeout: 10000
-      retries: 0
-    files: file:${HOME}/apps/${spring.application.name}/config/hsp-dubbo-config.xml
-
 ---
 spring:
   profiles: prod
@@ -238,25 +173,3 @@ com:
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
-    hsp:
-      dubbo-enabled: true
-
-dev:
-  dubbo:
-    application:
-      name: dev-hsp
-    registry:
-      address: 10.200.1.192:8848?namespace=public
-      protocol: nacos
-      timeout: 10000
-    protocol:
-      name: dubbo
-      port: 7001
-    provider:
-      timeout: 10000
-      retries: 0
-    consumer:
-      check: false
-      timeout: 10000
-      retries: 0
-    files: file:${HOME}/apps/${spring.application.name}/config/hsp-dubbo-config.xml

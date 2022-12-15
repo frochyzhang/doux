@@ -21,42 +21,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-core</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-dal</artifactId>
-                <version>1.4.0-RELEASE</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-mq-rabbit</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-dubbo</artifactId>
-                <version>1.4.0-RELEASE</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-sofa</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-ccs</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket-server-scaffold</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-xxl-job</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
@@ -97,11 +62,6 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-batch-scaffold-boot-starter</artifactId>
-                <version>${dev.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-connection-scaffold</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>
