@@ -793,13 +793,13 @@
     </build>
     <distributionManagement>
         <repository>
-            <id>LocalMaven</id>
-            <name>LocalMaven</name>
+            <id>releases</id>
+            <name>releases</name>
             <url>http://10.250.20.182:8081/repository/maven-releases//</url>
         </repository>
         <snapshotRepository>
-            <id>localmvn</id>
-            <name>LocalMaven</name>
+            <id>snapshots</id>
+            <name>snapshots</name>
             <url>http://10.250.20.182:8081/repository/maven-snapshots//</url>
         </snapshotRepository>
     </distributionManagement>
