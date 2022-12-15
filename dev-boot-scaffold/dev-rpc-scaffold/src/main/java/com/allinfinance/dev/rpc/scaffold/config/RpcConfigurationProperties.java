@@ -4,9 +4,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author qipeng
@@ -15,39 +18,17 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "com.allinfinance.rpc")
 public class RpcConfigurationProperties {
     /**
-     * 引用接口列表，以数组形式提供
-     */
-    private List<String> referenceList;
-    /**
-     * 引用公共服务列表，以数组形式提供
-     */
-    private List<String> commonReferenceList;
-    /**
-     * RPC客户端配置
+     * 服务消费者配置
      */
     private Consumer consumer;
     /**
      * 服务提供方配置
      */
     private Provider provider;
-
+    /**
+     * rpc网关相关配置
+     */
     private Bootstrap bootstrap = new Bootstrap();
-
-    public List<String> getReferenceList() {
-        return referenceList;
-    }
-
-    public void setReferenceList(List<String> referenceList) {
-        this.referenceList = referenceList;
-    }
-
-    public List<String> getCommonReferenceList() {
-        return commonReferenceList;
-    }
-
-    public void setCommonReferenceList(List<String> commonReferenceList) {
-        this.commonReferenceList = commonReferenceList;
-    }
 
     public Consumer getConsumer() {
         return consumer;
@@ -73,7 +54,7 @@ public class RpcConfigurationProperties {
         this.bootstrap = bootstrap;
     }
 
-    public static class Provider{
+    public static class Provider {
         /**
          * 剔除不想对外暴露服务，以数组方式提供
          */
@@ -123,36 +104,123 @@ public class RpcConfigurationProperties {
 
     public static class Consumer {
         /**
-         * 客户端调用超时时间
+         * 引用的公共服务所在的注册中心地址
          */
-        private Integer timeout;
+        private String commonReferenceRegistry;
         /**
-         * 客户端调用类型，默认为同步，设置为future时为异步调用
+         * 引用接口列表，以数组形式提供
          */
-        private String invokeType;
+        private List<Reference> referenceList;
+        /**
+         * 引用公共服务列表，以数组形式提供
+         */
+        private List<Reference> commonReferenceList;
 
-        public Integer getTimeout() {
-            return timeout;
+        public String getCommonReferenceRegistry() {
+            return commonReferenceRegistry;
         }
 
-        public void setTimeout(Integer timeout) {
-            this.timeout = timeout;
+        public void setCommonReferenceRegistry(String commonReferenceRegistry) {
+            this.commonReferenceRegistry = commonReferenceRegistry;
         }
 
-        public String getInvokeType() {
-            return invokeType;
+        public List<Reference> getReferenceList() {
+            return referenceList;
         }
 
-        public void setInvokeType(String invokeType) {
-            this.invokeType = invokeType;
+        public void setReferenceList(List<Reference> referenceList) {
+            this.referenceList = referenceList;
+        }
+
+        public List<Reference> getCommonReferenceList() {
+            return commonReferenceList;
+        }
+
+        public void setCommonReferenceList(List<Reference> commonReferenceList) {
+            this.commonReferenceList = commonReferenceList;
         }
 
         @Override
         public String toString() {
             return "Consumer{" +
-                    "timeout=" + timeout +
-                    ", future=" + invokeType +
+                    "commonReferenceRegistry='" + commonReferenceRegistry + '\'' +
+                    ", referenceList=" + referenceList +
+                    ", commonReferenceList=" + commonReferenceList +
                     '}';
+        }
+
+        public static class Reference {
+            /**
+             * 消费端调用超时时间，默认3s
+             */
+            private Integer timeout = 3000;
+            /**
+             * 客户端调用类型，默认为同步，设置为future时为异步调用
+             */
+            private String invokeType = "sync";
+            /**
+             * 默认不开启消费端失败重试
+             */
+            private Integer retries = 0;
+            /**
+             * 集群模式默认为failover
+             */
+            private String cluster = "failover";
+            /**
+             * 引用服务的接口全限定类名
+             */
+            private String interfaceName;
+
+            public Integer getTimeout() {
+                return timeout;
+            }
+
+            public void setTimeout(Integer timeout) {
+                this.timeout = timeout;
+            }
+
+            public String getInvokeType() {
+                return invokeType;
+            }
+
+            public void setInvokeType(String invokeType) {
+                this.invokeType = invokeType;
+            }
+
+            public Integer getRetries() {
+                return retries;
+            }
+
+            public void setRetries(Integer retries) {
+                this.retries = retries;
+            }
+
+            public String getCluster() {
+                return cluster;
+            }
+
+            public void setCluster(String cluster) {
+                this.cluster = cluster;
+            }
+
+            public String getInterfaceName() {
+                return interfaceName;
+            }
+
+            public void setInterfaceName(String interfaceName) {
+                this.interfaceName = interfaceName;
+            }
+
+            @Override
+            public String toString() {
+                return "Reference{" +
+                        "timeout=" + timeout +
+                        ", invokeType='" + invokeType + '\'' +
+                        ", retries=" + retries +
+                        ", cluster='" + cluster + '\'' +
+                        ", interfaceName='" + interfaceName + '\'' +
+                        '}';
+            }
         }
     }
 
@@ -184,7 +252,7 @@ public class RpcConfigurationProperties {
          */
         private String processServiceExtension = "default";
         /**
-         * 集群分组标识
+         * 网关集群分组标识
          */
         private String groupId;
         /**
@@ -195,18 +263,6 @@ public class RpcConfigurationProperties {
          * 注册应用详情
          */
         private List<AppConfigList> appList = new ArrayList<>();
-        /**
-         * 消费端调用超时时间，默认与核心超时时间保持一致30s
-         */
-        private Integer timeout = 30000;
-        /**
-         * 默认不开启消费端超时重试
-         */
-        private Integer retries = 0;
-        /**
-         * 集群模式默认为failover
-         */
-        private String cluster = "failover";
 
         public Boolean getEnable() {
             return enable;
@@ -272,30 +328,6 @@ public class RpcConfigurationProperties {
             this.appList = appList;
         }
 
-        public Integer getTimeout() {
-            return timeout;
-        }
-
-        public void setTimeout(Integer timeout) {
-            this.timeout = timeout;
-        }
-
-        public Integer getRetries() {
-            return retries;
-        }
-
-        public void setRetries(Integer retries) {
-            this.retries = retries;
-        }
-
-        public String getCluster() {
-            return cluster;
-        }
-
-        public void setCluster(String cluster) {
-            this.cluster = cluster;
-        }
-
         public static class AppConfigList implements Serializable {
             private Type type;
             private String appDesc;
@@ -305,7 +337,6 @@ public class RpcConfigurationProperties {
 
             public enum Type implements Serializable {
                 TCP, HTTP;
-
             }
 
             public static class TcpConfig implements Serializable {
@@ -674,6 +705,33 @@ public class RpcConfigurationProperties {
                     '}';
         }
 
-    }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            AtomicReference<Boolean> result = new AtomicReference<>(true);
+            Arrays.stream(o.getClass().getDeclaredFields()).forEach(field -> {
+                field.setAccessible(true);
+                try {
+                    Object o1 = field.get(o);
+                    Field field1 = this.getClass().getDeclaredField(field.getName());
+                    field1.setAccessible(true);
+                    Object o2 = field1.get(this);
+                    boolean b = o1 != null && o2 != null;
+                    if (b && !o1.equals(o2)) {
+                        result.set(false);
+                    }
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    result.set(false);
+                }
+            });
+            return result.get();
+        }
 
+
+    }
 }

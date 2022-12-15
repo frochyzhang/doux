@@ -53,10 +53,10 @@ public class GateClientFactoryAware implements ClientFactoryAware {
     }
 
     /**
-     * 验证exporter是否正常（下线）
+     * 验证exporter是否正常
      *
-     * @param uniqueId
-     * @return
+     * @param uniqueId appUniqueId
+     * @return 是否正常
      */
     public boolean verifyExporter(String uniqueId) {
         logger.info("开始验证[{}]应用是否正常", uniqueId);
