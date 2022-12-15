@@ -1,6 +1,5 @@
 package com.allinfinance.dev.batch.listener;
 
-import com.allinfinance.dev.batch.scaffold.config.BatchFileConfig;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

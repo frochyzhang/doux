@@ -116,19 +116,18 @@ public class LoginServiceImpl implements LoginService {
         String stringImg = "";
         try {
             encodePath = QRCodeUtils.encode(cuiwy, null, qrcodePath, true);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            File file = new File(qrcodePath + File.separator + encodePath);
-            FileInputStream inputStream = new FileInputStream(file);
-            byte[] bit = new byte[1024];
-            int len = 0;
-            while ((len = inputStream.read(bit)) != -1) {
-                outputStream.write(bit, 0, len);
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                File file = new File(qrcodePath + File.separator + encodePath);
+                try (FileInputStream inputStream = new FileInputStream(file)) {
+                    byte[] bit = new byte[1024];
+                    int len = 0;
+                    while ((len = inputStream.read(bit)) != -1) {
+                        outputStream.write(bit, 0, len);
+                    }
+                    stringImg = "data:image/gif;base64," + Base64.getEncoder().encodeToString(outputStream.toByteArray());
+                }
+                outputStream.flush();
             }
-            stringImg = "data:image/gif;base64," + Base64.getEncoder().encodeToString(outputStream.toByteArray());
-            inputStream.close();
-            outputStream.flush();
-            outputStream.close();
-
         } catch (Exception e) {
             logger.error("生成二维码异常", e);
         }

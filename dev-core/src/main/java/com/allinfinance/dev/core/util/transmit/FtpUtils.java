@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 /**
- * 该模块将于1.6.0版本中删除，请及时更新。
+ * 该模块将于2.0.0-RELEASE版本中删除，请及时更新。
  * 详见{@link com.allinfinance.dev.common.util.transmit.FtpUtils}
  *
  * @author hongmr
@@ -17,7 +17,7 @@ import java.io.*;
  */
 @Deprecated
 public class FtpUtils {
-    private static Logger logger = LoggerFactory.getLogger(FtpUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(FtpUtils.class);
 
     /**
      * FTP上传

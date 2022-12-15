@@ -39,7 +39,12 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
             while (true) {
                 try {
                     registerResult = raftRpcClientConfig.invokeSync(new ExporterRegistrarRequest(rpcConfigurationProperties.getBootstrap()), 5000);
-                } catch (InterruptedException | TimeoutException | RemotingException e) {
+                } catch (InterruptedException e) {
+                    logger.error("调用网关注册服务异常", e);
+                    Thread.currentThread().interrupt();
+                } catch (TimeoutException e) {
+                    logger.error("调用网关注册服务异常", e);
+                } catch (RemotingException e) {
                     logger.error("调用网关注册服务异常", e);
                 }
                 if (registerResult == null) {
@@ -47,6 +52,7 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
                         TimeUnit.SECONDS.sleep(10);
                     } catch (InterruptedException e) {
                         logger.error("调用网关注册服务失败!", e);
+                        Thread.currentThread().interrupt();
                     }
                 } else if (registerResult) {
                     logger.info("应用[{}]注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());

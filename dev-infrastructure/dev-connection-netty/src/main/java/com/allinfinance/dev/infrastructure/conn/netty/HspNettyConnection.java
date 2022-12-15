@@ -71,6 +71,7 @@ public class HspNettyConnection implements Connection {
                 return result;
             } catch (InterruptedException e) {
                 logger.error("处理中断", e);
+                Thread.currentThread().interrupt();
             } catch (ExecutionException e) {
                 logger.error("处理异常", e);
             } catch (TimeoutException e) {
@@ -123,7 +124,7 @@ public class HspNettyConnection implements Connection {
                         }
                     }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

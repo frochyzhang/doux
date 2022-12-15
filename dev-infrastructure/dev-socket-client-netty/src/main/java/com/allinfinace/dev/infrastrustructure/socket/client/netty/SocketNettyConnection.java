@@ -15,12 +15,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ProgressivePromise;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -51,6 +52,7 @@ public class SocketNettyConnection implements Connection {
             return promise.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.error("处理中断");
+            Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             logger.error("处理异常");
         } catch (TimeoutException e) {
@@ -109,7 +111,7 @@ public class SocketNettyConnection implements Connection {
                         }
                     }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

@@ -67,7 +67,7 @@ public class NettyServer {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = 9001;
+        int port = 9011;
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }

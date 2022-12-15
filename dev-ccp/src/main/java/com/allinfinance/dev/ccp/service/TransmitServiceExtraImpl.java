@@ -6,13 +6,14 @@ import com.allinfinance.dev.common.api.transmit.dto.TransmitRequestDTO;
 import com.allinfinance.dev.common.api.transmit.dto.TransmitResponseDTO;
 import com.allinfinance.dev.common.util.transmit.FtpUtils;
 import com.allinfinance.dev.common.util.transmit.SftpUtils;
-import java.io.File;
-import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author qipeng
@@ -135,7 +136,7 @@ public class TransmitServiceExtraImpl implements TransmitService {
         TransmitResponseDTO downloadResult = download(requestDTO);
         String realLocalPath = null;
         if (requestDTO.getAppend()) {
-            realLocalPath = localPath + File.separator + requestDTO.getLocalPath();
+            realLocalPath = StringUtils.join(localPath, File.separator, requestDTO.getLocalPath());
         } else {
             if (StringUtils.isBlank(requestDTO.getLocalPath())) {
                 logger.error("自定义localPath不能为空");
@@ -152,7 +153,9 @@ public class TransmitServiceExtraImpl implements TransmitService {
             transmitResponseDTO = upload(requestDTO);
             for (File file : files) {
                 if (file.getName().equals(requestDTO.getFileName())) {
-                    file.delete();
+                    if (!file.delete()) {
+                        logger.warn("文件删除失败: {}", requestDTO.getFileName());
+                    }
                 }
             }
         } else {

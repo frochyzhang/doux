@@ -9,7 +9,9 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author qipeng
@@ -142,11 +144,11 @@ public class FtpUtils {
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 logger.warn("连接ftp服务器失败，请检查用户密码，username：{}，password{}", username, password);
                 ftpClient.disconnect();
-                return null;
+                throw new RuntimeException("连接ftp服务器失败，请检查用户密码");
             }
         } catch (IOException e) {
             logger.error("网络IO异常，请检查远程配置，remoteIp:{}，remotePort：{}", remoteIp, remotePort, e);
-            return null;
+            throw new RuntimeException("网络IO异常，请检查远程配置");
         }
         logger.info("FTP连接成功!");
         return ftpClient;

@@ -58,6 +58,7 @@ public class DefaultSocketServerWrapper implements SocketServerWrapper {
             countDownLatch.await();
         } catch (InterruptedException e) {
             logger.error("中断异常", e);
+            Thread.currentThread().interrupt();
         }
     }
 

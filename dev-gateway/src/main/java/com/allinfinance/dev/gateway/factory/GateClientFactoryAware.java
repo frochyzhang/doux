@@ -97,6 +97,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                 try {
                     TimeUnit.MILLISECONDS.sleep(interval);
                 } catch (InterruptedException ignore) {
+                    Thread.currentThread().interrupt();
                 }
             } catch (Exception e) {
                 logger.error("订阅[ {} ]业务处理服务异常,移除订阅、端口监听和配置信息!", uniqueId, e);
@@ -157,6 +158,7 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                     try {
                         TimeUnit.MILLISECONDS.sleep(interval);
                     } catch (InterruptedException ignore) {
+                        Thread.currentThread().interrupt();
                     }
                 } catch (Exception e) {
                     logger.error("订阅[ {} ]业务处理服务异常,移除订阅、端口监听和配置信息!", uniqueId, e);

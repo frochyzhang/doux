@@ -85,6 +85,7 @@ public class DefaultNettyConnection implements Connection {
             return promise.get(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("处理中断");
+            Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             logger.error("处理异常");
         } catch (TimeoutException e) {
@@ -119,7 +120,7 @@ public class DefaultNettyConnection implements Connection {
                         }
                     }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

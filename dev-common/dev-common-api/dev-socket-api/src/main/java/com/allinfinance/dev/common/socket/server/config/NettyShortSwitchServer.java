@@ -77,6 +77,7 @@ public class NettyShortSwitchServer implements DisposableBean, InitializingBean 
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error("[ {}] 启动服务失败! 参数为{}", nettySocketBean.getName(), nettySocketBean, e);
+            Thread.currentThread().interrupt();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

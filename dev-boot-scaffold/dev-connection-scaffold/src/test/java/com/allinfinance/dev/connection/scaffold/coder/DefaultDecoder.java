@@ -25,8 +25,9 @@ public class DefaultDecoder extends ByteToMessageDecoder {
                 "        </SERV_RESPONSE>\n" +
                 "    </SERVICE_HEADER>\n" +
                 "</SERVICE>";
-        int length = response.getBytes(StandardCharsets.UTF_8).length;
-
-        ctx.writeAndFlush(String.format("%06d", length) + response);
+//        int length = response.getBytes(StandardCharsets.UTF_8).length;
+//
+//        ctx.writeAndFlush(String.format("%06d", length) + response);
+        ctx.writeAndFlush(response);
     }
 }

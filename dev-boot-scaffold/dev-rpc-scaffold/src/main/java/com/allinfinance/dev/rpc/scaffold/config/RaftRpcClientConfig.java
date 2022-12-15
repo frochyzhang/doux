@@ -51,7 +51,10 @@ public class RaftRpcClientConfig implements InitializingBean {
                 logger.error("Refresh leader failed");
                 return null;
             }
-        } catch (InterruptedException | TimeoutException e) {
+        } catch (InterruptedException e) {
+            logger.error("Get client failed", e);
+            Thread.currentThread().interrupt();
+        } catch (TimeoutException e) {
             logger.error("Get client failed", e);
             return null;
         }

@@ -88,6 +88,7 @@ public class NettyClientConnection extends AbstractClientConnection {
             channelFuture = b.connect(remoteIp, remotePort).sync();
         } catch (InterruptedException e) {
             logger.error("请求服务端连接异常", e);
+            Thread.currentThread().interrupt();
         }
     }
 

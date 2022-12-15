@@ -14,7 +14,7 @@
         <module>dev-hsp</module>
         <module>dev-ccs</module>
         <module>dev-parent</module>
-        <module>dev-xxl-job</module>
+<!--        <module>dev-xxl-job</module>-->
         <module>dev-boot-starters</module>
         <module>dev-boot-scaffold</module>
         <module>dev-ccp</module>
@@ -32,8 +32,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.5.0.trial-RELEASE</revision>
-        <dev.version>1.5.0.trial-RELEASE</dev.version>
+        <revision>2.0.0-SNAPSHOT</revision>
+        <dev.version>2.0.0-SNAPSHOT</dev.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.3.9.RELEASE</springframework.boot.version>

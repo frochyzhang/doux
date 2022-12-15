@@ -1,4 +1,4 @@
-package com.allinfinance.dev.batch.scaffold.config;
+package com.allinfinance.dev.batch.config;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;

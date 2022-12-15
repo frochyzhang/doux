@@ -98,6 +98,8 @@ public class ForeachCluster extends AbstractCluster {
         if (time > 0 && time == providerInfos.size()) {
             return response;
         }
+        throwable = new SofaRpcException(RpcErrorType.CLIENT_UNDECLARED_ERROR,
+                "Failed to call " + request.getInterfaceName() + "." + request.getMethodName());
         throw throwable;
     }
 }

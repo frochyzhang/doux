@@ -15,7 +15,7 @@
     <modules>
         <module>dev-redis-example</module>
         <module>dev-http-example</module>
-        <module>dev-batch-scaffold-boot-starter-sample</module>
+<!--        <module>dev-batch-scaffold-boot-starter-sample</module>-->
         <module>dev-datasource-scaffold-boot-starter-sample</module>
         <module>dev-rpc-scaffold-boot-starter-sample</module>
         <module>dev-hsp-example</module>
