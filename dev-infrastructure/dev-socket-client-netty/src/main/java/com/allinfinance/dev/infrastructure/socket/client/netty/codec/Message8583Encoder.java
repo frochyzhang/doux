@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastrustructure.socket.client.netty.codec;
+package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
 
 import cn.hutool.core.codec.BCD;
 import io.netty.buffer.ByteBuf;

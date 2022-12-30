@@ -1,13 +1,14 @@
-package com.allinfinace.dev.infrastrustructure.socket.client.netty.codec;
+package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
 
 import cn.hutool.core.convert.Convert;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import java.util.Arrays;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>

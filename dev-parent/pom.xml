@@ -136,6 +136,11 @@
                 <artifactId>dev-socket-client-netty</artifactId>
                 <version>${dev.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-client-mina</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
 
             <!--dev-common-->
             <dependency>

@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastrustructure.socket.client.netty.codec;
+package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -50,9 +50,7 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                     try {
                         len = Integer.parseInt(new String(bLen));
                     } catch (NumberFormatException ex) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("报文长度含有非数字内容，关闭连接: {} ", bLen);
-                        }
+                        logger.warn("报文长度含有非数字内容，关闭连接: {} ", bLen);
                         channelHandlerContext.channel().closeFuture();
                     }
                     if (byteBuf.readableBytes() < len) {

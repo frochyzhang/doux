@@ -1,588 +1,1310 @@
-# 开发三部基础开发框架
+# Dev-Framework技术文档
 
-### 1. Socket Server模块
+[TOC]
 
-#### 1.1. 概述：
+---
+> 概述：
+> 三部众多系统中，各技术组件版本存在不一致且杂乱的情况，无形中增加了各系统间的技术壁垒，不易于维护，且各系统各自维护第三方技术组件，对于组件的使用方式等存在差异。为了统一各技术组件，决定自研统一技术框架Dev-Framework，该框架经过多个版本迭代，易用性和可靠性层面均已得到验证，可放心使用。为方便各应用系统开发人员更好的使用Dev-Framework，特在此对框架中众多组件做如下说明。
 
-socket通信模块主要集成了[Spring-5.3.1](https://docs.spring.io/spring-framework/docs/current/reference/html)及[Mina-2.0.16](https://mina.apache.org)
-，将复杂的mina配置放在底层，简化开发。且支持同时起多个服务，只需要添加配置文件即可，**配置文件如下：除必填项外，其余均有默认值，开发人员可按需调整**。
+- 版本信息
+  `当前版本为： dev.version=2.0.0-RELEASE`
+- 基础依赖
 
-如参数表所示：IOHandler需由开发人员指定，除messageReceived外，其余方法均已在框架中实现，二次开发中只需实现messageReceived方法即可，decoder及encoder**默认已实现按字节读取**
-，报文头长度**默认6位**，编解码字符集均**默认UTF-8**，开发人员可按需调整。
+```xml
 
-#### 1.2. 实现方式：
-
-基于mina实现基础Socket Server框架，在MinaApplication.run()方法中完成进程保持不退出，由调用方指定Spring基础上下文，系统启动时会按约定文件名（socket-*
-.properties）依次加载配置文件，并根据配置文件依次初始化Mina的IOAcceptor。初始化时会根据调用方传入的IOHandler类名通过SpringConfigTool获取到已注入容器的Bean；若调用方自定义Decoder或Encoder，根据传入的${dev.socket.decoder}和${dev.socket.encoder}通过反射机制完成初始化。
-
-**注意：**
-
-- **为简化开发，线程池默认且只实现了newFixedThreadPool这种方式；**
-
-- **超时时间控制没有对读和写分开控制。**
-
-- **针对高并发场景下会出现大量TIME_WAIT连接，严重影响服务端性能。由于各客户端实现方式不一，基础框架对此做了可选优化，通过${dev.socket.soLinger}对该项配置优化。**
-
-#### 1.3. 参数表：
-
-| 参数名                    | 数据类型    | 默认值                                                       |
-| ------------------------- | ----------- | ------------------------------------------------------------ |
-| dev.socket.appName        | String      | dev01                                                        |
-| **dev.socket.port**       | **Integer** | **必填**                                                     |
-| dev.socket.processorCount | Integer     | 10                                                           |
-| dev.socket.threadCount    | Integer     | 50                                                           |
-| dev.socket.decode.length  | Integer     | 6                                                            |
-| dev.socket.encode.length  | Integer     | 6                                                            |
-| dev.socket.decode.charset | String      | UTF-8                                                        |
-| dev.socket.encode.charset | String      | UTF-8                                                        |
-| dev.socket.bufferSize     | Integer     | 8096                                                         |
-| dev.socket.timeout        | Integer     | 30                                                           |
-| **dev.socket.handler**    | **String**  | **必填**                                                     |
-| dev.socket.decoder        | String      | com.allinfinance.dev.core.util.socket.codec.DemuxingMessageDecoder |
-| dev.socket.encoder        | String      | com.allinfinance.dev.core.util.socket.codec.DemuxingMessageEncoder |
-| dev.socket.soLinger       | Boolean     | false                                                        |
-
-##### 参数说明：
-
-SO_LINGER的作用：设置函数close()关闭TCP连接时的行为。缺省close()的行为是，如果有数据残留在socket发送缓冲区中则系统将继续发送这些数据给对方，等待被确认，然后返回。有两种解决方案：
-
-- 立即关闭连接，通过发送RST分组(而不是用正常的FIN|ACK|FIN|ACK四个分组)来关闭该连接。至于发送缓冲区中如果有未发送完的数据，则丢弃。主动关闭一方的TCP状态则跳过TIMEWAIT，直接进入CLOSED。
-- 的
-  将连接的关闭设置一个超时。如果socket发送缓冲区中仍残留数据，进程进入睡眠，内核进入定时状态去尽量去发送这些数据。在超时之前，如果所有数据都发送完且被对方确认，内核用正常的FIN|ACK|FIN|ACK四个分组来关闭该连接，close()
-  成功返回。如果超时之时，数据仍然未能成功发送及被确认，用上述a方式来关闭此连接。close()返回EWOULDBLOCK。
-
-#### 1.4. 使用举例：
-
-详见[git仓库dev-0104分支dev-socket-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-socket-example)
-
-#### 1.5. 注意事项：
-
-为实现配置文件加载，需添加VM启动参数socket-config-path指定socket-*.properties文件所在路径。
-
-### 2. 批量处理模块
-
-#### 2.1. 概述：
-
-批量处理模块主要是完成了对Spring batch的封装集成，通过此模块，可完成对任务的启动、停止、暂停、重启（断点，全量）、获取任务基本信息以及查询执行状态是失败及暂停状态的任务（可对其完成单个重启、批量重启等操作）。
-
-批量触发方式已有如下实现方式：
-
-- 通过Quartz实现数据库定时轮询触发，使用该触发方式，需插入数据表TBL_BAT_CTL；需在任务配置文件中插入如下配置：
-
-  ```xml
-  <import resource="batch-quartz-default-job.xml"/>
-  ```
-
-- 其余实现方式：如联机出发、表字段状态触发，均可通过调用**任务启动**接口完成自定义触发。
-
-固定格式的文件Reader、Writer已有如下实现：
-
-- Reader：
-  - 含有特殊分隔符的非定长文件
-  - 定长文件
-- Writer
-  - 含有特殊分隔符的非定长文件
-  - 定长文件
-
-如下参数表所示，默认使用druid作为数据库连接池：
-
-- jdbc.validationQuery：开发人员可根据使用数据库类型自定义；
-- jdbc.config.decrypt：是否开启数据库连接密码加密功能；
-- jdbc.config.decrypt.key：加密公钥（依赖上一项，上一项为true时，该项必须存在且正确，反之，该项可不出现）；
-- dev.batch.mapper.basePackage：数据表与实体类映射关系接口类所在包全路径，该项必须存在且正确。；
-- dev.batch.mapper.aop.expression：dao层接口切入点的SpEL表达式
-
-#### 2.2. 实现方式：
-
-批量部分主要实现了如下功能：
-
-- 任务创建、暂停、继续、重拉、状态、基本信息
-
-  以上均通过JobOperator实现，JobOperator依赖于JobRepository、JobLauncher、JobExecutor、JobRegistry。
-
-  - 任务创建: basicBatchService.startJob(String jobName, String parameters)
-- 暂停任务: basicBatchService.pauseJob(List<Long> executionIdList)
-  - 继续任务:
-    - basicBatchService.resumeJob(Long jobExecutionId)
-    - basicBatchService.resumeJob(List<Long> jobExecutionIdList)
-    - basicBatchService.resumeJob(String jobName)
-  - 任务重拉（无状态）
-- 获取任务基本信息: basicBatchService.getJobSummaryInfo(List<Long> jobExecutionIdList)
-
-#### 2.3. 使用举例（使用quartz实现定时轮询调度）：
-
-详见[git仓库dev-0104分支dev-batch-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-batch-example)
-
-### 3. 数据源模块
-
-#### 3.1. 概述
-
-数据源模块集成了mybatis及alibaba druid，完成了datasource、sqlSessionFactory、trasnactionmanager以及针对CRUD操作中出现的异常捕获等功能。
-
-#### 3.2. 实现方式
-
-- mapper接口类路径支持配置
-
-在Mybatis的加载机制中，org.mybatis.spring.mapper.MapperScannerConfigurer的加载顺序在property-placeholder之前，无法完成完成MapperScannerConfigurer的初始化，故自定义MapperScan注解，将原有从spring容器中获取占位符属性值的方式改为从配置文件中获取，此时不受Spring的Bean加载顺序控制。举例如下：
-
-原有方式：
-
-```java
-<bean id="batCtlScanner"class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-<property name="basePackage"value="com.allinfinance.dev.batch.dao.mapper"/>
-</bean>
+<dependency>
+  <artifactId>dev-parent</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+  <version>${dev.version}</version>
+</dependency>
 ```
 
-目前调用方式：
+## 1. 基础组件
 
-```java
-@MapperScanner(basePackages = {"${dev.batch.mapper.basePackage}", CommonConstants.DEFAULT_MAPPER_PACKAGE}, sqlSessionFactoryRef = "sqlSessionFactory")
+---
+
+### 1.1 基础组件应用层[**dev-framework**]
+
+> 该部分主要是对基础设施层的组件做了对Frameless封装，该部分组件的使用无需依赖于springboot环境，可独立使用。
+---
+
+#### 1.1.1 dev-extension
+
+##### a. 组件介绍
+
+> 在日常开发中，对于同一个功能可能有多种实现方式，比较常见的就有JDBC的driver，不同的数据库厂商对于数据库连接有自己的实现方式；负载均衡有随机、轮询、加权随机等多种方式。
+
+> 因此在一些框架运用场景中，系统可能已经默认一些实现方式，若不同的厂商或客户存在自定义的实现方式或非默认的方式，此时则无法采用对应的框架。而原生SPI的每一个扩展都需要制定一个别名，并在META-INF中已key-value的形式显示添加扩展类，非常复杂。
+
+> 因此有必要提供一种基于SPI实现高效便捷扩展框架的方法，以通过增加映射表，实现框架的扩展功能，且非常高效便捷，降低了成本。
+
+##### b. 使用介绍
+
+- maven依赖
+
+```xml
+
+<dependency>
+  <artifactId>dev-extension</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
 ```
 
-#### 3.3. 参数表
+- 使用说明
 
-| 参数名                          | 数据类型 | 默认值                                | 备注                                                         |
-| ------------------------------- | -------- | ------------------------------------- | ------------------------------------------------------------ |
-| dev.batch.jdbc.jdbc.driver      | String   | -                                     | -                                                            |
-| jdbc.url                        | String   | -                                     | -                                                            |
-| jdbc.username                   | String   | -                                     | -                                                            |
-| jdbc.password                   | String   | -                                     | -                                                            |
-| jdbc.validationQuery            | String   | -                                     | 数据库连接验证                                               |
-| jdbc.initialSize                | Integer  | 5                                     | 连接池初始化                                                 |
-| jdbc.minIdle                    | Interger | 5                                     | 最小连接数                                                   |
-| jdbc.maxActive                  | Integer  | 200                                   | 最大连接数                                                   |
-| jdbc.maxWait                    | Integer  | 3000                                  | 最大等待连接数                                               |
-| jdbc.timeBER                    | Integer  | 9000                                  | 检测间隔                                                     |
-| jdbc.minTimeEI                  | Boolean  | 30000                                 | 连接最小生存时间                                             |
-| jdbc.testWI                     | Boolean  | true                                  | -                                                            |
-| jdbc.testOB                     | Boolean  | true                                  | -                                                            |
-| jdbc.testOR                     | Boolean  | false                                 | -                                                            |
-| jdbc.psCache                    | Boolean  | false                                 | PSCache开关                                                  |
-| jdbc.config.decrypt             | Boolean  | false                                 | 数据库密码是否加密                                           |
-| jdbc.config.decrypt.key         | String   | -                                     | 加密公钥（依赖上一项，上一项为true时，该项必须存在且正确，反之，该项可不出现） |
-| dev.batch.mapper.basePackage    | String   | -                                     | mapper接口所在包路径，该项必须出现且正确                     |
-| dev.batch.mapper.aop.expression | String   | execution(* com.allinfinance.*
-.*(..)) | dao层接口切入点的SpEL表达式                                  |
+> 扩展组件的使用一共分为4个步骤: 扩展接口定义、扩展实现、声明扩展映射文件、使用具体扩展
 
-#### 3.4. 使用举例
+**`定义扩展接口`**
 
-详见批量处理模块定时轮训调度中实现。
+```java 
+package com.allinfinance.dev.rpc.scaffold.api;
 
-### 4. RPC框架-Dubbo
-
-#### 4.1. 概述
-
-Dubbo是一款高性能、轻量级的JAVA RPC框架，它提供了三大核心能力：面向接口的远程方法调用、智能容错和负载均衡，以及服务自动注册和发现。
-
-#### 4.2. 主要核心部件
-
-**Remoting:** 网络通信框架，实现了 sync-over-async 和 request-response 消息机制.
-
-**RPC:** 一个**远程过程调用**的抽象，支持**负载均衡**、**容灾**和**集群**功能
-
-**Registry:** 服务目录框架用于服务的注册和服务事件发布和订阅
-
-#### 4.3. 工作原理
-
-![dubbo-architucture](http://dubbo.apache.org/imgs/user/dubbo-architecture.jpg)
-
-**Provider**：暴露服务方称之为“服务提供者”。
-
-**Consumer**：调用**远程服务**方称之为“服务消费者”。
-
-**Registry**：服务注册与发现的中心目录服务称之为“服务注册中心”。
-
-**Monitor**：统计服务的调用次数和调用时间的日志服务称之为“服务监控中心”。
-
-(1) 连通性：
-
-注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小
-
-监控中心负责统计各服务调用次数，调用时间等，统计先在内存汇总后每分钟一次发送到监控中心服务器，并以报表展示
-
-服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心，此时间不包含网络开销
-
-服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心，此时间包含网络开销
-
-注册中心，服务提供者，服务消费者三者之间均为长连接，监控中心除外
-
-注册中心通过**长连接**感知服务提供者的存在，服务提供者宕机，注册中心将立即推送事件通知消费者
-
-注册中心和监控中心全部宕机，不影响已运行的提供者和消费者，消费者在**本地缓存**了提供者列表
-
-注册中心和监控中心都是可选的，服务消费者可以直连服务提供者
-
-(2) 健壮性：
-
-监控中心宕掉不影响使用，只是丢失部分采样数据
-
-数据库宕掉后，注册中心仍能通过缓存提供服务列表查询，但不能注册新服务
-
-注册中心对等集群，任意一台宕掉后，将自动切换到另一台
-
-注册中心全部宕掉后，服务提供者和服务消费者仍能通过本地缓存通讯
-
-服务提供者无状态，任意一台宕掉后，不影响使用
-
-服务提供者全部宕掉后，服务消费者应用将无法使用，并无限次重连等待服务提供者恢复
-
-(3) 伸缩性：
-
-注册中心为对等集群，可动态增加机器部署实例，所有客户端将自动发现新的注册中心
-
-服务提供者无状态，可动态增加机器部署实例，注册中心将推送新的服务提供者信息给消费者
-
-#### 4.4. 特性
-
-- 面向接口代理的高性能RPC调用
-
-  提供高性能的基于代理的远程调用能力，服务以接口为粒度，为开发者屏蔽远程调用底层细节。
-
-- 智能负载均衡
-
-  内置多种负载均衡策略，智能感知下游节点健康状况，显著减少调用延迟，提高系统吞吐量。
-
-- 服务自动注册与发现
-
-  支持多种注册中心服务，服务实例上下线实时感知。
-
-- 高度可扩展能力
-
-  遵循微内核+插件的设计原则，所有核心能力如Protocol、Transport、Serialization被设计为扩展点，平等对待内置实现和第三方实现。
-
-- 运行期流量调度
-
-  内置条件、脚本等路由策略，通过配置不同的路由规则，轻松实现灰度发布，同机房优先等功能。
-
-- 可视化的服务治理与运维
-
-  提供丰富服务治理、运维工具：随时查询服务元数据、服务健康状态及调用统计，实时下发路由策略、调整配置参数。
-
-#### 4.5. 参数表
-
-| 参数名                      | 数据类型 | 默认值    |
-| --------------------------- | -------- | --------- |
-| dev.dubbo.application.name  | String   | -         |
-| dev.dubbo.registry.address  | String   | -         |
-| dev.dubbo.registry.protocol | String   | zookeeper |
-| dev.dubbo.registry.timeout  | Integer  | 10000     |
-| dev.dubbo.protocol.name     | String   | dubbo     |
-| dev.dubbo.protocol.port     | Integer  | -         |
-| dev.dubbo.provider.timeout  | Integer  | 10000     |
-| dev.dubbo.provider.retries  | Integer  | 0         |
-| dev.dubbo.consumer.check    | Boolean  | false     |
-| dev.dubbo.consumer.timeout  | Integer  | 10000     |
-| dev.dubbo.consumer.retries  | Integer  | 0         |
-
-#### 4.6. 使用举例
-
-详见[git仓库dev-0104分支dev-dubbo-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-dubbo-example)
-
-### 5. 消息框架-RabbitMQ
-
-#### 5.1. AMQP和队列角色
-
-AMQP（高级消息队列协议）是一个网络协议。它支持符合要求的客户端应用（application）和消息中间件代理（messaging middleware broker）之间进行通信。
-
-AMQP的实体和路由规则是由应用本身定义的，而不是由消息代理定义。包括像声明队列和交换机，定义他们之间的绑定，订阅队列等等关于协议本身的操作。
-
-这虽然能让开发人员自由发挥，但也需要他们注意潜在的定义冲突。当然这在实践中很少会发生，如果发生，会以配置错误（misconfiguration）的形式表现出来。
-
-应用程序（Applications）声明AMQP实体，定义需要的路由方案，或者删除不再需要的AMQP实体。
-
-消息代理（message
-brokers）从发布者（publishers）亦称生产者（producers）那儿接收消息，并根据既定的路由规则把接收到的消息发送给处理消息的消费者（consumers）。由于AMQP是一个网络协议，所以这个过程中的发布者，消费者，消息代理
-可以存在于不同的设备上。
-
-#### 5.2. 模型简介
-
-![enter image description here](https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png)
-
-消息（message）被发布者（publisher）发送给交换机（exchange），交换机常常被比喻成邮局或者邮箱。然后交换机将收到的消息根据路由规则分发给绑定的队列（queue）。最后AMQP代理会将消息投递给订阅了此队列的消费者，或者消费者按照需求自行获取。发布者（publisher）发布消息时可以给消息指定各种消息属性（message
-meta-data）。有些属性有可能会被消息代理（brokers）使用，然而其他的属性则是完全不透明的，它们只能被接收消息的应用所使用。
-
-从安全角度考虑，网络是不可靠的，接收消息的应用也有可能在处理消息的时候失败。基于此原因，AMQP模块包含了一个消息确认（message
-acknowledgements）的概念：当一个消息从队列中投递给消费者后（consumer），消费者会通知一下消息代理（broker），这个可以是自动的也可以由处理消息的应用的开发者执行。当“消息确认”被启用的时候，消息代理不会完全将消息从队列中删除，直到它收到来自消费者的确认回执（acknowledgement）。
-
-在某些情况下，例如当一个消息无法被成功路由时，消息或许会被返回给发布者并被丢弃。或者，如果消息代理执行了延期操作，消息会被放入一个所谓的死信队列中。此时，消息发布者可以选择某些参数来处理这些特殊情况。
-
-队列，交换机和绑定统称为AMQP实体（AMQP entities）。
-
-#### 5.3. 交换机和交换机类型
-
-交换机是用来发送消息的AMQP实体。交换机拿到一个消息之后将它路由给一个或零个队列。它使用哪种路由算法是由交换机类型和被称作绑定（bindings）的规则所决定的。AMQP 0-9-1的代理提供了四种交换机
-
-| Name（交换机类型）            | Default pre-declared names（预声明的默认名称） |
-| ----------------------------- | ---------------------------------------------- |
-| Direct exchange（直连交换机） | (Empty string) and amq.direct                  |
-| Fanout exchange（扇型交换机） | amq.fanout                                     |
-| Topic exchange（主题交换机）  | amq.topic                                      |
-| Headers exchange（头交换机）  | amq.match (and amq.headers in RabbitMQ)        |
-
-除交换机类型外，在声明交换机时还可以附带许多其他的属性，其中最重要的几个分别是：
-
-- Name
-- Durability （消息代理重启后，交换机是否还存在）
-- Auto-delete （当所有与之绑定的消息队列都完成了对此交换机的使用后，删掉它）
-- Arguments（依赖代理本身）
-
-交换机可以有两个状态：持久（durable）、暂存（transient）。持久化的交换机会在消息代理（broker）重启后依旧存在，而暂存的交换机则不会（它们需要在代理再次上线后重新被声明）。然而并不是所有的应用场景都需要持久化的交换机。
-
-##### 5.3.1 直连交换机
-
-直连型交换机（direct exchange）是根据消息携带的路由键（routing key）将消息投递给对应队列的。直连交换机用来处理消息的单播路由（unicast routing）（尽管它也可以处理多播路由）。下边介绍它是如何工作的：
-
-- 将一个队列绑定到某个交换机上，同时赋予该绑定一个路由键（routing key）
-- 当一个携带着路由键为`R`的消息被发送给直连交换机时，交换机会把它路由给绑定值同样为`R`的队列。
-
-直连交换机经常用来循环分发任务给多个工作者（workers）。当这样做的时候，我们需要明白一点，在AMQP 0-9-1中，消息的负载均衡是发生在消费者（consumer）之间的，而不是队列（queue）之间。
-
-直连型交换机图例：
-
-![enter image description here](https://www.rabbitmq.com/img/tutorials/intro/exchange-direct.png)
-
-##### 5.3.2 扇型交换机
-
-扇型交换机（funout
-exchange）将消息路由给绑定到它身上的所有队列，而不理会绑定的路由键。如果N个队列绑定到某个扇型交换机上，当有消息发送给此扇型交换机时，交换机会将消息的拷贝分别发送给这所有的N个队列。扇型用来交换机处理消息的广播路由（broadcast
-routing）。
-
-因为扇型交换机投递消息的拷贝到所有绑定到它的队列，所以他的应用案例都极其相似：
-
-- 大规模多用户在线（MMO）游戏可以使用它来处理排行榜更新等全局事件
-- 体育新闻网站可以用它来近乎实时地将比分更新分发给移动客户端
-- 分发系统使用它来广播各种状态和配置更新
-- 在群聊的时候，它被用来分发消息给参与群聊的用户。（AMQP没有内置presence的概念，因此XMPP可能会是个更好的选择）
-
-扇型交换机图例：
-
-![enter image description here](https://www.rabbitmq.com/img/tutorials/intro/exchange-fanout.png)
-
-#### 5.4. 队列
-
-AMQP中的队列（queue）跟其他消息队列或任务队列中的队列是很相似的：它们存储着即将被应用消费掉的消息。队列跟交换机共享某些属性，但是队列也有一些另外的属性。
-
-- Name
-- Durable（消息代理重启后，队列依旧存在）
-- Exclusive（只被一个连接（connection）使用，而且当连接关闭后队列即被删除）
-- Auto-delete（当最后一个消费者退订后即被删除）
-- Arguments（一些消息代理用他来完成类似与TTL的某些额外功能）
-
-队列在声明（declare）后才能被使用。如果一个队列尚不存在，声明一个队列会创建它。如果声明的队列已经存在，并且属性完全相同，那么此次声明不会对原有队列产生任何影响。如果声明中的属性与已存在队列的属性有差异，那么一个错误代码为406的通道级异常就会被抛出。
-
-##### 5.4.1 队列名称
-
-队列的名字可以由应用（application）来取，也可以让消息代理（broker）直接生成一个。队列的名字可以是最多255字节的一个utf-8字符串。若希望AMQP消息代理生成队列名，需要给队列的name参数赋值一个空字符串：在同一个通道（channel）的后续的方法（method）中，我们可以使用空字符串来表示之前生成的队列名称。之所以之后的方法可以获取正确的队列名是因为通道可以默默地记住消息代理最后一次生成的队列名称。
-
-以"amq."开始的队列名称被预留做消息代理内部使用。如果试图在队列声明时打破这一规则的话，一个通道级的403 (ACCESS_REFUSED)错误会被抛出。
-
-##### 4.4.2 队列持久化
-
-持久化队列（Durable queues）会被存储在磁盘上，当消息代理（broker）重启的时候，它依旧存在。没有被持久化的队列称作暂存队列（Transient queues）。并不是所有的场景和案例都需要将队列持久化。
-
-持久化的队列并不会使得路由到它的消息也具有持久性。倘若消息代理挂掉了，重新启动，那么在重启的过程中持久化队列会被重新声明，无论怎样，只有经过持久化的消息才能被重新恢复。
-
-#### 5.5. 绑定
-
-绑定（Binding）是交换机（exchange）将消息（message）路由给队列（queue）所需遵循的规则。如果要指示交换机“E”将消息路由给队列“Q”，那么“Q”就需要与“E”进行绑定。绑定操作需要定义一个可选的路由键（routing
-key）属性给某些类型的交换机。路由键的意义在于从发送给交换机的众多消息中选择出某些消息，将其路由给绑定的队列。
-
-打个比方：
-
-- 队列（queue）是我们想要去的位于纽约的目的地
-- 交换机（exchange）是JFK机场
-- 绑定（binding）就是JFK机场到目的地的路线。能够到达目的地的路线可以是一条或者多条
-
-拥有了交换机这个中间层，很多由发布者直接到队列难以实现的路由方案能够得以实现，并且避免了应用开发者的许多重复劳动。
-
-如果AMQP的消息无法路由到队列（例如，发送到的交换机没有绑定队列），消息会被就地销毁或者返还给发布者。如何处理取决于发布者设置的消息属性。
-
-#### 5.6. 消费者
-
-消息如果只是存储在队列里是没有任何用处的。被应用消费掉，消息的价值才能够体现。在AMQP 0-9-1 模型中，有两种途径可以达到此目的：
-
-- 将消息投递给应用 ("push API")
-- 应用根据需要主动获取消息 ("pull API")
-
-使用push
-API，应用（application）需要明确表示出它在某个特定队列里所感兴趣的，想要消费的消息。如是，我们可以说应用注册了一个消费者，或者说订阅了一个队列。一个队列可以注册多个消费者，也可以注册一个独享的消费者（当独享消费者存在时，其他消费者即被排除在外）。
-
-每个消费者（订阅者）都有一个叫做消费者标签的标识符。它可以被用来退订消息。消费者标签实际上是一个字符串。
-
-##### 5.6.1 消息确认
-
-消费者应用（Consumer applications） - 用来接受和处理消息的应用 -
-在处理消息的时候偶尔会失败或者有时会直接崩溃掉。而且网络原因也有可能引起各种问题。这就给我们出了个难题，AMQP代理在什么时候删除消息才是正确的？AMQP 0-9-1 规范给我们两种建议：
-
-- 当消息代理（broker）将消息发送给应用后立即删除。（使用AMQP方法：basic.deliver或basic.get-ok）
-- 待应用（application）发送一个确认回执（acknowledgement）后再删除消息。（使用AMQP方法：basic.ack）
-
-前者被称作自动确认模式（automatic acknowledgement model），后者被称作显式确认模式（explicit acknowledgement
-model）。在显式模式下，由消费者应用来选择什么时候发送确认回执（acknowledgement）。应用可以在收到消息后立即发送，或将未处理的消息存储后发送，或等到消息被处理完毕后再发送确认回执（例如，成功获取一个网页内容并将其存储之后）。
-
-如果一个消费者在尚未发送确认回执的情况下挂掉了，那AMQP代理会将消息重新投递给另一个消费者。如果当时没有可用的消费者了，消息代理会死等下一个注册到此队列的消费者，然后再次尝试投递。
-
-##### 5.6.2 拒绝消息
-
-当一个消费者接收到某条消息后，处理过程有可能成功，有可能失败。应用可以向消息代理表明，本条消息由于“拒绝消息（Rejecting
-Messages）”的原因处理失败了（或者未能在此时完成）。当拒绝某条消息时，应用可以告诉消息代理如何处理这条消息——销毁它或者重新放入队列。当此队列只有一个消费者时，请确认不要由于拒绝消息并且选择了重新放入队列的行为而引起消息在同一个消费者身上无限循环的情况发生。
-
-##### 5.6.3 预取消息
-
-在多个消费者共享一个队列的案例中，明确指定在收到下一个确认回执前每个消费者一次可以接受多少条消息是非常有用的。这可以在试图批量发布消息的时候起到简单的负载均衡和提高消息吞吐量的作用。（例如，如果生产应用每分钟才发送一条消息，这说明处理工作尚在运行。）
-
-注意，RabbitMQ只支持通道级的预取计数，而不是连接级的或者基于大小的预取。
-
-#### 5.7. 消息属性和有效负载（消息主体）
-
-AMQP模型中的消息（Message）对象是带有属性（Attributes）的。有些属性及其常见，以至于AMQP 0-9-1 明确的定义了它们，并且应用开发者们无需费心思思考这些属性名字所代表的具体含义。例如：
-
-- Content type（内容类型）
-- Content encoding（内容编码）
-- Routing key（路由键）
-- Delivery mode (persistent or not)
-  投递模式（持久化 或 非持久化）
-- Message priority（消息优先权）
-- Message publishing timestamp（消息发布的时间戳）
-- Expiration period（消息有效期）
-- Publisher application id（发布应用的ID）
-
-有些属性是被AMQP代理所使用的，但是大多数是开放给接收它们的应用解释器用的。有些属性是可选的也被称作消息头（headers）。他们跟HTTP协议的X-Headers很相似。消息属性需要在消息被发布的时候定义。
-
-AMQP的消息除属性外，也含有一个有效载荷 -
-Payload（消息实际携带的数据），它被AMQP代理当作不透明的字节数组来对待。消息代理不会检查或者修改有效载荷。消息可以只包含属性而不携带有效载荷。它通常会使用类似JSON这种序列化的格式数据，为了节省，协议缓冲器和MessagePack将结构化数据序列化，以便以消息的有效载荷的形式发布。AMQP及其同行者们通常使用"
-content-type" 和 "content-encoding" 这两个字段来与消息沟通进行有效载荷的辨识工作，但这仅仅是基于约定而已。
-
-消息能够以持久化的方式发布，AMQP代理会将此消息存储在磁盘上。如果服务器重启，系统会确认收到的持久化消息未丢失。简单地将消息发送给一个持久化的交换机或者路由给一个持久化的队列，并不会使得此消息具有持久化性质：它完全取决与消息本身的持久模式（persistence
-mode）。将消息以持久化方式发布时，会对性能造成一定的影响（就像数据库操作一样，健壮性的存在必定造成一些性能牺牲）。
-
-#### 5.8. 消息确认
-
-由于网络的不确定性和应用失败的可能性，处理确认回执（acknowledgement）就变的十分重要。有时我们确认消费者收到消息就可以了，有时确认回执意味着消息已被验证并且处理完毕，例如对某些数据已经验证完毕并且进行了数据存储或者索引操作。
-
-这种情形很常见，所以 AMQP 0-9-1 内置了一个功能叫做 消息确认（message
-acknowledgements），消费者用它来确认消息已经被接收或者处理。如果一个应用崩溃掉（此时连接会断掉，所以AMQP代理亦会得知），而且消息的确认回执功能已经被开启，但是消息代理尚未获得确认回执，那么消息会被从新放入队列（并且在还有还有其他消费者存在于此队列的前提下，立即投递给另外一个消费者）。
-
-协议内置的消息确认功能将帮助开发者建立强大的软件。
-
-#### 5.9. 连接
-
-**AMQP连接通常是长连接。**AMQP是一个使用TCP提供可靠投递的应用层协议。AMQP使用认证机制并且提供TLS（SSL）保护。当一个应用不再需要连接到AMQP代理的时候，需要优雅的释放掉AMQP连接，而不是直接将TCP连接关闭。
-
-#### 5.10. 通道
-
-有些应用需要与AMQP代理建立多个连接。无论怎样，同时开启多个TCP连接都是不合适的，因为这样做会消耗掉过多的系统资源并且使得防火墙的配置更加困难。AMQP
-0-9-1提供了通道（channels）来处理多连接，可以把通道理解成共享一个TCP连接的多个轻量化连接。
-
-在涉及多线程/进程的应用中，为每个线程/进程开启一个通道（channel）是很常见的，并且这些通道不能被线程/进程共享。
-
-一个特定通道上的通讯与其他通道上的通讯是完全隔离的，因此每个AMQP方法都需要携带一个通道号，这样客户端就可以指定此方法是为哪个通道准备的。
-
-#### 5.11. 虚拟主机
-
-有些应用需要与AMQP代理建立多个连接。无论怎样，同时开启多个TCP连接都是不合适的，因为这样做会消耗掉过多的系统资源并且使得防火墙的配置更加困难。AMQP
-0-9-1提供了通道（channels）来处理多连接，可以把通道理解成共享一个TCP连接的多个轻量化连接。
-
-在涉及多线程/进程的应用中，为每个线程/进程开启一个通道（channel）是很常见的，并且这些通道不能被线程/进程共享。
-
-一个特定通道上的通讯与其他通道上的通讯是完全隔离的，因此每个AMQP方法都需要携带一个通道号，这样客户端就可以指定此方法是为哪个通道准备的。
-
-#### 5.12. 参数表
-
-| 参数名                   | 数据类型 | 默认值 |
-| ------------------------ | -------- | ------ |
-| dev.rabbitmq.host        | String   | -      |
-| dev.rabbitmq.port        | Integer  | -      |
-| dev.rabbitmq.username    | String   | -      |
-| dev.rabbitmq.password    | String   | -      |
-| dev.rabbitmq.virtualHost | String   | /      |
-
-#### 5.13. 使用举例
-
-详见[git仓库dev-0104分支dev-mq-rabbit-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-mq-rabbit-example)
-
-### 6. MQ - RPC 差异化统一平台
-
-#### 6.1. 概述
-
-在分布式部署架构下，MQ及RPC的使用节能达到目的，但由于MQ潜在的不稳定因素，故而需考虑MQ和RPC的并行运行，为减少开发人员在MQ和RPC使用上的难度，本框架对RPC和MQ的差异在使用上进行了统一。
-
-#### 6.2. 实现方式
-
-读取spring容器配置${dev.mrp.switch}，该配置可选值为【MQ/RPC】，根据配置，有统一平台自动完成MQ消息发布或RPC调用。基本请求参数详见*
-com.allinfinance.dev.mrp.param.RequestParams*。
-
-```java
-    private String rpcInterface;
-private String rpcMethod;
-
-private String routingKey;
-private String exchangeName;
+@Extensible
+public interface ProcessService {}
 ```
 
-调用结果详见*com.allinfinance.dev.mrp.param.GenericReponse*
+**`实现扩展接口`**
 
 ```java
-    private Boolean respStatus;
-private T rpcInvokeData;
-```
+package com.allinfinance.dev.rpc.scaffold.service;
 
-#### 6.3. 使用举例
-
-详见[git仓库dev-0104分支dev-dubbo-example](http://10.250.20.182:8899/dev/dev/-/tree/dev-0104/dev-example/dev-dubbo-example)
-
-### 7. 其余常用工具
-
-#### 7.1. XML报文与实体类的互转及基础字段校验
-
-在日常开发中，经常会遇到XML报文与实体类的互相转换，为避免重复造轮子，将其加入了基础框架中并实现了XStream及JAXB两种主流XML转换类库。并集成了注解校验字段内容是否合规，极大程度上减少了业务处理层繁杂的字段校验。
-
-校验注解详情如下，注解生效开关：${dev.xml.field.verify}，默认值为false
-
-```java
-public @interface Check {
-  /**
-   * 字段类型
-   */
-    Class<?> type() default String.class;
-
-    /**
-     * 字段长度
-     */
-    int length() default 0;
-
-    /**
-     * 字段长度最大值
-     */
-    int maxLength() default 0;
-
-  /**
-     * 字段长度最小值
-     */
-    int minLength() default 0;
-
-  /**
-     * 字段校验正则
-     */
-    String regex() default "";
+@Extension("default")
+public class DefaultProcessServiceImpl implements ProcessService {
 }
 ```
 
-#### 7.2. Socket client
+**`声明扩展映射文件`**
 
-集成apache mina的socket客户端，可根据传入参数判断采用8583报文格式传输或者采用普通XML报文传输。
+![声明映射文件](/Users/huanghf/Downloads/声明映射文件.png)
 
-#### 7.3. Http client
+```java
+default=com.allinfinance.dev.rpc.scaffold.service.DefaultProcessServiceImpl
+```
 
-集成apache-httpcomponents的http客户端，调用方可根据具体需求自定义http报文头，重试次数及超时时长。
+**`使用具体扩展`**
 
-| 参数名                   | 数据类型 | 默认值 |
-| ------------------------ | -------- | ------ |
-| dev.http.maxPoolSize        | Integer   | -      |
-| dev.http.initPoolSize        | Integer  | -      |
-| dev.http.charSet    | String   | -      |
-| dev.http.socketSoTimeOut    | Integer   | -      |
+```java
+ExtensionLoader<ProcessService> extensionLoader=ExtensionLoaderFactory.getExtensionLoader(ProcessService.class);
+        ProcessService extension=extensionLoader.getExtension("default");
+```
 
-#### 7.4. 文件传输工具
+- **注意事项**
+  被扩展的接口需要加上`@Extensible`注解标记； 扩展实现需要加上`@Extension`注解标记，同时指定扩展别名； 扩展映射文件需要加在`classpath:/META-INF/services/allinfinance`
+  目录下，若同一个接口有多个实现，可在一个映射文件中体现。同时需要注意的是，映射文件中的别名与`@Extension`注解中的别名务必要保持一致。 使用扩展需要注意，该框架默认返回的`extensionLoader`
+  以及`extension`均为单例，使用需注意是否该扩展是否无状态。如果要开启多例支持，需在`@Extensible`注解中指定`singleton=false`。
 
-集成了文件传输中常用的基于FTP协议和SFTP协议的文件上传及下载。
+---
+
+#### 1.1.2 dev-connection-driver
+
+##### a. 组件介绍
+
+> 在基于定制化扩展框架的基础上，设计了该连接池组件，默认具有多种池化方式，并且在连接池的上层已抽象出统一的连接交互接口，针对不同的协议交互仅需对指定扩展进行执行操作即可，提高了连接池的扩展性和扩展效率。
+
+##### b. 使用介绍
+
+- maven依赖
+
+```xml
+
+<dependency>
+  <artifactId>dev-connection-driver</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+<dependency>
+<artifactId>dev-connection-wrapper</artifactId>
+<groupId>com.allinfinance.dev</groupId>
+</dependency>
+
+```
+
+- 使用说明
+  `引入模块`
+  ![引入模块](/Users/huanghf/Downloads/引入模块.png)
+  `初始化连接元数据`
+
+```java
+Properties properties=new Properties();
+        PropertiesParseUtils.fromBean(properties,metadataConfigure);
+        PropertiesParseUtils.fromBean(properties,connectionPoolConfigure);
+        ExtensionLoader<ServerMetadataFactory> serverMetadataExtensionLoader=ExtensionLoaderFactory.getExtensionLoader(ServerMetadataFactory.class);
+        ServerMetadataFactory factory=serverMetadataExtensionLoader.getExtension(connectionPoolConfigure.getConnectionPoolType());
+
+        factory.setProperties(properties);
+        return factory.getMetadata();
+```
+
+`获取连接`
+
+```java
+ServerMetadata serverMetadata=serverMetadataList.get(index);
+        conn=serverMetadata.getConnection();
+```
+
+`发送数据`
+
+```java
+try{
+        String response=connection.send(msg);
+        if(logger.isDebugEnabled()){
+        logger.debug("接收到响应：{}",response);
+        }
+        return response;
+        }catch(Throwable e){
+        return null;
+        }finally{
+        connection.close();
+        }
+
+```
+
+- **注意事项**
+  dev-connection-wrapper中对ServerMetadata以及ServerMetadataFactory已提供默认frameless实现，提供了基于双List模型以及双端阻塞队列模型的实现。
+
+---
+
+## 2. SpringBoot聚合组件[**dev-boot-starters**]
+
+---
+
+### 2.1 **dev-rpc-scaffold-boot-starter**
+
+本组件提供了对sofa-rpc的封装，使用者**可以在简单的yml配置后，如同使用原生SpringBoot框架一样的享受rpc服务**。
+
+#### 2.1.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.1.2 **使用说明**
+
+**`配置示例`**
+
+```yaml
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/vctss-sit
+        bolt-port: 12204
+  allinfinance:
+    rpc:
+      consumer:
+        common-reference-registry: 10.250.28.142:8848/public-sit
+        reference-list:
+          - interface-name: com.allinfinance.vctss.api.business.ChangeBindingCardService
+            timeout: 5000
+          - interface-name: com.allinfinance.vctss.api.tsm.TokenUpdateResultNotifyService
+        common-reference-list:
+          - interface-name: com.allinfinance.vctss.api.tsm.TokenUpdateResultNotifyService
+            timeout: 5000
+          - interface-name: com.allinfinance.vctss.api.tsm.TokenUpdateResultNotifyService
+      provider:
+        service-package: com.allinfinance.vctss.provider
+        exclude-service-list:
+          - com.allinfinance.vctss.api.business.PhysicalCardStatusUpdateService
+```
+
+##### 2.1.2.1 **对于服务提供方**
+
+> `com.allinfinance.rpc.provider.service-package`为必需配置，所有服务实现类需使用@Component注解标识，本组件通过扫描SpringBean的方式将**service-package**包下的所有实现类发布到注册中心。如需要临时剔除某些实现类，可以在`com.allinfinance.rpc.provider.exclude-service-list`中配置需要排除的实现类。
+
+##### 2.1.2.2 **对于服务消费方**
+
+> `com.allinfinance.rpc.consumer.reference-list`为必需配置，使用者可以通过@Autowired注解将需要rpc服务依赖到本地实现中。
+
+`注：无论是服务提供方还是服务消费方都需要注册中心配置`
+
+#### 2.1.3 **配置参考手册**
+
+##### 2.1.3.1 **注册中心配置**
+
+> 配置前缀：`com.alipay.sofa.rpc`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| registry-address  | 注册中心地址  | String   | 无   |
+| bolt-port   | 服务提供方端口  | Integer   | 无|
+
+##### 2.1.3.2 **RpcConfigurationProperties**
+
+> 配置类：
+> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties`
+> 配置前缀：`com.allinfinance.rpc`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| consumer   | RPC消费方配置   | Consumer   | 无   |
+| provider   | RPC提供方配置   | Provider   | 无   |
+| bootstrap   | RPC网关相关配置   | Bootstrap   | 无   |
+
+##### 2.1.3.3 **RpcConfigurationProperties.Consumer**
+
+> 配置类：
+> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Consumer`
+> 配置前缀：`com.allinfinance.rpc.consumer`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| common-reference-registry  |  公共服务所在注册中心地址 | String   | 无   |
+| reference-list  |  引用接口列表，以数组形式提供  | List<Reference>   | 无   |
+| common-reference-list   | 引用公共服务列表，以数组形式提供   | List<Reference>   | 无|
+
+- 关于公共服务引用的说明 Consumer类中的`common-reference-registry`和`common-reference-list`
+  配置为引用与com.alipay.sofa.rpc.registry-address配置的命名空间不同的其他命名空间的rpc服务时需要的配置
+
+##### 2.1.3.4 **RpcConfigurationProperties.Provider**
+
+> 配置类：
+> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Provider`
+> 配置前缀：`com.allinfinance.rpc.provider`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| exclude-service-list  |  剔除不需要对外发布的服务 | Set<String>   | 无   |
+| unique-id  | 服务提供方unique-id | String   | 无  |
+| service-package  | 服务实现类所在包路径 | String   | 无  |
+
+##### 2.1.3.5 **RpcConfigurationProperties.Consumer.Reference.**
+
+> 配置类：
+> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Consumer.Reference`
+> 配置前缀：`com.allinfinance.rpc.consumer.reference-list`、`com.allinfinance.rpc.consumer.reference-list`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| timeout  |  客户端调用超时时间 | Integer   | 30000   |
+| invoke-type  |  客户端调用类型 | String   | 默认为sync，设置为future时异步调用  |
+| retries  |  客户端调用失败重试次数，默认不重试 | Integer   | 0   |
+| cluster  |  集群模式 | String   | 默认为failover  |
+| interface-name  |  引用接口全限定类名  | String   | 无   |
+
+---
+
+### 2.2 **dev-dispatch-scaffold-boot-starter**
+
+本组件提供了对xxl-job的封装，使用者在yml文件中配置好调度平台的地址和执行器的端口后，可通过xxl-job-admin的管理页面发起调度。
+
+#### 2.2.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-dispatch-scaffold-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.2.2 **使用说明**
+
+**`配置示例`**
+
+```yaml
+com:
+  allinfinance:
+    xxl:
+      job:
+        # 批量调度平台地址
+        admin-addresses: http://10.250.28.142:9091/xxl-job-admin/
+        # 批量执行器名称
+        appname: ${spring.application.name}
+        executor:
+          log-path: ${HOME}/logs/xxl-job/jobhandler
+          port: 9998
+```
+
+**`IJobHandler接口`**
+
+```java
+public interface IJobHandler {
+  /**
+   * 设置任务名
+   *
+   * @return 任务名
+   */
+  String dispatcherName();
+
+  /**
+   * 任务执行方法
+   */
+  void execute() throws Exception;
+}
+```
+
+使用者将需要调度的任务实现上述`IJobHandler`接口，用不同的`dispatcherName`区分不同的调度任务，在`execute()`方法中执行具体的批量逻辑。
+
+- 注意事项
+
+> - 如需使用调度任务参数，可通过`XxlJobHelper.getJobParam()`方法获取
+> - 任务执行方法`execute()`执行过程中抛出异常会触发xxl-job的重试机制，需要注意异常的捕获和处理
+
+#### 2.2.3 **配置参考手册**
+
+##### 2.2.3.1 **JobExecutorProperties**
+
+> 配置类：
+> `com.allinfinance.dev.dispatch.scaffold.config.JobExecutorProperties`
+> 配置前缀：`com.allinfinance.xxl.job`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| admin-addresses  | xxl-job-admin集群地址（以逗号分隔） | String   | 无 |
+| app-name | 执行器名称 | String   | allinfinance-dev3-executor  |
+
+##### 2.2.3.2 **XxlJobCustomExecutor**
+
+> 配置类：
+> `com.allinfinance.dev.dispatch.scaffold.executor.XxlJobCustomExecutor`
+> 配置前缀：`com.allinfinance.xxl.job.executor`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| address | xxl-job执行器地址（地址不存在的时候取下面的ip：port） | String   | 无 |
+| ip | 执行器ip | String   | 无  |
+| port | 执行器port | Integer   | 9998 |
+| log-path | 执行器日志路径 | String   | ${HOME}/logs/xxl-job/jobhandler |
+| logretentiondays | 执行器日志保存天数 | Integer   | 30 |
+| pool-core-size | 执行器核心线程数 | Integer   | 10 |
+| pool-maximum-size | 执行器最大线程数 | Integer   | 50 |
+
+---
+
+### 2.3 **dev-batch-scaffold-boot-starter**
+
+本组件提供了对Spring Batch的封装，并内置Spring Batch的数据库相关表的MyBatis映射，而且依赖了`dev-dispatch-scaffold-boot-starter`
+，使用者可以直接以xxl-job方式发起任务调度。
+
+#### 2.3.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-batch-scaffold-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.3.2 **使用说明**
+
+**`AbstractSpringBatchHandler`**
+
+```java
+public abstract class AbstractSpringBatchHandler implements IJobHandler {
+
+  private static final Logger logger = LoggerFactory.getLogger(AbstractSpringBatchHandler.class);
+
+  @Autowired
+  private BatchJobService batchJobService;
+
+  /**
+   * 批量参数预处理
+   *
+   * @return 参数map
+   * @throws Exception
+   */
+  protected abstract Map<String, JobParameter> prepareParameter() throws Exception;
+
+  /**
+   * 获取batch job名称
+   *
+   * @return job名称
+   */
+  protected abstract String jobName();
+
+  /**
+   * 任务执行方法
+   */
+  @Override
+  public void execute() throws Exception {
+    Map<String, JobParameter> parameter = this.prepareParameter();
+    try {
+      Job job = SpringUtil.getBean(jobName());
+      batchJobService.startNewJob(job, new JobParameters(parameter));
+      XxlJobHelper.log("任务调度成功！");
+    } catch (Exception e) {
+      logger.error("任务【{}】执行失败!", jobName(), e);
+    }
+  }
+}
+```
+
+**BatchJobServiceImpl`**
+
+```java
+
+@Component
+public class BatchJobServiceImpl implements BatchJobService {
+  private static final Logger logger = LoggerFactory.getLogger(BatchJobServiceImpl.class);
+  @Autowired
+  private JobLauncher jobLauncher;
+  @Autowired
+  private JobOperator jobOperator;
+
+  /**
+   * 发布一个批量任务
+   *
+   * @param job           任务对象
+   * @param jobParameters 任务参数
+   * @return JobExecution
+   */
+  @Override
+  public JobExecution startNewJob(Job job, JobParameters jobParameters) throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+    logger.info("创建新的批量任务，任务名：{}", job.getName());
+    return jobLauncher.run(job, jobParameters);
+  }
+
+  /**
+   * 终止一个批量任务
+   *
+   * @param job           任务对象
+   * @param jobParameters 任务参数
+   * @return JobExecution
+   */
+  @Override
+  public boolean stopJob(Job job, JobParameters jobParameters) throws NoSuchJobException, NoSuchJobExecutionException, JobExecutionNotRunningException {
+    Set<Long> executions = jobOperator.getRunningExecutions(job.getName());
+    return jobOperator.stop(executions.iterator().next());
+  }
+
+  /**
+   * 重启一个批量任务
+   *
+   * @param job           任务对象
+   * @param jobParameters 任务参数
+   * @return JobExecution
+   */
+  @Override
+  public long restartJob(Job job, JobParameters jobParameters) throws NoSuchJobException, JobInstanceAlreadyCompleteException, NoSuchJobExecutionException, JobParametersInvalidException, JobRestartException {
+    Set<Long> executions = jobOperator.getRunningExecutions(job.getName());
+    return jobOperator.restart(executions.iterator().next());
+  }
+}
+```
+
+**`Spring Batch Job配置示例`**
+
+```java
+
+@Configuration
+public class BatchCutJobConfig extends AbstractBatchJob {
+  @Autowired
+  private ClearParameterUpdateTasklet updateTasklet;
+
+  @Bean("batchCutJob")
+  public Job batchCutJob(Step batchCutStep) {
+    return jobBuilderFactory.get("batchCutJob")
+            .start(batchCutStep)
+            .build();
+  }
+
+  @Bean("batchCutStep")
+  protected Step batchCutStep() {
+    return stepBuilderFactory.get("batchCutStep")
+            .tasklet(updateTasklet)
+            .build();
+  }
+}
+```
+
+**`xxl-job调度Spring Batch Job代码示例`**
+
+```java
+
+@Component
+public class BatchCutJobHandler extends AbstractSpringBatchHandler {
+  private static final Logger logger = LoggerFactory.getLogger(BatchCutJobHandler.class);
+
+  @Autowired
+  private ClearParameterConfig clearParameterConfig;
+
+  @Override
+  public String dispatcherName() {
+    return "batchCutHandler";
+  }
+
+  /**
+   * 获取batch job名称
+   *
+   * @return job名称
+   */
+  @Override
+  protected String jobName() {
+    return "batchCutJob";
+  }
+
+  /**
+   * 批量参数预处理
+   *
+   * @return 参数map
+   * @throws Exception
+   */
+  @Override
+  protected Map<String, JobParameter> prepareParameter() throws Exception {
+    if (!BatchUtils.verifyClearDate(clearParameterConfig.getRelativeClearDate(), clearParameterConfig.getClearDate())) {
+      logger.info("当日已进行日切，无需重复发起!");
+      return null;
+    }
+    String jobParam = XxlJobHelper.getJobParam();
+    logger.info("接收到批量参数：[{}]", jobParam);
+    return JobParamsUtils.parseJobParamsToMap(jobParam);
+  }
+}
+```
+
+- 批量任务类需要继承抽象类`com.allinfinance.dev.batch.scaffold.job.AbstractBatchJob`，然后再进行任务的各种Step、Tasklet以及Listener的编排。
+- 在使用xxl-job调度时，可以根据实际场景需要考虑是否用封装过后的调度抽象类`com.allinfinance.dev.batch.scaffold.job.AbstractSpringBatchHandler`
+  来代替原有实现`IJobHandler`接口的形式，前者在`execute()`方法上进行了一层封装：即将批量任务执行过程中的异常捕获后不会继续向上层抛出，从而避免了批量任务再已经调度成功后又重复发起调度，造成无效地重试。
+- 成功进入到调度方法后，使用`com.allinfinance.dev.batch.scaffold.service.BatchJobService`的方法来进行Spring Batch Job的发起、停止或重试。
+
+- **注意事项**
+
+> 参数`spring.batch.job.enabled`默认为true，会在启动时执行一次批量任务，一般需要将其关闭（置为false）。
+
+---
+
+### 2.4 **dev-datasource-scaffold-boot-starter**
+
+本组件整合了MyBatis和Druid，并设置了大量的默认参数，在非特殊情况下，使用者仅需添加必要的几项参数即可使用。
+
+#### 2.4.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-datasource-scaffold-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.4.2 **使用说明**
+
+`配置示例`
+
+```yaml
+com:
+  allinfinance:
+    datasource:
+      url: jdbc:db2://10.250.20.209:50000/qpsdb20:currentSchema=DB2INST1;
+      username: qps
+      password: qps
+      druid:
+        validation-query: select 1 from sysibm.sysdummy1
+      mybatis:
+        configuration:
+          # 数据库操作类型（批量插入更新）
+          default-executor-type: batch
+```
+
+- **必要参数列表**
+
+> 配置类：
+> `com.allinfinance.dev.datasource.scaffold.config.DevDatasourceProperties`
+> 配置前缀：`com.allinfinance.datasource`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| url  | 数据库连接地址 | String   | 无默认值，必须填写 |
+| username | 数据库用户名 | String   | 无默认值，必须填写  |
+| password | 数据库用户密码 | String   | 无默认值，必须填写 |
+
+> 配置类：
+> `com.allinfinance.dev.datasource.scaffold.config.DevMybatisProperties`
+> 配置前缀：`com.allinfinance.datasource.mybatis`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| mapper-locations | Mapper文件存放位置 | String   | classpath*:/mapper/*Mapper.xml |
+
+> 配置类：
+> `com.allinfinance.dev.datasource.scaffold.DruidDataSourceWrapper `
+> 配置前缀：`com.allinfinance.datasource.druid`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| validation-query | 数据库连接检查语句 | String | 默认为MySQL的query语句，其他需要自行填写 |
+
+`其余默认参数如下：`
+
+```propertoies
+com.allinfinance.datasource.type=com.alibaba.druid.pool.DruidDataSource
+#============================druid's configuration======================================
+com.allinfinance.datasource.druid.initial-size=5
+com.allinfinance.datasource.druid.min-idle=5
+com.allinfinance.datasource.druid.max-active=20
+com.allinfinance.datasource.druid.max-wait=60000
+com.allinfinance.datasource.druid.time-between-eviction-runs-millis=60000
+com.allinfinance.datasource.druid.min-evictable-idle-time-millis=300000
+com.allinfinance.datasource.druid.validation-query=SELECT 1
+com.allinfinance.datasource.druid.test-while-idle=true
+com.allinfinance.datasource.druid.test-on-borrow=false
+com.allinfinance.datasource.druid.test-on-return=false
+com.allinfinance.datasource.druid.pool-prepared-statements=true
+com.allinfinance.datasource.druid.max-pool-prepared-statement-per-connection-size=20
+com.allinfinance.datasource.druid.filters=stat,wall
+com.allinfinance.datasource.druid.use-global-data-source-stat=true
+com.allinfinance.datasource.druid.connect-properties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+com.allinfinance.datasource.druid.stat-view-servlet.login-username=admin
+com.allinfinance.datasource.druid.stat-view-servlet.login-password=123456
+com.allinfinance.datasource.druid.stat-view-servlet.reset-enable=false
+com.allinfinance.datasource.druid.stat-view-servlet.url-pattern=/druid/*
+com.allinfinance.datasource.druid.web-stat-filter.url-pattern=/*
+com.allinfinance.datasource.druid.web-stat-filter.exclusions=*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*
+#============================encryption configuration======================================
+com.allinfinance.datasource.encrypt.encrypted=false
+com.allinfinance.datasource.transaction.enabled=true
+```
+
+---
+
+### 2.5 **dev-connection-boot-starter**
+
+本组件整合了`dev-connection-wrapper`和`dev-extension`提供了默认基于netty的长连接池实现，并支持对连接池数据结构以及连接池连通性校验方法进行SPI扩展。
+
+#### 2.5.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-connection-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.5.2 **使用说明**
+
+`配置示例`
+
+```yaml
+com:
+  allinfinance:
+    connection:
+      pool:
+        connection-driver: hsp
+        connection-pool-type: pool
+        ping-service: default
+      scaffold:
+        server-metadata-map:
+          server-1:
+            server-ip: 10.250.28.239
+            server-port: 6666
+            max-active-connections: 50
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+          server-2:
+            server-ip: 10.250.28.239
+            server-port: 6666
+            ping-enabled: false
+            ping-query-content: "00"
+            ping-verify-message: ""
+            length-field: 2
+            buffer-size: 65536
+            default-network-timeout: 5000
+```
+
+#### 2.5.3 **配置参考手册**
+
+##### 2.5.3.1 **ConnectionPoolConfigure**
+
+> 配置类：
+> `com.allinfinance.dev.connection.pool.scaffold.configure.ConnectionPoolConfigure`
+> 配置前缀：`com.allinfinance.connection.pool`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| connection-driver  | 连接池驱动，当前提供default和hsp两种实现 | String | default |
+| connection-pool-type | 连接池底层实现：双列表(pool)/阻塞队列(queue) | String | 无默认值，必须填写  |
+| ping-service | 连接检查服务别名 | String | default |
+| warmup | 是否开启预热 | String | true |
+
+##### 2.5.3.2 **ScaffoldConfigure**
+
+> 配置类：
+> `com.allinfinance.dev.connection.pool.scaffold.configure.ScaffoldConfigure`
+> 配置前缀：`com.allinfinance.connection.scaffold`
+
+- **`ScaffoldConfigure`**
+  `com.allinfinance.dev.connection.pool.scaffold.configure.ServerMetadataConfigure`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| server-metadata-map  | 服务端参数列表 | Map<String, ServerMetadataConfigure> | 无 |
+
+- **`ServerMetadataConfigure`**
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| server-ip  | 服务端ip | String | 无 |
+| server-port | 服务端port | String | 无 |
+| max-active-connections | 最大活跃连接数 | String | 10 |
+| max-idle-connections | 最大空闲连接数 | String | 5 |
+| max-checkout-time | 最大空闲连接检查时间，超过该时间后检查连接活跃度，单位：毫秒 | String | 5000 |
+| default-network-timeout | 请求超时时间，超过该时间表示请求超时，单位：毫秒 | String | 30 |
+| retry-time-to-wait | 连接重试等待时间，单位：毫秒 | String | 10 |
+| max-local-bad-connection-to-tolerance | 本地能容忍的最大无效连接数 | String | 3 |
+| ping-query-content | 连接检查请求内容 | String | "" |
+| ping-verify-content | 连接检查验证内容 | String | "" |
+| ping-enabled | 连接检查开关 | String | true |
+| ping-connections-not-used | 最近一次使用该连接的时间差，单位：毫秒 | String | 0 |
+| length-field | 报文长度域长度 | String | 2 |
+| buffer-size | socket缓冲区大小 | String | 65535 |
+
+---
+
+### 2.6 **dev-socket-server-boot-starter**
+
+本组件整合`dev-socket-server-wrapper`
+提供了默认基于netty的服务端实现，并支持对服务端接口`com.allinfinance.dev.framework.socket.server.driver.SocketServerWrapper`进行SPI扩展。
+
+#### 2.6.1 **maven依赖**
+
+```xml
+
+<dependency>
+  <artifactId>dev-socket-server-boot-starter</artifactId>
+  <groupId>com.allinfinance.dev</groupId>
+</dependency>
+```
+
+#### 2.6.2 **使用说明**
+
+`配置示例`
+
+```yaml
+com:
+  allinfinance:
+    socket:
+      server:
+        bootstrap:
+          server-enabled: true
+          bootstrap: default
+        scaffold:
+          server-metadata-list:
+            - name: test-server
+              port: 12468
+              decode-msg-length: 4
+              encode-msg-length: 4
+              decode-charset: UTF-8
+              encode-charset: UTF-8
+              handler-class-name: com.allinfinance.example.socket.server.handler.TestNettyHandler
+              decoder-class-name: com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageDecoder
+              encoder-class-name: com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageEncoder
+              server-driver: netty
+```
+
+#### 2.6.3 **配置参考手册**
+
+##### 2.6.3.1 **ServerBootstrapConfigure**
+
+> 配置类：
+> `com.allinfinance.dev.socket.server.scaffold.configure.ServerBootstrapConfigure`
+> 配置前缀：`com.allinfinance.socket.server.bootstrap`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| server-enabled  | 服务端启动开关 | Boolean | 无 |
+| bootstrap | 服务端实现类型 | String | default |
+
+##### 2.6.3.2 **ScaffoldConfigure**
+
+> 配置类：
+> `com.allinfinance.dev.socket.server.scaffold.configure.SocketScaffoldConfigure`
+> 配置前缀：`com.allinfinance.socket.server.scaffold`
+
+- **`SocketScaffoldConfigure`**
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| server-metadata-list | 服务端参数列表 | Map<String, ServerMetadataConfigure> | 无 |
+
+- **`ServerMetadataConfigure`**
+  `com.allinfinance.dev.socket.server.scaffold.configure.ServerMetadataConfigure`
+
+| **配置项** | **说明** | **类型** | **默认值** |
+| ------ | ------ | ------ | ------ |
+| name | 服务端名称 | String | 无 |
+| port | 服务端端口 | String | 无 |
+| decode-msg-length | 解码报文头长度 | String | 6 |
+| encode-msg-length | 编码报文头长度 | String | 6 |
+| decode-charset | 解码格式 | String | UTF-8 |
+| encode-charset | 编码格式 | String | UTF-8 |
+| handler-class-name | 编码格式 | String | 无 |
+| decoder-class-name | 编码格式 | String | DemuxingMessageDecoder全类名 |
+| encoder-class-name | 编码格式 | String | DemuxingMessageEncoder全类名 |
+| server-driver | 服务端驱动实现 | String | netty |
+
+---
+
+## 3.公共服务组件
+
+---
+
+### 3.1 综合网关[**dev-gateway**]
+
+#### 3.1.1 网关注册
+
+##### a.流程介绍
+
+> 在应用前置exporter启动时会从nacos读取相关配置并调用网关注册服务，将需要注册的server配置信息传给网关，网关会引用exporter发布的ProcessService服务并保存配置信息和监听端口。
+
+> 网关重启后会调用网关所在注册中心命名空间中的ProcessService服务获取应用exporter前置的bootstrap配置信息，引用ProcessService服务、保存配置信息并监听端口。
+
+##### b.使用介绍
+
+> 应用需实现exporter模块，引入dev-rpc-scaffold并进行网关注册相关配置
+
+**`maven依赖`**
+
+```xml
+
+<dependency>
+  <groupId>com.allinfinance.dev</groupId>
+  <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+</dependency>
+```
+
+**`实现ProcessorKeyService`**
+> dev-rpc-scaffold中有默认的ProcessService实现，会在收到网关转发的请求后调用ProcessorKeyService中的getProcessorKey()方法获取该请求对应的BusinessProcessor
+
+- getProcessorKey()方法 通过网关的ProcessRequestDTO中的请求报文获取processorKey
+
+  ```java
+  @Service
+  public class ProcessorKeyServiceImpl implements ProcessorKeyService {
+      private static final Logger logger = LoggerFactory.getLogger(ProcessorKeyServiceImpl.class);
+  
+      @Override
+      public String getProcessorKey(ProcessRequestDTO processRequestDTO) {
+          String processorKey;
+          RequestTypeEnum requestType = processRequestDTO.getRequestType();
+          switch (requestType) {
+              case TCP:
+                  ServiceDTO serviceDTO = XStreamUtils.xmlToBean(processRequestDTO.getRequestDTO().getRequestMsg(), ServiceDTO.class);
+                  processorKey = serviceDTO.getHeader().getServiceId();
+                  break;
+              case HTTP:
+                  HttpRequestDTO httpRequestDTO = (HttpRequestDTO) processRequestDTO.getRequestDTO();
+                  processorKey = httpRequestDTO.getUrl();
+                  break;
+              default:
+                  logger.error("不支持的请求类型, requestType: {}", requestType);
+                  return null;
+          }
+          return processorKey;
+      }
+  }
+  ```
+
+**`实现BusinessProcessor`**
+
+> dev-rpc-scaffold中有默认的processor配置，应用exporter可继承抽象的AbstractBusinessProcessor并实现processorKey()和process()方法，实现对交易的报文处理和调用后台服务
+
+- processorKey()方法 提供应用exporter中不同processor的唯一标识。socket请求可根据请求报文中的唯一标识区分，http请求可根据url、url中的请求参数、httpHeader或请求报文中的唯一标识区分
+
+- process()方法 对交易的报文处理、调用后台服务、组装返回给网关的统一响应ProcessResponseDTO，可在processor中获取调用后台服务的异常信息并返回相应的错误码和错误描述，防止异常信息直接抛给调用方
+
+**`ProcessService扩展`**
+> 默认的ProcessService仅实现了简单的交易分发，若需要进行其他操作例如签名验签等，则可引入dev-extension对ProcessService进行扩展
+
+- 实现ProcessService接口
+
+```java
+
+@Extension("qps")
+public class ProcessServiceImpl extends AbstractProcessService {
+}
+```
+
+- 声明扩展映射文件
+  ![声明映射文件](/Users/huanghf/Downloads/声明映射文件.png)
+
+```java
+qps=com.allinfinance.qps.exporter.process.ProcessServiceImpl
+```
+
+- 使用具体扩展 dev-rpc-scaffold中已实现对ProcessService扩展的使用，仅需在exporter配置文件中声明使用扩展的别名，见配置示例中的process-service-extension配置
+  ```yaml
+  process-service-extension: qps
+  ```
+
+**`exporter配置网关集群`**
+
+```yaml
+group-id: gateway
+gate-cluster-address: 10.250.28.1.17:8848,10.250.28.142,10.250.28.141:8848
+```
+
+- group-id：网关集群分组标识
+- gate-cluster-address：网关集群地址
+
+**`exporter配置示例`**
+
+```yaml
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/wk2021
+        bolt-port: 38191
+  allinfinance:
+    rpc:
+      bootstrap:
+        # 网关开关
+        enable: true
+        # 通用网关地址
+        gate-registry: 10.250.28.142:8848/wk2021
+        exporter-port: 13001
+        app-unique-id: ${spring.application.name}
+        process-service-extension: qps
+        group-id: gateway
+        gate-cluster-address: 10.250.28.1.17:8848,10.250.28.142,10.250.28.141:8848
+        app-list:
+          - type: HTTP
+            listen-port: 8034
+            app-desc: "银联交易监听"
+            http-config:
+              url-list:
+                - url: /qps-p/http/qps/cupsnicService/
+                  requestMethod: POST
+          - type: TCP
+            listen-port: 9034
+            app-desc: "核心交易监听"
+```
+
+#### 3.1.2 配置手册
+
+##### 3.1.2.1 RpcConfigurationProperties.Bootstrap
+
+> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap`
+> 配置前缀：`com.allinfinance.rpc.bootstrap`
+
+| 配置项 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| enable   | 是否启用网关注册配置   | Boolean   | 无   |
+| exporter-port   | exporter的ProcessService服务发布的端口   | Integer   | 无   |
+| gate-registry   | rpc网关注册中心地址   | String   | 无   |
+| app-unique-id   | 应用exporter唯一标识   | String   | 无   |
+| process-service-extension   | ProcessService扩展实现别名   | String   | default   |
+| group-id   | 网关集群分组标识（需和网关配置保持一致）   | String   | 无   |
+| gate-cluster-address   | 网关集群地址，之间以逗号分隔，例如：127.0.0.1:8081,127.0.0.1:8082   | String   | 无   |
+| app-list   | 注册应用详细配置   | List<AppConfigList>   | 无   |
+
+##### 3.1.2.2 RpcConfigurationProperties.Bootstrap.AppConfigList
+
+> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList`
+> 配置前缀：`com.allinfinance.rpc.bootstrap.appList`
+
+| 配置项 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| type   | 请求类型   | Enum   | TCP、HTTP   |
+| app-desc   | 应用注册配置描述   | String   | 无   |
+| listen-port   | 监听端口   | Integer   | 无   |
+| tcp-config   | TCP server配置   | TcpConfig   | 默认TcpConfig   |
+| http-config   | HTTP server配置   | HttpConfig   | Text   |
+
+##### 3.1.2.3 RpcConfigurationProperties.Bootstrap.AppConfigList.TcpConfig
+
+> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.TcpConfig`
+> 配置前缀：`com.allinfinance.rpc.bootstrap.appList.tcpConfig`
+
+| 配置项 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| processor-count   | 请求受理线程数量   | Integer   | 10   |
+| thread-count   | 业务处理线程数量   | Integer   | 50   |
+| decode-msg-length   | 接收报文长度   | Integer   | 6   |
+| encode-msg-length   | 请求报文长度   | Integer   | 6   |
+| decode-charset   | 接收报文编码   | String   | UTF-8   |
+| encode-charset   | 请求报文编码   | String   | UTF-8   |
+| buffer-size   | 缓冲池大小   | Integer   | 8192   |
+| timeout   | 超时时间，单位：秒   | Integer   | 10   |
+| handler-class-name   | 业务处理类   | String   | DefaultTcpIOHandler全类名   |
+| decoder-class-name   | 报文解码处理类   | String   | DemuxingMessageDecoder全类名   |
+| encoder-class-name   | 报文编码处理类   | String   | DemuxingMessageEncoder全类名   |
+| so-linger   | 是否开启soLiner   | Boolean   | false   |
+
+##### 3.1.2.4 RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig
+
+> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig`
+> 配置前缀：`com.allinfinance.rpc.bootstrap.appList.httpConfig`
+
+| 配置项 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| tcp-no-delay   | 是否开启TCP_NODELAY   | Boolean   | true   |
+| so-re-use-addr   | 是否开启TCP_REUSEADDR   | Boolean   | true   |
+| so-keep-alive   | 是否开启SO_KEEPALIVE   | Boolean   | true   |
+| so-rcv-buf   | 请求缓冲池大小   | Integer   | 2048   |
+| so-snd-buf   | 响应缓冲池大小   | Integer   | 2048   |
+| thread-count   | 处理http请求核心线程池大小   | Integer   | Runtime.getRuntime().availableProcessors()   |
+| url-list   | 处理的URL列表   | List<UrlConfig>   | 无   |
+
+##### 3.1.2.5 RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig
+
+> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig`
+> 配置前缀：`com.allinfinance.rpc.bootstrap.appList.httpConfig.urlList`
+
+| 配置项 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| url   | URL   | String   | 无   |
+| request-method   | 请求类型   | org.springframework.http.HttpMethod   | 无   |
+
+#### 3.1.3 网关交易分发
+
+##### a.socket请求
+
+> socket server在注册时会根据端口绑定appUniqueId，在收到socket请求后即可根据appUniqueId调用对应的ProcessService
+
+##### b.http请求
+
+> http server在注册时会保存exporter送的appUniqueId和UrlConfig信息，在收到http请求后会首先根据appUniqueId查找保存的UrlConfig信息，判断是否包含请求的url，如果包含则直接根据appUniqueId调用对应的ProcessService，如果不包含则去遍历其他应用的UrlConfig列表查找监听了这个端口的应用，然后判断该应用的url列表是否包含请求的url，如果包含则根据appUniqueId调用对应的ProcessService
+
+#### 3.1.4 网关集群同步
+
+> 网关集群内部同步通过sofa-jraft实现
+
+##### a.应用注册
+
+exporter启动时会调用网关集群leader节点的注册服务，将需要注册的配置信息送给网关，leader节点会进行网关集群内部的同步操作
+
+##### b.应用下线
+
+exporter下线时会调用网关集群leader节点的下线服务，将appUniqueId送给网关，leader节点会进行网关集群内部的同步操作。在进行下线操作前，会调用exporter的ProcessService服务的verify()
+方法，判断exporter是否全部下线，如未全部下线则不进行下线操作。
+
+---
+
+### 3.2 综合客户端[**dev-ccp**]
+
+提供了包括HttpClient、SocketClient和FileTransmitService的服务。
+
+#### 3.2.1 使用介绍
+
+- maven依赖
+
+```xml
+
+<dependency>
+  <groupId>com.allinfinance.dev</groupId>
+  <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+</dependency>
+```
+
+- 配置示例与说明 参考dev-rpc-scaffold中关于公共服务引用的配置说明
+
+#### 3.2.2 接口参数列表
+
+##### 3.2.2.1 HttpClientService
+
+```java
+/**
+ * http请求
+ *
+ * @param httpRequestDTO 请求内容封装
+ * @return 响应请求结果
+ */
+HttpResponseDTO request(HttpRequestDTO httpRequestDTO);
+```
+
+- HttpRequestDTO
+
+| 参数 | 说明 | 类型 | 默认值 |
+| ------ | ------ | ------ | ------ |
+| httpMethod   | http请求方法 | Enum | 无 |
+| header   | http header内容 | HashMap<String, String> | 无 |
+| mediaType   | 调用方提供string，实现方自行解析 | String | 无 |
+| body   | 请求体 | String | 无 |
+| url   | url | String | 无 |
+| retryTime   | 重试次数 | Integer | 无 |
+| time   | 超时时间，单位：秒 | Integer | 无 |
+
+- HttpResponseDTO
+
+| 参数     | 说明             | 类型    | 默认值 |
+| -------- | ---------------- | ------- | ------ |
+| success  | http调用是否成功 | Boolean | 无     |
+| response | 响应内容         | String  | 无     |
+
+#### 3.2.2.3 SocketService
+
+```java
+/**
+ * 客户端请求
+ *
+ * @param socketRequestDTO 请求连接参数
+ * @param message          请求内容
+ * @return 请求响应
+ */
+SocketResponseDTO clientRequest(SocketRequestDTO socketRequestDTO,String message);
+```
+
+- SocketRequestDTO
+
+| 参数             | 说明                                                         | 类型   | 默认值      |
+| ---------------- | ------------------------------------------------------------ | ------ | ----------- |
+| remoteIp         | 目标ip                                                       | String | 无          |
+| remotePort       | 目标端口                                                     | String | 无          |
+| clientAppName    | 客户端名称（作为hashMap的key），例如：无卡非金融-qpsDiy，无卡金融：qps8583 | String | 无          |
+| timeout          | 服务端超时时间                                               | String | 30000       |
+| checkMac         | 是否检查mac                                                  | String | false       |
+| msgLengthSize    | 报文长度                                                     | String | 6           |
+| msgEncode        | 报文编码格式                                                 | String | UTF-8       |
+| connectionDriver | 底层实现的选择                                               | String | socketNetty |
+| socketClient     | 客户端实现                                                   | String | default     |
+| soLingerEnable   | 是否开启SO_LINGER                                            | String | false       |
+
+- SocketResponseDTO
+
+| 参数     | 说明               | 类型    | 默认值 |
+| -------- | ------------------ | ------- | ------ |
+| success  | Socket调用是否成功 | Boolean | 无     |
+| response | 响应内容           | String  | 无     |
+
+#### 3.2.2.3 TransmitService
+
+```java
+/**
+ * 从本地上传文件到远程
+ *
+ * @param requestDTO 请求信息
+ * @return 传输结果
+ */
+TransmitResponseDTO upload(TransmitRequestDTO requestDTO);
+
+/**
+ * 从远程下载文件到本地
+ *
+ * @param requestDTO 请求信息
+ * @return 传输结果
+ */
+        TransmitResponseDTO download(TransmitRequestDTO requestDTO);
+
+/**
+ * 从远程传输文件到远程
+ *
+ * @param requestDTO 请求信息
+ * @return 传输结果
+ */
+        TransmitResponseDTO transmit(TransmitRequestDTO requestDTO);
+```
+
+- TransmitRequestDTO
+
+| 参数      | 说明                                                         | 类型          | 默认值 |
+| --------- | ------------------------------------------------------------ | ------------- | ------ |
+| source    | 远程源信息，download和both必填                               | RemoteMessage | 无     |
+| target    | 远程目标信息，upload和both必填                               | RemoteMessage | 无     |
+| localPath | 本地文件存放路径                                             | String        | 无     |
+| fileName  | 文件名                                                       | String        | 无     |
+| timeout   | 超时时间(ms)                                                 | Integer       | 无     |
+| append    | localPath是否为追加目录，true则在默认目录基础上追加localPath，false则(localPath)为自定义目录 | Boolean       | 3000   |
+
+- RemoteMessage
+
+| 参数         | 说明                | 类型                    | 默认值 |
+| ------------ | ------------------- | ----------------------- | ------ |
+| ip           | 远程用户ip          | String                  | 无     |
+| port         | 远程用户端口        | Integer                 | 无     |
+| username     | 远程用户名          | String                  | 无     |
+| password     | 远程用户密码        | String                  | 无     |
+| path         | 远程文件路径        | String                  | 无     |
+| transmitMode | 传输方式：ftp、sftp | TransmitMode：FTP, SFTP | 无     |
+
+- TransmitResponseDTO
+
+| 参数    | 说明                     | 类型    | 默认值 |
+| ------- | ------------------------ | ------- | ------ |
+| success | 传输是否成功             | Boolean | 无     |
+| reason  | 传输失败原因，成功则不填 | String  | 无     |
+
+---
+
+### 3.3 加密服务[**dev-hsp**]
+
+提供了连接加密机进行签名验签的rpc服务
+
+#### 3.3.1 使用介绍
+
+- maven依赖
+
+```xml
+
+<dependency>
+  <groupId>com.allinfinance.dev</groupId>
+  <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+</dependency>
+```
+
+- 配置示例与说明 参考dev-rpc-scaffold中关于公共服务引用的配置说明
+
+#### 3.3.2 接口参数列表
+
+#### 3.3.2.1 SignatureService
+
+```java
+/**
+ * 用SM2私钥做签名--D306
+ *
+ * @param requestDTO 签名参数
+ * @return 签名信息
+ */
+HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
+
+/**
+ * 用SM2公钥做验签--D307
+ *
+ * @param requestDTO 验签参数
+ * @return 验签结果
+ */
+        HspBaseResponseDTO verifySignatureBySM2PublicKey(SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
+```
+
+- SignatureGetBySM2PrivateKeyRequestDTO
+
+| 参数       | 说明                                  | 类型   | 是否必输 | 格式限制         |
+| ---------- | ------------------------------------- | ------ | -------- | ---------------- |
+| privateKey | 外部输入密钥，HEX，加密机DC00接口申请 | String | 是       | 1～65535 * 2字节 |
+| certId     | 证书序列号，明文                      | String | 是       | 1～65535 / 2字节 |
+| data       | 数据，明文                            | String | 是       | 1～65535 / 2字节 |
+
+- SignatureGetBySM2PrivateKeyResponseDTO
+
+| 参数       | 说明                 | 类型   | 格式限制 |
+| ---------- | -------------------- | ------ | -------- |
+| signatureR | 签名结果的R部分，HEX | String | 64字节   |
+| signatureS | 签名结果的S部分，HEX | String | 64字节   |
+
+- SignatureVerifyBySM2PublicKeyRequestDTO
+
+| 参数            | 说明             | 类型   | 是否必输 | 格式限制         |
+| --------------- | ---------------- | ------ | -------- | ---------------- |
+| plainPublicKeyX | 公钥明文X, HEX   | String | 是       | 64字节           |
+| plainPublicKeyY | 公钥明文Y, HEX   | String | 是       | 64字节           |
+| signatureR      | 签名结果R, HEX   | String | 是       | 64字节           |
+| signatureS      | 签名结果S, HEX   | String | 是       | 64字节           |
+| certId          | 证书序列号，明文 | String | 是       | 1～65535 / 2字节 |
+| data            | 数据，明文       | String | 是       | 1～65535 / 2字节 |
+
+- HspBaseResponseDTO
+
+| 参数     | 说明     | 类型    | 默认值 |
+| -------- | -------- | ------- | ------ |
+| success  | 是否成功 | Boolean | 无     |
+| desc     | 描述     | String  | 无     |
+| response | 响应数据 | Object  | 无     |
+
+---
+
+### 3.4 批量管理平台[**dev-job**]
+
+***!!!FBI Warning!!!***
+
+**To be continue**
+
+**敬请期待！**

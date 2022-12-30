@@ -1,1 +1,1 @@
-socketNetty=com.allinfinace.dev.infrastrustructure.socket.client.netty.SocketNettyConnection
+netty=com.allinfinance.dev.infrastructure.socket.client.netty.SocketNettyConnection

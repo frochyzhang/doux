@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastrustructure.socket.client.netty;
+package com.allinfinance.dev.infrastructure.socket.client.netty;
 
 import io.netty.util.concurrent.Promise;
 

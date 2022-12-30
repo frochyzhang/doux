@@ -35,9 +35,9 @@
         <springframework.boot.version>2.6.9</springframework.boot.version>
         <nacos.boot.version>0.2.12</nacos.boot.version>
         <sofa.boot.version>3.14.1</sofa.boot.version>
-        <springframework.version>5.2.19.RELEASE</springframework.version>
+        <springframework.version>5.3.21</springframework.version>
         <batch.version>4.2.8.RELEASE</batch.version>
-        <mina.version>2.0.19</mina.version>
+        <mina.version>2.2.1</mina.version>
         <dubbo.version>2.7.12</dubbo.version>
         <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -581,6 +581,11 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-common-util</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-client-mina</artifactId>
                 <version>${dev.version}</version>
             </dependency>
             <dependency>

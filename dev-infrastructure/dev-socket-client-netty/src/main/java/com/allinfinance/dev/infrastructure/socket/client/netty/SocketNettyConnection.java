@@ -1,13 +1,13 @@
-package com.allinfinace.dev.infrastrustructure.socket.client.netty;
+package com.allinfinance.dev.infrastructure.socket.client.netty;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.thread.NamedThreadFactory;
-import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.DemuxingMessageDecoder;
-import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.DemuxingMessageEncoder;
-import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.Message8583Decoder;
-import com.allinfinace.dev.infrastrustructure.socket.client.netty.codec.Message8583Encoder;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.client.driver.Connection;
+import com.allinfinance.dev.infrastructure.socket.client.netty.codec.DemuxingMessageDecoder;
+import com.allinfinance.dev.infrastructure.socket.client.netty.codec.DemuxingMessageEncoder;
+import com.allinfinance.dev.infrastructure.socket.client.netty.codec.Message8583Decoder;
+import com.allinfinance.dev.infrastructure.socket.client.netty.codec.Message8583Encoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
  * @date 2022/9/14 9:20
  */
-@Extension("socketNetty")
+@Extension("netty")
 public class SocketNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(SocketNettyConnection.class);
 
@@ -54,7 +54,7 @@ public class SocketNettyConnection implements Connection {
             logger.error("处理中断");
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            logger.error("处理异常");
+            logger.error("处理异常", e);
         } catch (TimeoutException e) {
             logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
         } finally {
@@ -85,7 +85,7 @@ public class SocketNettyConnection implements Connection {
                 }
                 option.option(ChannelOption.SO_LINGER, 0);
             }
-            channelFuture = option
+            Bootstrap bootstrap = option
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
@@ -109,7 +109,8 @@ public class SocketNettyConnection implements Connection {
                                 }
                             });
                         }
-                    }).connect(serverIp, serverPort).sync();
+                    });
+            channelFuture = bootstrap.connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

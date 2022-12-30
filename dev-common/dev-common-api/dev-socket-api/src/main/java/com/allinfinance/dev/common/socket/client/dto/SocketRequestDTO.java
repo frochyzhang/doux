@@ -36,7 +36,7 @@ public class SocketRequestDTO {
     /**
      * 底层实现的选择
      */
-    private String connectionDriver = "socketNetty";
+    private String connectionDriver = "netty";
     /**
      * 客户端实现
      */
