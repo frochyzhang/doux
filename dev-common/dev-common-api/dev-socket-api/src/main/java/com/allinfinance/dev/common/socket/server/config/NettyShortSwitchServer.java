@@ -1,7 +1,7 @@
 package com.allinfinance.dev.common.socket.server.config;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import com.allinfinance.dev.common.socket.server.Bean.NettySocketBean;
+import com.allinfinance.dev.common.socket.server.bean.NettySocketBean;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

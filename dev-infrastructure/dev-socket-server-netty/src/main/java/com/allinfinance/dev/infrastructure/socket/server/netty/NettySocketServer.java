@@ -9,6 +9,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,17 +75,17 @@ public class NettySocketServer implements SocketServer {
         nioEventLoopGroupList.add(bossGroup);
         EVENT_LOOP_GROUP_MAP.putIfAbsent(port, nioEventLoopGroupList);
         if (logger.isDebugEnabled()) {
-            logger.debug("{}Netty服务端初始化完成", name);
+            logger.debug("{}-Netty服务端初始化完成", name);
         }
         try {
             ChannelFuture future = serverBootstrap.bind(port).sync();
-            future.channel().closeFuture().sync();
+//            future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error("[ {}] 启动服务失败! 参数为{}", name, properties, e);
             Thread.currentThread().interrupt();
-        } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+//        } finally {
+//            bossGroup.shutdownGracefully();
+//            workerGroup.shutdownGracefully();
         }
     }
 

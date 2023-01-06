@@ -1,7 +1,7 @@
-package com.allinfinace.dev.infrastructure.socket.client.mina.socket;
+package com.allinfinance.dev.infrastructure.socket.client.mina.socket;
 
-import com.allinfinace.dev.infrastructure.socket.client.mina.socket.codec.*;
-import com.allinfinace.dev.infrastructure.socket.client.mina.socket.handler.ClientIoHandler;
+import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.*;
+import com.allinfinance.dev.infrastructure.socket.client.mina.socket.handler.ClientIoHandler;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.client.driver.Connection;
 import org.apache.mina.core.future.ConnectFuture;
@@ -38,16 +38,27 @@ public class SocketMinaConnection implements Connection {
      */
     @Override
     public String send(String msg) {
-        session.write(msg);
-        String resp = null;
-        ReadFuture readFuture = session.read();
-        if (readFuture.awaitUninterruptibly(timeout, TimeUnit.SECONDS)) {
-            Object respMess = readFuture.getMessage();
-            if (respMess != null) {
-                resp = (String) respMess;
+        String resp;
+        try {
+            session.write(msg);
+            resp = null;
+            ReadFuture readFuture = session.read();
+            if (readFuture.awaitUninterruptibly(timeout, TimeUnit.SECONDS)) {
+                Object respMess = readFuture.getMessage();
+                if (respMess != null) {
+                    resp = (String) respMess;
+                }
+            } else {
+                logger.error("读取应答消息失败.");
             }
-        } else {
-            logger.error("读取应答消息失败.");
+        } finally {
+            if (session != null) {
+                session.closeNow();
+                session.getService().dispose();
+            }
+            if (clientConnector != null) {
+                clientConnector.dispose();
+            }
         }
         return resp;
     }
@@ -64,8 +75,8 @@ public class SocketMinaConnection implements Connection {
         int msgLengthSize = Integer.parseInt(properties.getProperty("msgLengthSize"));
         String msgEncode = properties.getProperty("msgEncode");
         String clientAppName = properties.getProperty("clientAppName");
-        int timeout = Integer.parseInt(properties.getProperty("timeout"));
-        boolean checkMac = Boolean.parseBoolean(properties.getProperty("timeout"));
+        timeout = Integer.parseInt(properties.getProperty("timeout"));
+        boolean checkMac = Boolean.parseBoolean(properties.getProperty("checkMac"));
         try {
             clientConnector = new NioSocketConnector();
             clientConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);

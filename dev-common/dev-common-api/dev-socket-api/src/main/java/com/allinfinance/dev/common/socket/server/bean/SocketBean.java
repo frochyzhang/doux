@@ -1,11 +1,10 @@
-package com.allinfinance.dev.common.socket.server.Bean;
+package com.allinfinance.dev.common.socket.server.bean;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
- * @date 2022/09/08 10:00
+ * @date 2022-09-16 14:48
  */
-public class NettySocketBean {
-
+public class SocketBean {
     private String name;
     private Integer port;
     private Integer processorCount;
@@ -37,7 +36,7 @@ public class NettySocketBean {
     private Integer beatInterval; //间隔
     private Boolean keepAlive;  //是否开启长链接
 
-    public NettySocketBean() {
+    public SocketBean() {
     }
 
     public String getName() {
