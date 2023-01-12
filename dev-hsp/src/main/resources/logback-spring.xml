@@ -80,6 +80,24 @@
         </root>
     </springProfile>
 
+    <!--yc环境配置-->
+    <springProfile name="yc">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <logger name="com.alipay" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-ALL"/>
+            <appender-ref ref="GRPC-LOG"/>
+        </root>
+    </springProfile>
+
     <!--sit环境配置-->
     <springProfile name="sit">
         <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">

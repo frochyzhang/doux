@@ -66,15 +66,15 @@ public class HspNettyConnection implements Connection {
         synchronized (channel) {
             channel.writeAndFlush(msg);
             try {
-                String result = promise.get(timeout, TimeUnit.MILLISECONDS);
-//                promiseMap.remove(requestId);
-                return result;
+                return promise.get(timeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.error("处理中断", e);
             } catch (ExecutionException e) {
                 logger.error("处理异常", e);
             } catch (TimeoutException e) {
                 logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
+            } finally {
+                promiseMap.remove(requestId);
             }
             throw new RuntimeException("获取响应异常");
         }

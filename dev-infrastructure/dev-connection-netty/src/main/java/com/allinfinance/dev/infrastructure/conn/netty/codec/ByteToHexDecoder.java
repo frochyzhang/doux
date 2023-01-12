@@ -36,6 +36,8 @@ public class ByteToHexDecoder extends ByteToMessageDecoder {
             stringPromise.setSuccess(receive);
         } catch (IllegalStateException e) {
             logger.error("接收响应异常，requestId: {}", requestId, e);
+        } catch (NullPointerException e) {
+            logger.error("请求异常，requestId: {}", requestId);
         }
         out.add(receive);
     }
