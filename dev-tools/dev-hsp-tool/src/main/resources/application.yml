@@ -4,9 +4,6 @@ spring:
   profiles:
     active: dev
 
-server:
-  port: 10000
-
 nacos:
   config:
     auto-refresh: true
@@ -19,20 +16,62 @@ nacos:
     max-retry: 10
     remote-first: true
     type: yaml
+    data-id: dev-hsp-tool
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+server:
+  port: 10000
+
+nacos:
+  config:
     namespace: public-sit
     server-addr: 10.250.28.142:8848
     username: iasp-lzk
     password: iasp-lzk
-    data-id: dev-hsp-tool
-
 
 com:
-  alipay:
-    sofa:
-      rpc:
-        registry-address: nacos://10.250.28.142:8848/wk2021
-        bolt-port: 10001
+  #  alipay:
+  #    sofa:
+  #      rpc:
+  #        registry-address: nacos://10.250.28.142:8848/wk2021
+  #        bolt-port: 10001
   allinfinance:
     rpc:
-      reference-list:
-        - com.allinfinance.dev.core.util.hsp.SignatureService
+      consumer:
+        common-reference-registry: 10.250.28.142:8848/wk2021
+        common-reference-list:
+          - interface-Name: com.allinfinance.dev.core.util.hsp.SignatureService
+
+---
+spring:
+  config:
+    activate:
+      on-profile: yc
+
+server:
+  port: 10000
+
+nacos:
+  config:
+    namespace: public-yc
+    server-addr: 10.250.28.142:8848
+    username: iasp-lzk
+    password: iasp-lzk
+
+com:
+  #  alipay:
+  #    sofa:
+  #      rpc:
+  #        registry-address: nacos://10.250.28.142:8848/public-yc
+  #        bolt-port: 10001
+  allinfinance:
+    rpc:
+      consumer:
+        common-reference-registry: 10.250.28.142:8848/public-yc
+        common-reference-list:
+          - interface-Name: com.allinfinance.dev.core.util.hsp.SignatureService

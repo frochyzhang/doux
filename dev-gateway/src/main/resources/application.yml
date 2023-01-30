@@ -6,7 +6,9 @@ spring:
 
 ---
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   pid:
     file: ${spring.application.name}.pid
 
@@ -15,12 +17,12 @@ com:
     gateway:
       data-path: C:\Users\huanghf\Desktop\jiuzaizhelijian1
       server-addr: 127.0.0.1:8081
-      cluster-group-id: gateway
+      cluster-group-id: gateway-jcfp
       cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public-yc
+        registry-address: nacos://10.250.28.142:8848/public-jcfp
         bolt-port: 12404
         consumer-repeated-reference-limit: 100
 
@@ -28,9 +30,12 @@ dev:
   gateway:
     retries: 100
     interval: 200
+    exporter-list: jcfp-exporter, acfp-exporter
 ---
 spring:
-  profiles: sit
+  config:
+    activate:
+      on-profile: sit
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
@@ -55,11 +60,19 @@ dev:
 
 ---
 spring:
-  profiles: uat
+  config:
+    activate:
+      on-profile: uat
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
+  allinfinance:
+    gateway:
+      data-path: ${HOME}/raft
+      server-addr: 127.0.0.1:8081
+      cluster-group-id: gateway
+      cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
@@ -74,11 +87,19 @@ dev:
 
 ---
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
+  allinfinance:
+    gateway:
+      data-path: ${HOME}/raft
+      server-addr: 127.0.0.1:8081
+      cluster-group-id: gateway
+      cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:

@@ -3,7 +3,7 @@
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-check.sh}
 
-PINF=`ps -eo pid,lstart,cmd | grep ${USER} | grep ${APP_NAME} | grep -v $0 | grep -v grep`
+PINF=`ps -eo pid,lstart,cmd | grep ${USER} | grep ${APP_NAME} | grep -v grep`
 
 PID=`echo ${PINF} | awk '{print $1}'`
 

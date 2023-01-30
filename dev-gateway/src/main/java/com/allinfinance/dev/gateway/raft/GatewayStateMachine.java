@@ -12,6 +12,7 @@ import com.alipay.sofa.jraft.storage.snapshot.SnapshotWriter;
 import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.gateway.factory.GateClientFactoryAware;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class GatewayStateMachine extends StateMachineAdapter {
 
     @Value("${com.alipay.sofa.rpc.registry-address}")
     private String registryAddress;
+    @Value("${dev.gateway.exporter-list}")
+    private String exporterList;
 
     @Override
     public void onApply(Iterator iter) {
@@ -134,10 +137,12 @@ public class GatewayStateMachine extends StateMachineAdapter {
         AppProcessFactory.getServiceList(server)
                 .forEach(service -> {
                     String uniqueId = service.split(":")[1];
-                    if (gateClientFactoryAware.registerConsumer(uniqueId)) {
-                        logger.info("[ {} ]应用注册成功!", uniqueId);
-                    } else {
-                        logger.error("[ {} ]应用注册失败!", uniqueId);
+                    if (StringUtils.isBlank(exporterList) || exporterList.contains(uniqueId)) {
+                        if (gateClientFactoryAware.registerConsumer(uniqueId)) {
+                            logger.info("[ {} ]应用注册成功!", uniqueId);
+                        } else {
+                            logger.error("[ {} ]应用注册失败!", uniqueId);
+                        }
                     }
                 });
         logger.info("应用业务处理服务订阅完成");

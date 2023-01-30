@@ -5,7 +5,7 @@ import com.alipay.remoting.serialization.SerializerManager;
 import com.alipay.sofa.jraft.Status;
 import com.alipay.sofa.jraft.entity.Task;
 import com.alipay.sofa.jraft.error.RaftError;
-import com.allinfinance.dev.gateway.listener.GatewayStartedListener;
+import com.allinfinance.dev.gateway.config.RaftServerContext;
 import com.allinfinance.dev.gateway.raft.GatewayClosure;
 import com.allinfinance.dev.gateway.raft.GatewayOperation;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
@@ -25,7 +25,7 @@ public class GatewayServiceImpl implements GatewayService {
     private static final Logger logger = LoggerFactory.getLogger(GatewayServiceImpl.class);
 
     @Autowired
-    private GatewayStartedListener gatewayServer;
+    private RaftServerContext raftServerContext;
 
     @Override
     public void register(RpcConfigurationProperties.Bootstrap bootstrap, GatewayClosure closure) {
@@ -41,7 +41,7 @@ public class GatewayServiceImpl implements GatewayService {
             Task task = new Task();
             task.setData(ByteBuffer.wrap(SerializerManager.getSerializer(SerializerManager.Hessian2).serialize(registerOperation)));
             task.setDone(closure);
-            gatewayServer.getNode().apply(task);
+            raftServerContext.getNode().apply(task);
         } catch (CodecException e) {
             logger.error("注册请求序列化失败", e);
             closure.failure();
@@ -63,7 +63,7 @@ public class GatewayServiceImpl implements GatewayService {
             Task task = new Task();
             task.setData(ByteBuffer.wrap(SerializerManager.getSerializer(SerializerManager.Hessian2).serialize(offlineRegisterOperation)));
             task.setDone(closure);
-            gatewayServer.getNode().apply(task);
+            raftServerContext.getNode().apply(task);
         } catch (CodecException e) {
             logger.error("下线请求序列化失败", e);
             closure.failure();
@@ -72,6 +72,6 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     private boolean isLeader() {
-        return gatewayServer.getFsm().isLeader();
+        return raftServerContext.getFsm().isLeader();
     }
 }

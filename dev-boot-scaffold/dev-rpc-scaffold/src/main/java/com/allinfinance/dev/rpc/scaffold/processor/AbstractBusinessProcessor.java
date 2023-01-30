@@ -1,20 +1,9 @@
 package com.allinfinance.dev.rpc.scaffold.processor;
 
-import cn.hutool.extra.spring.SpringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/16 16:55
+ * @deprecated 该抽象类由于springboot2.6.x版本默认禁止了循环依赖，后续直接实现#{@link BusinessProcessor}即可
  */
 public abstract class AbstractBusinessProcessor implements BusinessProcessor {
-    @Autowired
-    private BusinessProcessedFactory businessProcessedFactory;
-
-    @PostConstruct
-    public void init() {
-        businessProcessedFactory.register(SpringUtil.getBean(this.getClass()));
-    }
 }

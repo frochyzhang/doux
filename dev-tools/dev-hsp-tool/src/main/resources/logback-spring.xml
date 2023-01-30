@@ -52,6 +52,19 @@
         </root>
     </springProfile>
 
+    <!--yc环境配置-->
+    <springProfile name="yc">
+        <logger name="com.allinfinance" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+        <logger name="com.alipay.sofa" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </logger>
+
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="HSP-TOOL-ALL"/>
+        </root>
+    </springProfile>
 
     <!--sit环境配置-->
     <springProfile name="sit">

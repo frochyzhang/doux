@@ -83,9 +83,10 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             ProcessService processService = referenceClient.reference(processServiceParam);
             try {
                 if (processService.verify()) {
-                    logger.info("[ {} ]业务处理服务验证成功，开始监听端口", uniqueId);
-                    appProcessFactory.registerProcessService(uniqueId, processService);
+                    logger.info("[ {} ]业务处理服务验证成功，开始保存配置信息、监听端口", uniqueId);
                     RpcConfigurationProperties.Bootstrap bootstrap = processService.init();
+                    appProcessFactory.registerBootstrap(bootstrap);
+                    appProcessFactory.registerProcessService(uniqueId, processService);
                     logger.info("应用注册参数: {}", bootstrap);
                     // 监听端口
                     monitorPort(bootstrap);
@@ -142,33 +143,18 @@ public class GateClientFactoryAware implements ClientFactoryAware {
             logger.info("[ {} ]应用首次注册，开始保存配置信息，监听端口", uniqueId);
             //不存在则保存ProcessService和配置信息，监听端口
             ReferenceParam<ProcessService> processServiceParam = getProcessServiceParam(uniqueId);
-            for (int i = 1; i <= retries; i++) {
-                ProcessService processService = referenceClient.reference(processServiceParam);
-                try {
-                    if (processService.verify()) {
-                        logger.info("[ {} ]业务处理服务验证成功，开始监听端口!", uniqueId);
-                        appProcessFactory.registerProcessService(bootstrap.getAppUniqueId(), processService);
-                        monitorPort(bootstrap);
-                        logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
-                        return Boolean.TRUE;
-                    }
-                } catch (SofaRouteException e) {
-                    logger.warn("调用[ {} ]应用ProcessService服务异常，等待重试...", uniqueId);
-                    logger.info("总重试次数：{}，重试间隔：{}ms，当前重试次数：{}", retries, interval, i);
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(interval);
-                    } catch (InterruptedException ignore) {
-                        Thread.currentThread().interrupt();
-                    }
-                } catch (Exception e) {
-                    logger.error("订阅[ {} ]业务处理服务异常,移除订阅、端口监听和配置信息!", uniqueId, e);
-                    appProcessFactory.removeAll(uniqueId);
-                    return false;
-                }
+            ProcessService processService = referenceClient.reference(processServiceParam);
+            try {
+                appProcessFactory.registerBootstrap(bootstrap);
+                appProcessFactory.registerProcessService(bootstrap.getAppUniqueId(), processService);
+                monitorPort(bootstrap);
+                logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                logger.error("订阅[ {} ]业务处理服务异常，移除订阅、端口监听和配置信息!", uniqueId, e);
+                appProcessFactory.removeAll(uniqueId);
+                return false;
             }
-            logger.error("调用[ {} ]应用ProcessService服务异常，重试失败，移除订阅、端口监听和配置信息！", uniqueId);
-            appProcessFactory.removeAll(uniqueId);
-            return Boolean.FALSE;
         }
         logger.info("[ {} ]业务处理服务订阅成功", uniqueId);
         return Boolean.TRUE;
@@ -221,9 +207,5 @@ public class GateClientFactoryAware implements ClientFactoryAware {
                     throw new IllegalArgumentException("参数不合法");
             }
         });
-    }
-
-    public ReferenceClient getReferenceClient() {
-        return referenceClient;
     }
 }

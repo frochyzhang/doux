@@ -85,12 +85,12 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
 
     @Override
     public void destroy() throws Exception {
-        logger.info("Exporter starts close");
+        logger.info("开始调用网关下线服务");
         boolean offlineResult = raftRpcClientConfig.invokeSync(new ExporterOfflineRequest(rpcConfigurationProperties.getBootstrap().getAppUniqueId()), 5000);
         if (offlineResult) {
-            logger.info("Exporter offline success");
+            logger.info("调用网关下线服务成功");
         } else {
-            logger.error("Exporter offline failed");
+            logger.error("调用网关下线服务失败");
         }
     }
 }

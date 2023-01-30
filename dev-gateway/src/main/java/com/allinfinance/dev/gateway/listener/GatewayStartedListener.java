@@ -1,6 +1,5 @@
 package com.allinfinance.dev.gateway.listener;
 
-import com.alipay.sofa.jraft.Node;
 import com.alipay.sofa.jraft.RaftGroupService;
 import com.alipay.sofa.jraft.conf.Configuration;
 import com.alipay.sofa.jraft.entity.PeerId;
@@ -8,6 +7,7 @@ import com.alipay.sofa.jraft.option.NodeOptions;
 import com.alipay.sofa.jraft.rpc.RaftRpcServerFactory;
 import com.alipay.sofa.jraft.rpc.RpcServer;
 import com.allinfinance.dev.gateway.config.GatewayClusterConfig;
+import com.allinfinance.dev.gateway.config.RaftServerContext;
 import com.allinfinance.dev.gateway.raft.AppRegistrarProcessor;
 import com.allinfinance.dev.gateway.raft.ExporterOfflineProcessor;
 import com.allinfinance.dev.gateway.raft.GatewayStateMachine;
@@ -28,10 +28,8 @@ import java.io.File;
 public class GatewayStartedListener implements ApplicationListener<ApplicationStartedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(GatewayStartedListener.class);
 
-    private RaftGroupService raftGroupService;
-    private Node node;
-    private GatewayStateMachine fsm;
-
+    @Autowired
+    private RaftServerContext raftServerContext;
     @Autowired
     private GatewayClusterConfig gatewayClusterConfig;
     @Autowired
@@ -40,18 +38,6 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
     private ExporterOfflineProcessor exporterOfflineProcessor;
     @Autowired
     private GatewayStateMachine gatewayStateMachine;
-
-    public RaftGroupService getRaftGroupService() {
-        return raftGroupService;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
-    public GatewayStateMachine getFsm() {
-        return fsm;
-    }
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
@@ -74,13 +60,13 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
         RpcServer raftRpcServer = RaftRpcServerFactory.createRaftRpcServer(peerId.getEndpoint());
         raftRpcServer.registerProcessor(appRegistrarProcessor);
         raftRpcServer.registerProcessor(exporterOfflineProcessor);
-        this.fsm = gatewayStateMachine;
+        raftServerContext.setFsm(gatewayStateMachine);
         nodeOptions.setFsm(gatewayStateMachine);
         nodeOptions.setLogUri(gatewayClusterConfig.getDataPath() + File.separator + "log");
         nodeOptions.setRaftMetaUri(gatewayClusterConfig.getDataPath() + File.separator + "raft_meta");
         nodeOptions.setSnapshotUri(gatewayClusterConfig.getDataPath() + File.separator + "snapshot");
-        this.raftGroupService = new RaftGroupService(gatewayClusterConfig.getClusterGroupId(), peerId, nodeOptions, raftRpcServer);
-        this.node = this.raftGroupService.start();
+        raftServerContext.setRaftGroupService(new RaftGroupService(gatewayClusterConfig.getClusterGroupId(), peerId, nodeOptions, raftRpcServer));
+        raftServerContext.start();
         logger.info("raft节点配置加载完成");
     }
 }

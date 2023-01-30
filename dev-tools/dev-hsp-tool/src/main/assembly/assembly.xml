@@ -50,4 +50,11 @@
             <outputDirectory>apps/${project.artifactId}</outputDirectory>
         </file>
     </files>
+    <!--    <dependencySets>-->
+    <!--        <dependencySet>-->
+    <!--            <unpack>false</unpack>-->
+    <!--            <scope>runtime</scope>-->
+    <!--            <outputDirectory>lib</outputDirectory>-->
+    <!--        </dependencySet>-->
+    <!--    </dependencySets>-->
 </assembly>

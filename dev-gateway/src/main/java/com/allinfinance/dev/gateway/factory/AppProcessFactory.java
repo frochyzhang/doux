@@ -5,6 +5,9 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
+import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
+import com.alipay.sofa.runtime.api.client.ClientFactory;
+import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.cache.SyncCache;
 import com.allinfinance.dev.gateway.netty.HttpServer;
@@ -17,12 +20,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,19 +33,22 @@ import java.util.stream.Collectors;
  * @date 2022/1/28 15:32
  */
 @Component
-public class AppProcessFactory {
+public class AppProcessFactory implements ClientFactoryAware {
     private static final SyncCache<String, ProcessService> PROCESS_SYNC_CACHE = new SyncCache<>();
     private static final SyncCache<String, RpcConfigurationProperties.Bootstrap> BOOTSTRAP_SYNC_CACHE = new SyncCache<>();
     private static final SyncCache<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> URL_SYNC_CACHE = new SyncCache<>();
 
     private static final Logger logger = LoggerFactory.getLogger(AppProcessFactory.class);
 
-    @Autowired
-    private GateClientFactoryAware gateClientFactoryAware;
+    private ReferenceClient referenceClient;
+
+    @Override
+    public void setClientFactory(ClientFactory clientFactory) {
+        this.referenceClient = clientFactory.getClient(ReferenceClient.class);
+    }
 
     public void registerProcessService(String appUniqueId, ProcessService processService) {
         PROCESS_SYNC_CACHE.put(appUniqueId, processService);
-        BOOTSTRAP_SYNC_CACHE.put(appUniqueId, processService.init());
     }
 
     public void registerUrlList(String appUniqueId, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig> urls) {
@@ -164,7 +168,7 @@ public class AppProcessFactory {
                     .stream().filter(service -> service.contains(ProcessService.class.getName()))
                     .collect(Collectors.toList());
         } catch (NacosException e) {
-            logger.error("NacosException,", e);
+            logger.error("解析【{}】中ProcessService服务列表异常", server, e);
         }
         return serviceList;
     }
@@ -211,7 +215,7 @@ public class AppProcessFactory {
         ProcessService removeRet = PROCESS_SYNC_CACHE.remove(uniqueId);
         if (removeRet != null) {
             logger.warn("网关缓存应用[{}]的ProcessService已移除，准备移除sofa订阅", uniqueId);
-            gateClientFactoryAware.getReferenceClient().removeReference(referenceParam);
+            referenceClient.removeReference(referenceParam);
         } else {
             logger.info("未缓存应用[{}]的ProcessService服务，无需移除sofa订阅", uniqueId);
         }
