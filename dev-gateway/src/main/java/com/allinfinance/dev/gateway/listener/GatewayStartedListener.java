@@ -43,17 +43,17 @@ public class GatewayStartedListener implements ApplicationListener<ApplicationSt
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         logger.info("网关启动完成，开始加载raft节点配置");
         NodeOptions nodeOptions = new NodeOptions();
-        nodeOptions.setElectionTimeoutMs(gatewayClusterConfig.getElectionTimoutMs());
+        nodeOptions.setElectionTimeoutMs(gatewayClusterConfig.getElectionTimeoutMs());
         nodeOptions.setDisableCli(false);
         nodeOptions.setSnapshotIntervalSecs(gatewayClusterConfig.getSnapshotIntervalSec());
 
         PeerId peerId = new PeerId();
-        if (!peerId.parse(gatewayClusterConfig.getServerAddr())) {
-            throw new IllegalArgumentException("Fail to parse serverAddr");
+        if (!peerId.parse(gatewayClusterConfig.getServerAddress())) {
+            throw new IllegalArgumentException("serverAddress解析失败，请检查配置项是否正确");
         }
         Configuration cluster = new Configuration();
-        if (!cluster.parse(gatewayClusterConfig.getClusterAddr())) {
-            throw new IllegalArgumentException("Fail to parse clusterAddr");
+        if (!cluster.parse(gatewayClusterConfig.getClusterAddress())) {
+            throw new IllegalArgumentException("clusterAddress解析失败，请检查配置项是否正确");
         }
         nodeOptions.setInitialConf(cluster);
 

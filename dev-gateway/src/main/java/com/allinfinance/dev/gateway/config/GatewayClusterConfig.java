@@ -15,17 +15,17 @@ public class GatewayClusterConfig {
      */
     private String dataPath;
     /**
-     * 节点地址
+     * 节点地址，ip:port
      */
-    private String serverAddr;
+    private String serverAddress;
     /**
      * 集群ID
      */
     private String clusterGroupId;
     /**
-     * 集群地址列表
+     * 集群地址列表，ip:port, ip:port
      */
-    private String clusterAddr;
+    private String clusterAddress;
     /**
      * 自动 Snapshot 间隔时间，默认一个小时
      */
@@ -34,7 +34,7 @@ public class GatewayClusterConfig {
      * follower等待leader发送心跳或者复制日志的时间，超过electionTimoutMs
      * 未收到leader的消息则会变为candidate发起选举或者等待leader出现。
      */
-    private Integer electionTimoutMs = 1000;
+    private Integer electionTimeoutMs = 1000;
 
     public String getDataPath() {
         return dataPath;
@@ -44,12 +44,12 @@ public class GatewayClusterConfig {
         this.dataPath = dataPath;
     }
 
-    public String getServerAddr() {
-        return serverAddr;
+    public String getServerAddress() {
+        return serverAddress;
     }
 
-    public void setServerAddr(String serverAddr) {
-        this.serverAddr = serverAddr;
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     public String getClusterGroupId() {
@@ -60,12 +60,12 @@ public class GatewayClusterConfig {
         this.clusterGroupId = clusterGroupId;
     }
 
-    public String getClusterAddr() {
-        return clusterAddr;
+    public String getClusterAddress() {
+        return clusterAddress;
     }
 
-    public void setClusterAddr(String clusterAddr) {
-        this.clusterAddr = clusterAddr;
+    public void setClusterAddress(String clusterAddress) {
+        this.clusterAddress = clusterAddress;
     }
 
     public Integer getSnapshotIntervalSec() {
@@ -76,23 +76,23 @@ public class GatewayClusterConfig {
         this.snapshotIntervalSec = snapshotIntervalSec;
     }
 
-    public Integer getElectionTimoutMs() {
-        return electionTimoutMs;
+    public Integer getElectionTimeoutMs() {
+        return electionTimeoutMs;
     }
 
-    public void setElectionTimoutMs(Integer electionTimoutMs) {
-        this.electionTimoutMs = electionTimoutMs;
+    public void setElectionTimeoutMs(Integer electionTimeoutMs) {
+        this.electionTimeoutMs = electionTimeoutMs;
     }
 
     @Override
     public String toString() {
         return "GatewayClusterConfig{" +
                 "dataPath='" + dataPath + '\'' +
-                ", serverAddr='" + serverAddr + '\'' +
+                ", serverAddress='" + serverAddress + '\'' +
                 ", clusterGroupId='" + clusterGroupId + '\'' +
-                ", clusterAddr='" + clusterAddr + '\'' +
+                ", clusterAddress='" + clusterAddress + '\'' +
                 ", snapshotIntervalSec=" + snapshotIntervalSec +
-                ", electionTimoutMs=" + electionTimoutMs +
+                ", electionTimeoutMs=" + electionTimeoutMs +
                 '}';
     }
 }

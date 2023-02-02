@@ -17,12 +17,12 @@ com:
     gateway:
       data-path: C:\Users\huanghf\Desktop\jiuzaizhelijian1
       server-addr: 127.0.0.1:8081
-      cluster-group-id: gateway-jcfp
+      cluster-group-id: gateway
       cluster-addr: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public-jcfp
+        registry-address: nacos://10.250.28.142:8848/public-dev
         bolt-port: 12404
         consumer-repeated-reference-limit: 100
 
@@ -43,9 +43,9 @@ com:
   allinfinance:
     gateway:
       data-path: ${HOME}/raft
-      server-addr: 127.0.0.1:8081
+      server-address: 127.0.0.1:8081
       cluster-group-id: gateway
-      cluster-addr: 127.0.0.1:8081
+      cluster-address: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
@@ -70,9 +70,9 @@ com:
   allinfinance:
     gateway:
       data-path: ${HOME}/raft
-      server-addr: 127.0.0.1:8081
+      server-address: 127.0.0.1:8081
       cluster-group-id: gateway
-      cluster-addr: 127.0.0.1:8081
+      cluster-address: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
@@ -97,9 +97,9 @@ com:
   allinfinance:
     gateway:
       data-path: ${HOME}/raft
-      server-addr: 127.0.0.1:8081
+      server-address: 127.0.0.1:8081
       cluster-group-id: gateway
-      cluster-addr: 127.0.0.1:8081
+      cluster-address: 127.0.0.1:8081
   alipay:
     sofa:
       rpc:
