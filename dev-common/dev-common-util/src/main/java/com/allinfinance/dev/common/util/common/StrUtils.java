@@ -158,11 +158,7 @@ public class StrUtils {
      */
     @SuppressWarnings("rawtypes")
     public static Boolean checkList(List list) {
-        if (list != null && list.size() != 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return list != null && list.size() != 0;
     }
 
     /**
@@ -207,7 +203,7 @@ public class StrUtils {
     /**
      * 获得随机密码方法
      */
-    public static String getRandomNum(int pwd_len) throws NoSuchAlgorithmException {
+    public static String getRandomNum(int pwdLen) throws NoSuchAlgorithmException {
 
         Random r = SecureRandom.getInstanceStrong();
         // 35是因为数组是从0开始的，26个字母+10个数字
@@ -219,7 +215,7 @@ public class StrUtils {
                 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         StringBuffer pwd = new StringBuffer("");
-        while (count < pwd_len) {
+        while (count < pwdLen) {
             // 生成随机数，取绝对值，防止生成负数，
 
             i = Math.abs(r.nextInt(maxNum));
@@ -380,17 +376,17 @@ public class StrUtils {
     /**
      * kchen@2017021:日志脱敏感，将证件号显示后4位
      *
-     * @param IdNo
+     * @param idNo
      * @return
      */
-    public static String encryptIdNo(String IdNo) {
+    public static String encryptIdNo(String idNo) {
         String encryptPhoneNo = null;
-        if (IdNo != null && IdNo.length() > 4) {
-            int encryptLen = IdNo.length() - 4;
-            encryptPhoneNo = fillString(CommonConstants.EMPTY, '*', encryptLen, true) + IdNo.substring(IdNo.length() - 4);
+        if (idNo != null && idNo.length() > 4) {
+            int encryptLen = idNo.length() - 4;
+            encryptPhoneNo = fillString(CommonConstants.EMPTY, '*', encryptLen, true) + idNo.substring(idNo.length() - 4);
             return encryptPhoneNo;
         } else {
-            return IdNo;
+            return idNo;
         }
     }
 

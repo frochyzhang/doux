@@ -3,6 +3,7 @@ package com.allinfinance.dev.common.util.xml.xstream;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,30 +11,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022-10-24 14:33
  */
 public class XStreamUtils {
-    public static final ConcurrentHashMap<String, XStream> xStream = new ConcurrentHashMap<>();
-    public static String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    private static String ALIAS = "SERVICE";
+    public static final ConcurrentHashMap<String, XStream> X_STREAM = new ConcurrentHashMap<>();
+    private static String xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static String alias = "SERVICE";
 
     private static XStream getXStream(Class<?> obj) {
         String key = obj.getName();
         //防止多线程并发下重复创建对象
-        if (!xStream.containsKey(key)) {
-            synchronized (xStream) {
-                if (!xStream.containsKey(key)) {
+        if (!X_STREAM.containsKey(key)) {
+            synchronized (X_STREAM) {
+                if (!X_STREAM.containsKey(key)) {
                     XStream xs = new XStream(new XppDriver(new XmlFriendlyNameCoder("_-", "_")));
                     xs.ignoreUnknownElements();
                     xs.autodetectAnnotations(true);
-                    xs.alias(ALIAS, obj);
-                    xStream.put(key, xs);
+                    xs.alias(alias, obj);
+                    X_STREAM.put(key, xs);
                 }
             }
         }
-        return xStream.get(key);
+        return X_STREAM.get(key);
     }
 
     public static String beanToXml(Object object) {
         XStream xs = getXStream(object.getClass());
-        return XML_HEAD + "\n" + xs.toXML(object);
+        return xmlHead + "\n" + xs.toXML(object);
     }
 
     public static String beanToXml(Object object, String encoding) {
@@ -64,8 +65,8 @@ public class XStreamUtils {
      *
      * @param alias 根节点别名，默认值为SERVICE
      */
-    public static void setALIAS(String alias) {
-        ALIAS = alias;
+    public static void setAlias(String alias) {
+        XStreamUtils.alias = alias;
     }
 
     /**
@@ -74,6 +75,6 @@ public class XStreamUtils {
      * @param xmlHead 报文头，默认值为<?xml version="1.0" encoding="UTF-8"?>
      */
     public static void setXmlHead(String xmlHead) {
-        XML_HEAD = xmlHead;
+        XStreamUtils.xmlHead = xmlHead;
     }
 }

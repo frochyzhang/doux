@@ -45,14 +45,9 @@ public class XmlReader {
         try {
             // 获取
             is = new FileInputStream(path);
-            if (is == null) {
-                throw new Simple8583Exception("配置文件路径错误:" + path);
-            }
             IsoContainer container = this.readConfigFromStream(IsoContainer.class, is);
-            // System.out.println(container.size());
             is = new FileInputStream(path);
             IsoHeaderList headerList = readConfigFromStream(IsoHeaderList.class, is);
-            // System.out.println(headerList.size());
             for (IsoPackage pack : container) {
                 // 将读取到的header信息插入前面
                 pack.addAll(0, (ArrayList<IsoField>) (headerList.clone()));

@@ -48,27 +48,25 @@ public class FilterLoggingHandler extends LoggingHandler {
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise){
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         if (this.logger.isEnabled(this.internalLevel)) {
-            this.logger.log(this.internalLevel,ctx.channel().toString() + " WRITE \n" + msg.toString());
+            this.logger.log(this.internalLevel, ctx.channel().toString() + " WRITE \n" + msg.toString());
         }
 
         ctx.write(msg, promise);
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)   {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (this.logger.isEnabled(this.internalLevel)) {
             HttpRequest request = (HttpRequest) msg;
             String log = request.method() + " " + request.uri() + " " + request.protocolVersion() + "\n" +
                     CONTENT_TYPE + ": " + request.headers().get(CONTENT_TYPE) + "\n" +
                     CONTENT_LENGTH + ": " + request.headers().get(CONTENT_LENGTH) + "\n";
-            this.logger.log(this.internalLevel,ctx.channel().toString() + " READ \n" + log);
+            this.logger.log(this.internalLevel, ctx.channel().toString() + " READ \n" + log);
         }
         ctx.fireChannelRead(msg);
     }
-
-
 
 
     @Override

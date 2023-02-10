@@ -4,12 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author qipeng
@@ -704,34 +701,5 @@ public class RpcConfigurationProperties {
                     ", appList=" + appList +
                     '}';
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            AtomicReference<Boolean> result = new AtomicReference<>(true);
-            Arrays.stream(o.getClass().getDeclaredFields()).forEach(field -> {
-                field.setAccessible(true);
-                try {
-                    Object o1 = field.get(o);
-                    Field field1 = this.getClass().getDeclaredField(field.getName());
-                    field1.setAccessible(true);
-                    Object o2 = field1.get(this);
-                    boolean b = o1 != null && o2 != null;
-                    if (b && !o1.equals(o2)) {
-                        result.set(false);
-                    }
-                } catch (IllegalAccessException | NoSuchFieldException e) {
-                    result.set(false);
-                }
-            });
-            return result.get();
-        }
-
-
     }
 }

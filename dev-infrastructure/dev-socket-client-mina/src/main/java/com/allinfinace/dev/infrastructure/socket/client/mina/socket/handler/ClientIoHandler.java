@@ -17,7 +17,6 @@ import java.net.InetSocketAddress;
 public class ClientIoHandler extends IoHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientIoHandler.class);
-    private static String DEFAULT_MAC = "EEEEEEEE";
     private final boolean checkMac;
 
     public ClientIoHandler(boolean checkMac) {

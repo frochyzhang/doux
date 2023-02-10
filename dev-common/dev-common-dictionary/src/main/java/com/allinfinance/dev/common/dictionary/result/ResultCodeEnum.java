@@ -31,8 +31,8 @@ public enum ResultCodeEnum implements ResultCode {
     GENERIC_EXCEPTION("4000", "系统内部错误！"),
     NULL_POINT("4001", "空指针异常"),
     HTTP_CLIENT_ERROR("4002", "HTTP异常"),
-    RETRY_COMMIT("5000","请勿重复提交！"),
-    DELETE_ERROR("5008","删除的选项包含正在被使用的内容");
+    RETRY_COMMIT("5000", "请勿重复提交！"),
+    DELETE_ERROR("5008", "删除的选项包含正在被使用的内容");
 
     private final String code;
     private final String message;

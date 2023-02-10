@@ -5,9 +5,6 @@ import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServerWrapper;
 import com.allinfinance.dev.socket.server.scaffold.api.ISocketServerService;
 import com.allinfinance.dev.socket.server.scaffold.configure.ServerBootstrapConfigure;
-import com.allinfinance.dev.socket.server.scaffold.configure.SocketScaffoldConfigure;
-import java.util.List;
-import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -16,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>

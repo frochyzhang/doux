@@ -253,7 +253,7 @@ public class ServiceHeaderDTO {
         }
 
         public ServiceHeaderDTO build() {
-            return new ServiceHeaderDTO(this.serviceSn, this.serviceId, this.org, this.channelId, this.opId, this.requestTime, this.versionId, this.mac,this.innerSystemInd,this.resServiceSn, this.resServiceTime, this.servResponse);
+            return new ServiceHeaderDTO(this.serviceSn, this.serviceId, this.org, this.channelId, this.opId, this.requestTime, this.versionId, this.mac, this.innerSystemInd, this.resServiceSn, this.resServiceTime, this.servResponse);
         }
 
         @Override

@@ -3,9 +3,8 @@ package com.allinfinance.dev.common.socket.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.slf4j.Logger;
 import org.apache.commons.lang3.StringUtils;
-
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**

@@ -1,9 +1,9 @@
 package com.allinfinance.dev.socket.server.scaffold.configure;
 
-import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>

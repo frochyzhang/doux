@@ -9,7 +9,8 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>

@@ -12,8 +12,6 @@ import java.util.Random;
  * <p>DES加密类</p>
  */
 public class MacUtil {
-    public static String ZPK = "46FE4CA7D38564DF1A86B962BF2F0291";
-    public static String ZAK = "A1D610A2D9E00B5D5446E6F43E293719";
 
     private static final int[][] S_1 =
             {
@@ -382,12 +380,12 @@ public class MacUtil {
         return dest;
     }
 
-    public static int[] f(int[] R, int[] K) {
+    public static int[] f(int[] r, int[] k) {
         int[] dest;
         int[] temp;
-        int[] expendR = expend(R);
+        int[] expendR = expend(r);
 
-        temp = diffOr(expendR, K);
+        temp = diffOr(expendR, k);
         dest = press(temp);
 
         return dest;
@@ -415,14 +413,14 @@ public class MacUtil {
     /**
      * 数据加密
      *
-     * @param D 被加密数据
-     * @param K 加密密钥
+     * @param d 被加密数据
+     * @param k 加密密钥
      * @return 加密结果
      */
-    public static String encryption(String D, String K) {
+    public static String encryption(String d, String k) {
         String str = "";
         int[] temp = new int[64];
-        int[] data = string2Binary(D);
+        int[] data = string2Binary(d);
 
         data = changeIP(data);
         int[][] left = new int[17][32];
@@ -433,7 +431,7 @@ public class MacUtil {
             right[0][j] = data[j + 32];
         }
 
-        setKey(K);
+        setKey(k);
         for (int i = 1; i < 17; i++) {
             int[] key = subKey[i - 1];
             left[i] = right[i - 1];
@@ -504,7 +502,7 @@ public class MacUtil {
      * @param type   加解密类型
      * @return 加加解密结果
      */
-    public static String DES_1(String source, String key, int type) {
+    public static String des1(String source, String key, int type) {
         if (source.length() != 16 || key.length() != 16) {
             return null;
         }
@@ -528,31 +526,31 @@ public class MacUtil {
      * @param type   加解密类型
      * @return 加解密结果
      */
-    public static String DES_3(String source, String key, int type) {
+    public static String des3(String source, String key, int type) {
         if (key.length() != 32 || source.length() != 16) {
             return null;
         }
         String temp = null;
-        String K1 = key.substring(0, key.length() / 2);
-        String K2 = key.substring(key.length() / 2);
+        String k1 = key.substring(0, key.length() / 2);
+        String k2 = key.substring(key.length() / 2);
 
         if (type == 0) {
-            temp = encryption(source, K1);
-            temp = discryption(temp, K2);
+            temp = encryption(source, k1);
+            temp = discryption(temp, k2);
 
-            return encryption(temp, K1);
+            return encryption(temp, k1);
         }
 
         if (type == 1) {
-            temp = discryption(source, K1);
-            temp = encryption(temp, K2);
-            return discryption(temp, K1);
+            temp = discryption(source, k1);
+            temp = encryption(temp, k2);
+            return discryption(temp, k1);
         }
 
         return null;
     }
 
-    public static int[] keyPC_1(int[] source) {
+    public static int[] keypc1(int[] source) {
         int[] dest = new int[56];
         int[] temp =
                 {57, 49, 41, 33, 25, 17, 9,
@@ -585,7 +583,7 @@ public class MacUtil {
         return source;
     }
 
-    public static int[] keyPC_2(int[] source) {
+    public static int[] keypc2(int[] source) {
         int[] dest = new int[48];
         int[] temp =
                 {14, 17, 11, 24, 1, 5,
@@ -613,7 +611,7 @@ public class MacUtil {
         int[] left = new int[28];
         int[] right = new int[28];
         int[] temp1 = new int[56];
-        temp1 = keyPC_1(temp);
+        temp1 = keypc1(temp);
 
         for (int i = 0; i < 28; i++) {
             left[i] = temp1[i];
@@ -628,7 +626,7 @@ public class MacUtil {
                 temp1[j] = left[j];
                 temp1[j + 28] = right[j];
             }
-            subKey[i] = keyPC_2(temp1);
+            subKey[i] = keypc2(temp1);
         }
     }
 
@@ -639,7 +637,7 @@ public class MacUtil {
      * @param asc 转换目标
      * @return 转换结果
      */
-    public static String ASC_2_HEX(String asc) {
+    public static String asc2Hex(String asc) {
         StringBuilder hex = new StringBuilder();
         byte[] bs = asc.toUpperCase().getBytes(StandardCharsets.UTF_8);
         for (byte b : bs) {
@@ -648,7 +646,7 @@ public class MacUtil {
         return hex.toString();
     }
 
-    public static String HEX_2_ASC(String hex) {
+    public static String hex2Asc(String hex) {
         String asc = null;
         int len = hex.length();
         byte[] bs = new byte[len / 2];
@@ -684,17 +682,17 @@ public class MacUtil {
         }
 
         if (type == ASC) {
-            left = ASC_2_HEX(key.substring(0, 8));
-            right = ASC_2_HEX(key.substring(8, 16));
+            left = asc2Hex(key.substring(0, 8));
+            right = asc2Hex(key.substring(8, 16));
         }
 
         assert data != null;
         assert left != null;
-        data = DES_1(data, left, 0);
+        data = des1(data, left, 0);
         assert data != null;
-        data = DES_1(data, right, 1);
+        data = des1(data, right, 1);
         assert data != null;
-        data = DES_1(data, left, 0);
+        data = des1(data, left, 0);
 
         return data;
     }
@@ -719,7 +717,6 @@ public class MacUtil {
 
     public static String xOrString(String pan, String pin) {
         //TODO
-        //System.out.println("参与异或的因子分别为：" + pan + "和" + pin);
         if (pan.length() != pin.length()) {
             new Exception("异或因子长度不一致").printStackTrace();
             return null;
@@ -735,13 +732,10 @@ public class MacUtil {
         }
 
         //TODO
-        //System.out.println("异或后的结果为：" + ByteUtil.getHexStr(result));
         return EncodeUtil.hex(result);
     }
 
     public static String createPwd(String cardNo, String pwd, String key) {
-        //TODO
-        System.out.println("账号和密码分别为: " + cardNo + "和" + pwd);
         String last6 = cardNo.substring(cardNo.length() - 13, cardNo.length() - 1);
         String first2 = "0000";
         String pan = first2 + last6;
@@ -750,10 +744,7 @@ public class MacUtil {
 
         String result = xOrString(pan, pin);
 
-        String ret = DES_3(result, key, 0);
-        //TODO
-        System.out.println("加密pin为:" + ret);
-        return ret;
+        return des3(result, key, 0);
     }
 
     /**
@@ -768,11 +759,11 @@ public class MacUtil {
      * @param data   加密数据
      * @return 加密后的数据
      */
-    public static String MAC_ASC(String key, String vector, String data) {
-        return MAC(key, vector, EncodeUtil.hex(data.getBytes()));
+    public static String macAsc(String key, String vector, String data) {
+        return mac(key, vector, EncodeUtil.hex(data.getBytes()));
     }
 
-    public static String MAC(String key, String vector, String data) {
+    public static String mac(String key, String vector, String data) {
         if (key.length() != 16) {
             new Exception("key's length must be 16!").printStackTrace();
             return null;
@@ -790,8 +781,6 @@ public class MacUtil {
             }
         }
         String operator = sb.toString();
-        //TODO
-        System.out.println("补位后的操作数为：" + operator);
         int count = operator.length() / 16;
         String[] blocks = new String[count];
         for (int i = 0; i < count; i++) {
@@ -802,7 +791,7 @@ public class MacUtil {
             assert vector != null;
             String xor = xOrString(vector, blocks[i]);
             assert xor != null;
-            vector = DES_1(xor, key, 0);
+            vector = des1(xor, key, 0);
         }
         return vector;
     }
@@ -815,7 +804,7 @@ public class MacUtil {
      * @param data   生成mac的原始数据的16进制表示
      * @return 最终生成mac的字符串
      */
-    public static String Mac_919(String key, String vector, String data) {
+    public static String mac919(String key, String vector, String data) {
         if (key.length() != 32) {
             new Exception("key of ansix9.19 must be 32").printStackTrace();
             return null;
@@ -824,11 +813,11 @@ public class MacUtil {
         String left = key.substring(0, 16);
         String right = key.substring(16);
 
-        String mac = MAC(left, null, data);
+        String mac = mac(left, null, data);
         assert mac != null;
-        String result1 = DES_1(mac, right, 1);
+        String result1 = des1(mac, right, 1);
         assert result1 != null;
-        String result2 = DES_1(result1, left, 0);
+        String result2 = des1(result1, left, 0);
 
         assert result2 != null;
         return result2.substring(0, 8);
@@ -837,18 +826,11 @@ public class MacUtil {
     public static String createRandom(int length) throws NoSuchAlgorithmException {
         StringBuilder sb = new StringBuilder("");
         Random random = SecureRandom.getInstanceStrong();
-        ;
         for (int i = 0; i < length; i++) {
             int abs = Math.abs(random.nextInt() % 10);
             sb.append(abs);
         }
         return sb.toString();
     }
-
-    public static void main(String[] args) {
-        String mac = MAC_ASC("5883F8DA898A3149", "0000000000000000", EncodeUtil.hex("409666552865948200000000000000000193322515631010000".getBytes()));
-        System.out.println("生成mac为：" + mac);
-
-//		System.out.println("生成的随机数为：" + createRandom(6));
-    }
 }
+

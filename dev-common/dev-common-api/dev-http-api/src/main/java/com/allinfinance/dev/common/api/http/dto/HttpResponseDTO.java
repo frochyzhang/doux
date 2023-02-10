@@ -1,7 +1,5 @@
 package com.allinfinance.dev.common.api.http.dto;
 
-import java.util.HashMap;
-
 /**
  * @author qipeng
  * @date 2022/9/7 10:11

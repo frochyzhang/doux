@@ -84,11 +84,11 @@ public class IsoMsgFactory extends AbstractIsoMsgFactory {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String returnMac = EncodeUtil.hex(EncodeUtil.binary(map.get("64")));// Binary编码转换为hex编码
+        // Binary编码转换为hex编码
+        String returnMac = EncodeUtil.hex(EncodeUtil.binary(map.get("64")));
         assert mac != null;
         if (!(mac.substring(0, 8).equals(returnMac.substring(0, 8)))) {
             throw new RuntimeException("MAC校验失败，返回值" + returnMac + ",计算值" + mac);
         }
     }
-
 }

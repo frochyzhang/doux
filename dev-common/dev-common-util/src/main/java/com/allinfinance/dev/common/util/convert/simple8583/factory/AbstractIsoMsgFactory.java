@@ -101,7 +101,8 @@ public abstract class AbstractIsoMsgFactory {
                 if (hasBitMap) {
                     int index = Integer.valueOf(field.getId());
                     if (index == 1) {
-                        continue;// 第一位不处理，只是标志位
+                        // 第一位不处理，只是标志位
+                        continue;
                     }
                     if (bitMap.getBit(index - 1) == 1) {
                         offset += subByte(bts, offset, field);

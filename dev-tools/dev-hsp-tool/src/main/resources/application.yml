@@ -29,7 +29,7 @@ server:
 
 nacos:
   config:
-    namespace: public-sit
+    namespace: public-yc
     server-addr: 10.250.28.142:8848
     username: iasp-lzk
     password: iasp-lzk
@@ -43,7 +43,7 @@ com:
   allinfinance:
     rpc:
       consumer:
-        common-reference-registry: 10.250.28.142:8848/wk2021
+        common-reference-registry: 10.250.28.142:8848/wkyc2021
         common-reference-list:
           - interface-Name: com.allinfinance.dev.core.util.hsp.SignatureService
 
