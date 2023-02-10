@@ -46,7 +46,7 @@ public class HspController implements InitializingBean {
     @Autowired
     private SignatureService signatureService;
 
-    private static String PUBLIC_KEY;
+    private static String publicKey;
 
     @GetMapping
     public String hspTest() {
@@ -76,8 +76,8 @@ public class HspController implements InitializingBean {
                 SignatureVerifyBySM2PublicKeyRequestDTO requestDTO = new SignatureVerifyBySM2PublicKeyRequestDTO();
                 byte[] sign = Base64.decodeBase64(hspConfig.getVerifyConfig().getSignatureResult());
                 String signHexStr = HexUtil.encodeHexStr(sign);
-                requestDTO.setPlainPublicKeyX(PUBLIC_KEY.substring(0, 64));
-                requestDTO.setPlainPublicKeyY(PUBLIC_KEY.substring(64));
+                requestDTO.setPlainPublicKeyX(publicKey.substring(0, 64));
+                requestDTO.setPlainPublicKeyY(publicKey.substring(64));
                 requestDTO.setSignatureR(signHexStr.substring(0, 64));
                 requestDTO.setSignatureS(signHexStr.substring(64));
                 requestDTO.setCertId(HexUtil.decodeHexStr(HexUtil.encodeHexStr(hspConfig.getVerifyConfig().getCertId().getBytes())));
@@ -130,6 +130,6 @@ public class HspController implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        PUBLIC_KEY = parsePublicKey(fetchNacosConfig(hspConfig.getVerifyConfig().getCertId()));
+        publicKey = parsePublicKey(fetchNacosConfig(hspConfig.getVerifyConfig().getCertId()));
     }
 }

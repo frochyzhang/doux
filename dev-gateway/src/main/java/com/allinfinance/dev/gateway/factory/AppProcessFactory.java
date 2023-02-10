@@ -13,7 +13,11 @@ import com.allinfinance.dev.gateway.cache.SyncCache;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
-import com.allinfinance.dev.rpc.scaffold.api.dto.*;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.RequestTypeEnum;
+import com.allinfinance.dev.rpc.scaffold.api.dto.TcpRequestDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,7 +27,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -237,15 +246,15 @@ public class AppProcessFactory implements ClientFactoryAware {
     }
 
 
-    public SyncCache<String, ProcessService> getPROCESS_SYNC_CACHE() {
+    public SyncCache<String, ProcessService> getProcessSyncCache() {
         return PROCESS_SYNC_CACHE;
     }
 
-    public SyncCache<String, RpcConfigurationProperties.Bootstrap> getBOOTSTRAP_SYNC_CACHE() {
+    public SyncCache<String, RpcConfigurationProperties.Bootstrap> getBootstrapSyncCache() {
         return BOOTSTRAP_SYNC_CACHE;
     }
 
-    public SyncCache<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> getURL_SYNC_CACHE() {
+    public SyncCache<String, List<RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig>> getUrlSyncCache() {
         return URL_SYNC_CACHE;
     }
 }

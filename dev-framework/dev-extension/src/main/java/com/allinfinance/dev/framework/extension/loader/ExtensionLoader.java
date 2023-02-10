@@ -47,7 +47,7 @@ public class ExtensionLoader<T> {
     /**
      * slf4j Logger for this class
      */
-    private final static Logger LOGGER = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(ExtensionLoader.class);
     private static final String LOAD_FROM_CODE = "DYNAMIC LOAD EXTENSION BY CODE";
 
@@ -279,9 +279,8 @@ public class ExtensionLoader<T> {
                     // 如果当前扩展可以覆盖其它同名扩展
                     extensionClass = buildClass(extension, implClass, alias);
                 }
-            }
-            // 如果旧扩展是可覆盖的
-            else {
+            } else {
+                // 如果旧扩展是可覆盖的
                 if (old.isOverride() && old.getOrder() >= extension.order()) {
                     // 如果已加载覆盖扩展，再加载到原始扩展
                     if (LOGGER.isInfoEnabled()) {

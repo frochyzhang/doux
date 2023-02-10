@@ -7,7 +7,13 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 /**
@@ -294,20 +300,20 @@ public class DateUtils {
         Date theDate = calendar.getTime();
         gcLast.setTime(theDate);
         gcLast.set(Calendar.DAY_OF_MONTH, 1);
-        String day_first_prevM = df.format(gcLast.getTime());
-        StringBuffer str = new StringBuffer().append(day_first_prevM).append(" 00:00:00");
-        day_first_prevM = str.toString(); //上月第一天
+        String dayFirstPrevM = df.format(gcLast.getTime());
+        StringBuffer str = new StringBuffer().append(dayFirstPrevM).append(" 00:00:00");
+        dayFirstPrevM = str.toString(); //上月第一天
 
         calendar.add(cal.MONTH, 1);
         calendar.set(cal.DATE, 1);
         calendar.add(cal.DATE, -1);
-        String day_end_prevM = df.format(calendar.getTime());
-        StringBuffer endStr = new StringBuffer().append(day_end_prevM).append(" 23:59:59");
-        day_end_prevM = endStr.toString();  //上月最后一天
+        String dayEndPrevM = df.format(calendar.getTime());
+        StringBuffer endStr = new StringBuffer().append(dayEndPrevM).append(" 23:59:59");
+        dayEndPrevM = endStr.toString();  //上月最后一天
 
         Map<String, String> map = new HashMap<>(16);
-        map.put("prevMonthFD", day_first_prevM);
-        map.put("prevMonthPD", day_end_prevM);
+        map.put("prevMonthFD", dayFirstPrevM);
+        map.put("prevMonthPD", dayEndPrevM);
         return map;
     }
 
@@ -322,7 +328,6 @@ public class DateUtils {
     public static Timestamp getPreMonday() {
         Calendar calendar = Calendar.getInstance();
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
-        System.out.println(dayofweek);
         if (dayofweek == 1) {
             calendar.add(calendar.WEEK_OF_MONTH, -1);
         }
@@ -939,7 +944,7 @@ public class DateUtils {
 
     }
 
-    private static final Date addTime(Date aDate, int timeType, int amount) {
+    private static Date addTime(Date aDate, int timeType, int amount) {
         if (aDate == null) {
             return null;
         }

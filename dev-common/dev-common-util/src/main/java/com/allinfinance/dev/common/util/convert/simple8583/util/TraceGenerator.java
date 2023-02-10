@@ -15,7 +15,7 @@ public class TraceGenerator {
         this.traceValue = initValue;
     }
 
-    public synchronized static TraceGenerator getInstance() {
+    public static synchronized TraceGenerator getInstance() {
         //双检查锁
         if (tg == null) {
             tg = new TraceGenerator(1);

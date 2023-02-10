@@ -1,6 +1,5 @@
 package com.allinfinance.dev.common.util.convert.common;
 
-import com.allinfinance.dev.common.util.constant.CommonConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +23,7 @@ public class ConvertUtils {
     }
 
 
-    public static String HexASCII2String(String content) {
+    public static String hexASCII2String(String content) {
         StringBuilder ret = new StringBuilder();
         try {
             if (StringUtils.isNotEmpty(content)) {
@@ -376,9 +375,5 @@ public class ConvertUtils {
             sb.append(String.format("%02X ", b));
         }
         return sb.toString();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(ConvertUtils.fillString("12345678", CommonConstants.CHAR_BLANK, 11, true) + "||");
     }
 }

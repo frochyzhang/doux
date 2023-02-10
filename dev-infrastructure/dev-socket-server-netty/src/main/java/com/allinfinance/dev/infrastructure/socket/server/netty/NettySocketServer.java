@@ -3,7 +3,12 @@ package com.allinfinance.dev.infrastructure.socket.server.netty;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServer;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -47,8 +52,8 @@ public class NettySocketServer implements SocketServer {
         int encodeMsgLength = Integer.parseInt(properties.getProperty("encodeMsgLength"));
 
         List<EventLoopGroup> nioEventLoopGroupList = new ArrayList<>();
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(8);
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)

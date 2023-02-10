@@ -34,7 +34,7 @@ public class EncodeUtil {
         return bcd(accum.toString());
     }
 
-    public static String hex(byte[] bts, int offset, int length) {//
+    public static String hex(byte[] bts, int offset, int length) {
         if (offset < 0 || length < 0 || bts.length < offset + length - 1) {
             throw new IllegalArgumentException("参数非法：offset:" + offset + ",length:" + length + ",字节长度：" + bts.length);
         }
@@ -54,7 +54,8 @@ public class EncodeUtil {
     public static String hex(byte[] bParam) {
         StringBuilder accum = new StringBuilder();
         for (byte bt : bParam) {
-            accum.append(HEX[bt >> 4 & 0x0F]);//&0x0F的目的是为了转换负数
+            //&0x0F的目的是为了转换负数
+            accum.append(HEX[bt >> 4 & 0x0F]);
             accum.append(HEX[bt & 0x0F]);
         }
         return accum.toString();

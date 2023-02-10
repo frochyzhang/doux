@@ -16,7 +16,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -201,7 +206,7 @@ public class DesensitizedHelperImpl implements DesensitizedHelper {
         private Field field;
         private DesensitizedType type;
 
-        public FieldTypePair(Field field, DesensitizedType type) {
+        FieldTypePair(Field field, DesensitizedType type) {
             this.field = field;
             this.type = type;
         }

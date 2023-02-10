@@ -21,7 +21,20 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 
 import java.util.Properties;
 
-import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.*;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.BUFFER_SIZE;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.DEFAULT_NETWORK_TIMEOUT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.LENGTH_FIELD;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_ACTIVE_CONNECTIONS;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_CHECKOUT_TIME;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_IDLE_CONNECTIONS;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_LOCAL_BAD_CONNECTION_TOLERANCE;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_CONNECTIONS_NOT_USED;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_ENABLED;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_QUERY_CONTENT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_VERIFY_CONTENT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.RETRY_TIME_TO_WAIT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_IP;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_PORT;
 
 /**
  * @author Clinton Begin

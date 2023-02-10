@@ -22,7 +22,11 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 
 import java.util.Properties;
 
-import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.*;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.BUFFER_SIZE;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.DEFAULT_NETWORK_TIMEOUT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.LENGTH_FIELD;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_IP;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_PORT;
 
 /**
  * @author Clinton Begin

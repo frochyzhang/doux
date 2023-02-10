@@ -6,11 +6,12 @@ import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
 import com.allinfinance.dev.common.util.convert.PropertiesParseUtils;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.socket.client.driver.SocketClient;
-import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>

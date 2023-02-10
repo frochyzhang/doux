@@ -5,7 +5,12 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;
 import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
 import com.allinfinance.dev.framework.http.driver.dto.HttpResponse;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

@@ -28,5 +28,5 @@ public interface Sortable {
      *
      * @return 顺序
      */
-    public int getOrder();
+    int getOrder();
 }

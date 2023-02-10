@@ -19,6 +19,7 @@ package com.allinfinance.dev.framework.extension.loader;
 /**
  * <p>当扩展点加载时，可以做一些事情，例如解析code，初始化等动作</p>
  *
+ * @param <T> 扩展接口
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
 public interface ExtensionLoaderListener<T> {

@@ -56,5 +56,5 @@ public class SimpleUtil {
         SimpleDateFormat format = new SimpleDateFormat("HHmmss");
         return format.format(new Date());
     }
-
 }
+

@@ -13,7 +13,7 @@ public interface IsoType extends Serializable {
      *
      * @return
      */
-    public boolean isLVar();
+    boolean isLVar();
 
     /**
      * 字节数组转换为字符串储存
@@ -21,7 +21,7 @@ public interface IsoType extends Serializable {
      * @param bts
      * @return
      */
-    public abstract String setByteValue(byte[] bts);
+    String setByteValue(byte[] bts);
 
     /**
      * 字符串转换为字节数组
@@ -29,7 +29,7 @@ public interface IsoType extends Serializable {
      * @param bts
      * @return
      */
-    public abstract byte[] setValue(String bts);
+    byte[] setValue(String bts);
 
 
     /**
@@ -37,7 +37,6 @@ public interface IsoType extends Serializable {
      *
      * @return
      */
-    public abstract int varLength(byte[] bytes);
-
-
+    int varLength(byte[] bytes);
 }
+

@@ -4,19 +4,15 @@ package com.allinfinance.dev.common.util.convert.simple8583.key;
 /**
  * <p>存储一些关键字.</p>
  */
-public interface SimpleConstants {
+public class SimpleConstants {
 
 
-    //	public static String MSG_LENGTH = "MsgLength";
-    public static String MTI = "mti";
-    public static String TPDU = "tpdu";
-    public static String VERSION_NO = "VersionNo";
-    public static String BIT_MAP = "BitMap";
-    //通联规范字符编码为ASCII
-//    public static String ENCODING = "ASCII";
-    public static String ENCODING = "GBK";
+    public static final String MTI = "mti";
+    public static final String TPDU = "tpdu";
+    public static final String VERSION_NO = "VersionNo";
+    public static final String BIT_MAP = "BitMap";
+    public static final String ENCODING = "GBK";
 
-    //TODO 暂时写死mac密钥，因为不用做mac处理，后续可完善
-    public static String MAC_KEY = "helloSimple8583";
+    public static final String MAC_KEY = "helloSimple8583";
 
 }

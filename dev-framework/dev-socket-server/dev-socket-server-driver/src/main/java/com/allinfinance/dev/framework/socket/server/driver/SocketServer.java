@@ -1,6 +1,7 @@
 package com.allinfinance.dev.framework.socket.server.driver;
 
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
+
 import java.util.Properties;
 
 /**

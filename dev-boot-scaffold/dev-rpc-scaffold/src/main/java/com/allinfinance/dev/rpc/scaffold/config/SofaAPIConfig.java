@@ -1,6 +1,10 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
-import com.alipay.sofa.rpc.config.*;
+import com.alipay.sofa.rpc.config.ApplicationConfig;
+import com.alipay.sofa.rpc.config.ConsumerConfig;
+import com.alipay.sofa.rpc.config.ProviderConfig;
+import com.alipay.sofa.rpc.config.RegistryConfig;
+import com.alipay.sofa.rpc.config.ServerConfig;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
 
 /**

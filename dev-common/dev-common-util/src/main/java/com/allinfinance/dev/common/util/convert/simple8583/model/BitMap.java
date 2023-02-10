@@ -12,7 +12,7 @@ public class BitMap {
 
     private int[] bits = null;
     private int length;
-    private final static int[] BIT_VALUE = {0x80000000, 0x40000000, 0x20000000,
+    private static final int[] BIT_VALUE = {0x80000000, 0x40000000, 0x20000000,
             0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
             0x00800000, 0x00400000, 0x00200000, 0x00100000, 0x00080000,
             0x00040000, 0x00020000, 0x00010000, 0x00008000, 0x00004000,
@@ -95,7 +95,6 @@ public class BitMap {
     public byte[] getBitMap() {
         StringBuffer accum = new StringBuffer();
         for (int index = 1; index <= length; index++) {
-//			System.out.println(index);
             accum.append(this.getBit(index - 1));
         }
         return EncodeUtil.binary(accum.toString());
@@ -116,35 +115,4 @@ public class BitMap {
         }
         return accum.toString();
     }
-
-    public static void main(String[] args) {
-//		BitMap bitArray = new BitMap(64);
-//		bitArray.addBits("1,2,15,");
-//		System.out.println(EncodeUtil.hex(bitArray.getBitMap()));
-//		byte[] i=new byte[8];
-//		for(int pos = 0;pos<8;pos++){
-//			i[pos]=(byte)10;
-//		}
-//		addBits(i);
-        byte[] bts = EncodeUtil.bcd("7124058104F18005");
-        int[] intArr = new int[bts.length * 8];
-        int curse = 0;
-        StringBuilder accum = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 7; j >= 0; j--) {
-                intArr[curse++] = (bts[i] >>> j) & 0x01;
-            }
-        }
-        int c = 0;
-
-        for (int i : intArr) {
-            if (i == 1) {
-                accum.append(c + 1 + ",");
-                System.out.println(c + 1);
-            }
-            c++;
-        }
-        System.out.println(accum.toString());
-    }
-
 }

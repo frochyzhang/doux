@@ -115,6 +115,8 @@ public class GatewayStateMachine extends StateMachineAdapter {
                             }
                         }
                         break;
+                    default:
+                        break;
                 }
             }
             iter.next();

@@ -6,7 +6,14 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.infrastructure.conn.netty.codec.ByteToHexDecoder;
 import com.allinfinance.dev.infrastructure.conn.netty.codec.HexToByteEncoder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultEventLoop;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -17,7 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @Description:
@@ -33,7 +44,7 @@ public class HspNettyConnection implements Connection {
 
     private ChannelFuture channelFuture;
 
-    public static ConcurrentHashMap<Long, Promise<String>> promiseMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, Promise<String>> promiseMap = new ConcurrentHashMap<>();
 
     private static final DefaultEventLoop NETTY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
@@ -42,6 +53,10 @@ public class HspNettyConnection implements Connection {
     @Override
     public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
 
+    }
+
+    public static ConcurrentHashMap<Long, Promise<String>> getPromiseMap() {
+        return promiseMap;
     }
 
     @Override

@@ -2,18 +2,17 @@ package com.allinfinance.dev.socket.server.scaffold.util;
 
 import com.allinfinance.dev.common.util.convert.PropertiesParseUtils;
 import com.allinfinance.dev.socket.server.scaffold.configure.SocketScaffoldConfigure;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>

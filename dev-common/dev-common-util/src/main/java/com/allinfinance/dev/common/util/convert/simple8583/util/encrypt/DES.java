@@ -47,9 +47,9 @@ public class DES {
 
     protected static int[][] subKey = new int[16][48];
 
-    protected static int HEX = 0;
+    protected static int hex = 0;
 
-    protected static int ASC = 1;
+    protected static int asc = 1;
 
     /**
      * 将十六进制A--F转换成对应数字
@@ -113,7 +113,6 @@ public class DES {
             int t = 0;
             try {
                 t = getIntByChar(arr[i]);
-                // System.out.println(arr[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -328,13 +327,9 @@ public class DES {
             int y = temp[i][1] * 8 + temp[i][2] * 4 + temp[i][3] * 2 + temp[i][4];
             int val = s[i][x][y];
             String ch = int2Hex(val);
-            // System.out.println("x=" + x + ",y=" + y + "-->" + ch);
-            // String ch = Integer.toBinaryString(val);
             str.append(ch);
         }
-        // System.out.println(str.toString());
         ret = string2Binary(str.toString());
-        // printArr(ret);
         // 置换P
         ret = dataP(ret);
         return ret;
@@ -358,22 +353,20 @@ public class DES {
     }
 
     /**
-     * @param R (�?2bit)
-     * @param K (48bit的轮子密钥)
+     * @param r (�?2bit)
+     * @param k (48bit的轮子密钥)
      * @return 32bit
      */
 
-    protected static int[] f(int[] R, int[] K) {
+    protected static int[] f(int[] r, int[] k) {
         int[] dest = new int[32];
         int[] temp = new int[48];
         // 先将输入32bit扩展至48bit
-        int[] expendR = expend(R);// 48bit
+        int[] expendR = expend(r);
         // 与轮子密钥进行异或运�?
-        temp = diffOr(expendR, K);
+        temp = diffOr(expendR, k);
         // 压缩为32bit
         dest = press(temp);
-        // System.out.println("need press data----->");
-        // printArr(temp);
         return dest;
     }
 
@@ -397,19 +390,19 @@ public class DES {
     /**
      * DES加密--->对称密钥
      * <p>
-     * D = Ln(32bit)+Rn(32bit)
+     * d = Ln(32bit)+Rn(32bit)
      * <p>
      * 经过16轮置换
      *
-     * @param D (16byte)明文
-     * @param K (16byte)轮子密钥
+     * @param d (16byte)明文
+     * @param k (16byte)轮子密钥
      * @return (16byte)密文
      */
 
-    protected static String encryption(String D, String K) {
+    protected static String encryption(String d, String k) {
         String str = "";
         int[] temp = new int[64];
-        int[] data = string2Binary(D);
+        int[] data = string2Binary(d);
         // printArr(data);
         // 第一步初始置
         data = changeIP(data);
@@ -420,16 +413,15 @@ public class DES {
             left[0][j] = data[j];
             right[0][j] = data[j + 32];
         }
-        // printArr(left[0]);
-        // printArr(right[0]);
-        setKey(K);// sub key ok
+        // sub key ok
+        setKey(k);
         for (int i = 1; i < 17; i++) {
             // 获取(48bit)的轮子密钥
             int[] key = subKey[i - 1];
             // L1 = R0
             left[i] = right[i - 1];
-            // R1 = L0 ^ f(R0,K1)
-            int[] fTemp = f(right[i - 1], key);// 32bit
+            // 32bit
+            int[] fTemp = f(right[i - 1], key);
             right[i] = diffOr(left[i - 1], fTemp);
         }
         for (int i = 0; i < 32; i++) {
@@ -452,8 +444,8 @@ public class DES {
      */
 
     protected static String discryption(String source, String key) {
-        String str = "";
-        int[] data = string2Binary(source);// 64bit
+        StringBuilder str = new StringBuilder();
+        int[] data = string2Binary(source);
         // 第一步初始置
         data = changeIP(data);
         int[] left = new int[32];
@@ -463,16 +455,15 @@ public class DES {
             left[j] = data[j];
             right[j] = data[j + 32];
         }
-        setKey(key);// sub key ok
+        setKey(key);
         for (int i = 16; i > 0; i--) {
             // 获取(48bit)的轮子密钥
-            /********* 不同之处 **********/
             int[] sKey = subKey[i - 1];
             tmp = left;
             // R1 = L0
             left = right;
             // L1 = R0 ^ f(L0,K1)
-            int[] fTemp = f(right, sKey);// 32bit
+            int[] fTemp = f(right, sKey);
             right = diffOr(tmp, fTemp);
         }
         for (int i = 0; i < 32; i++) {
@@ -480,11 +471,11 @@ public class DES {
             data[32 + i] = left[i];
         }
         data = changeInverseIP(data);
-        for (int i = 0; i < data.length; i++) {
-            str += data[i];
+        for (int datum : data) {
+            str.append(datum);
         }
-        str = binary2ASC(str);
-        return str;
+        str = new StringBuilder(binary2ASC(str.toString()));
+        return str.toString();
     }
 
     /**
@@ -496,7 +487,7 @@ public class DES {
      * @return
      */
 
-    protected static String DES_1(String source, String key, int type) {
+    protected static String des1(String source, String key, int type) {
         if (source.length() != 16 || key.length() != 16) {
             return null;
         }
@@ -516,27 +507,21 @@ public class DES {
      * @return
      */
 
-    protected static String DES_2(String source, String key, int type) {
+    protected static String des2(String source, String key, int type) {
         // if (key.length() != 32 || source.length() != 16)
         // return null;
         String temp = null;
-        String K1 = key.substring(0, key.length() / 2);
-        String K2 = key.substring(key.length() / 2);
-        System.out.println("K1--->" + K1);
-        System.out.println("K2--->" + K2);
+        String k1 = key.substring(0, key.length() / 2);
+        String k2 = key.substring(key.length() / 2);
         if (type == 0) {
-            temp = encryption(source, K1);
-            System.out.println("step1--->" + temp);
-            temp = discryption(temp, K2);
-            System.out.println("step2--->" + temp);
-            return encryption(temp, K1);
+            temp = encryption(source, k1);
+            temp = discryption(temp, k2);
+            return encryption(temp, k1);
         }
         if (type == 1) {
-            temp = discryption(source, K1);
-            System.out.println("step1--->" + temp);
-            temp = encryption(temp, K2);
-            System.out.println("step2--->" + temp);
-            return discryption(temp, K1);
+            temp = discryption(source, k1);
+            temp = encryption(temp, k2);
+            return discryption(temp, k1);
         }
         return null;
     }
@@ -549,26 +534,22 @@ public class DES {
      * @param type   0:encrypt 1:discrypt
      * @return
      */
-    protected static String DES_3(String source, String key, int type) {
+    protected static String des3(String source, String key, int type) {
         if (key.length() != 32 || source.length() != 16) {
             return null;
         }
         String temp = null;
-        String K1 = key.substring(0, key.length() / 2);
-        String K2 = key.substring(key.length() / 2);
-        System.out.println("K1--->" + K1);
-        System.out.println("K2--->" + K2);
+        String k1 = key.substring(0, key.length() / 2);
+        String k2 = key.substring(key.length() / 2);
         if (type == 0) {
-            temp = encryption(source, K1);
-            System.out.println("step1--->" + temp);
-            temp = discryption(temp, K2);
-            System.out.println("step2--->" + temp);
-            return encryption(temp, K1);
+            temp = encryption(source, k1);
+            temp = discryption(temp, k2);
+            return encryption(temp, k1);
         }
         if (type == 1) {
-            temp = discryption(source, K1);
-            temp = encryption(temp, K2);
-            return discryption(temp, K1);
+            temp = discryption(source, k1);
+            temp = encryption(temp, k2);
+            return discryption(temp, k1);
         }
         return null;
     }
@@ -582,7 +563,7 @@ public class DES {
      * @return
      */
 
-    protected static int[] keyPC_1(int[] source) {
+    protected static int[] keypc1(int[] source) {
         int[] dest = new int[56];
         int[] temp = {57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62, 54, 46, 38, 30, 22, 14, 6, 61, 53,
                 45, 37, 29, 21, 13, 5, 28, 20, 12, 4};
@@ -604,7 +585,6 @@ public class DES {
         int temp = 0;
         int len = source.length;
         int ls = LS[i];
-        // System.out.println("len" + len + ",LS[" + i + "]=" + ls);
         for (int k = 0; k < ls; k++) {
             temp = source[0];
             for (int j = 0; j < len - 1; j++) {
@@ -622,7 +602,7 @@ public class DES {
      * @return
      */
 
-    protected static int[] keyPC_2(int[] source) {
+    protected static int[] keypc2(int[] source) {
         int[] dest = new int[48];
         int[] temp = {14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8, 16, 7, 27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49, 39, 56, 34, 53, 46, 42, 50, 36,
                 29, 32};
@@ -650,7 +630,7 @@ public class DES {
         int[] right = new int[28];
         // 经过PC-1将64bit转换为56bit
         int[] temp1 = new int[56];
-        temp1 = keyPC_1(temp);
+        temp1 = keypc1(temp);
         // printArr(temp1);
         // 将经过转换的temp1均分成两部分
         for (int i = 0; i < 28; i++) {
@@ -667,7 +647,7 @@ public class DES {
                 temp1[j + 28] = right[j];
             }
             // printArr(temp1);
-            subKey[i] = keyPC_2(temp1);
+            subKey[i] = keypc2(temp1);
         }
     }
 
@@ -676,7 +656,6 @@ public class DES {
         for (int i = 0; i < len; i++) {
             System.out.print(source[i]);
         }
-        System.out.println();
     }
 
     /**
@@ -686,7 +665,7 @@ public class DES {
      * @return
      */
 
-    protected static String ASC_2_HEX(String asc) {
+    protected static String asc2Hex(String asc) {
         StringBuffer hex = new StringBuffer();
         byte[] bs = asc.toUpperCase().getBytes(StandardCharsets.UTF_8);
         for (byte b : bs) {
@@ -704,7 +683,7 @@ public class DES {
      * @return
      */
 
-    protected static String HEX_2_ASC(String hex) {
+    protected static String hex2Asc(String hex) {
         String asc = null;
         int len = hex.length();
         byte[] bs = new byte[len / 2];
@@ -735,13 +714,13 @@ public class DES {
      * @return mac
      */
 
-    protected static String MAC(String key, String vector, String data, int type) {
-        if (type == ASC) {
-            data = ASC_2_HEX(data);
+    protected static String mac(String key, String vector, String data, int type) {
+        if (type == asc) {
+            data = asc2Hex(data);
         }
         int len = data.length();
         int arrLen = len / 16 + 1;
-        String[] D = new String[arrLen];
+        String[] d = new String[arrLen];
         if (vector == null) {
             vector = "0000000000000000";
         }
@@ -754,22 +733,17 @@ public class DES {
             }
         }
         for (int i = 0; i < arrLen; i++) {
-            D[i] = data.substring(i * 16, i * 16 + 16);
-            System.out.println("D[" + i + "]=" + D[i]);
+            d[i] = data.substring(i * 16, i * 16 + 16);
         }
         // D0 Xor Vector
-        String I = xOr(D[0], vector);
-        String O = null;
+        String s = xOr(d[0], vector);
+        String o = null;
         for (int i = 1; i < arrLen; i++) {
-            // System.out.println(i + "**************");
-            // System.out.println("I=" + I);
-            O = DES_1(I, key, 0);
-            // System.out.println("O=" + O);
-            I = xOr(D[i], O);
-            // System.out.println("I=" + I);
+            o = des1(s, key, 0);
+            s = xOr(d[i], o);
         }
-        I = DES_1(I, key, 0);
-        return I;
+        s = des1(s, key, 0);
+        return s;
     }
 
     /**
@@ -813,23 +787,23 @@ public class DES {
     protected static String divData(String data, String key, int type) {
         String left = null;
         String right = null;
-        if (type == HEX) {
+        if (type == hex) {
             left = key.substring(0, 16);
             right = key.substring(16, 32);
         }
-        if (type == ASC) {
-            left = ASC_2_HEX(key.substring(0, 8));
-            right = ASC_2_HEX(key.substring(8, 16));
+        if (type == asc) {
+            left = asc2Hex(key.substring(0, 8));
+            right = asc2Hex(key.substring(8, 16));
         }
         try {
             // 加密
-            data = DES_1(data, left, 0);
+            data = des1(data, left, 0);
             // 解密
             assert data != null;
-            data = DES_1(data, right, 1);
+            data = des1(data, right, 1);
             // 加密
             assert data != null;
-            data = DES_1(data, left, 0);
+            data = des1(data, left, 0);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -875,5 +849,5 @@ public class DES {
         dpk.append(divData(reverse(appNo), issuerMPK.toString(), 0));
         return dpk.toString();
     }
-
 }
+

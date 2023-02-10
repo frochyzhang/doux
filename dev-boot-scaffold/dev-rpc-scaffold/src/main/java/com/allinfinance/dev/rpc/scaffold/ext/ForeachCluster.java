@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Extension("foreach")
 public class ForeachCluster extends AbstractCluster {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ForeachCluster.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForeachCluster.class);
 
     public ForeachCluster(ConsumerBootstrap consumerBootstrap) {
         super(consumerBootstrap);
@@ -43,7 +43,7 @@ public class ForeachCluster extends AbstractCluster {
         String methodName = request.getMethodName();
         int retries = consumerConfig.getMethodRetries(methodName);
         int time = 0;
-        SofaRpcException throwable = null;// 异常日志
+        SofaRpcException throwable = null;
         List<ProviderInfo> invokedProviderInfos = new ArrayList<>(retries + 1);
         SofaResponse response = null;
         List<ProviderInfo> providerInfos = routerChain.route(request, null);

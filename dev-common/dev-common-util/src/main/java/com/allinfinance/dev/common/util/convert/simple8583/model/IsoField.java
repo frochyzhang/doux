@@ -100,7 +100,8 @@ public class IsoField implements Serializable {
                 this.value = new String(bts, SimpleConstants.ENCODING);
                 break;
             default:
-                this.checked = false;// 无效设置
+                // 无效设置
+                this.checked = false;
                 break;
         }
     }
@@ -135,7 +136,7 @@ public class IsoField implements Serializable {
             this.isoType = IsoType.valueOf(this.type);
         }
         switch (this.isoType) {
-            case CHAR: {
+            case CHAR:
                 if (value.length() > length) {
                     this.value = this.value.substring(0, length);
                 } else if (value.length() < length) {
@@ -143,27 +144,24 @@ public class IsoField implements Serializable {
                     this.value = EncodeUtil.addBlankRight(this.value, this.length - value.getBytes(SimpleConstants.ENCODING).length, " ");
                 }
                 break;
-            }
             // LLVAR和LLLVAR类型的数据不格式化,
             // 通联NUMBERIC采用ASCII码表示，不用BCD码。所有都加上长度判断，判断最大长度是否
             case LLVAR:
             case LLLVAR:
             case LLVAR_NUMERIC:
                 break;
-            case NUMERIC: {
+            case NUMERIC:
                 if (this.value.length() > length) {
                     throw new IllegalArgumentException("数据域 " + this.id + "长度超出，值为:" + this.value + "，约定长度" + length);
                 } else {
                     this.value = EncodeUtil.addBlankLeft(this.value, length - this.value.length(), "0");
                 }
                 break;
-            }
-            case BINARY: {
-                if (this.value.length() != 2 * length || this.value.length() % 2 != 0) {
+            case BINARY:
+                if (this.value.length() != 2 * length) {
                     throw new IllegalArgumentException("数据域 " + this.id + "长度错误，值为:" + this.value + "，约定长度" + length);
                 }
                 break;
-            }
             default:
                 throw new IllegalArgumentException("不支持的参数类型：" + this.isoType);
         }

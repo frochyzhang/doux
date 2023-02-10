@@ -97,9 +97,6 @@ public class RegexHelper {
     private RegexHelper() {
     }
 
-    public static void main(String[] args) {
-    }
-
     /**
      * 校验字符串是否是数字
      *
