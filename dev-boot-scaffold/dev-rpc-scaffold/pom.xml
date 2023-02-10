@@ -29,14 +29,6 @@
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-common-dictionary</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-http-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-socket-api</artifactId>
-        </dependency>
 
         <!--nacos注册中心-->
         <dependency>
