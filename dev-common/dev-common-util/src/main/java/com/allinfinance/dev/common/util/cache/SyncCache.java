@@ -1,7 +1,8 @@
-package com.allinfinance.dev.gateway.cache;
+package com.allinfinance.dev.common.util.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,14 @@ public class SyncCache<K, V> {
 
     public V get(K key) {
         return cache.getIfPresent(key);
+    }
+
+    public V getOrDefault(K key, V defaultValue) {
+        V ret = get(key);
+        if (ObjectUtils.isEmpty(ret)) {
+            return defaultValue;
+        }
+        return ret;
     }
 
     public Boolean containsKey(K key) {

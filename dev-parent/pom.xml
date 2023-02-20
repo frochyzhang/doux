@@ -193,6 +193,16 @@
                 <artifactId>jaxb-core</artifactId>
                 <version>${sun.jaxb.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-disruptor-scaffold</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-disruptor-boot-starter</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -9,7 +9,7 @@ import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
-import com.allinfinance.dev.gateway.cache.SyncCache;
+import com.allinfinance.dev.common.util.cache.SyncCache;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
