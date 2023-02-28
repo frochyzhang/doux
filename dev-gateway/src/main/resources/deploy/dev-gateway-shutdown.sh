@@ -26,7 +26,7 @@ else
         exit
     fi
 fi
-PIDS=`/bin/ps aux |/bin/grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/awk {'print $2'}`
+PIDS=`/bin/ps aux |/bin/grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/grep ${USER} | /bin/awk {'print $2'}`
 if [ -z "$PIDS" ]; then
   echo "All instances of $APP_NAME with profile:$ACTIVE_PROFILE has has been successfully stopped now..." 1>&2
 else

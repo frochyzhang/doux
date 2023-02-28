@@ -9,7 +9,11 @@ import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
-import com.allinfinance.dev.rpc.scaffold.api.dto.*;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.RequestTypeEnum;
+import com.allinfinance.dev.rpc.scaffold.api.dto.TcpRequestDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.socket.config.ShortSwitchServer;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,10 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +85,6 @@ public class AppProcessFactory {
         return processors.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
     }
 
-    private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
-
     public static HttpResponseDTO httpProcessed(String appUniqueId, NettyHttpRequest request, int port) {
         String urlWithParam = request.getUri();
         String requestMsg = request.contentText();
@@ -101,11 +106,7 @@ public class AppProcessFactory {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         httpRequestDTO.setHeaders(headers);
         httpRequestDTO.setHttpMethod(HttpMethod.valueOf(request.method().name()));
-        //对请求体里的空行和多余的空格进行处理
-        if (StringUtils.isNotBlank(requestMsg)) {
-            Matcher m = PATTERN.matcher(requestMsg);
-            httpRequestDTO.setRequestMsg(m.replaceAll(""));
-        }
+        httpRequestDTO.setRequestMsg(requestMsg);
         processRequestDTO.setRequestDTO(httpRequestDTO);
 
         //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
