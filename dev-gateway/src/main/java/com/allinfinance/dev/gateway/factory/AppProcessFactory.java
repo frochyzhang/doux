@@ -166,7 +166,7 @@ public class AppProcessFactory {
             while (true) {
                 ListView<String> servicesOfServer = namingService.getServicesOfServer(i, 10);
                 i++;
-                if (servicesOfServer.getData().size() > 0) {
+                if (CollectionUtils.isNotEmpty(servicesOfServer.getData())) {
                     serviceList.addAll(servicesOfServer.getData());
                 } else {
                     break;
