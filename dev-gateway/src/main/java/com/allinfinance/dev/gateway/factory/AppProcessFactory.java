@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
 import com.allinfinance.dev.gateway.netty.HttpServer;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -157,11 +159,21 @@ public class AppProcessFactory {
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, strings[0]);
         properties.put(PropertyKeyConst.NAMESPACE, strings[1]);
-        List<String> serviceList = null;
+        List<String> serviceList = new ArrayList<>();
         try {
             NamingService namingService = NacosFactory.createNamingService(properties);
-            serviceList = namingService.getServicesOfServer(1, 10).getData()
-                    .stream().filter(service -> service.contains(ProcessService.class.getName()))
+            int i = 1;
+            while (true) {
+                ListView<String> servicesOfServer = namingService.getServicesOfServer(i, 10);
+                i++;
+                if (servicesOfServer.getData().size() > 0) {
+                    serviceList.addAll(servicesOfServer.getData());
+                } else {
+                    break;
+                }
+            }
+            serviceList = serviceList.stream()
+                    .filter(service -> service.contains(ProcessService.class.getName()))
                     .collect(Collectors.toList());
         } catch (NacosException e) {
             logger.error("NacosException,", e);
