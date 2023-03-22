@@ -1,9 +1,12 @@
 package com.allinfinance.dev.rpc.scaffold;
 
+import cn.hutool.extra.spring.SpringUtil;
+import com.allinfinance.dev.rpc.scaffold.advice.resolver.ExceptionHandlerExceptionResolver;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,4 +25,12 @@ public class RpcScaffoldConfiguration {
         logger.info("RPC脚手架加载成功!");
     }
 
+    @Bean
+    public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver() {
+        RpcConfigurationProperties properties = SpringUtil.getBean(RpcConfigurationProperties.class);
+        if (properties != null && properties.getProvider() != null) {
+            return new ExceptionHandlerExceptionResolver();
+        }
+        return null;
+    }
 }

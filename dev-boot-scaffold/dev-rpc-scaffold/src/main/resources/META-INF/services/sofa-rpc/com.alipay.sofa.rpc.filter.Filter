@@ -1,1 +1,3 @@
-specialProviderException=com.allinfinance.dev.rpc.scaffold.filter.SpecialProviderExceptionFilter
+# name                                                         # order
+com.allinfinance.rpc.provider.filter.ProviderAdviceFilter             # -19800
+#specialProviderException=com.allinfinance.dev.rpc.scaffold.filter.SpecialProviderExceptionFilter
