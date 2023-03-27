@@ -36,7 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -78,11 +83,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private void onReceivedRequest(ChannelHandlerContext context, NettyHttpRequest request) {
         FullHttpResponse response = handleHttpRequest(request);
         context.writeAndFlush(response).addListener(future -> logger.info("Response sent and flushed"));
-        if (ReferenceCountUtil.release(request)) {
-            logger.error("回收请求成功");
-        } else {
-            logger.info("回收请求失败");
-        }
+        ReferenceCountUtil.release(request);
     }
 
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
