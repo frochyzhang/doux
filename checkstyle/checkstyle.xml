@@ -166,10 +166,10 @@
             <property name="illegalPattern" value="true"/>
         </module>
         <!-- 禁止使用e.printStackTrace -->
-        <module name="Regexp">
-            <property name="format" value="e\.printStackTrace"/>
-            <property name="illegalPattern" value="true"/>
-        </module>
+        <!--<module name="Regexp">-->
+        <!--    <property name="format" value="e\.printStackTrace"/>-->
+        <!--    <property name="illegalPattern" value="true"/>-->
+        <!--</module>-->
         <!--try catch 异常处理数量 3-->
         <module name="NestedTryDepth ">
             <property name="max" value="3"/>

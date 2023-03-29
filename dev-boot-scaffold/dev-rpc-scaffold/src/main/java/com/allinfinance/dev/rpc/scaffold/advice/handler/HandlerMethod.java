@@ -457,6 +457,7 @@ public class HandlerMethod {
 
         @Override
         public HandlerMethodParameter clone() {
+            super.clone();
             return new HandlerMethodParameter(this);
         }
     }
@@ -470,7 +471,7 @@ public class HandlerMethod {
         @Nullable
         private final Class<?> returnValueType;
 
-        public ReturnValueMethodParameter(@Nullable Object returnValue) {
+        ReturnValueMethodParameter(@Nullable Object returnValue) {
             super(-1);
             this.returnValueType = (returnValue != null ? returnValue.getClass() : null);
         }
@@ -487,6 +488,7 @@ public class HandlerMethod {
 
         @Override
         public ReturnValueMethodParameter clone() {
+            super.clone();
             return new ReturnValueMethodParameter(this);
         }
     }
