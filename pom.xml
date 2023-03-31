@@ -12,7 +12,7 @@
         <module>dev-socket</module>
         <module>dev-core</module>
         <module>dev-batch</module>
-        <module>dev-example</module>
+<!--        <module>dev-example</module>-->
         <module>dev-dal</module>
         <module>dev-mq</module>
         <module>dev-mq/dev-mq-rabbit</module>
@@ -41,8 +41,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.4.1-SNAPSHOT</revision>
-        <dev.version>1.4.1-SNAPSHOT</dev.version>
+        <revision>1.4.2-SNAPSHOT</revision>
+        <dev.version>1.4.2-SNAPSHOT</dev.version>
         <nds.version>2.2.149854</nds.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -15,13 +15,14 @@ import org.slf4j.LoggerFactory;
  * @date 2017/6/1
  */
 public class Message8583Encoder implements MessageEncoder {
-    private Logger logger = LoggerFactory.getLogger(Message8583Encoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(Message8583Encoder.class);
 
     @Override
     public void encode(IoSession session, Object message,
                        ProtocolEncoderOutput out) throws Exception {
-        logger.debug("编码前消息：content["
-                + message + "]");
+        if (logger.isDebugEnabled()) {
+            logger.debug("编码前消息：content[{}]", message);
+        }
         out.write(IoBuffer.wrap(EncodeUtil.bcd((String) message)));
         out.flush();
     }

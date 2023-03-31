@@ -40,7 +40,15 @@ public class SocketClientServiceImpl implements ISocketClientService {
     @Override
     public String clientRequest(String remoteIp, int remotePort, String clientAppName, int timeOutSeconds, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
 
-        NioSocketConnector nioSocketConnector = socketConnectorFactory.getConnector(clientAppName);
+        String key = socketConnectorFactory.spliceMapKey(clientAppName, timeOutSeconds, msgLengthSize, msgEncode);
+        NioSocketConnector nioSocketConnector = socketConnectorFactory.getConnector(key);
+        if (logger.isDebugEnabled()) {
+            if (nioSocketConnector == null) {
+                logger.debug("当前缓存中不存在key={}的连接配置，此次注册到缓存中！", key);
+            } else {
+                logger.debug("key={}的缓存已存在！", key);
+            }
+        }
         if (nioSocketConnector == null) {
             nioSocketConnector = socketConnectorFactory.registrar(clientAppName, timeOutSeconds, msgLengthSize, msgEncode);
         }

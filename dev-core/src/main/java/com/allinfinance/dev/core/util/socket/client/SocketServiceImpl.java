@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service("socketService")
 public class SocketServiceImpl implements ISocketClientService {
-    private Logger logger = LoggerFactory.getLogger(SocketServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SocketServiceImpl.class);
 
     @Override
     public String clientRequest(String remoteIp, int remotePort, String clientAppName, int timeOutSeconds, boolean checkMac, String message, int msgLengthSize, String msgEncode) {
@@ -77,26 +77,6 @@ public class SocketServiceImpl implements ISocketClientService {
             if (clientConnector != null) {
                 clientConnector.dispose();
             }
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            SocketServiceImpl client = new SocketServiceImpl();
-            String reqMess = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<SMS>\n" +
-                    "    <ORG_ID>000064163056</ORG_ID>\n" +
-                    "    <SMS_NO>113133000326</SMS_NO>\n" +
-                    "    <SMS_TYPE>00</SMS_TYPE>\n" +
-                    "    <TEL>13585961521</TEL>\n" +
-                    "    <CONTENT>您好,您用于开通快捷支付的验证码为[226230].</CONTENT>\n" +
-                    "    <REQUEST_TIME>20170612113133</REQUEST_TIME>\n" +
-                    "    <RESERVED></RESERVED>\n" +
-                    "</SMS>";
-            String response1 = client.clientRequest("127.0.0.1", 4493, "sms", 30, false, reqMess, 6, "UTF-8");
-            System.out.println("resultResp:" + response1);
-        } finally {
-            System.out.println("end");
         }
     }
 }

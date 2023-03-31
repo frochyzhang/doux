@@ -22,7 +22,9 @@ public class Message8583Decoder implements MessageDecoder {
     public MessageDecoderResult decodable(IoSession session, IoBuffer in) {
 
         if (in.remaining() < 4) {
-            logger.debug("报文长度未到齐:  " + in.remaining());
+            if (logger.isDebugEnabled()) {
+                logger.debug("报文长度未到齐:  " + in.remaining());
+            }
             return MessageDecoderResult.NEED_DATA;
         }
 
@@ -33,12 +35,16 @@ public class Message8583Decoder implements MessageDecoder {
             len = Integer.parseInt(new String(temp));
         } catch (NumberFormatException ex) {
             // 长度头异常时会引发粘包问题，直接丢弃当前连接，等待新建连接
-            logger.debug("报文长度含有非数字内容，关闭连接:  " + temp);
+            if (logger.isDebugEnabled()) {
+                logger.debug("报文长度含有非数字内容，关闭连接: {}", temp);
+            }
             session.closeNow();
         }
 
         if (in.remaining() < len) {
-            logger.debug("报文数据未到齐: " + in.remaining() + ":" + len);
+            if (logger.isDebugEnabled()) {
+                logger.debug("报文数据未到齐: " + in.remaining() + ":" + len);
+            }
             return MessageDecoderResult.NEED_DATA;
         }
 
@@ -51,8 +57,9 @@ public class Message8583Decoder implements MessageDecoder {
         byte[] bLen = new byte[4];
         in.get(bLen, 0, 4);
         int len = Integer.parseInt(new String(bLen));
-        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
-                + "]");
+        if (logger.isDebugEnabled()) {
+            logger.debug("解码消息：字节length = {}, content[{}]", len, in);
+        }
         if (len == 0) {
             out.write("0000");
             return MessageDecoderResult.OK;

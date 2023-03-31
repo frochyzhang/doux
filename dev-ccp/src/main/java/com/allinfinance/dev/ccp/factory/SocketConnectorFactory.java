@@ -18,15 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketConnectorFactory {
     private static final Map<String, NioSocketConnector> NIO_SOCKET_CONNECTOR_MAP = new ConcurrentHashMap<>();
 
-    public NioSocketConnector registrar(String clientAppName, int timeOut, int msgLengthSize, String msgEncode) {
-        NIO_SOCKET_CONNECTOR_MAP.computeIfAbsent(clientAppName, s -> {
+    public NioSocketConnector registrar(String clientAppName, int timeout, int msgLengthSize, String msgEncode) {
+        String key = spliceMapKey(clientAppName, timeout, msgLengthSize, msgEncode);
+        NIO_SOCKET_CONNECTOR_MAP.computeIfAbsent(key, s -> {
             NioSocketConnector nioSocketConnector = new NioSocketConnector();
-            nioSocketConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeOut);
+            nioSocketConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout);
             nioSocketConnector.getSessionConfig().setUseReadOperation(true);
-            nioSocketConnector.setConnectTimeoutMillis(timeOut * 1000L);
+            nioSocketConnector.setConnectTimeoutMillis(timeout * 1000L);
             nioSocketConnector.setHandler(new ClientIoHandler(false));
 
-            if (clientAppName.contains("-8583")) {
+            if (clientAppName.contains("8583")) {
                 nioSocketConnector.getFilterChain().addLast(
                         "8583MsgCodec",
                         new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
@@ -37,10 +38,23 @@ public class SocketConnectorFactory {
             }
             return nioSocketConnector;
         });
-        return getConnector(clientAppName);
+        return getConnector(key);
     }
 
-    public NioSocketConnector getConnector(String clientAppName) {
-        return NIO_SOCKET_CONNECTOR_MAP.get(clientAppName);
+    public NioSocketConnector getConnector(String key) {
+        return NIO_SOCKET_CONNECTOR_MAP.get(key);
+    }
+
+    /**
+     * 根据请求字段拼接连接缓存的key
+     *
+     * @param clientAppName 应用名
+     * @param timeout       超时时间，单位秒
+     * @param msgLengthSize 长度域长度
+     * @param msgEncode     编码方式
+     * @return 拼接后的字符串
+     */
+    public String spliceMapKey(String clientAppName, int timeout, int msgLengthSize, String msgEncode) {
+        return clientAppName + timeout + msgLengthSize + msgEncode;
     }
 }

@@ -26,25 +26,17 @@ else
         exit
     fi
 fi
-PIDS=`/bin/ps aux |/bin/grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/awk {'print $2'}`
+PIDS=`/bin/ps aux |/bin/grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/grep ${USER} | /bin/awk {'print $2'}`
 if [ -z "$PIDS" ]; then
   echo "All instances of $APP_NAME with profile:$ACTIVE_PROFILE has has been successfully stopped now..." 1>&2
 else
   for PROCESS_ID in $PIDS
   do
-    counter=149
-    until [ $counter -gt 150 ]
-        do
-            if ps -p $PROCESS_ID > /dev/null; then
-                echo "Waiting for the process($PROCESS_ID) to finish on it's own for $(( 300 - $(( $counter*2)) ))seconds..."
-                sleep 2s
-                ((counter++))
-            else
-                echo "$APP_NAME with PROCESS_ID:$PROCESS_ID is stopped now.."
-                exit 0;
-            fi
-    done
-    echo "Gracefully Killing $APP_NAME with PROCESS_ID:$PROCESS_ID."
-    kill $PROCESS_ID
+    if ps -p $PROCESS_ID > /dev/null; then
+      echo "Gracefully Killing $APP_NAME with PROCESS_ID:$PROCESS_ID."
+      kill $PROCESS_ID
+      echo "$APP_NAME with PROCESS_ID:$PROCESS_ID is stopped now.."
+    fi
   done
+  exit 0;
 fi
