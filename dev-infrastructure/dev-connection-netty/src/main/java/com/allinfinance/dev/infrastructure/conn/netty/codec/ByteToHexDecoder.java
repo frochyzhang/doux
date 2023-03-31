@@ -22,7 +22,7 @@ public class ByteToHexDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         long requestId = in.readLong();
-        Promise<String> stringPromise = HspNettyConnection.promiseMap.get(requestId);
+        Promise<String> stringPromise = HspNettyConnection.PROMISE_MAP.get(requestId);
         in.markReaderIndex();
 
         int size = in.readableBytes();

@@ -85,7 +85,7 @@ com:
     connection:
       pool:
         connection-driver: hsp
-        connection-pool-type: pool
+        connection-pool-type: queue
         ping-service: default
         warmup: true
       scaffold:
