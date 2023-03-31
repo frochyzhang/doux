@@ -440,6 +440,11 @@ public class RpcConfigurationProperties {
                  */
                 private Integer threadCount = Runtime.getRuntime().availableProcessors();
                 /**
+                 * 服务端读超时，单位：秒。
+                 * 默认60秒，设为0为不超时
+                 */
+                private Integer readTimeout = 60;
+                /**
                  * 处理的URL列表
                  */
                 private List<UrlConfig> urlList;
@@ -527,6 +532,14 @@ public class RpcConfigurationProperties {
                     this.threadCount = threadCount;
                 }
 
+                public Integer getReadTimeout() {
+                    return readTimeout;
+                }
+
+                public void setReadTimeout(Integer readTimeout) {
+                    this.readTimeout = readTimeout;
+                }
+
                 public List<UrlConfig> getUrlList() {
                     return urlList;
                 }
@@ -544,6 +557,7 @@ public class RpcConfigurationProperties {
                             ", soRcvBuf=" + soRcvBuf +
                             ", soSndBuf=" + soSndBuf +
                             ", threadCount=" + threadCount +
+                            ", readTimeout=" + readTimeout +
                             ", urlList=" + urlList +
                             '}';
                 }
