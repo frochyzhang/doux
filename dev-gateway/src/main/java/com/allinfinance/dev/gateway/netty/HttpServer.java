@@ -79,8 +79,8 @@ public class HttpServer {
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
                 ch.pipeline().addLast("corsHandler", new CorsHandler(config));
                 ch.pipeline().addLast("logging", loggingHandler);
-                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount()));
                 ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(httpConfig.getReadTimeout()));
+                ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount()));
             }
         })
         ;

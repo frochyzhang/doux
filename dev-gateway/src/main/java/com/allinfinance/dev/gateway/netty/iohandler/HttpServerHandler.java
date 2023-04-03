@@ -105,6 +105,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         return NettyHttpResponse.ok(headers, httpResponseDTO.getResponseMsg());
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("连接异常", cause);
+    }
+
     private boolean crossOriginVerify(NettyHttpRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS);
     }
