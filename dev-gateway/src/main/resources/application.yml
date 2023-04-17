@@ -80,7 +80,7 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.200.1.192:8848/public
+        registry-address: nacos://10.200.1.192:8848/public-wk
         bolt-port: 12301
         consumer-repeated-reference-limit: 100
 

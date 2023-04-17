@@ -107,7 +107,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("连接异常", cause);
+        if (logger.isDebugEnabled()) {
+            logger.debug("连接异常", cause);
+        }
     }
 
     private boolean crossOriginVerify(NettyHttpRequest request) {
