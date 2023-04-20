@@ -24,6 +24,5 @@ public class Message8583Encoder implements MessageEncoder {
             logger.debug("编码前消息：content[{}]", message);
         }
         out.write(IoBuffer.wrap(EncodeUtil.bcd((String) message)));
-        out.flush();
     }
 }

@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @Description:
@@ -60,10 +61,6 @@ public class HspNettyConnection implements Connection {
     @Override
     public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
 
-    }
-
-    public static ConcurrentHashMap<Long, Promise<String>> getPromiseMap() {
-        return promiseMap;
     }
 
     @Override

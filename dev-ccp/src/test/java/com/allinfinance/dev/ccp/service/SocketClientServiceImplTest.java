@@ -1,30 +1,23 @@
 package com.allinfinance.dev.ccp.service;
 
 import cn.hutool.core.net.NetUtil;
-import com.allinfinance.dev.core.util.socket.client.ISocketClientService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.mina.core.RuntimeIoException;
-import org.apache.mina.filter.codec.ProtocolDecoderException;
-import org.junit.Before;
+import com.allinfinance.dev.common.socket.client.ISocketService;
+import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
-import java.util.stream.IntStream;
 
 @SpringBootTest
 class SocketClientServiceImplTest {
     @Autowired
-    private ISocketClientService iSocketClientService;
+    private ISocketService socketService;
 
     @BeforeAll
     public static void before() throws Exception {
@@ -91,8 +84,10 @@ class SocketClientServiceImplTest {
 //        Assertions.assertNull(s);
 
         // utf8编解码，长度域为0
-        String s = iSocketClientService.clientRequest("127.0.0.1", 7003, "qps-test-65595210", 3,
-                false, message, 0, "UTF-8");
+        SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7003", "qps-test-65595210", "0", "UTF-8");
+        SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+        Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
+        String s = socketResponseDTO.getResponse();
         Assertions.assertArrayEquals(("response" + message).getBytes(StandardCharsets.UTF_8), s.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -102,8 +97,10 @@ class SocketClientServiceImplTest {
         // 客户端长度域比服务端长
         String s = null;
         try {
-            s = iSocketClientService.clientRequest("127.0.0.1", 7001, "qps-test-65595210", 3,
-                    false, message, 6, "UTF-8");
+            SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "qps-test-65595210", "6", "UTF-8");
+            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
+            s = socketResponseDTO.getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(s);
@@ -111,8 +108,10 @@ class SocketClientServiceImplTest {
 
         // 客户端长度域比服务端短
         try {
-            s = iSocketClientService.clientRequest("127.0.0.1", 7001, "qps-test-65595210", 3,
-                    false, message, 3, "UTF-8");
+            SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "qps-test-65595210", "3", "UTF-8");
+            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
+            s = socketResponseDTO.getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(s);
@@ -125,8 +124,10 @@ class SocketClientServiceImplTest {
         // 响应长度域的内容为n个0
         String s = null;
         try {
-            s = iSocketClientService.clientRequest("127.0.0.1", 7004, "qps-test-65595210", 3,
-                    false, message, 6, "UTF-8");
+            SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7004", "qps-test-65595210", "6", "UTF-8");
+            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
+            s = socketResponseDTO.getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(s);
