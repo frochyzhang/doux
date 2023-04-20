@@ -12,6 +12,7 @@
             </includes>
             <excludes>
                 <exclude>uncompress.sh</exclude>
+                <exclude>rollback.sh</exclude>
             </excludes>
             <outputDirectory>bin/${project.artifactId}</outputDirectory>
             <fileMode>0755</fileMode>

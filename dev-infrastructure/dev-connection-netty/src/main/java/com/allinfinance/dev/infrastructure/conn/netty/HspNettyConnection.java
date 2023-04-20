@@ -39,16 +39,23 @@ import java.util.concurrent.TimeoutException;
 public class HspNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(HspNettyConnection.class);
 
-    private final EventLoopGroup loopGroup = new NioEventLoopGroup(1,
+    private static final EventLoopGroup LOOP_GROUP = new NioEventLoopGroup(16,
             new NamedThreadFactory("hsp-netty-", false));
 
     private ChannelFuture channelFuture;
 
-    private static final ConcurrentHashMap<Long, Promise<String>> promiseMap = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Long, Promise<String>> PROMISE_MAP = new ConcurrentHashMap<>();
 
     private static final DefaultEventLoop NETTY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
     private int timeout;
+
+    private static final Bootstrap BOOTSTRAP = new Bootstrap()
+            .group(LOOP_GROUP)
+            .channel(NioSocketChannel.class)
+            .option(ChannelOption.SO_KEEPALIVE, true);
+
+    private static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
 
     @Override
     public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
@@ -61,12 +68,12 @@ public class HspNettyConnection implements Connection {
 
     @Override
     public void close() {
-        loopGroup.shutdownGracefully();
+        LOOP_GROUP.shutdownGracefully();
     }
 
     @Override
     public boolean isClosed() {
-        return loopGroup.isShutdown();
+        return LOOP_GROUP.isShutdown();
     }
 
     @Override
@@ -75,15 +82,13 @@ public class HspNettyConnection implements Connection {
 
         Promise<String> promise = NETTY_EVENT_LOOP.newPromise();
 
-        long requestId = System.nanoTime();
+        long requestId = ATOMIC_LONG.addAndGet(1);
         msg = String.format("%016x", requestId) + msg;
-        promiseMap.put(requestId, promise);
+        PROMISE_MAP.put(requestId, promise);
         synchronized (channel) {
             channel.writeAndFlush(msg);
             try {
-                String result = promise.get(timeout, TimeUnit.MILLISECONDS);
-//                promiseMap.remove(requestId);
-                return result;
+                return promise.get(timeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.error("处理中断", e);
                 Thread.currentThread().interrupt();
@@ -91,6 +96,8 @@ public class HspNettyConnection implements Connection {
                 logger.error("处理异常", e);
             } catch (TimeoutException e) {
                 logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
+            } finally {
+                PROMISE_MAP.remove(requestId);
             }
             throw new RuntimeException("获取响应异常");
         }
@@ -105,10 +112,7 @@ public class HspNettyConnection implements Connection {
         this.timeout = Integer.parseInt(properties.getProperty("defaultNetworkTimeout"));
 
         try {
-            channelFuture = new Bootstrap()
-                    .group(loopGroup)
-                    .channel(NioSocketChannel.class)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
+            channelFuture = BOOTSTRAP
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {

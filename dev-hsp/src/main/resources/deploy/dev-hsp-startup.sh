@@ -1,8 +1,20 @@
 #Active Profile(YAML)
 ACTIVE_PROFILE="$1"
+XMS="$2"
+XMX="$3"
 if [ -z "$ACTIVE_PROFILE" ]; then
   echo "Usage: sit|uat|prod, otherwise exit!" 1>&2
   exit 1
+fi
+
+if [ -z "$XMS" ];then
+  echo "Usage: jvm param -Xms lost, use default 256m" 1>&2
+  XMS=256
+fi
+
+if [ -z "$XMX" ];then
+  echo "Usage: jvm param -Xmx lost, use default 512m" 1>&2
+  XMX=512
 fi
 # Base Folder Path like "/folder/packages"
 CURRENT_DIR=$(readlink -f "$0")
@@ -14,7 +26,7 @@ SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 # App name after removing start/stop strings like "yaml-validator"
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
 # JVM Parameters and Spring boot initialization parameters
-JVM_PARAM="-Xms2048m -Xmx4096m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
+JVM_PARAM="-Xms${XMS}m -Xmx${XMX}m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
 -Dspring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/
 -Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
 
@@ -36,7 +48,7 @@ if [ "$2" == "sw" ];then
 fi
 
 JVM_PARAM_EXT="--spring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/"
-PIDS=`ps aux |grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | awk {'print $2'}`
+PIDS=`ps aux |grep [j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar | /bin/grep ${USER} | awk {'print $2'}`
 if [ -z "$PIDS" ]; then
   echo "No instances of $APP_NAME with profile:$ACTIVE_PROFILE is running..." 1>&2
 else

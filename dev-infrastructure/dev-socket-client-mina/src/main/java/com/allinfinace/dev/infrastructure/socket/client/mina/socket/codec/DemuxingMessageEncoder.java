@@ -41,10 +41,11 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
             }
             return;
         }
-        logger.debug("编码前消息：字符串length =  " + message.length() + ", content["
-                + message + "]");
         byte[] body = message.getBytes(this.getMsgEncode());
-        int bodyLen = 0;
+        if (logger.isDebugEnabled()) {
+            logger.debug("编码前消息：字符串字节长度 = {}, content=[{}]", body.length, message);
+        }
+        int bodyLen;
         bodyLen = body.length;
         IoBuffer buf = IoBuffer.allocate(bodyLen + this.getMsgLengthSize()).setAutoExpand(true);
         if (this.getMsgLengthSize() != 0) {
@@ -52,8 +53,6 @@ public class DemuxingMessageEncoder implements MessageEncoder<String> {
         }
         buf.put(body);
         buf.flip();
-//        logger.info("编码完成：字符length=" + buf.limit() + ", content["
-//                + ConvertUtils.bytesArrayToHexString(body).substring(0, 10) + "]");
         session.write(buf);
     }
 

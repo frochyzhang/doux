@@ -16,6 +16,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public class HttpServer {
                 ch.pipeline().addLast("aggregator", new HttpObjectAggregator(512 * 1024));
                 ch.pipeline().addLast("corsHandler", new CorsHandler(config));
                 ch.pipeline().addLast("logging", loggingHandler);
+                ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(httpConfig.getReadTimeout()));
                 ch.pipeline().addLast("bizHandler", new HttpServerHandler(uniqueId, port, httpConfig.getThreadCount()));
             }
         });

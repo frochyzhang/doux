@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alipay.sofa.rpc.boot.runtime.param.BoltBindingParam;
 import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
@@ -35,6 +36,14 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -92,8 +101,6 @@ public class AppProcessFactory implements ClientFactoryAware {
         return PROCESS_SYNC_CACHE.get(appUniqueId).process(processRequestDTO).getResponseDTO().getResponseMsg();
     }
 
-    private static final Pattern PATTERN = Pattern.compile("\\t|\r|\n");
-
     public static HttpResponseDTO httpProcessed(String appUniqueId, NettyHttpRequest request, int port) {
         String urlWithParam = request.getUri();
         String requestMsg = request.contentText();
@@ -115,11 +122,7 @@ public class AppProcessFactory implements ClientFactoryAware {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         httpRequestDTO.setHeaders(headers);
         httpRequestDTO.setHttpMethod(HttpMethod.valueOf(request.method().name()));
-        //对请求体里的空行和多余的空格进行处理
-        if (StringUtils.isNotBlank(requestMsg)) {
-            Matcher m = PATTERN.matcher(requestMsg);
-            httpRequestDTO.setRequestMsg(m.replaceAll(""));
-        }
+        httpRequestDTO.setRequestMsg(requestMsg);
         processRequestDTO.setRequestDTO(httpRequestDTO);
 
         //1、根据appUniqueId查找urlList，判断是否包含url，如果包含则直接调用
@@ -170,11 +173,21 @@ public class AppProcessFactory implements ClientFactoryAware {
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, strings[0]);
         properties.put(PropertyKeyConst.NAMESPACE, strings[1]);
-        List<String> serviceList = null;
+        List<String> serviceList = new ArrayList<>();
         try {
             NamingService namingService = NacosFactory.createNamingService(properties);
-            serviceList = namingService.getServicesOfServer(1, 10).getData()
-                    .stream().filter(service -> service.contains(ProcessService.class.getName()))
+            int i = 1;
+            while (true) {
+                ListView<String> servicesOfServer = namingService.getServicesOfServer(i, 10);
+                i++;
+                if (CollectionUtils.isNotEmpty(servicesOfServer.getData())) {
+                    serviceList.addAll(servicesOfServer.getData());
+                } else {
+                    break;
+                }
+            }
+            serviceList = serviceList.stream()
+                    .filter(service -> service.contains(ProcessService.class.getName()))
                     .collect(Collectors.toList());
         } catch (NacosException e) {
             logger.error("解析【{}】中ProcessService服务列表异常", server, e);

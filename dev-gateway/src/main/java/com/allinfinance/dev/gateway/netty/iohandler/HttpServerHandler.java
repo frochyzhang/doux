@@ -83,11 +83,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private void onReceivedRequest(ChannelHandlerContext context, NettyHttpRequest request) {
         FullHttpResponse response = handleHttpRequest(request);
         context.writeAndFlush(response).addListener(future -> logger.info("Response sent and flushed"));
-        if (ReferenceCountUtil.release(request)) {
-            logger.error("回收请求成功");
-        } else {
-            logger.info("回收请求失败");
-        }
+        ReferenceCountUtil.release(request);
     }
 
     private FullHttpResponse handleHttpRequest(NettyHttpRequest request) {
@@ -107,6 +103,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
         Map<String, String> headers = httpResponseDTO.getHeaders();
         return NettyHttpResponse.ok(headers, httpResponseDTO.getResponseMsg());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("连接异常", cause);
+        }
     }
 
     private boolean crossOriginVerify(NettyHttpRequest request) {

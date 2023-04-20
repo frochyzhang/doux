@@ -34,7 +34,9 @@ public class DemuxingMessageDecoder implements MessageDecoder {
 
         if (this.getMsgLengthSize() != 0) {
             if (in.remaining() < this.getMsgLengthSize()) {
-                logger.debug("报文长度未到齐:  " + in.remaining());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("报文长度未到齐:  " + in.remaining());
+                }
                 return MessageDecoderResult.NEED_DATA;
             }
 
@@ -45,11 +47,12 @@ public class DemuxingMessageDecoder implements MessageDecoder {
                 len = Integer.parseInt(new String(temp));
             } catch (NumberFormatException ex) {
                 // 长度头异常时会引发粘包问题，直接丢弃当前连接，等待新建连接
-                logger.debug("报文长度含有非数字内容，关闭连接:  " + temp);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("报文长度含有非数字内容，关闭连接:  {}", temp);
+                }
                 session.closeNow();
             }
 
-            // TODO: 2020/12/7 how to control this error report
             logger.info("剩余报文长度:{}", in.remaining());
             if (in.remaining() < len) {
                 logger.error("报文数据未到齐: " + in.remaining() + ":" + len);
@@ -64,29 +67,30 @@ public class DemuxingMessageDecoder implements MessageDecoder {
     public MessageDecoderResult decode(IoSession session, IoBuffer in,
                                        ProtocolDecoderOutput out) throws Exception {
         int len = 0;
+        if (this.getMsgLengthSize() == 0) {
+            // 如果长度域长度为0，直接读取当前缓冲区数据并抛弃后返回
+            int blen = in.remaining();
+            byte[] bBody = new byte[blen];
+            in.get(bBody);
+            out.write(new String(bBody, msgEncode));
+            return MessageDecoderResult.OK;
+        }
+
         if (this.getMsgLengthSize() != 0) {
+            // 长度域不为0时，读取长度域内容
             byte[] bLen = new byte[this.getMsgLengthSize()];
             in.get(bLen, 0, this.getMsgLengthSize());
             len = Integer.parseInt(new String(bLen));
         }
 
-//        logger.debug("解码消息：字节length = " + len + ", content[" + in.toString()
-//                + "]");
-        if (len == 0 && this.getMsgLengthSize() != 0) {
-            if (this.getMsgLengthSize() != 0) {
-                out.write(String.format("%0" + this.getMsgLengthSize() + "d", 0));
-            }
-            return MessageDecoderResult.OK;
-        }
         byte[] bBody = new byte[len];
         in.get(bBody);
 
-        StringBuilder buf = new StringBuilder("");
-        buf.append(ConvertUtils.getFixedBytesUTF8String(bBody, 0, -1));
-
-        logger.debug("解码完成：字符串length=" + buf.length() + ", content["
-                + buf.toString() + "]");
-        out.write(buf.toString());
+        String result = new String(bBody, msgEncode);
+        if (logger.isDebugEnabled()) {
+            logger.debug("解码完成：字符串length= {},  content[{}]", result.length(), result);
+        }
+        out.write(result);
 
         return MessageDecoderResult.OK;
     }
