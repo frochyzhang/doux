@@ -25,7 +25,7 @@ package com.allinfinance.dev.gateway.netty.iohandler;
 import com.allinfinance.dev.gateway.factory.AppProcessFactory;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpResponse;
-import com.allinfinance.dev.rpc.scaffold.api.dto.HttpResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.HttpResponseDTO;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;

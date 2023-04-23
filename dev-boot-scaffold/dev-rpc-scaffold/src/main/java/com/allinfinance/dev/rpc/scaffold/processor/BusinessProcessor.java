@@ -1,7 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.processor;
 
-import com.allinfinance.dev.rpc.scaffold.api.dto.AbstractRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.AbstractResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractResponseDTO;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>

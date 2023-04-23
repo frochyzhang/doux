@@ -1,8 +1,10 @@
-package com.allinfinance.dev.rpc.scaffold.config;
+package com.allinfinance.dev.rpc.scaffold.bootstrap;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.alipay.sofa.jraft.error.RemotingException;
-import com.allinfinance.dev.rpc.scaffold.dto.ExporterRegistrarRequest;
+import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterRegistrarRequest;
+import com.allinfinance.dev.rpc.scaffold.config.RaftRpcClientConfig;
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import com.allinfinance.dev.rpc.scaffold.processor.BusinessProcessedFactory;
 import com.allinfinance.dev.rpc.scaffold.processor.BusinessProcessor;
 import org.slf4j.Logger;

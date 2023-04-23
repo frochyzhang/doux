@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.api.dto;
+package com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;

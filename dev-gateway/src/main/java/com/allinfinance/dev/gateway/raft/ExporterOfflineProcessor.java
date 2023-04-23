@@ -4,7 +4,7 @@ import com.alipay.sofa.jraft.Status;
 import com.alipay.sofa.jraft.rpc.RpcContext;
 import com.alipay.sofa.jraft.rpc.RpcProcessor;
 import com.allinfinance.dev.gateway.raft.service.GatewayService;
-import com.allinfinance.dev.rpc.scaffold.dto.ExporterOfflineRequest;
+import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterOfflineRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

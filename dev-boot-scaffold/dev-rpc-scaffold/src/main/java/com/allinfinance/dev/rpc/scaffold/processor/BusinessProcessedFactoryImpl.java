@@ -1,7 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.processor;
 
-import com.allinfinance.dev.rpc.scaffold.api.dto.AbstractRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.AbstractResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractResponseDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;

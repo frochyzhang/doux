@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.api.dto;
+package com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com">frochyZhang</a>

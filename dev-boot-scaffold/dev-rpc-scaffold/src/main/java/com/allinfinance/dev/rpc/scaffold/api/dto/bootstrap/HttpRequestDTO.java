@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.api.dto;
+package com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap;
 
 import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 

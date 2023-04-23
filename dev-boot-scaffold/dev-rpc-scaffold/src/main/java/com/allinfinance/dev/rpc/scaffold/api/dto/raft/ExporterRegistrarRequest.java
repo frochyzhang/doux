@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.dto;
+package com.allinfinance.dev.rpc.scaffold.api.dto.raft;
 
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 

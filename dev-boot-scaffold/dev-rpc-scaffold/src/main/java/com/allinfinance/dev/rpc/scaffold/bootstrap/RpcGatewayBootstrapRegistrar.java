@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.config;
+package com.allinfinance.dev.rpc.scaffold.bootstrap;
 
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
@@ -6,7 +6,10 @@ import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
-import com.allinfinance.dev.rpc.scaffold.dto.ExporterOfflineRequest;
+import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterOfflineRequest;
+import com.allinfinance.dev.rpc.scaffold.config.RaftRpcClientConfig;
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.rpc.scaffold.config.SofaAPIConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;

@@ -1,8 +1,8 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
-import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.ProcessResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.ProcessRequestDTO;
+import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.ProcessResponseDTO;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 
 /**

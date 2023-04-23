@@ -36,7 +36,7 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
     private CustomBeanFactoryPostProcessor customBeanFactoryPostProcessor;
 
     /**
-     * Set the instance of {@link ClientFactory} to the Spring bean that implement this interface.
+     * 订阅com.alipay.sofa.rpc.registry-address配置的命名空间中的服务
      *
      * @param clientFactory ClientFactory The instance of {@link ClientFactory}
      */
@@ -76,6 +76,9 @@ public class ConsumerInjectSupport implements SmartInstantiationAwareBeanPostPro
         }
     }
 
+    /**
+     * 订阅公共服务，可通过commonReferenceRegistry指定命名空间
+     */
     @Override
     public void afterPropertiesSet() {
         if (rpcConfigurationProperties.getConsumer() != null) {

@@ -1,8 +1,9 @@
-package com.allinfinance.dev.rpc.scaffold.config;
+package com.allinfinance.dev.rpc.scaffold.bootstrap;
 
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
+import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
