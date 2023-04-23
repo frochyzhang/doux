@@ -1,6 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api.dto;
 
-import org.springframework.http.HttpMethod;
+import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 
 import java.util.Map;
 

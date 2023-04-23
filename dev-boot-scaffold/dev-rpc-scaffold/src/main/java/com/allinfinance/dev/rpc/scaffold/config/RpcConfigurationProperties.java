@@ -1,7 +1,7 @@
 package com.allinfinance.dev.rpc.scaffold.config;
 
+import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
 import java.util.ArrayList;

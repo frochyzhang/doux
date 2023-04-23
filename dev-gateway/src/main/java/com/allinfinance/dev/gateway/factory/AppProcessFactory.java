@@ -10,6 +10,7 @@ import com.alipay.sofa.runtime.api.aware.ClientFactoryAware;
 import com.alipay.sofa.runtime.api.client.ClientFactory;
 import com.alipay.sofa.runtime.api.client.ReferenceClient;
 import com.alipay.sofa.runtime.api.client.param.ReferenceParam;
+import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 import com.allinfinance.dev.common.util.cache.SyncCache;
 import com.allinfinance.dev.gateway.netty.HttpServer;
 import com.allinfinance.dev.gateway.netty.http.NettyHttpRequest;
@@ -25,7 +26,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
