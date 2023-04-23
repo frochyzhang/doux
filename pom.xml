@@ -860,17 +860,17 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--    <groupId>org.sonatype.plugins</groupId>-->
+            <!--    <artifactId>nexus-staging-maven-plugin</artifactId>-->
+            <!--    <version>1.6.7</version>-->
+            <!--    <extensions>true</extensions>-->
+            <!--    <configuration>-->
+            <!--        <serverId>ossrh</serverId>-->
+            <!--        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
+            <!--        <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
+            <!--    </configuration>-->
+            <!--</plugin>-->
 
             <!--所有子模块都要执行的plugin-->
             <plugin>
