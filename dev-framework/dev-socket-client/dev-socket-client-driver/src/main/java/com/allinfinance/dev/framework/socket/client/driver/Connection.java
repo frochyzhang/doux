@@ -8,7 +8,7 @@ import java.util.Properties;
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
  * @date 2022/09/14 9:27
  */
-@Extensible(singleton = false)
+@Extensible//(singleton = false)
 public interface Connection {
     /**
      * 客户端发送请求

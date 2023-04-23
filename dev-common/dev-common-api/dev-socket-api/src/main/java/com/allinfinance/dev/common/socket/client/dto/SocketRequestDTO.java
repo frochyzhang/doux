@@ -20,7 +20,7 @@ public class SocketRequestDTO {
     /**
      * 服务端超时时间
      */
-    private String timeout = "30000";
+    private String timeout = "3000";
     /**
      * 是否检查mac
      */

@@ -22,8 +22,8 @@ public class CcpTestController {
     @Autowired
     private ccpService ccpservice;
 
-    @Value("${dev.tool.flag:false}")
-    private Boolean flag;
+    @Value("${dev.tool.sleep-flag:false}")
+    private Boolean sleepFlag;
 
     @PostMapping("/ccpTest")
     public Boolean ccpTest(@RequestBody TestRequest request) {
@@ -33,6 +33,7 @@ public class CcpTestController {
                 "                \"<head>\" +\n" +
                 "                \"<version>1.0.0</version>\" +\n" +
                 "                \"<instId>HBC</instId>\" +\n" +
+                "                \"<test>00001</test>\" +\n" +
                 "                \"<function>ant.current.bankpoint.cccreq</function>\" +\n" +
                 "                \"<respTime>20220615150531</respTime>\" +\n" +
                 "                \"<certId>AIF2020072101</certId>\" +\n" +
@@ -40,23 +41,13 @@ public class CcpTestController {
                 "                \"<channelSystemId>HBC19</channelSystemId>\" +\n" +
                 "                \"</head>\" +\n" +
                 "                \"<body>\" +\n" +
-                "                \"<accountName>月亮一</accountName>\" +\n" +
-                "                \"<cardNo>************0293</cardNo>\" +\n" +
-                "                \"<resultInfo>\" +\n" +
-                "                \"<resultStatus>S</resultStatus>\" +\n" +
-                "                \"<resultCode>0000</resultCode>\" +\n" +
-                "                \"<resultMsg>交易成功</resultMsg>\" +\n" +
-                "                \"</resultInfo>\" +\n" +
-                "                \"<extension/>\" +\n" +
-                "                \"</body>\" +\n" +
-                "                \"</response>\" +\n" +
-                "                \"<signature>\" +\n" +
-                "                \"ViDg0jB08br95YiowX4kAhSw25btiQMSZAJ7CiJAlpTIAGMNpBu5OlkAVX9AwP9b+Xo6BO1JWf7q2t7hCNVGzdXxiJZ3sV98/Ank9zaysnxdqdN9WvZl0uJ/XNR+llH4FPw/UcPG5yUlWlsJC2nllpc67AzaE3cxWrWV/nDTCTNuIoWAUwe3peLna5SjFaYr7+P+hqYEZs5+FfZyhfRB0ymdYYC/CF50yVtKD2ajgpdw0vXbYlgYz9/UCyzt+8CELO7tnXVchAnrV2IQ6ccYId2x3SaayUvaCKvZZYZ/U9sr06TJakdXgJF6uQCuWjw4djGhO4l1PeqrP8XH9D5Amw==</signature></document>]\";111";
+                "                \"<accountName>月亮一</accountName>\" +";
         String requestMsg2 = "<document>\" +\n" +
                 "                \"<response>\" +\n" +
                 "                \"<head>\" +\n" +
                 "                \"<version>1.0.0</version>\" +\n" +
                 "                \"<instId>HBC</instId>\" +\n" +
+                "                \"<test>00002</test>\" +\n" +
                 "                \"<function>ant.current.bankpoint.cccreq</function>\" +\n" +
                 "                \"<respTime>20220615150531</respTime>\" +\n" +
                 "                \"<certId>AIF2020072101</certId>\" +\n" +
@@ -64,19 +55,8 @@ public class CcpTestController {
                 "                \"<channelSystemId>HBC19</channelSystemId>\" +\n" +
                 "                \"</head>\" +\n" +
                 "                \"<body>\" +\n" +
-                "                \"<accountName>月亮一</accountName>\" +\n" +
-                "                \"<cardNo>************0293</cardNo>\" +\n" +
-                "                \"<resultInfo>\" +\n" +
-                "                \"<resultStatus>S</resultStatus>\" +\n" +
-                "                \"<resultCode>0000</resultCode>\" +\n" +
-                "                \"<resultMsg>交易成功</resultMsg>\" +\n" +
-                "                \"</resultInfo>\" +\n" +
-                "                \"<extension/>\" +\n" +
-                "                \"</body>\" +\n" +
-                "                \"</response>\" +\n" +
-                "                \"<signature>\" +\n" +
-                "                \"ViDg0jB08br95YiowX4kAhSw25btiQMSZAJ7CiJAlpTIAGMNpBu5OlkAVX9AwP9b+Xo6BO1JWf7q2t7hCNVGzdXxiJZ3sV98/Ank9zaysnxdqdN9WvZl0uJ/XNR+llH4FPw/UcPG5yUlWlsJC2nllpc67AzaE3cxWrWV/nDTCTNuIoWAUwe3peLna5SjFaYr7+P+hqYEZs5+FfZyhfRB0ymdYYC/CF50yVtKD2ajgpdw0vXbYlgYz9/UCyzt+8CELO7tnXVchAnrV2IQ6ccYId2x3SaayUvaCKvZZYZ/U9sr06TJakdXgJF6uQCuWjw4djGhO4l1PeqrP8XH9D5Amw==</signature></document>]\";2222";
-        if (flag){
+                "                \"<accountName>月亮一</accountName>\" +\n";
+        if (sleepFlag) {
             try {
                 Thread.sleep(10);
                 return true;

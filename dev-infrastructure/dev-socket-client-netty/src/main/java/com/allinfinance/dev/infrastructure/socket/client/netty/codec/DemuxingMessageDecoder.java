@@ -3,10 +3,9 @@ package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -38,9 +37,9 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                 byte[] bBody = new byte[byteBuf.readableBytes()];
                 byteBuf.readBytes(bBody);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("解码结果,result={}", new String(bBody));
+                    logger.debug("解码结果,result={}", new String(bBody, msgEncode));
                 }
-                list.add(new String(bBody));
+                list.add(new String(bBody, msgEncode));
             } else {
                 if (byteBuf.readableBytes() >= this.getMsgLengthSize()) {
                     byteBuf.markReaderIndex();
@@ -51,7 +50,11 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                         len = Integer.parseInt(new String(bLen));
                     } catch (NumberFormatException ex) {
                         logger.warn("报文长度含有非数字内容，关闭连接: {} ", bLen);
-                        channelHandlerContext.channel().closeFuture();
+                        byteBuf.resetReaderIndex();
+                        byte[] bBody = new byte[byteBuf.readableBytes()];
+                        byteBuf.readBytes(bBody);
+                        list.add(new String(bBody, msgEncode));
+                        return;
                     }
                     if (byteBuf.readableBytes() < len) {
                         if (logger.isDebugEnabled()) {
@@ -63,9 +66,9 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                     byte[] bBody = new byte[len];
                     byteBuf.readBytes(bBody);
                     if (logger.isDebugEnabled()) {
-                        logger.debug("解码结果,result={}", new String(bBody));
+                        logger.debug("解码结果,result={}", new String(bBody, msgEncode));
                     }
-                    list.add(new String(bBody));
+                    list.add(new String(bBody, msgEncode));
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("报文长度未到齐:  " + byteBuf.readableBytes());

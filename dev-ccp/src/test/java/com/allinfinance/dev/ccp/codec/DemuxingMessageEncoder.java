@@ -1,4 +1,4 @@
-package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
+package com.allinfinance.dev.ccp.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

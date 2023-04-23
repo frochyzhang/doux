@@ -59,13 +59,55 @@ com:
               handlerClassName: com.allinfinance.dev.tools.hsp.handler.CcpResponseHandler
 dev:
   hsp:
-    tool:
-      msg-length: 4
-      ip: 127.0.0.1
+    msg-length: 4
+    ip: 127.0.0.1
 
   tool:
-    flag: false
+    mina-flag: false
+    sleep-flag: false
+---
+spring:
+  profiles: sit
 
+nacos:
+  config:
+    namespace: dev-sit
+    server-addr: 10.250.28.142:8848
+    username: iasp-lzk
+    password: iasp-lzk
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/dev-sit
+  allinfinance:
+    rpc:
+      consumer:
+        reference-list:
+          - interface-name: com.allinfinance.dev.common.socket.client.ISocketService
+    socket:
+      server:
+        bootstrap:
+          serverEnabled: true
+          bootstrap: default
+        scaffold:
+          server-metadata-list:
+            - name: test1
+              port: 11111
+              handlerClassName: com.allinfinance.dev.tools.hsp.handler.CcpResponseHandler
+            - name: test2
+              port: 22222
+              decodeMsgLength: 4
+              encodeMsgLength: 4
+              handlerClassName: com.allinfinance.dev.tools.hsp.handler.CcpResponseHandler
+dev:
+  hsp:
+    ip: 127.0.0.1
+
+  tool:
+    mina-flag: true
+    sleep-flag: false
 
 
 

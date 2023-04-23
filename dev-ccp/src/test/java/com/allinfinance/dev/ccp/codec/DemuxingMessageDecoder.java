@@ -1,4 +1,4 @@
-package com.allinfinance.dev.infrastructure.socket.server.netty.codec;
+package com.allinfinance.dev.ccp.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -96,4 +96,3 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
         this.msgEncode = msgEncode;
     }
 }
-
