@@ -22,13 +22,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ProgressivePromise;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -40,7 +39,7 @@ public class SocketNettyConnection implements Connection {
 
     private final EventLoopGroup loopGroup = new NioEventLoopGroup(16);
 
-    private ChannelFuture channelFuture;
+    private static final ThreadLocal<ChannelFuture> channelFuture = new ThreadLocal<>();
 
     private int timeout;
 
@@ -50,7 +49,8 @@ public class SocketNettyConnection implements Connection {
 
     @Override
     public String send(String msg) {
-        Channel channel = channelFuture.channel();
+        Channel channel = channelFuture.get().channel();
+        channelFuture.remove();
         ProgressivePromise<String> promise = NETTY_EVENT_LOOP.newProgressivePromise();
         NettyRequestContext requestContext = new NettyRequestContext(UUID.fastUUID().toString(), promise);
         channel.attr(REQUEST_CONTEXT_ATTRIBUTE_KEY).set(requestContext);
@@ -65,15 +65,13 @@ public class SocketNettyConnection implements Connection {
         } catch (TimeoutException e) {
             logger.error("获取响应超时, 超时时间：{}ms", this.timeout);
         } finally {
-            future.awaitUninterruptibly();
             future.channel().close();
-            future.channel().closeFuture().awaitUninterruptibly();
         }
         throw new RuntimeException("获取响应异常");
     }
 
     @Override
-    public void connect(Properties properties) {
+    public synchronized void connect(Properties properties) {
         String serverIp = properties.getProperty("remoteIp");
         int serverPort = Integer.parseInt(properties.getProperty("remotePort"));
         int msgLengthSize = Integer.parseInt(properties.getProperty("msgLengthSize"));
@@ -85,7 +83,8 @@ public class SocketNettyConnection implements Connection {
             Bootstrap option = new Bootstrap()
                     .group(loopGroup)
                     .channel(NioSocketChannel.class)
-                    .option(ChannelOption.AUTO_CLOSE, true);
+//                    .option(ChannelOption.SO_REUSEADDR, true)  //快速复用端口，默认关闭
+                    .option(ChannelOption.TCP_NODELAY, true);
             if ("true".equals(soLingerEnable)) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("开启SO_LINGER");
@@ -114,10 +113,17 @@ public class SocketNettyConnection implements Connection {
                                 public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
                                     ctx.channel().close();
                                 }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                    super.exceptionCaught(ctx, cause);
+                                    Channel channel = ctx.channel();
+                                    if(channel.isActive())ctx.close();
+                                }
                             });
                         }
                     });
-            channelFuture = bootstrap.connect(serverIp, serverPort).sync();
+            channelFuture.set(bootstrap.connect(serverIp, serverPort).sync());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

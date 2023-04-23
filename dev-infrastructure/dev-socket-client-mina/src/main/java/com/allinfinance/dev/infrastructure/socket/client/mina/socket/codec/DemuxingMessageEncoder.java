@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastructure.socket.client.mina.socket.codec;
+package com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.buffer.IoBuffer;

@@ -14,6 +14,14 @@ public class ServerMetadataConfigure {
      */
     private String port;
     /**
+     * 心跳检测读超时时间
+     */
+    private String readerIdleTime = "60000";
+    /**
+     * 心跳检测写超时时间
+     */
+    private String writerIdleTime = "60000";
+    /**
      * 解码报文头长度：4 、 6
      */
     private String decodeMsgLength = "6";
@@ -129,19 +137,37 @@ public class ServerMetadataConfigure {
         this.serverDriver = serverDriver;
     }
 
+    public String getReaderIdleTime() {
+        return readerIdleTime;
+    }
+
+    public void setReaderIdleTime(String readerIdleTime) {
+        this.readerIdleTime = readerIdleTime;
+    }
+
+    public String getWriterIdleTime() {
+        return writerIdleTime;
+    }
+
+    public void setWriterIdleTime(String writerIdleTime) {
+        this.writerIdleTime = writerIdleTime;
+    }
+
     @Override
     public String toString() {
         return "ServerMetadataConfigure{" +
                 "name='" + name + '\'' +
-                ", port=" + port +
-                ", decodeMsgLength=" + decodeMsgLength +
-                ", encodeMsgLength=" + encodeMsgLength +
+                ", port='" + port + '\'' +
+                ", readerIdleTime='" + readerIdleTime + '\'' +
+                ", writerIdleTime='" + writerIdleTime + '\'' +
+                ", decodeMsgLength='" + decodeMsgLength + '\'' +
+                ", encodeMsgLength='" + encodeMsgLength + '\'' +
                 ", decodeCharset='" + decodeCharset + '\'' +
                 ", encodeCharset='" + encodeCharset + '\'' +
                 ", handlerClassName='" + handlerClassName + '\'' +
                 ", decoderClassName='" + decoderClassName + '\'' +
                 ", encoderClassName='" + encoderClassName + '\'' +
-                ", ServerDriver='" + serverDriver + '\'' +
+                ", serverDriver='" + serverDriver + '\'' +
                 '}';
     }
 }

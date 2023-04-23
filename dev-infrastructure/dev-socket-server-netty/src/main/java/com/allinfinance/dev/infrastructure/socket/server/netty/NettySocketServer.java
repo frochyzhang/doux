@@ -2,6 +2,7 @@ package com.allinfinance.dev.infrastructure.socket.server.netty;
 
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServer;
+import com.allinfinance.dev.infrastructure.socket.server.netty.handler.IdleHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -14,14 +15,15 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.netty.handler.timeout.IdleStateHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -48,6 +50,8 @@ public class NettySocketServer implements SocketServer {
         String encoderClassName = properties.getProperty("encoderClassName");
         String decoderClassName = properties.getProperty("decoderClassName");
         String handlerClassName = properties.getProperty("handlerClassName");
+        int readerIdleTime = Integer.parseInt(properties.getProperty("readerIdleTime"));
+        int writerIdleTime = Integer.parseInt(properties.getProperty("writerIdleTime"));
         int decodeMsgLength = Integer.parseInt(properties.getProperty("decodeMsgLength"));
         int encodeMsgLength = Integer.parseInt(properties.getProperty("encodeMsgLength"));
 
@@ -57,9 +61,10 @@ public class NettySocketServer implements SocketServer {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childOption(ChannelOption.SO_LINGER, 0)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)   //关闭nagle算法,其受TCP延迟确认影响, 会导致相继两次向连接发送请求包, 读数据时会有一个最多达500毫秒的延时
+//                .childOption(ChannelOption.SO_LINGER, 0)  //关闭socket的延时时间，默认关闭
+//                .childOption(ChannelOption.SO_KEEPALIVE, true)    //通过发送数据包方式检测socket连接有效性
+//                .childOption(ChannelOption.SO_REUSEADDR, true)    //快速复用端口，默认关闭
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
@@ -72,24 +77,22 @@ public class NettySocketServer implements SocketServer {
                                         .newInstance(encodeMsgLength, encodeCharset))
                                 .addLast((ChannelInboundHandlerAdapter) Class.forName(handlerClassName)
                                         .getConstructor(String.class)
-                                        .newInstance(name));
+                                        .newInstance(name))
+                                .addLast(new IdleStateHandler(readerIdleTime, writerIdleTime, 0, TimeUnit.MILLISECONDS))
+                                .addLast(new IdleHandler());
                     }
                 });
         nioEventLoopGroupList.add(workerGroup);
         nioEventLoopGroupList.add(bossGroup);
         EVENT_LOOP_GROUP_MAP.putIfAbsent(port, nioEventLoopGroupList);
         if (logger.isDebugEnabled()) {
-            logger.debug("{}Netty服务端初始化完成", name);
+            logger.debug("{}-Netty服务端初始化完成", name);
         }
         try {
-            ChannelFuture future = serverBootstrap.bind(port).sync();
-            future.channel().closeFuture().sync();
+            serverBootstrap.bind(port).sync();
         } catch (InterruptedException e) {
             logger.error("[ {}] 启动服务失败! 参数为{}", name, properties, e);
             Thread.currentThread().interrupt();
-        } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
         }
     }
 

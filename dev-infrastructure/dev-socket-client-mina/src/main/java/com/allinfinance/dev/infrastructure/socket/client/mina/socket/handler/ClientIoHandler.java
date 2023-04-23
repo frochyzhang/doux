@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastructure.socket.client.mina.socket.handler;
+package com.allinfinance.dev.infrastructure.socket.client.mina.socket.handler;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;

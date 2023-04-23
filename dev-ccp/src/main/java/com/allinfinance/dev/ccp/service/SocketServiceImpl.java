@@ -9,6 +9,7 @@ import com.allinfinance.dev.framework.socket.client.driver.SocketClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -22,6 +23,8 @@ public class SocketServiceImpl implements ISocketService {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketServiceImpl.class);
 
+    @Value("${dev.ccp.flag:false}")
+    private Boolean flag;
     /**
      * 客户端请求
      *
@@ -31,8 +34,8 @@ public class SocketServiceImpl implements ISocketService {
      */
     @Override
     public SocketResponseDTO clientRequest(SocketRequestDTO socketRequestDTO, String message) {
-        logger.info("请求连接参数{}", socketRequestDTO);
-        logger.info("请求内容{}", message);
+        logger.info("请求连接参数:{}", socketRequestDTO);
+        logger.info("请求内容:{}", message);
         SocketResponseDTO socketResponseDTO = new SocketResponseDTO();
         Properties properties = new Properties();
         PropertiesParseUtils.fromBean(properties, socketRequestDTO);

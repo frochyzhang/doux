@@ -1,4 +1,4 @@
-package com.allinfinance.dev.infrastructure.socket.client.netty.codec;
+package com.allinfinance.dev.ccp.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,6 +34,7 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                 logger.debug("开始对消息进行解码");
             }
             if (this.getMsgLengthSize() == 0) {
+                //报文头长度为0,直接将缓冲区内容全部读出
                 byte[] bBody = new byte[byteBuf.readableBytes()];
                 byteBuf.readBytes(bBody);
                 if (logger.isDebugEnabled()) {
@@ -49,14 +50,15 @@ public class DemuxingMessageDecoder extends ByteToMessageDecoder {
                     try {
                         len = Integer.parseInt(new String(bLen));
                     } catch (NumberFormatException ex) {
-                        logger.warn("报文长度含有非数字内容，关闭连接: {} ", bLen);
-                        byteBuf.resetReaderIndex();
+                        logger.warn("server接收报文长度含有非数字内容，关闭连接: {} ", bLen);
+                        //读到非数字内容，将缓冲区内容全部读出返回
                         byte[] bBody = new byte[byteBuf.readableBytes()];
                         byteBuf.readBytes(bBody);
                         list.add(new String(bBody, msgEncode));
                         return;
                     }
                     if (byteBuf.readableBytes() < len) {
+                        // 可能存在服务端误读长度过大，导致持续等待，直到客户端主动断连
                         if (logger.isDebugEnabled()) {
                             logger.debug("长度与消息真实长度不符，重置读");
                         }

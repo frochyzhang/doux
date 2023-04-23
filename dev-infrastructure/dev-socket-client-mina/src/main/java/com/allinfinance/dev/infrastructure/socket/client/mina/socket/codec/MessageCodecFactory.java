@@ -1,4 +1,4 @@
-package com.allinfinace.dev.infrastructure.socket.client.mina.socket.codec;
+package com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec;
 
 import org.apache.mina.filter.codec.demux.DemuxingProtocolCodecFactory;
 import org.apache.mina.filter.codec.demux.MessageDecoder;

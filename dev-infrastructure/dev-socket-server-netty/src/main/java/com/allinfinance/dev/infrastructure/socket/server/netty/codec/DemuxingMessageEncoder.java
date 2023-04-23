@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
  * @date 2022/09/14 9:40
  */
 public class DemuxingMessageEncoder extends MessageToByteEncoder<String> {
-
     private static final Logger logger = LoggerFactory.getLogger(DemuxingMessageEncoder.class);
 
     private Integer msgLengthSize;
@@ -32,9 +31,8 @@ public class DemuxingMessageEncoder extends MessageToByteEncoder<String> {
     protected void encode(ChannelHandlerContext channelHandlerContext, String msg, ByteBuf byteBuf) throws Exception {
         if (StringUtils.isEmpty(msg)) {
             if (this.getMsgLengthSize() != 0) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("消息为空，无需发送");
-                }
+                //发送消息为空，直接发送MsgLengthSize个0
+                byteBuf.writeBytes(String.format("%0" + this.getMsgLengthSize() + "d", 0).getBytes());
             }
             return;
         }
@@ -49,6 +47,11 @@ public class DemuxingMessageEncoder extends MessageToByteEncoder<String> {
             }
             bodyLen = body.length;
             byteBuf.writeBytes(String.format("%0" + this.getMsgLengthSize() + "d", bodyLen).getBytes());
+            byteBuf.writeBytes(body);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("对消息进行编码发送");
+            }
             byteBuf.writeBytes(body);
         }
     }
