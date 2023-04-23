@@ -19,6 +19,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-hsp-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

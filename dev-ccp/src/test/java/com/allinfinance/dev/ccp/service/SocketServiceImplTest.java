@@ -1,5 +1,6 @@
 package com.allinfinance.dev.ccp.service;
 
+import com.allinfinance.dev.ccp.AbstractBenchmark;
 import com.allinfinance.dev.ccp.CcpApplication;
 import com.allinfinance.dev.common.socket.client.ISocketService;
 import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;

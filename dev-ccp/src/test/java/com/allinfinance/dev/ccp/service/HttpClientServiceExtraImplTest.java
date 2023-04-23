@@ -1,6 +1,7 @@
 package com.allinfinance.dev.ccp.service;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.allinfinance.dev.ccp.AbstractBenchmark;
 import com.allinfinance.dev.common.api.http.HttpClientService;
 import com.allinfinance.dev.common.api.http.constant.HttpMethod;
 import com.allinfinance.dev.common.api.http.dto.HttpRequestDTO;

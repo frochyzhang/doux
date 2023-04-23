@@ -22,12 +22,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ProgressivePromise;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -118,7 +119,9 @@ public class SocketNettyConnection implements Connection {
                                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                                     super.exceptionCaught(ctx, cause);
                                     Channel channel = ctx.channel();
-                                    if(channel.isActive())ctx.close();
+                                    if (channel.isActive()) {
+                                        ctx.close();
+                                    }
                                 }
                             });
                         }
