@@ -1,7 +1,7 @@
 package com.allinfinance.dev.ccp.service;
 
-import com.allinfinance.dev.common.api.http.dto.HttpRequestDTO;
-import com.allinfinance.dev.common.api.http.dto.HttpResponseDTO;
+import com.allinfinance.dev.common.http.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.common.http.api.dto.HttpResponseDTO;
 import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
 import com.allinfinance.dev.framework.http.driver.dto.HttpResponse;
 import org.mapstruct.Mapper;

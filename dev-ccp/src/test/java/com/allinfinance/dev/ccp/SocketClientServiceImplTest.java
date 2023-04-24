@@ -2,16 +2,17 @@ package com.allinfinance.dev.ccp;
 
 import cn.hutool.core.net.NetUtil;
 import com.allinfinance.dev.ccp.server.NettyServer;
-import com.allinfinance.dev.common.socket.client.ISocketService;
-import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import com.allinfinance.dev.common.socket.api.client.SocketClientService;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -20,7 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class SocketClientServiceImplTest {
     @Autowired
-    private ISocketService socketService;
+    private SocketClientService socketService;
 
     @BeforeAll
     public static void before() throws Exception {
@@ -66,12 +67,12 @@ public class SocketClientServiceImplTest {
         String s = null;
         // utf8编解码，发送空内容，响应空内容
         SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7002", "ccp", "6", "UTF-8");
-        s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+        s = socketService.request(socketRequestDTO, message).getResponse();
         Assertions.assertNull(s);
         // utf8编解码，长度域为0
         message = "p2165164165416514646541656";
         socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7003", "ccp", "0", "UTF-8");
-        s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+        s = socketService.request(socketRequestDTO, message).getResponse();
         Assertions.assertArrayEquals(("response" + message).getBytes(StandardCharsets.UTF_8), s.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -81,11 +82,11 @@ public class SocketClientServiceImplTest {
         String s = null;
         //gbk编解码
         SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7000", "ccp", "4", "GBK");
-        s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+        s = socketService.request(socketRequestDTO, message).getResponse();
         Assertions.assertArrayEquals(("response" + message).getBytes("GBK"), s.getBytes("GBK"));
         // utf8编解码
         socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "ccp", "4", "UTF-8");
-        s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+        s = socketService.request(socketRequestDTO, message).getResponse();
         Assertions.assertArrayEquals(("response" + message).getBytes(StandardCharsets.UTF_8), s.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -96,7 +97,7 @@ public class SocketClientServiceImplTest {
         String s = null;
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "ccp", "5", "UTF-8");
-            s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+            s = socketService.request(socketRequestDTO, message).getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(s);
@@ -104,7 +105,7 @@ public class SocketClientServiceImplTest {
         // 客户端(3)长度域比服务端(4)短
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "ccp", "3", "UTF-8");
-            s = socketService.clientRequest(socketRequestDTO, message).getResponse();
+            s = socketService.request(socketRequestDTO, message).getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(s);
@@ -114,7 +115,7 @@ public class SocketClientServiceImplTest {
         String ss = null;
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "ccp", "3", "UTF-8");
-            ss = socketService.clientRequest(socketRequestDTO, msg).getResponse();
+            ss = socketService.request(socketRequestDTO, msg).getResponse();
         } catch (Exception e) {
             Assertions.assertNotNull(e);
             Assertions.assertNull(ss);

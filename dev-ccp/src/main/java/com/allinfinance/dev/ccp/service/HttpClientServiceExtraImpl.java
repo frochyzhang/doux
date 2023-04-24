@@ -1,8 +1,8 @@
 package com.allinfinance.dev.ccp.service;
 
-import com.allinfinance.dev.common.api.http.HttpClientService;
-import com.allinfinance.dev.common.api.http.dto.HttpRequestDTO;
-import com.allinfinance.dev.common.api.http.dto.HttpResponseDTO;
+import com.allinfinance.dev.common.http.api.HttpClientService;
+import com.allinfinance.dev.common.http.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.common.http.api.dto.HttpResponseDTO;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;

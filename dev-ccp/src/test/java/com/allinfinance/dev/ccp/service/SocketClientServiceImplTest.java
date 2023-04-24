@@ -1,9 +1,9 @@
 package com.allinfinance.dev.ccp.service;
 
 import cn.hutool.core.net.NetUtil;
-import com.allinfinance.dev.common.socket.client.ISocketService;
-import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
-import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
+import com.allinfinance.dev.common.socket.api.client.SocketClientService;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest
 class SocketClientServiceImplTest {
     @Autowired
-    private ISocketService socketService;
+    private SocketClientService socketService;
 
     @BeforeAll
     public static void before() throws Exception {
@@ -85,7 +85,7 @@ class SocketClientServiceImplTest {
 
         // utf8编解码，长度域为0
         SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7003", "qps-test-65595210", "0", "UTF-8");
-        SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+        SocketResponseDTO socketResponseDTO = socketService.request(socketRequestDTO, message);
         Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
         String s = socketResponseDTO.getResponse();
         Assertions.assertArrayEquals(("response" + message).getBytes(StandardCharsets.UTF_8), s.getBytes(StandardCharsets.UTF_8));
@@ -98,7 +98,7 @@ class SocketClientServiceImplTest {
         String s = null;
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "qps-test-65595210", "6", "UTF-8");
-            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            SocketResponseDTO socketResponseDTO = socketService.request(socketRequestDTO, message);
             Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
             s = socketResponseDTO.getResponse();
         } catch (Exception e) {
@@ -109,7 +109,7 @@ class SocketClientServiceImplTest {
         // 客户端长度域比服务端短
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7001", "qps-test-65595210", "3", "UTF-8");
-            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            SocketResponseDTO socketResponseDTO = socketService.request(socketRequestDTO, message);
             Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
             s = socketResponseDTO.getResponse();
         } catch (Exception e) {
@@ -125,7 +125,7 @@ class SocketClientServiceImplTest {
         String s = null;
         try {
             SocketRequestDTO socketRequestDTO = new SocketRequestDTO("127.0.0.1", "7004", "qps-test-65595210", "6", "UTF-8");
-            SocketResponseDTO socketResponseDTO = socketService.clientRequest(socketRequestDTO, message);
+            SocketResponseDTO socketResponseDTO = socketService.request(socketRequestDTO, message);
             Assertions.assertTrue(socketResponseDTO.getSuccess(), "socketService返回失败");
             s = socketResponseDTO.getResponse();
         } catch (Exception e) {

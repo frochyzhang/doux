@@ -2,10 +2,10 @@ package com.allinfinance.dev.ccp.service;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.allinfinance.dev.ccp.AbstractBenchmark;
-import com.allinfinance.dev.common.api.http.HttpClientService;
-import com.allinfinance.dev.common.api.http.constant.HttpMethod;
-import com.allinfinance.dev.common.api.http.dto.HttpRequestDTO;
-import com.allinfinance.dev.common.api.http.dto.HttpResponseDTO;
+import com.allinfinance.dev.common.http.api.HttpClientService;
+import com.allinfinance.dev.common.http.api.constant.HttpMethod;
+import com.allinfinance.dev.common.http.api.dto.HttpRequestDTO;
+import com.allinfinance.dev.common.http.api.dto.HttpResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.Benchmark;

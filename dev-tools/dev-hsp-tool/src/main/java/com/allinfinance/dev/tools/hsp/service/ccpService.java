@@ -1,19 +1,20 @@
 package com.allinfinance.dev.tools.hsp.service;
 
-import com.allinfinance.dev.common.socket.client.ISocketService;
-import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.api.client.SocketClientService;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
 import com.allinfinance.dev.common.util.convert.PropertiesParseUtils;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.socket.client.driver.Connection;
 import com.allinfinance.dev.tools.hsp.config.CcpNetworkConfig;
 import com.allinfinance.dev.tools.hsp.util.StringUtils;
-import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ccpService {
     @Autowired
-    private ISocketService socketService;
+    private SocketClientService socketService;
 
     @Value("${dev.hsp.ip:127.0.0.1}")
     private String ip;

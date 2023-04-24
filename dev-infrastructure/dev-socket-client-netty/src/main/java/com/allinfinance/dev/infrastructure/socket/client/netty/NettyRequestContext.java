@@ -24,6 +24,4 @@ public class NettyRequestContext {
     public Promise<String> getRespPromise() {
         return respPromise;
     }
-
-
 }

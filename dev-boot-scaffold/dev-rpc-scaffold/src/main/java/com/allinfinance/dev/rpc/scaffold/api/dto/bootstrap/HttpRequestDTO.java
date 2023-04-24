@@ -1,6 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap;
 
-import com.allinfinance.dev.common.api.http.constant.HttpMethod;
+import com.allinfinance.dev.common.http.api.constant.HttpMethod;
 
 import java.util.Map;
 

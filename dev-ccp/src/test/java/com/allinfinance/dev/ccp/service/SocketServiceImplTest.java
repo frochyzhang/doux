@@ -2,9 +2,9 @@ package com.allinfinance.dev.ccp.service;
 
 import com.allinfinance.dev.ccp.AbstractBenchmark;
 import com.allinfinance.dev.ccp.CcpApplication;
-import com.allinfinance.dev.common.socket.client.ISocketService;
-import com.allinfinance.dev.common.socket.client.dto.SocketRequestDTO;
-import com.allinfinance.dev.common.socket.client.dto.SocketResponseDTO;
+import com.allinfinance.dev.common.socket.api.client.SocketClientService;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketResponseDTO;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -22,16 +22,16 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(classes = CcpApplication.class)
 public class SocketServiceImplTest extends AbstractBenchmark {
 
-    private static ISocketService socketService;
+    private static SocketClientService socketService;
 
     @Autowired
-    public void setSocketService(ISocketService socketService) {
+    public void setSocketService(SocketClientService socketService) {
         SocketServiceImplTest.socketService = socketService;
     }
 
     @Benchmark
     public void clientRequest() {
-        SocketResponseDTO socketResponseDTO = socketService.clientRequest(new SocketRequestDTO("127.0.0.1", "4396", "8583", "4", "UTF-8"), "hello world");
+        SocketResponseDTO socketResponseDTO = socketService.request(new SocketRequestDTO("127.0.0.1", "4396", "8583", "4", "UTF-8"), "hello world");
 //        Assertions.assertEquals(true,socketResponseDTO.getSuccess());
     }
 }

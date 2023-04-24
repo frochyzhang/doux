@@ -8,7 +8,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author <a href="mailto:liumiao@allinfinance.com">liumiao</a>
  * @date 2023-03-31 17:28
@@ -17,10 +16,8 @@ import org.slf4j.LoggerFactory;
 public class IdleHandler extends ChannelInboundHandlerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(IdleHandler.class);
 
-
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object paramObject) throws Exception {
-        logger.info("userEventTriggered");
         if (paramObject instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) paramObject).state();
             if (state == IdleState.ALL_IDLE) {
