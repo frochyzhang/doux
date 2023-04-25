@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -21,6 +22,7 @@ import java.util.Properties;
  * @Author: qipeng
  * @Date: 2022/3/24
  **/
+@ConditionalOnClass(CacheableEventPublishingNacosServiceFactory.class)
 @Service("nacosApplicationService")
 public class NacosApplicationServiceImpl implements NacosApplicationService {
 

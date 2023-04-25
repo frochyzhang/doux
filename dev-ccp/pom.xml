@@ -23,6 +23,12 @@
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>nacos-config-spring-boot-starter</artifactId>
+                    <groupId>com.alibaba.boot</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

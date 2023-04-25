@@ -9,7 +9,6 @@ import com.allinfinance.dev.framework.socket.client.driver.SocketClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -22,9 +21,6 @@ import java.util.Properties;
 public class SocketClientServiceImpl implements SocketClientService {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketClientServiceImpl.class);
-
-    @Value("${dev.ccp.flag:false}")
-    private Boolean flag;
 
     /**
      * 客户端请求

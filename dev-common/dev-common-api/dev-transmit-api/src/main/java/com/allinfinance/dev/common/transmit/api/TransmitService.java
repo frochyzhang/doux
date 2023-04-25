@@ -1,7 +1,7 @@
-package com.allinfinance.dev.common.api.transmit;
+package com.allinfinance.dev.common.transmit.api;
 
-import com.allinfinance.dev.common.api.transmit.dto.TransmitRequestDTO;
-import com.allinfinance.dev.common.api.transmit.dto.TransmitResponseDTO;
+import com.allinfinance.dev.common.transmit.api.dto.TransmitRequestDTO;
+import com.allinfinance.dev.common.transmit.api.dto.TransmitResponseDTO;
 
 /**
  * @author qipeng

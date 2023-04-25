@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -73,8 +74,9 @@ public class SimpleOkHttpImpl implements SimpleHttp {
                         .build();
                 break;
             case "POST":
-                request = builder.post(RequestBody.create(MediaType.get(httpRequest.getMediaType()), httpRequest.getBody()))
-                        .build();
+                request = builder.post(RequestBody.create(MediaType.get(
+                        StringUtils.isEmpty(httpRequest.getMediaType()) ? httpRequest.getHeader().get("Content-Type") : httpRequest.getMediaType()),
+                        httpRequest.getBody())).build();
                 break;
             // TODO: 2022/9/7 暂时只做了get/post两种请求，后续可继续完善
             default:

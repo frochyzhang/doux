@@ -1,8 +1,8 @@
 package com.allinfinance.dev.ccp.service;
 
-import com.allinfinance.dev.common.api.transmit.dto.TransmitMode;
-import com.allinfinance.dev.common.api.transmit.dto.TransmitRequestDTO;
-import com.allinfinance.dev.common.api.transmit.dto.TransmitResponseDTO;
+import com.allinfinance.dev.common.transmit.api.dto.TransmitMode;
+import com.allinfinance.dev.common.transmit.api.dto.TransmitRequestDTO;
+import com.allinfinance.dev.common.transmit.api.dto.TransmitResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

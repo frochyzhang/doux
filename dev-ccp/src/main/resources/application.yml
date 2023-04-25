@@ -6,13 +6,17 @@ spring:
 
 ---
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
+  pid:
+    file: ${spring.application.name}.pid
 
 com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/dev-sit
+        registry-address: nacos://10.250.28.142:8848/public-sit
         bolt-port: 12222
   allinfinance:
     rpc:
@@ -21,20 +25,23 @@ com:
 
 dev:
   ccp:
-    flag: false
     driver: okhttp
     file:
-      local-sys-path: Z:\work\dev-new\dev\dev-ccp\src\main\resources
       local-path: C:\\temp
+
 ---
 spring:
-  profiles: sit
+  config:
+    activate:
+      on-profile: sit
+  pid:
+    file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
 com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/dev-sit
+        registry-address: nacos://10.250.28.142:8848/public-sit
         bolt-port: 12222
   allinfinance:
     rpc:
@@ -43,15 +50,15 @@ com:
 
 dev:
   ccp:
-    flag: false
     driver: okhttp
     file:
-      local-sys-path: Z:\work\dev-new\dev\dev-ccp\src\main\resources
-      local-path: C:\\temp
+      local-path: ${HOME}/ccp-file
 
 ---
 spring:
-  profiles: uat
+  config:
+    activate:
+      on-profile: uat
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
@@ -63,16 +70,20 @@ com:
         bolt-port: 12203
   allinfinance:
     rpc:
-      provider-package: com.allinfinance.dev.ccp.service
+      provider:
+        service-package: com.allinfinance.dev.ccp.service
 
 dev:
   ccp:
+    driver: okhttp
     file:
-      local-sys-path: ${HOME}/file
+      local-path: ${HOME}/ccp-file
 
 ---
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
@@ -84,9 +95,11 @@ com:
         bolt-port: 12201
   allinfinance:
     rpc:
-      provider-package: com.allinfinance.dev.ccp.service
+      provider:
+        service-package: com.allinfinance.dev.ccp.service
 
 dev:
   ccp:
+    driver: okhttp
     file:
-      local-sys-path: ${HOME}/file
+      local-path: ${HOME}/ccp-file

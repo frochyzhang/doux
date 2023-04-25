@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.api.transmit.dto;
+package com.allinfinance.dev.common.transmit.api.dto;
 
 import java.util.HashMap;
 import java.util.Map;
