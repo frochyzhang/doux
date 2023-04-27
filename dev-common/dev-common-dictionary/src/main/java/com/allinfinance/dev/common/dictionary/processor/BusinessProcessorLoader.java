@@ -27,6 +27,6 @@ public class BusinessProcessorLoader implements InitializingBean {
         LOGGER.info("Start loading business processor...");
         Arrays.stream(SpringUtil.getBeanNamesForType(BusinessProcessor.class))
                 .forEach(processorBeanName -> businessProcessedFactory.register(SpringUtil.getBean(processorBeanName)));
-        LOGGER.info("business processor loading completed...");
+        LOGGER.info("Business processor loading completed...");
     }
 }

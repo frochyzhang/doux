@@ -13,7 +13,7 @@ public class ServerBootstrapConfigure {
     /**
      * 是否启动端口
      */
-    private Boolean serverEnabled;
+    private Boolean enabled;
     /**
      * 服务端底层实现类：default
      */
@@ -30,18 +30,19 @@ public class ServerBootstrapConfigure {
         this.bootstrap = bootstrap;
     }
 
-    public Boolean getServerEnabled() {
-        return serverEnabled;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setServerEnabled(Boolean serverEnabled) {
-        this.serverEnabled = serverEnabled;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
     public String toString() {
         return "ServerBootstrapConfigure{" +
-                "bootstrap='" + bootstrap + '\'' +
+                "enabled=" + enabled +
+                ", bootstrap='" + bootstrap + '\'' +
                 '}';
     }
 }

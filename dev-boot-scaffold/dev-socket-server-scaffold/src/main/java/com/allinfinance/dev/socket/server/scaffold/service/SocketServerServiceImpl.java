@@ -3,7 +3,7 @@ package com.allinfinance.dev.socket.server.scaffold.service;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServerWrapper;
-import com.allinfinance.dev.socket.server.scaffold.api.ISocketServerService;
+import com.allinfinance.dev.socket.server.scaffold.api.SocketServerService;
 import com.allinfinance.dev.socket.server.scaffold.configure.ServerBootstrapConfigure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +22,10 @@ import java.util.Properties;
  * @date 2022-09-16 15:16
  */
 @Component
-@ConditionalOnProperty(prefix = "com.allinfinance.socket.server.bootstrap", name = "serverEnabled", havingValue = "true")
-public class ISocketServerServiceImpl implements ISocketServerService, InitializingBean, DisposableBean {
+@ConditionalOnProperty(prefix = "com.allinfinance.socket.server.bootstrap", name = "enabled", havingValue = "true")
+public class SocketServerServiceImpl implements SocketServerService, InitializingBean, DisposableBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(ISocketServerServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SocketServerServiceImpl.class);
 
     @Autowired
     @Qualifier("socketServerList")
@@ -37,7 +37,7 @@ public class ISocketServerServiceImpl implements ISocketServerService, Initializ
     private SocketServerWrapper socketServer;
 
     /**
-     * 根据传入的socketbeans开启多端口监听
+     * 根据传入的socket beans开启多端口监听
      */
     @Override
     public void start() {

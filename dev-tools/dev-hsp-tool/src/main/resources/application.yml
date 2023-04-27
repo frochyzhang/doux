@@ -41,11 +41,11 @@ com:
     rpc:
       consumer:
         reference-list:
-          - interface-name: com.allinfinance.dev.common.socket.client.ISocketService
+          - interface-name: com.allinfinance.dev.common.socket.api.client.SocketClientService
     socket:
       server:
         bootstrap:
-          serverEnabled: true
+          enabled: true
           bootstrap: default
         scaffold:
           server-metadata-list:
@@ -85,11 +85,11 @@ com:
     rpc:
       consumer:
         reference-list:
-          - interface-name: com.allinfinance.dev.common.socket.client.ISocketService
+          - interface-name: com.allinfinance.dev.common.socket.api.client.SocketClientService
     socket:
       server:
         bootstrap:
-          serverEnabled: true
+          enabled: true
           bootstrap: default
         scaffold:
           server-metadata-list:
