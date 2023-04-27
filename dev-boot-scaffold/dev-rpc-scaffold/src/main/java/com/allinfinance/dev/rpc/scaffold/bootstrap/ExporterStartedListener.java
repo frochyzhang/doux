@@ -1,12 +1,9 @@
 package com.allinfinance.dev.rpc.scaffold.bootstrap;
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.alipay.sofa.jraft.error.RemotingException;
 import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterRegistrarRequest;
 import com.allinfinance.dev.rpc.scaffold.config.RaftRpcClientConfig;
 import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
-import com.allinfinance.dev.rpc.scaffold.processor.BusinessProcessedFactory;
-import com.allinfinance.dev.rpc.scaffold.processor.BusinessProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -34,17 +30,9 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
     @Autowired
     private RaftRpcClientConfig raftRpcClientConfig;
 
-    @Autowired
-    private BusinessProcessedFactory businessProcessedFactory;
-
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
-        logger.info("exporter前置启动完成，开始加载BusinessProcessor");
-        Arrays.stream(SpringUtil.getBeanNamesForType(BusinessProcessor.class))
-                .forEach(processorBeanName -> businessProcessedFactory.register(SpringUtil.getBean(processorBeanName)));
-
-        // 调用网关的注册服务
-        logger.info("BusinessProcessor加载完成，开始调用网关注册服务");
+        logger.info("exporter前置启动完成，开始调用网关注册服务");
         Thread gateRegistryThread = new Thread(() -> {
             Boolean registerResult = null;
             while (true) {

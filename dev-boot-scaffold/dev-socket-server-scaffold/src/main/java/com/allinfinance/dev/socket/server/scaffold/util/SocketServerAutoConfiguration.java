@@ -25,7 +25,7 @@ public class SocketServerAutoConfiguration {
     @Autowired
     private SocketScaffoldConfigure socketScaffoldConfigure;
 
-    @ConditionalOnProperty(prefix = "com.allinfinance.socket.server.bootstrap", name = "serverEnabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "com.allinfinance.socket.server.bootstrap", name = "enabled", havingValue = "true")
     @Bean(name = "socketServerList")
     public List<Properties> getServerPropertiesList() {
         return socketScaffoldConfigure.getServerMetadataList()

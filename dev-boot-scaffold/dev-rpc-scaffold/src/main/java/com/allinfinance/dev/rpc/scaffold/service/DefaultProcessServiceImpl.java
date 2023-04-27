@@ -1,12 +1,12 @@
 package com.allinfinance.dev.rpc.scaffold.service;
 
+import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessedFactory;
+import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
+import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
+import com.allinfinance.dev.common.dictionary.processor.dto.ProcessResponseDTO;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.rpc.scaffold.api.AbstractProcessService;
 import com.allinfinance.dev.rpc.scaffold.api.ProcessorKeyService;
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractResponseDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.ProcessRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.ProcessResponseDTO;
-import com.allinfinance.dev.rpc.scaffold.processor.BusinessProcessedFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

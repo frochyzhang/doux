@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap;
 
+import com.allinfinance.dev.common.dictionary.processor.dto.AbstractRequestDTO;
 import com.allinfinance.dev.common.http.api.constant.HttpMethod;
 
 import java.util.Map;

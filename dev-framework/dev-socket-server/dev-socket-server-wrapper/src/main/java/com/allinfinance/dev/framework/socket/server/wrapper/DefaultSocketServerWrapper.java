@@ -53,11 +53,11 @@ public class DefaultSocketServerWrapper implements SocketServerWrapper {
                 socketServer = loader.getExtension(serverDriver);
                 socketServer.start(properties);
             } catch (Exception e) {
-                logger.error("[ {} ] 启动服务失败! 参数为{}", properties.getProperty("name"), properties, e);
+                logger.error("[ {} ] 服务启动失败! 参数为{}", properties.getProperty("name"), properties, e);
                 System.exit(0);
             }
             countDownLatch.countDown();
-            logger.info("{}-服务启动成功!", properties.getProperty("name"));
+            logger.info("[ {} ] 服务启动成功!", properties.getProperty("name"));
         }));
         NetUtil.isUsableLocalPort(0);
         try {

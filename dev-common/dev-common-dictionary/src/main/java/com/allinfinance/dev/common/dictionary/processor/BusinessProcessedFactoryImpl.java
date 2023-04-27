@@ -1,9 +1,9 @@
-package com.allinfinance.dev.rpc.scaffold.processor;
+package com.allinfinance.dev.common.dictionary.processor;
 
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractRequestDTO;
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.AbstractResponseDTO;
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessedFactory;
+import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessor;
+import com.allinfinance.dev.common.dictionary.processor.dto.AbstractRequestDTO;
+import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/16 16:52
  */
-@ConditionalOnProperty(value = RpcConfigurationProperties.Bootstrap.BOOT_ENABLE, havingValue = "true")
 @Component
 public class BusinessProcessedFactoryImpl implements BusinessProcessedFactory {
 

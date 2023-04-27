@@ -1,6 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.api;
 
-import com.allinfinance.dev.rpc.scaffold.api.dto.bootstrap.ProcessRequestDTO;
+import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
 
 /**
  * @author huanghf
