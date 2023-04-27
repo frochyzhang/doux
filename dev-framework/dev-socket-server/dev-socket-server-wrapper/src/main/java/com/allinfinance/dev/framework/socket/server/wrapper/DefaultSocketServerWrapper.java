@@ -1,6 +1,5 @@
 package com.allinfinance.dev.framework.socket.server.wrapper;
 
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
@@ -59,7 +58,6 @@ public class DefaultSocketServerWrapper implements SocketServerWrapper {
             countDownLatch.countDown();
             logger.info("[ {} ] 服务启动成功!", properties.getProperty("name"));
         }));
-        NetUtil.isUsableLocalPort(0);
         try {
             countDownLatch.await();
             logger.info("全部服务端口启动完成！");

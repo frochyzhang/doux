@@ -1,5 +1,6 @@
 package com.allinfinance.dev.infrastructure.socket.server.netty;
 
+import cn.hutool.core.net.NetUtil;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServer;
 import com.allinfinance.dev.infrastructure.socket.server.netty.handler.IdleHandler;
@@ -86,12 +87,16 @@ public class NettySocketServer implements SocketServer {
         nioEventLoopGroupList.add(bossGroup);
         EVENT_LOOP_GROUP_MAP.putIfAbsent(port, nioEventLoopGroupList);
         if (logger.isDebugEnabled()) {
-            logger.debug("{}-Netty服务端初始化完成", name);
+            logger.debug("[ {} ] Netty服务端初始化完成", name);
         }
         try {
             serverBootstrap.bind(port).sync();
+            if (NetUtil.isUsableLocalPort(port)) {
+                logger.error("[ {} ] 服务端口：{}未处于监听状态，请检查", name, port);
+                throw new RuntimeException("Netty服务端口未处于监听状态，请检查");
+            }
         } catch (InterruptedException e) {
-            logger.error("[ {}] 启动服务失败! 参数为{}", name, properties, e);
+            logger.error("[ {} ] 服务启动失败! 参数为{}", name, properties, e);
             Thread.currentThread().interrupt();
         }
     }
