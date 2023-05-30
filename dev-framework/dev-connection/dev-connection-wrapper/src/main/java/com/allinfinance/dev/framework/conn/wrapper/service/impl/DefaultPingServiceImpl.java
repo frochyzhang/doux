@@ -25,15 +25,19 @@ public class DefaultPingServiceImpl implements PingService {
      */
     @Override
     public boolean pingConnection(Connection connection, String request, String answer, int spendTime) {
-        long startTime = System.currentTimeMillis();
-        String response = connection.send(request);
-        long endTime = System.currentTimeMillis();
-        if (StringUtils.isNotBlank(answer)) {
-            //标准相应结果result不为空时进行ping相应的校验
-            return answer.equals(response) && (endTime - startTime) <= spendTime;
-        } else {
-            //标准相应结果为空时，仅需要服务端相应不为空且在目标时间内即可
-            return ObjectUtils.allNotNull(response) && (endTime - startTime) <= spendTime;
+        try {
+            long startTime = System.currentTimeMillis();
+            String response = connection.send(request);
+            long endTime = System.currentTimeMillis();
+            if (StringUtils.isNotBlank(answer)) {
+                //标准相应结果result不为空时进行ping相应的校验
+                return answer.equals(response) && (endTime - startTime) <= spendTime;
+            } else {
+                //标准相应结果为空时，仅需要服务端相应不为空且在目标时间内即可
+                return ObjectUtils.allNotNull(response) && (endTime - startTime) <= spendTime;
+            }
+        } catch (Throwable e) {
+            return false;
         }
     }
 }

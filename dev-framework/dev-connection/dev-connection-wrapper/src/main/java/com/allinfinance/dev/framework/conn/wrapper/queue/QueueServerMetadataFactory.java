@@ -7,7 +7,17 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 
 import java.util.Properties;
 
-import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.*;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.BUFFER_SIZE;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.CONNECT_TIMEOUT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.DEFAULT_NETWORK_TIMEOUT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.LENGTH_FIELD;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_ACTIVE_CONNECTIONS;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_CHECKOUT_TIME;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_ENABLED;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_QUERY_CONTENT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.PING_VERIFY_CONTENT;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_IP;
+import static com.allinfinance.dev.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_PORT;
 
 /**
  * @Description:
@@ -27,7 +37,7 @@ public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
                 Integer.parseInt(properties.getProperty(SERVER_PORT)));
         QueueServerMetadata queueServerMetadata = new QueueServerMetadata(unpooledServerMetadata);
 
-        queueServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30")));
+        queueServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "500")));
         queueServerMetadata.setMaxActiveConnections(Integer.parseInt(properties.getProperty(MAX_ACTIVE_CONNECTIONS, "10")));
         queueServerMetadata.setMaxCheckoutTime(Integer.parseInt(properties.getProperty(MAX_CHECKOUT_TIME, "5000")));
         queueServerMetadata.setPingEnabled(Boolean.parseBoolean(properties.getProperty(PING_ENABLED, "true")));
@@ -40,7 +50,8 @@ public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
         additional.setProperty(ConnectionConfig.PING_SERVICE, properties.getProperty(ConnectionConfig.PING_SERVICE, "default"));
         additional.setProperty(LENGTH_FIELD, properties.getProperty(LENGTH_FIELD, "2"));
         additional.setProperty(BUFFER_SIZE, properties.getProperty(BUFFER_SIZE, "65535"));
-        additional.setProperty(DEFAULT_NETWORK_TIMEOUT, properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "30"));
+        additional.setProperty(DEFAULT_NETWORK_TIMEOUT, properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "500"));
+        additional.setProperty(CONNECT_TIMEOUT, properties.getProperty(CONNECT_TIMEOUT, "500"));
         queueServerMetadata.getMetadata().setAdditionalProperties(additional);
 
         queueServerMetadata.init();

@@ -5,25 +5,22 @@ import com.allinfinance.dev.core.dto.hsp.HspBaseResponseDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyRequestDTO;
 import com.allinfinance.dev.core.dto.hsp.SignatureGetBySM2PrivateKeyResponseDTO;
 import com.allinfinance.dev.core.util.hsp.SignatureService;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 
 import java.util.concurrent.TimeUnit;
 
@@ -78,33 +75,4 @@ public class HspApplication {
         HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> responseDTO = signatureService.getSignatureBySM2PrivateKey(requestDTO);
     }
 
-
-    @ConditionalOnProperty(prefix = "com.allinfinance.hsp", name = "dubbo-enabled", havingValue = "true")
-    @EnableDubboConfig
-    @EnableDubbo
-    @Configuration
-    @ImportResource(locations = {"${dev.dubbo.files}"})
-    @EnableConfigurationProperties
-    @ConfigurationProperties(prefix = "com.allinfinance.hsp")
-    public static class DubboEnable {
-        /**
-         * 是否启用DUBBO
-         */
-        private Boolean dubboEnabled = Boolean.FALSE;
-
-        public Boolean getDubboEnabled() {
-            return dubboEnabled;
-        }
-
-        public void setDubboEnabled(Boolean dubboEnabled) {
-            this.dubboEnabled = dubboEnabled;
-        }
-
-        @Override
-        public String toString() {
-            return "DubboEnable{" +
-                    "dubboEnabled=" + dubboEnabled +
-                    '}';
-        }
-    }
 }

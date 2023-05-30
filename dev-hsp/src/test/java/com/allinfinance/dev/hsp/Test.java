@@ -1,11 +1,13 @@
 package com.allinfinance.dev.hsp;
 
-import cn.hutool.core.date.StopWatch;
+import com.allinfinance.dev.framework.conn.driver.Connection;
+import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
+import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Properties;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.IntStream;
 
 /**
  * @author qipeng
@@ -14,34 +16,35 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Test {
     public static void main(String[] args) throws InterruptedException {
-//        HashSet<Long> set = new HashSet<>();
-//        StopWatch stopWatch = new StopWatch();
-//        stopWatch.start("System.nanoTime()");
-//        CountDownLatch latch1 = new CountDownLatch(500000);
-//        for (int i = 0; i < 500000; i++) {
-//            new Thread(() -> {
-//                set.add(System.nanoTime());
-//                latch1.countDown();
-//                System.out.println("latch1 " + latch1.getCount());
-//            }).start();
-//        }
-//        latch1.await();
-//        stopWatch.stop();
-//
-////        stopWatch.start("AtomicLong");
-////        CountDownLatch latch2 = new CountDownLatch(500000);
-////        AtomicLong atomicLong = new AtomicLong(0);
-////        for (int i = 0; i < 500000; i++) {
-////            new Thread(() -> {
-////                set.add(atomicLong.addAndGet(1));
-////                latch2.countDown();
-////                System.out.println("latch2 " + latch2.getCount());
-////            }).start();
-////        }
-////        latch2.await();
-////        stopWatch.stop();
-//        System.out.println(stopWatch.prettyPrint());
-//        System.out.println(set.size());
+        LinkedBlockingQueue<Long> queue = new LinkedBlockingQueue<>(20);
+        IntStream.rangeClosed(1, 20)
+                .forEach(i -> {
+                    queue.add(Long.valueOf(i));
+                });
+
+
+        ExtensionLoader<Connection> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Connection.class);
+        Connection hsp = extensionLoader.getExtension("hsp");
+
+        Properties properties = new Properties();
+        properties.put("serverIp", "10.250.1.17");
+        properties.put("serverPort", "8888");
+        properties.put("lengthField", "2");
+        properties.put("bufferSize", "1024");
+        properties.put("defaultNetworkTimeout", "3000");
+        properties.put("connectTimeout", "1000");
+
+        long x = System.currentTimeMillis();
+        try {
+            hsp.connect(properties);
+        } finally {
+            System.out.println(System.currentTimeMillis() - x);
+
+        }
+
+        System.out.println(System.currentTimeMillis());
+
+        System.out.println();
     }
 
 

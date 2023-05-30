@@ -1,8 +1,10 @@
 package com.allinfinance.dev.connection.pool.scaffold.service;
 
 import com.allinfinance.dev.connection.pool.scaffold.api.MessagePorter;
+import com.allinfinance.dev.connection.pool.scaffold.configure.ConnectionPoolConfigure;
 import com.allinfinance.dev.framework.conn.driver.Connection;
 import com.allinfinance.dev.framework.conn.driver.ServerMetadata;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author qipeng
@@ -22,6 +25,8 @@ public class MessagePorterImpl implements MessagePorter {
 
     @Autowired
     private List<ServerMetadata> serverMetadataList;
+    @Autowired
+    private ConnectionPoolConfigure connectionPoolConfigure;
 
     private final Random random = new Random();
 
@@ -34,13 +39,21 @@ public class MessagePorterImpl implements MessagePorter {
         }
         Connection conn = null;
 
+        // TODO: 2023/5/29 重试次数控制
+        AtomicInteger fetchCount = new AtomicInteger(Integer.parseInt(connectionPoolConfigure.getFetchTimes()));
         // 轮询遍历各个连接池，直到找到空闲连接
-        while (conn == null) {
+        while (conn == null && fetchCount.decrementAndGet() >= 0) {
             int index = random.nextInt(serverMetadataList.size());
             ServerMetadata serverMetadata = serverMetadataList.get(index);
-            conn = serverMetadata.getConnection();
-        }
+            try {
+                conn = serverMetadata.getConnection();
+            } catch (Exception ignore) {
 
+            }
+        }
+        if (ObjectUtils.isEmpty(conn)) {
+            logger.warn("重试{}次获取连接失败", connectionPoolConfigure.getFetchTimes());
+        }
         return conn;
     }
 
@@ -57,18 +70,22 @@ public class MessagePorterImpl implements MessagePorter {
         }
         Connection connection = popConnection();
 
-        synchronized (connection) {
-            try {
-                String response = connection.send(msg);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("接收到响应：{}", response);
+        if (ObjectUtils.isNotEmpty(connection)) {
+            synchronized (connection) {
+                try {
+                    String response = connection.send(msg);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("接收到响应：{}", response);
+                    }
+                    return response;
+                } catch (Throwable e) {
+                    return null;
+                } finally {
+                    connection.close();
                 }
-                return response;
-            } catch (Throwable e) {
-                return null;
-            } finally {
-                connection.close();
             }
         }
+        logger.warn("当前连接池繁忙，未取到连接");
+        return null;
     }
 }

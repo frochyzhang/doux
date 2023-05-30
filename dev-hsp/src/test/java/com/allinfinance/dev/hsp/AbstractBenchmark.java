@@ -6,7 +6,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
 
 /**
  * @author qipeng
@@ -22,7 +21,7 @@ public abstract class AbstractBenchmark {
                 .warmupIterations(3)
                 .measurementIterations(3)
                 .forks(0)
-                .threads(100)
+                .threads(10)
                 .shouldDoGC(true)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.JSON)
