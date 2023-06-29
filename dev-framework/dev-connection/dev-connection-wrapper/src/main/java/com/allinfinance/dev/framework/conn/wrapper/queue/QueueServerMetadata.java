@@ -130,6 +130,7 @@ public class QueueServerMetadata implements ServerMetadata {
                     if (logger.isDebugEnabled()) {
                         logger.debug("老头连接超时，等待重试：{}", conn.hashCode());
                     }
+                    conn.getRealConnection().close();
                     conn = null;
                 } else if (ConnectionStatus.INACTIVE.equals(conn.getStatus())) {
                     // 连接重试失败，重新创建新连接
@@ -137,6 +138,7 @@ public class QueueServerMetadata implements ServerMetadata {
                         logger.debug("连接失效，新建连接");
                     }
                     this.addConnection();
+                    conn.getRealConnection().close();
                     conn = null;
                 }
             } else {
@@ -204,7 +206,11 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     @Override
     public Connection getConnection() {
-        return popConnection().getProxyConnection();
+        QueueConnection connection = popConnection();
+        if (connection == null) {
+            this.addConnection();
+        }
+        return connection.getProxyConnection();
     }
 
     /**

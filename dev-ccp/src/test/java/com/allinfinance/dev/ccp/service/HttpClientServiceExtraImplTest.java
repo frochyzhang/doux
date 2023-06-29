@@ -16,6 +16,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.StopWatch;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +59,33 @@ public class HttpClientServiceExtraImplTest extends AbstractBenchmark {
         System.out.println(responseDTO);
 //        Assertions.assertNotNull(responseDTO, "响应dto为空");
 //        Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
+    }
+
+    @Test
+    void request_post_keep_alive() {
+        HttpRequestDTO requestDTO = new HttpRequestDTO();
+        requestDTO.setUrl("http://localhost:8001/test/ge/hangsan");
+        requestDTO.setHttpMethod(HttpMethod.PUT);
+        requestDTO.setTimeout(1);
+        requestDTO.setRetryTime(3);
+        HttpResponseDTO responseDTO = httpClientService.request(requestDTO);
+        System.out.println(responseDTO);
+        Assertions.assertNotNull(responseDTO, "响应dto为空");
+        Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
+    }
+
+    @Test
+    void request_post_not_keep_alive() {
+        HttpRequestDTO requestDTO = new HttpRequestDTO();
+        requestDTO.setUrl("http://10.250.9.251:8034/qps-p/http/qps/cupsnicService");
+        requestDTO.setHttpMethod(HttpMethod.POST);
+        requestDTO.setTimeout(100);
+        requestDTO.setRetryTime(3);
+        new StopWatch("未设置keepAlive").start();
+        HttpResponseDTO responseDTO = httpClientService.request(requestDTO);
+        System.out.println(responseDTO);
+        Assertions.assertNotNull(responseDTO, "响应dto为空");
+        Assertions.assertTrue(responseDTO.getSuccess(), "请求服务端失败，原因" + responseDTO.getBody());
     }
 
     @Test
