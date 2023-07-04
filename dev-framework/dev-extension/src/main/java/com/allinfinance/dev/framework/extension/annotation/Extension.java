@@ -69,4 +69,11 @@ public @interface Extension {
      * @since 5.2.0
      */
     String[] rejection() default {};
+
+    /**
+     * 创建extension时需要初始化的方法
+     *
+     * @return 方法名列表
+     */
+    String[] initial() default {};
 }

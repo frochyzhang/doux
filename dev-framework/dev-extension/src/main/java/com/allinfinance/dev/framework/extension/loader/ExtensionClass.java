@@ -18,6 +18,8 @@ package com.allinfinance.dev.framework.extension.loader;
 
 import com.allinfinance.dev.framework.extension.util.ClassUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
@@ -63,6 +65,11 @@ public class ExtensionClass<T> implements Sortable {
     protected String[] rejection;
 
     /**
+     * 初始化方法
+     */
+    protected Method[] initialMethods;
+
+    /**
      * 服务端实例对象（只在是单例的时候保留）
      */
     private transient volatile T instance;
@@ -102,12 +109,15 @@ public class ExtensionClass<T> implements Sortable {
                         synchronized (this) {
                             if (instance == null) {
                                 instance = ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                                initiate(instance);
                             }
                         }
                     }
                     return instance; // 保留单例
                 } else {
-                    return ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                    T newInstance = ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                    initiate(newInstance);
+                    return newInstance;
                 }
             } catch (RuntimeException e) {
                 throw e;
@@ -116,6 +126,16 @@ public class ExtensionClass<T> implements Sortable {
             }
         }
         throw new RuntimeException("LogCodes.getLog(LogCodes.ERROR_EXTENSION_CLASS_NULL)");
+    }
+
+    private void initiate(T instance) {
+        for (Method initialMethod : initialMethods) {
+            try {
+                initialMethod.invoke(instance);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Initial method " + initialMethod.getName() + " invoke failed");
+            }
+        }
     }
 
     /**
@@ -235,6 +255,14 @@ public class ExtensionClass<T> implements Sortable {
         return this;
     }
 
+    public Method[] getInitialMethods() {
+        return initialMethods;
+    }
+
+    public void setInitialMethods(Method[] initialMethods) {
+        this.initialMethods = initialMethods;
+    }
+
     @Override
     public String toString() {
         return "ExtensionClass{" +
@@ -245,6 +273,7 @@ public class ExtensionClass<T> implements Sortable {
                 ", order=" + order +
                 ", override=" + override +
                 ", rejection=" + Arrays.toString(rejection) +
+                ", initialMethods=" + Arrays.toString(initialMethods) +
                 ", instance=" + instance +
                 '}';
     }

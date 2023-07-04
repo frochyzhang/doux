@@ -17,6 +17,7 @@
 package com.allinfinance.dev.framework.extension.loader;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
@@ -29,9 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -253,11 +256,18 @@ public class ExtensionLoader<T> {
                         " from file:" + location + ", code of @Extension must >=0 at " + className + ".");
             }
         }
-        // 不可以是default和*
-        if ("deault".equals(alias) || "*".equals(alias)) {
+        // 不可以是*
+        if ("*".equals(alias)) {
             throw new IllegalArgumentException("Error when load extension of extensible " + interfaceName +
-                    " from file:" + location + ", alias of @Extension must not \"default\" and \"*\" at " + className + ".");
+                    " from file:" + location + ", alias of @Extension must not \"*\" at " + className + ".");
         }
+
+        // 不可以是default和*
+        // if ("default".equals(alias) || "*".equals(alias)) {
+        //     throw new IllegalArgumentException("Error when load extension of extensible " + interfaceName +
+        //             " from file:" + location + ", alias of @Extension must not \"default\" and \"*\" at " + className + ".");
+        // }
+
         // 检查是否有存在同名的
         ExtensionClass old = all.get(alias);
         ExtensionClass<T> extensionClass = null;
@@ -349,6 +359,17 @@ public class ExtensionLoader<T> {
         extensionClass.setOrder(extension.order());
         extensionClass.setOverride(extension.override());
         extensionClass.setRejection(extension.rejection());
+        Method[] initialMethods = Arrays.stream(extension.initial())
+                .map(methodName -> {
+                    try {
+                        return implClass.getDeclaredMethod(methodName);
+                    } catch (NoSuchMethodException e) {
+                        LOGGER.error("Initial Method [{}] is not exist", methodName);
+                    }
+                    return null;
+                }).filter(ObjectUtil::isNotNull)
+                .toArray(Method[]::new);
+        extensionClass.setInitialMethods(initialMethods);
         return extensionClass;
     }
 
