@@ -2,8 +2,6 @@ package com.allinfinance.dev.batch.scaffold.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
@@ -15,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import javax.sql.DataSource;
-
 /**
  * @author qipeng
  * @date 2022/2/10 18:39
@@ -27,13 +23,6 @@ public class BatchConfig {
     private static final Logger logger = LoggerFactory.getLogger(BatchConfig.class);
     @Autowired
     private JobRepository jobRepository;
-    @Autowired
-    private DataSource dataSource;
-
-    @Bean
-    public BatchConfigurer batchConfigurer() {
-        return new DefaultBatchConfigurer(dataSource);
-    }
 
     @Bean("devJobLauncher")
     @Primary
