@@ -69,4 +69,30 @@ public class ExtensionLoaderFactory {
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz) {
         return getExtensionLoader(clazz, null);
     }
+
+    /**
+     * Get extension by extensible class and alias
+     *
+     * @param clazz Extensible class
+     * @param alias 别名
+     * @return 扩展实例（已判断是否单例）
+     */
+    public static <T> T getExtension(Class<T> clazz, String alias) {
+        ExtensionLoader<T> extensionLoader = getExtensionLoader(clazz);
+        return extensionLoader.getExtension(alias);
+    }
+
+    /**
+     * Get extension by extensible class, alias, argTypes and args
+     *
+     * @param clazz    Extensible class
+     * @param alias    别名
+     * @param argTypes 扩展初始化需要的参数类型
+     * @param args     扩展初始化需要的参数
+     * @return 扩展实例（已判断是否单例）
+     */
+    public static <T> T getExtension(Class<T> clazz, String alias, Class[] argTypes, Object[] args) {
+        ExtensionLoader<T> extensionLoader = getExtensionLoader(clazz);
+        return extensionLoader.getExtension(alias, argTypes, args);
+    }
 }
