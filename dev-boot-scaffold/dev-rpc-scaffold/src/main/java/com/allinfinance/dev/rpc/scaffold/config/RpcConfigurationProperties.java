@@ -57,10 +57,6 @@ public class RpcConfigurationProperties {
          */
         private Set<String> excludeServiceList;
         /**
-         * provider的uniqueId
-         */
-        private String uniqueId;
-        /**
          * 服务提供方的包路径
          */
         private String servicePackage;
@@ -71,14 +67,6 @@ public class RpcConfigurationProperties {
 
         public void setExcludeServiceList(Set<String> excludeServiceList) {
             this.excludeServiceList = excludeServiceList;
-        }
-
-        public String getUniqueId() {
-            return uniqueId;
-        }
-
-        public void setUniqueId(String uniqueId) {
-            this.uniqueId = uniqueId;
         }
 
         public String getServicePackage() {
@@ -93,7 +81,6 @@ public class RpcConfigurationProperties {
         public String toString() {
             return "Provider{" +
                     "excludeServiceList=" + excludeServiceList +
-                    ", uniqueId='" + uniqueId + '\'' +
                     ", servicePackage='" + servicePackage + '\'' +
                     '}';
         }

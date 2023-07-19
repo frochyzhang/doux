@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author qipeng
@@ -83,8 +82,6 @@ public class ProviderScanSupport implements BeanPostProcessor, ClientFactoryAwar
             Class<?>[] interfaces = bean.getClass().getInterfaces();
             if (interfaces.length != 0) {
                 serviceParam.setInterfaceType(interfaces[0]);
-                Optional.ofNullable(provider.getUniqueId())
-                        .ifPresent(serviceParam::setUniqueId);
 
                 List<BindingParam> params = new ArrayList<>();
                 BindingParam serviceBindingParam = new BoltBindingParam();
