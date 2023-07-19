@@ -28,8 +28,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>2.1.0-RELEASE</revision>
-        <dev.version>2.1.0-RELEASE</dev.version>
+        <revision>2.1.1-RELEASE</revision>
+        <dev.version>2.1.1-RELEASE</dev.version>
         <jackson.version>2.12.1</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>
