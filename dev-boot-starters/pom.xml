@@ -20,6 +20,7 @@
         <module>dev-connection-boot-starter</module>
         <module>dev-socket-server-boot-starter</module>
         <module>dev-disruptor-boot-starter</module>
+        <module>dev-socket-feign-boot-starter</module>
     </modules>
     <artifactId>dev-boot-starters</artifactId>
 

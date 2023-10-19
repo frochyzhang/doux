@@ -141,7 +141,16 @@
                 <artifactId>dev-socket-client-mina</artifactId>
                 <version>${dev.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-feign</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-feign-scaffold</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
             <!--dev-common-->
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>

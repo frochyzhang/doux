@@ -21,6 +21,7 @@
         <module>dev-connection-pool-scaffold</module>
         <module>dev-socket-server-scaffold</module>
         <module>dev-disruptor-scaffold</module>
+        <module>dev-socket-feign-scaffold</module>
     </modules>
 
     <properties>

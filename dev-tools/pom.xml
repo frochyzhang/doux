@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>dev-hsp-tool</module>
+        <module>dev-socket-feign-example</module>
     </modules>
 
     <properties>

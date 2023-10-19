@@ -18,6 +18,7 @@
         <module>dev-socket-server</module>
         <module>dev-socket-client</module>
         <module>dev-http</module>
+        <module>dev-socket-feign</module>
     </modules>
 
     <properties>
