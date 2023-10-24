@@ -106,18 +106,17 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
             ? (ConfigurableBeanFactory) registry : null;
         String contextId = getContextId(beanFactory, attributes);
         String name = getName(attributes);
-        String client = getClient(attributes);
         FeignClientFactoryBean factoryBean = new FeignClientFactoryBean();
         factoryBean.setBeanFactory(beanFactory);
-        factoryBean.setClient(ExtensionLoaderFactory.getExtension(Client.class, client));
         factoryBean.setName(name);
         factoryBean.setContextId(contextId);
         factoryBean.setType(clazz);
         factoryBean.setRefreshableClient(isClientRefreshEnabled());
         BeanDefinitionBuilder definition = BeanDefinitionBuilder.genericBeanDefinition(clazz, () -> {
             factoryBean.setUrl(getUrl(beanFactory, attributes));
-            String method = (String) attributes.getOrDefault("method", "socket");
-            factoryBean.setMethod(method);
+            factoryBean.setMsgLengthSize((Integer) attributes.get("msgLengthSize"));
+            factoryBean.setMsgEncode((String) attributes.get("msgEncode"));
+            factoryBean.setTimeout((Integer) attributes.get("timeout"));
             Object fallback = attributes.get("fallback");
             if (fallback != null) {
                 factoryBean.setFallback(fallback instanceof Class ? (Class<?>) fallback

@@ -16,7 +16,9 @@ public @interface DevFeign {
 
     String url();
 
-    String client() default "default";
+    String msgEncode() default "UTF-8";
 
-    String method() default "socket";
+    int timeout() default 3000;
+
+    int msgLengthSize() default 6;
 }

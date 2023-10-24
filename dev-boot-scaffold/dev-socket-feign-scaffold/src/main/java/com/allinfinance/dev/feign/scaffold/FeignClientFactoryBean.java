@@ -27,13 +27,17 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
 
     private String url;
 
-    private String method;
+    private Integer msgLengthSize;
+
+    private String msgEncode;
+
+    private Integer timeout;
 
     private String contextId;
 
     private ApplicationContext applicationContext;
 
-    private Client client;
+    private Client client =  new Client.Default();
     private BeanFactory beanFactory;
 
     private Class<?> fallback = void.class;
@@ -57,7 +61,7 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
     }
 
     <T> T getTarget() {
-        return (T)new ReflectiveFeign(this.client).newInstance(new Target.HardCodedTarget<>(type, name, url, method));
+        return (T)new ReflectiveFeign(this.client).newInstance(new Target.HardCodedTarget<>(type, name, url,msgEncode,timeout,msgLengthSize));
     }
 
     @Override
@@ -116,12 +120,30 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
         return this;
     }
 
-    public String getMethod() {
-        return method;
+    public Integer getMsgLengthSize() {
+        return msgLengthSize;
     }
 
-    public FeignClientFactoryBean setMethod(String method) {
-        this.method = method;
+    public FeignClientFactoryBean setMsgLengthSize(Integer msgLengthSize) {
+        this.msgLengthSize = msgLengthSize;
+        return this;
+    }
+
+    public String getMsgEncode() {
+        return msgEncode;
+    }
+
+    public FeignClientFactoryBean setMsgEncode(String msgEncode) {
+        this.msgEncode = msgEncode;
+        return this;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public FeignClientFactoryBean setTimeout(Integer timeout) {
+        this.timeout = timeout;
         return this;
     }
 

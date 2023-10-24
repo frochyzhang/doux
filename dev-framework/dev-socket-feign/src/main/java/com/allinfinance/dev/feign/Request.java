@@ -23,36 +23,21 @@ import java.util.concurrent.TimeUnit;
  * An immutable request to an http server.
  */
 public final class Request implements Serializable {
-    private final String method;
-
     private final String url;
-
-    private transient Charset encoding;
 
     private Object data;
 
-
-    public Request(String method, String url, Charset encoding, Object data) {
-        this.method = method;
+    public Request(String url, Object data) {
         this.url = url;
-        this.encoding = encoding;
         this.data = data;
     }
 
-    public static Request create(String method, String url, Charset encoding, Object data) {
-        return new Request(method, url, encoding, data);
-    }
-
-    public String getMethod() {
-        return method;
+    public static Request create(String url, Object data) {
+        return new Request(url, data);
     }
 
     public String getUrl() {
         return url;
-    }
-
-    public Charset getEncoding() {
-        return encoding;
     }
 
     public Object getData() {

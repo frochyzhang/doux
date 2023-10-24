@@ -38,7 +38,7 @@ public class SocketClientServiceImpl implements SocketClientService {
         PropertiesParseUtils.fromBean(properties, socketRequestDTO);
         SocketClient socketClient = ExtensionLoaderFactory.getExtensionLoader(SocketClient.class)
                 .getExtension(socketRequestDTO.getSocketClient());
-        String resp = socketClient.send(properties, message);
+        String resp = socketClient.    send(properties, message);
         if (StringUtils.isBlank(resp)) {
             logger.error("返回消息为空");
             socketResponseDTO.setSuccess(false);

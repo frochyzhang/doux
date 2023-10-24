@@ -20,7 +20,7 @@ public class DevFeignExampleApplication {
 
     @DevFeign(name = "myService", url = "localhost:8080")
     interface MyService {
-        @DevRequestLine("41050")
+        @DevRequestLine
         String doSomething(String abcd);
     }
 }

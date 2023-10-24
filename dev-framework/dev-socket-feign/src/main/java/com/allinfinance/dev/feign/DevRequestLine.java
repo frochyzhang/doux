@@ -30,7 +30,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface DevRequestLine {
 
-  String value();
-
-    String encoding() default "UTF-8";
 }

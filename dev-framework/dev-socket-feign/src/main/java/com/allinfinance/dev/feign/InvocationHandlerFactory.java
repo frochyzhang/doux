@@ -9,8 +9,9 @@ public interface InvocationHandlerFactory {
 
     interface MethodHandler {
 
-        Object invoke(Object[] argv) throws Throwable;
+        <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable;
     }
+
 
     static final class Default implements InvocationHandlerFactory {
 

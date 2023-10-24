@@ -28,8 +28,7 @@ public class ReflectiveFeign {
         Arrays.stream(methods)
             .filter(method -> method.isAnnotationPresent(DevRequestLine.class))
             .forEach(method -> {
-                DevRequestLine requestLine = method.getAnnotation(DevRequestLine.class);
-                dispatch.put(method, methodHandlerFactory.create(target, requestLine.encoding()));
+                dispatch.put(method, methodHandlerFactory.create(target));
             });
         InvocationHandler handler = factory.create(target, dispatch);
         return (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[] {target.type()}, handler);
@@ -61,7 +60,7 @@ public class ReflectiveFeign {
                     return toString();
             }
 
-            return dispatch.get(method).invoke(args);
+            return dispatch.get(method).invoke(args,method.getReturnType());
         }
 
         @Override

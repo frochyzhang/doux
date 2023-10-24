@@ -7,20 +7,28 @@ public interface Target<T> {
 
     String url();
 
-    String method();
+    String msgEncode();
 
+    Integer timeout();
+
+    Integer msgLengthSize();
 
     public static class HardCodedTarget<T> implements Target<T> {
         private final Class<T> type;
         private final String name;
         private final String url;
-        private final String method;
+        private final String msgEncode;
+        private final Integer timeout;
+        private final Integer msgLengthSize;
 
-        public HardCodedTarget(Class<T> type, String name, String url, String method) {
+        public HardCodedTarget(Class<T> type, String name, String url, String msgEncode, Integer timeout,
+            Integer msgLengthSize) {
             this.type = type;
             this.name = name;
             this.url = url;
-            this.method = method;
+            this.msgEncode = msgEncode;
+            this.timeout = timeout;
+            this.msgLengthSize = msgLengthSize;
         }
 
         @Override
@@ -39,8 +47,18 @@ public interface Target<T> {
         }
 
         @Override
-        public String method() {
-            return method;
+        public String msgEncode() {
+            return msgEncode;
+        }
+
+        @Override
+        public Integer timeout() {
+            return timeout;
+        }
+
+        @Override
+        public Integer msgLengthSize() {
+            return msgLengthSize;
         }
     }
 }

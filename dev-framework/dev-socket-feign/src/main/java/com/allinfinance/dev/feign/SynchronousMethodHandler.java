@@ -1,6 +1,6 @@
 package com.allinfinance.dev.feign;
 
-import java.nio.charset.Charset;
+import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
@@ -9,18 +9,22 @@ import java.nio.charset.Charset;
 public class SynchronousMethodHandler implements InvocationHandlerFactory.MethodHandler {
     private final Target<?> target;
     private final Client client;
-    private final Charset encoding;
 
-    public SynchronousMethodHandler(Target<?> target, Client client, Charset encoding) {
+    public SynchronousMethodHandler(Target<?> target, Client client) {
         this.target = target;
         this.client = client;
-        this.encoding = encoding;
     }
 
     @Override
-    public Object invoke(Object[] argv) throws Throwable {
-        Request request = Request.create(target.method(), target.url(), encoding, argv[0]);
-       return client.execute(request);
+    public <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable {
+        SocketRequestDTO requestDTO = new SocketRequestDTO(
+            target.url().split(":")[0],
+            target.url().split(":")[1],
+            target.name(),
+            String.valueOf(target.msgLengthSize()),
+            target.msgEncode()
+        );
+        return client.execute(requestDTO, argv[0],returnType);
     }
 
     static class Factory {
@@ -33,8 +37,8 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
             this.client = client;
         }
 
-        public InvocationHandlerFactory.MethodHandler create(Target<?> target,String encoding) {
-            return new SynchronousMethodHandler(target, client, Charset.forName(encoding));
+        public InvocationHandlerFactory.MethodHandler create(Target<?> target) {
+            return new SynchronousMethodHandler(target, client);
         }
     }
 }
