@@ -1,9 +1,9 @@
 package com.allinfinance.dev.feign.scaffold;
 
+import org.springframework.cloud.context.named.NamedContextFactory;
+
 import java.util.Arrays;
 import java.util.Objects;
-
-import org.springframework.cloud.context.named.NamedContextFactory;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>

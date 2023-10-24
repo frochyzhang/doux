@@ -26,12 +26,12 @@ public class ReflectiveFeign {
             throw new IllegalArgumentException("@" + target.type().getName() + "@没有找到RequestLine注解");
         }
         Arrays.stream(methods)
-            .filter(method -> method.isAnnotationPresent(DevRequestLine.class))
-            .forEach(method -> {
-                dispatch.put(method, methodHandlerFactory.create(target));
-            });
+                .filter(method -> method.isAnnotationPresent(DevRequestLine.class))
+                .forEach(method -> {
+                    dispatch.put(method, methodHandlerFactory.create(target));
+                });
         InvocationHandler handler = factory.create(target, dispatch);
-        return (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[] {target.type()}, handler);
+        return (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[]{target.type()}, handler);
     }
 
     public static class FeignInvocationHandler implements InvocationHandler {
@@ -49,7 +49,7 @@ public class ReflectiveFeign {
                 case "equals":
                     try {
                         Object otherHandler =
-                            args.length > 0 && args[0] != null ? Proxy.getInvocationHandler(args[0]) : null;
+                                args.length > 0 && args[0] != null ? Proxy.getInvocationHandler(args[0]) : null;
                         return equals(otherHandler);
                     } catch (IllegalArgumentException e) {
                         return false;
@@ -58,9 +58,10 @@ public class ReflectiveFeign {
                     return hashCode();
                 case "toString":
                     return toString();
+                default:
             }
 
-            return dispatch.get(method).invoke(args,method.getReturnType());
+            return dispatch.get(method).invoke(args, method.getReturnType());
         }
 
         @Override

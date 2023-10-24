@@ -18,13 +18,13 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
     @Override
     public <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable {
         SocketRequestDTO requestDTO = new SocketRequestDTO(
-            target.url().split(":")[0],
-            target.url().split(":")[1],
-            target.name(),
-            String.valueOf(target.msgLengthSize()),
-            target.msgEncode()
+                target.url().split(":")[0],
+                target.url().split(":")[1],
+                target.name(),
+                String.valueOf(target.msgLengthSize()),
+                target.msgEncode()
         );
-        return client.execute(requestDTO, argv[0],returnType);
+        return client.execute(requestDTO, argv[0], returnType);
     }
 
     static class Factory {
@@ -33,7 +33,7 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
         //        private final List<RequestInterceptor> requestInterceptors;
         //        private final ResponseInterceptor responseInterceptor;
 
-        public Factory(Client client) {
+        Factory(Client client) {
             this.client = client;
         }
 

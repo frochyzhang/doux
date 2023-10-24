@@ -15,7 +15,6 @@ package com.allinfinance.dev.feign;
 
 import java.io.Serializable;
 import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -62,8 +61,8 @@ public final class Request implements Serializable {
          * @param followRedirects    if the request should follow 3xx redirections.
          */
         public Options(long connectTimeout, TimeUnit connectTimeoutUnit,
-            long readTimeout, TimeUnit readTimeoutUnit,
-            boolean followRedirects) {
+                       long readTimeout, TimeUnit readTimeoutUnit,
+                       boolean followRedirects) {
             super();
             this.connectTimeout = connectTimeout;
             this.connectTimeoutUnit = connectTimeoutUnit;
@@ -81,7 +80,7 @@ public final class Request implements Serializable {
          */
         public Options(Duration connectTimeout, Duration readTimeout, boolean followRedirects) {
             this(connectTimeout.toMillis(), TimeUnit.MILLISECONDS, readTimeout.toMillis(),
-                TimeUnit.MILLISECONDS, followRedirects);
+                    TimeUnit.MILLISECONDS, followRedirects);
         }
 
         /**

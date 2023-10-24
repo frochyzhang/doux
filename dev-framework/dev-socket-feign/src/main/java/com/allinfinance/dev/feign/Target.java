@@ -13,7 +13,7 @@ public interface Target<T> {
 
     Integer msgLengthSize();
 
-    public static class HardCodedTarget<T> implements Target<T> {
+    class HardCodedTarget<T> implements Target<T> {
         private final Class<T> type;
         private final String name;
         private final String url;

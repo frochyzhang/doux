@@ -4,7 +4,6 @@ import com.allinfinance.dev.feign.Client;
 import com.allinfinance.dev.feign.ReflectiveFeign;
 import com.allinfinance.dev.feign.Request;
 import com.allinfinance.dev.feign.Target;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -19,7 +18,7 @@ import org.springframework.util.Assert;
  * @date 2023/10/18 17:41
  */
 public class FeignClientFactoryBean implements FactoryBean<Object>, InitializingBean, ApplicationContextAware,
-    BeanFactoryAware {
+        BeanFactoryAware {
 
     private Class<?> type;
 
@@ -37,7 +36,7 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
 
     private ApplicationContext applicationContext;
 
-    private Client client =  new Client.Default();
+    private Client client = new Client.Default();
     private BeanFactory beanFactory;
 
     private Class<?> fallback = void.class;
@@ -61,7 +60,7 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
     }
 
     <T> T getTarget() {
-        return (T)new ReflectiveFeign(this.client).newInstance(new Target.HardCodedTarget<>(type, name, url,msgEncode,timeout,msgLengthSize));
+        return (T) new ReflectiveFeign(this.client).newInstance(new Target.HardCodedTarget<>(type, name, url, msgEncode, timeout, msgLengthSize));
     }
 
     @Override
@@ -73,6 +72,7 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
     public boolean isSingleton() {
         return true;
     }
+
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         applicationContext = context;

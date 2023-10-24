@@ -14,8 +14,6 @@
 package com.allinfinance.dev.feign;
 
 import java.lang.annotation.Retention;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

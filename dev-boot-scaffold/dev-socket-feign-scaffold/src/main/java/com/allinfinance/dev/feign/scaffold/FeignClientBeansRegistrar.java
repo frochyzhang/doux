@@ -1,18 +1,7 @@
 package com.allinfinance.dev.feign.scaffold;
 
-import com.allinfinance.dev.feign.Client;
 import com.allinfinance.dev.feign.DevFeign;
 import com.allinfinance.dev.feign.Request;
-import com.allinfinance.dev.framework.extension.loader.ExtensionLoader;
-import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -37,6 +26,13 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
@@ -80,7 +76,7 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
                 Assert.isTrue(annotationMetadata.isInterface(), "@FeignClient can only be specified on an interface");
 
                 Map<String, Object> attributes = annotationMetadata
-                    .getAnnotationAttributes(DevFeign.class.getCanonicalName());
+                        .getAnnotationAttributes(DevFeign.class.getCanonicalName());
 
                 String name = getClientName(attributes);
                 registerClientConfiguration(registry, name, attributes.get("configuration"));
@@ -95,15 +91,15 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
         builder.addConstructorArgValue(name);
         builder.addConstructorArgValue(configuration);
         registry.registerBeanDefinition(name + "." + FeignClientSpecification.class.getSimpleName(),
-            builder.getBeanDefinition());
+                builder.getBeanDefinition());
     }
 
     private void registerFeignClient(BeanDefinitionRegistry registry, AnnotationMetadata annotationMetadata,
-        Map<String, Object> attributes) {
+                                     Map<String, Object> attributes) {
         String className = annotationMetadata.getClassName();
         Class clazz = ClassUtils.resolveClassName(className, null);
         ConfigurableBeanFactory beanFactory = registry instanceof ConfigurableBeanFactory
-            ? (ConfigurableBeanFactory) registry : null;
+                ? (ConfigurableBeanFactory) registry : null;
         String contextId = getContextId(beanFactory, attributes);
         String name = getName(attributes);
         FeignClientFactoryBean factoryBean = new FeignClientFactoryBean();
@@ -120,12 +116,12 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
             Object fallback = attributes.get("fallback");
             if (fallback != null) {
                 factoryBean.setFallback(fallback instanceof Class ? (Class<?>) fallback
-                    : ClassUtils.resolveClassName(fallback.toString(), null));
+                        : ClassUtils.resolveClassName(fallback.toString(), null));
             }
             Object fallbackFactory = attributes.get("fallbackFactory");
             if (fallbackFactory != null) {
                 factoryBean.setFallbackFactory(fallbackFactory instanceof Class ? (Class<?>) fallbackFactory
-                    : ClassUtils.resolveClassName(fallbackFactory.toString(), null));
+                        : ClassUtils.resolveClassName(fallbackFactory.toString(), null));
             }
             return factoryBean.getObject();
         });
@@ -143,7 +139,7 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
         beanDefinition.setPrimary(true);
 
         BeanDefinitionHolder holder =
-            new BeanDefinitionHolder(beanDefinition, className, new String[] {contextId + "FeignClient"});
+                new BeanDefinitionHolder(beanDefinition, className, new String[]{contextId + "FeignClient"});
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
 
         registerOptionsBeanDefinition(registry, contextId);
@@ -153,11 +149,11 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
         if (isClientRefreshEnabled()) {
             String beanName = Request.Options.class.getCanonicalName() + "-" + contextId;
             BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
-                .genericBeanDefinition(OptionsFactoryBean.class);
+                    .genericBeanDefinition(OptionsFactoryBean.class);
             definitionBuilder.setScope("refresh");
             definitionBuilder.addPropertyValue("contextId", contextId);
             BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(definitionBuilder.getBeanDefinition(),
-                beanName);
+                    beanName);
             definitionHolder = ScopedProxyUtils.createScopedProxy(definitionHolder, registry, true);
             BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, registry);
         }
@@ -272,7 +268,7 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
 
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
         Map<String, Object> attributes = importingClassMetadata
-            .getAnnotationAttributes(EnableDevFeign.class.getCanonicalName());
+                .getAnnotationAttributes(EnableDevFeign.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
         for (String pkg : (String[]) attributes.get("value")) {
@@ -314,7 +310,7 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
         }
 
         throw new IllegalStateException(
-            "Either 'name' or 'value' must be provided in @" + DevFeign.class.getSimpleName());
+                "Either 'name' or 'value' must be provided in @" + DevFeign.class.getSimpleName());
     }
 
     private void registerDefaultConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
