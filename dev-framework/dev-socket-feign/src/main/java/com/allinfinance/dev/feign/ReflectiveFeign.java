@@ -2,10 +2,9 @@ package com.allinfinance.dev.feign;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
@@ -19,19 +18,40 @@ public class ReflectiveFeign {
         this.methodHandlerFactory = new SynchronousMethodHandler.Factory(client);
     }
 
+    static boolean isDefault(Method method) {
+        // Default methods are public non-abstract, non-synthetic, and non-static instance methods
+        // declared in an interface.
+        // method.isDefault() is not sufficient for our usage as it does not check
+        // for synthetic methods. As a result, it picks up overridden methods as well as actual default
+        // methods.
+        final int synthetic = 0x00001000;
+        return ((method.getModifiers()
+                & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC | synthetic)) == Modifier.PUBLIC)
+                && method.getDeclaringClass().isInterface();
+    }
+
     public <T> T newInstance(Target<T> target) {
         Map<Method, InvocationHandlerFactory.MethodHandler> dispatch = new LinkedHashMap<>();
         Method[] methods = target.type().getMethods();
         if (Arrays.stream(methods).noneMatch(method -> method.isAnnotationPresent(DevRequestLine.class))) {
             throw new IllegalArgumentException("@" + target.type().getName() + "@没有找到RequestLine注解");
         }
+        List<DefaultMethodHandler> defaultMethodHandlers = new LinkedList<DefaultMethodHandler>();
+
         Arrays.stream(methods)
-                .filter(method -> method.isAnnotationPresent(DevRequestLine.class))
                 .forEach(method -> {
-                    dispatch.put(method, methodHandlerFactory.create(target));
+                    if (method.isAnnotationPresent(DevRequestLine.class)) {
+                        dispatch.put(method, methodHandlerFactory.create(target));
+                    } else if (isDefault(method)) {
+                        DefaultMethodHandler defaultMethodHandler = new DefaultMethodHandler(method);
+                        defaultMethodHandlers.add(defaultMethodHandler);
+                        dispatch.put(method, defaultMethodHandler);
+                    }
                 });
         InvocationHandler handler = factory.create(target, dispatch);
-        return (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[]{target.type()}, handler);
+        T proxy = (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[]{target.type()}, handler);
+        defaultMethodHandlers.forEach(defaultMethodHandler -> defaultMethodHandler.bindTo(proxy));
+        return proxy;
     }
 
     public static class FeignInvocationHandler implements InvocationHandler {

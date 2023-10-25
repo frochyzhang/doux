@@ -24,7 +24,12 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
                 String.valueOf(target.msgLengthSize()),
                 target.msgEncode()
         );
-        return client.execute(requestDTO, argv[0], returnType);
+
+        if (argv.length > 1 && argv[0] instanceof SocketRequestDTO) {
+            requestDTO = ((SocketRequestDTO) argv[0]);
+        }
+
+        return client.execute(requestDTO, argv[argv.length - 1], returnType);
     }
 
     static class Factory {

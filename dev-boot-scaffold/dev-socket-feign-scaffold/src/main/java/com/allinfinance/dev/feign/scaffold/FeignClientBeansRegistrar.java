@@ -1,27 +1,13 @@
 package com.allinfinance.dev.feign.scaffold;
 
 import cn.hutool.core.net.NetUtil;
-
 import com.allinfinance.dev.feign.DevFeign;
 import com.allinfinance.dev.feign.Request;
-
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.BeanExpressionContext;
-import org.springframework.beans.factory.config.BeanExpressionResolver;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
@@ -37,6 +23,14 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
@@ -240,13 +234,17 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
 
     private String getUrl(ConfigurableBeanFactory beanFactory, Map<String, Object> attributes) {
         String url = resolve(beanFactory, (String) attributes.get("url"));
-        return getUrl(url);
+        try {
+            return getUrl(url);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("URL '" + url + "' couldn't be parsed into a URI");
+        }
     }
 
-    static String getUrl(String url) {
+    static String getUrl(String url) throws URISyntaxException {
         if (StringUtils.hasText(url) && !(url.startsWith("#{") && url.contains("}"))) {
-            String[] strings = url.split(":");
-            if (NetUtil.isOpen(new InetSocketAddress(strings[0], Integer.parseInt(strings[1])), 10 * 1000)) {
+            URI uri = new URI(url);
+            if (NetUtil.isOpen(new InetSocketAddress(uri.getHost(), uri.getPort()), 10 * 1000)) {
                 return url;
             } else {
                 throw new IllegalArgumentException(url + " cannot reach");

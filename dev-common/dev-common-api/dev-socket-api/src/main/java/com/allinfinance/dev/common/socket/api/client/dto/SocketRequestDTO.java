@@ -63,6 +63,13 @@ public class SocketRequestDTO {
         this.msgEncode = msgEncode;
     }
 
+    public SocketRequestDTO(String remoteIp, String remotePort, String msgLengthSize, String msgEncode) {
+        this.remoteIp = remoteIp;
+        this.remotePort = remotePort;
+        this.msgLengthSize = msgLengthSize;
+        this.msgEncode = msgEncode;
+    }
+
     public String getSoLingerEnable() {
         return soLingerEnable;
     }
