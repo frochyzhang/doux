@@ -31,6 +31,10 @@ public class ServerMetadataConfig {
      */
     public static final String DEFAULT_NETWORK_TIMEOUT = "defaultNetworkTimeout";
     /**
+     * 连接超时时间，超过该时间表示建立连接时超时，单位：毫秒
+     */
+    public static final String CONNECT_TIMEOUT = "connectTimeout";
+    /**
      * 连接重试等待时间，单位：毫秒
      */
     public static final String RETRY_TIME_TO_WAIT = "retryTimeToWait";

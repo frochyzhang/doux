@@ -1,6 +1,6 @@
 package com.allinfinance.dev.framework.conn.wrapper.queue;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @Description:
@@ -15,14 +15,14 @@ public class QueueState {
     /**
      * 连接队列，用于存放长连接
      */
-    protected LinkedBlockingQueue<QueueConnection> queue;
+    protected LinkedBlockingDeque<QueueConnection> queue;
 
     public QueueState(QueueServerMetadata serverMetadata, int queueSize) {
         this.serverMetadata = serverMetadata;
-        this.queue = new LinkedBlockingQueue<>(queueSize);
+        this.queue = new LinkedBlockingDeque<>(queueSize);
     }
 
-    public LinkedBlockingQueue<QueueConnection> getQueue() {
+    public LinkedBlockingDeque<QueueConnection> getQueue() {
         return queue;
     }
 }

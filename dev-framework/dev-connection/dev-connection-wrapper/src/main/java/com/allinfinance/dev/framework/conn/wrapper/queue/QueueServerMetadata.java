@@ -94,21 +94,24 @@ public class QueueServerMetadata implements ServerMetadata {
                 if (logger.isDebugEnabled()) {
                     logger.debug("回收连接：{}", connection.hashCode());
                 }
-                state.queue.add(connection);
+                try {
+                    state.queue.add(connection);
+                } catch (Exception e) {
+                    connection.getRealConnection().close();
+                    connection.setStatus(ConnectionStatus.INACTIVE);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
+                    }
+                }
             } else {
                 // 否则，连接还比较充足，直接将connection关闭
+                connection.getRealConnection().close();
                 connection.setStatus(ConnectionStatus.INACTIVE);
                 if (logger.isDebugEnabled()) {
                     logger.debug("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
                 }
             }
         }
-//        } else {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("该连接：{}属于无效连接，直接关闭", connection.hashCode());
-//            }
-//            connection.getRealConnection().close();
-//        }
     }
 
     /**
@@ -124,7 +127,6 @@ public class QueueServerMetadata implements ServerMetadata {
                     if (logger.isDebugEnabled()) {
                         logger.debug("老头连接有效，返回该连接：{}", conn.hashCode());
                     }
-//                    pushConnection(conn);
                 } else if (ConnectionStatus.TIMEOUT.equals(conn.getStatus())) {
                     // ping连接失败
                     if (logger.isDebugEnabled()) {
@@ -145,10 +147,12 @@ public class QueueServerMetadata implements ServerMetadata {
                 if (logger.isDebugEnabled()) {
                     logger.debug("小鲜肉连接，返回该连接：{}", conn.hashCode());
                 }
-//                pushConnection(conn);
             }
+        } else {
+            // TODO: 2023/5/29 conn=null时补充连接
+            logger.info("当前队列为空，创建新连接");
+            conn = new QueueConnection(this, metadata.getConnection());
         }
-
         return conn;
     }
 
@@ -174,7 +178,12 @@ public class QueueServerMetadata implements ServerMetadata {
         try {
             result = !pingEnabled || pingService.pingConnection(conn.getRealConnection(), pingQueryContent, pingVerifyContent, getDefaultNetworkTimeout());
             if (!result) {
-                conn.setStatus(ConnectionStatus.TIMEOUT);
+                try {
+                    conn.getRealConnection().close();
+                } catch (Exception e2) {
+                    // ignore
+                }
+                conn.setStatus(ConnectionStatus.INACTIVE);
             }
         } catch (Throwable e) {
             logger.warn("Execution of ping query '" + pingQueryContent + "' failed: " + e.getMessage());

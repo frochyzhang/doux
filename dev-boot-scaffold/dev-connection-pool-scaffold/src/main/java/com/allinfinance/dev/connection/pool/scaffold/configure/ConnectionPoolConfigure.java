@@ -25,9 +25,13 @@ public class ConnectionPoolConfigure {
      */
     private String pingService;
     /**
-     * 是否开启预热
+     * 是否开启预热，默认开启
      */
-    private String warmup;
+    private String warmup = "true";
+    /**
+     * 取连接的尝试次数，默认取10次
+     */
+    private String fetchTimes = "10";
 
     public String getConnectionDriver() {
         return connectionDriver;
@@ -61,13 +65,22 @@ public class ConnectionPoolConfigure {
         this.warmup = warmup;
     }
 
+    public String getFetchTimes() {
+        return fetchTimes;
+    }
+
+    public void setFetchTimes(String fetchTimes) {
+        this.fetchTimes = fetchTimes;
+    }
+
     @Override
     public String toString() {
         return "ConnectionPoolConfigure{" +
                 "connectionDriver='" + connectionDriver + '\'' +
                 ", connectionPoolType='" + connectionPoolType + '\'' +
                 ", pingService='" + pingService + '\'' +
-                ", warmup=" + warmup +
+                ", warmup='" + warmup + '\'' +
+                ", fetchTimes=" + fetchTimes +
                 '}';
     }
 }
