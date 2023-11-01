@@ -40,19 +40,19 @@ import java.util.concurrent.atomic.AtomicLong;
 public class HspNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(HspNettyConnection.class);
 
-    private final EventLoopGroup LOOP_GROUP = new NioEventLoopGroup(16,
+    private final EventLoopGroup loopGroup = new NioEventLoopGroup(16,
             new NamedThreadFactory("hsp-netty-", false));
 
     private ChannelFuture channelFuture;
 
     public static final ConcurrentHashMap<Long, Promise<String>> PROMISE_MAP = new ConcurrentHashMap<>();
 
-    private final DefaultEventLoop NETTY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
+    private final DefaultEventLoop nettyEventLoop = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
     private int timeout;
 
-    private final Bootstrap BOOTSTRAP = new Bootstrap()
-            .group(LOOP_GROUP)
+    private final Bootstrap bootstrap = new Bootstrap()
+            .group(loopGroup)
             .channel(NioSocketChannel.class)
             .option(ChannelOption.SO_KEEPALIVE, true);
 
@@ -65,19 +65,19 @@ public class HspNettyConnection implements Connection {
 
     @Override
     public void close() {
-        LOOP_GROUP.shutdownGracefully();
+        loopGroup.shutdownGracefully();
     }
 
     @Override
     public boolean isClosed() {
-        return LOOP_GROUP.isShutdown();
+        return loopGroup.isShutdown();
     }
 
     @Override
     public String send(String msg) {
         Channel channel = channelFuture.channel();
 
-        Promise<String> promise = NETTY_EVENT_LOOP.newPromise();
+        Promise<String> promise = nettyEventLoop.newPromise();
 
         long requestId = ATOMIC_LONG.addAndGet(1);
         msg = String.format("%016x", requestId) + msg;
@@ -107,8 +107,8 @@ public class HspNettyConnection implements Connection {
         int connectTimeout = Integer.parseInt(properties.getProperty("connectTimeout"));
 
         try {
-            BOOTSTRAP.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
-            channelFuture = BOOTSTRAP
+            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
+            channelFuture = bootstrap
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
