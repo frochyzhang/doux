@@ -6,7 +6,7 @@ spring:
 
 ---
 spring:
-  profiles: dev
+  profiles: dev-bak
 
 com:
   alipay:
@@ -46,7 +46,7 @@ com:
 
 ---
 spring:
-  profiles: sit
+  profiles: dev
   pid:
     file: ${HOME}/pid/${spring.application.name}/${spring.application.name}.pid
 
@@ -54,16 +54,17 @@ com:
   alipay:
     sofa:
       rpc:
-        registry-address: nacos://10.250.28.142:8848/public
+        registry-address: nacos://10.250.28.142:8848/wk2021
         bolt-port: 12202
-        enabled-ip-range: 10.250.1.17
+  #        enabled-ip-range: 10.250.1.17
   allinfinance:
     rpc:
-      provider-package: com.allinfinance.dev.hsp.service
+      provider:
+        service-package: com.allinfinance.dev.hsp.service
     connection:
       pool:
         connection-driver: hsp
-        connection-pool-type: pool
+        connection-pool-type: queue
         ping-service: default
         warmup: true
       scaffold:
@@ -71,22 +72,22 @@ com:
           server-1:
             server-ip: 10.250.28.239
             server-port: 6666
-            max-active-connections: 50
+            max-active-connections: 2
             ping-enabled: false
             ping-query-content: "00"
-            ping-verify-message: ""
+            ping-verify-message: "asdfasdfas"
             length-field: 2
             buffer-size: 65536
             default-network-timeout: 5000
-          server-2:
-            server-ip: 10.250.28.239
-            server-port: 6666
-            ping-enabled: false
-            ping-query-content: "00"
-            ping-verify-message: ""
-            length-field: 2
-            buffer-size: 65536
-            default-network-timeout: 5000
+#          server-2:
+#            server-ip: 10.250.28.239
+#            server-port: 6666
+#            ping-enabled: false
+#            ping-query-content: "00"
+#            ping-verify-message: ""
+#            length-field: 2
+#            buffer-size: 65536
+#            default-network-timeout: 5000
 ---
 spring:
   profiles: uat
