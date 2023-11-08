@@ -21,6 +21,16 @@
         <dependencies>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-gateway-scaffold-boot-starter</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-gateway-scaffold</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket-server-scaffold</artifactId>
                 <version>${dev.version}</version>
             </dependency>

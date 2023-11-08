@@ -1,6 +1,6 @@
-package com.allinfinance.dev.rpc.scaffold.api.dto.raft;
+package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
 
 import java.io.Serializable;
 
@@ -9,17 +9,17 @@ import java.io.Serializable;
  * @date 2022/11/29 19:51
  */
 public class ExporterRegistrarRequest implements Serializable {
-    private RpcConfigurationProperties.Bootstrap bootstrap;
+    private Bootstrap bootstrap;
 
-    public ExporterRegistrarRequest(RpcConfigurationProperties.Bootstrap bootstrap) {
+    public ExporterRegistrarRequest(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
     }
 
-    public RpcConfigurationProperties.Bootstrap getBootstrap() {
+    public Bootstrap getBootstrap() {
         return bootstrap;
     }
 
-    public void setBootstrap(RpcConfigurationProperties.Bootstrap bootstrap) {
+    public void setBootstrap(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
     }
 

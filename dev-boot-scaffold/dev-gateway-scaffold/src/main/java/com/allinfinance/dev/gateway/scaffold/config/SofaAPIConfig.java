@@ -1,14 +1,27 @@
-package com.allinfinance.dev.rpc.scaffold.config;
+package com.allinfinance.dev.gateway.scaffold.config;
 
+import com.alipay.sofa.rpc.config.ApplicationConfig;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
+import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
+import com.allinfinance.dev.gateway.scaffold.api.ProcessService;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/24 17:40
  */
 public class SofaAPIConfig {
+    public static void initProviderConfig(ServerConfig serverConfig, RegistryConfig registryConfig, ApplicationConfig applicationConfig, String appUniqueId, ProcessService refService) {
+        ProviderConfig<ProcessService> providerConfig = new ProviderConfig<ProcessService>()
+                .setInterfaceId(ProcessService.class.getName())
+                .setRef(refService)
+                .setUniqueId(appUniqueId)
+                .setServer(serverConfig)
+                .setApplication(applicationConfig)
+                .setRegistry(registryConfig);
+        providerConfig.export();
+    }
 
     public static <T> T referProxyConsumerRef(RegistryConfig registryConfig, Class<T> tClass, int timeout, String cluster, int retries) {
         ConsumerConfig<T> consumerConfig = new ConsumerConfig<T>()
@@ -52,12 +65,12 @@ public class SofaAPIConfig {
     public static ServerConfig getServerConfig(Integer port) {
         return new ServerConfig()
                 .setPort(port)
-                .setProtocol("nacos");
+                .setProtocol(Bootstrap.TRANSPORT_PROTOCOL);
     }
 
     public static RegistryConfig getRegistryConfig(String registryAddress) {
         return new RegistryConfig()
-                .setProtocol("nacos")
+                .setProtocol(Bootstrap.REGISTRY_PROTOCOL)
                 .setAddress(registryAddress);
     }
 }

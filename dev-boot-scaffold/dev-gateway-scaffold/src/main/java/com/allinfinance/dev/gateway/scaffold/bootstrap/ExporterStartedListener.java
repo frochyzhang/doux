@@ -1,9 +1,9 @@
-package com.allinfinance.dev.rpc.scaffold.bootstrap;
+package com.allinfinance.dev.gateway.scaffold.bootstrap;
 
 import com.alipay.sofa.jraft.error.RemotingException;
-import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterRegistrarRequest;
-import com.allinfinance.dev.rpc.scaffold.config.RaftRpcClientConfig;
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.gateway.scaffold.api.ExporterRegistrarRequest;
+import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
+import com.allinfinance.dev.gateway.scaffold.config.RaftRpcClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +25,9 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
     private static final Logger logger = LoggerFactory.getLogger(ExporterStartedListener.class);
 
     @Autowired
-    private RpcConfigurationProperties rpcConfigurationProperties;
-
-    @Autowired
     private RaftRpcClientConfig raftRpcClientConfig;
+    @Autowired
+    private Bootstrap bootstrap;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
@@ -37,7 +36,7 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
             Boolean registerResult = null;
             while (true) {
                 try {
-                    registerResult = raftRpcClientConfig.invokeSync(new ExporterRegistrarRequest(rpcConfigurationProperties.getBootstrap()), 5000);
+                    registerResult = raftRpcClientConfig.invokeSync(new ExporterRegistrarRequest(bootstrap), 5000);
                 } catch (InterruptedException e) {
                     logger.error("调用网关注册服务异常", e);
                     Thread.currentThread().interrupt();
@@ -52,10 +51,10 @@ public class ExporterStartedListener implements ApplicationListener<ApplicationS
                         Thread.currentThread().interrupt();
                     }
                 } else if (registerResult) {
-                    logger.info("应用[{}]注册到网关成功!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.info("应用[{}]注册到网关成功!", bootstrap.getAppUniqueId());
                     break;
                 } else {
-                    logger.error("应用[{}]注册到网关失败!", rpcConfigurationProperties.getBootstrap().getAppUniqueId());
+                    logger.error("应用[{}]注册到网关失败!", bootstrap.getAppUniqueId());
                     throw new RuntimeException("应用注册失败!");
                 }
             }

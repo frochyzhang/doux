@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.config;
+package com.allinfinance.dev.gateway.scaffold.config;
 
 import com.alipay.sofa.jraft.RouteTable;
 import com.alipay.sofa.jraft.entity.PeerId;
@@ -19,20 +19,20 @@ import java.util.concurrent.TimeoutException;
  * @author huanghf
  * @date 2022/11/29 19:17
  */
-@ConditionalOnProperty(value = RpcConfigurationProperties.Bootstrap.BOOT_ENABLE, havingValue = "true")
+@ConditionalOnProperty(value = Bootstrap.BOOT_ENABLE, havingValue = "true")
 @Configuration
 public class RaftRpcClientConfig implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RaftRpcClientConfig.class);
 
     @Autowired
-    private RpcConfigurationProperties rpcConfigurationProperties;
+    private Bootstrap bootstrap;
 
     private CliClientServiceImpl cliClientService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        final String groupId = rpcConfigurationProperties.getBootstrap().getGroupId();
-        final String confStr = rpcConfigurationProperties.getBootstrap().getGateClusterAddress();
+        final String groupId = bootstrap.getGroupId();
+        final String confStr = bootstrap.getGateClusterAddress();
 
         final com.alipay.sofa.jraft.conf.Configuration conf = new com.alipay.sofa.jraft.conf.Configuration();
         if (!conf.parse(confStr)) {
@@ -47,7 +47,7 @@ public class RaftRpcClientConfig implements InitializingBean {
 
     public RpcClient getRpcClient() {
         try {
-            if (!RouteTable.getInstance().refreshLeader(cliClientService, rpcConfigurationProperties.getBootstrap().getGroupId(), 1000).isOk()) {
+            if (!RouteTable.getInstance().refreshLeader(cliClientService, bootstrap.getGroupId(), 1000).isOk()) {
                 logger.error("Refresh leader failed");
                 return null;
             }
@@ -59,17 +59,17 @@ public class RaftRpcClientConfig implements InitializingBean {
             return null;
         }
 
-        final PeerId leader = RouteTable.getInstance().selectLeader(rpcConfigurationProperties.getBootstrap().getGroupId());
+        final PeerId leader = RouteTable.getInstance().selectLeader(bootstrap.getGroupId());
         logger.info("Leader is {}:{}", leader.getIp(), leader.getPort());
         return cliClientService.getRpcClient();
     }
 
     public <T> T invokeSync(Object request, long timoutMills) throws TimeoutException, InterruptedException, RemotingException {
-        if (!RouteTable.getInstance().refreshLeader(cliClientService, rpcConfigurationProperties.getBootstrap().getGroupId(), 1000).isOk()) {
+        if (!RouteTable.getInstance().refreshLeader(cliClientService, bootstrap.getGroupId(), 1000).isOk()) {
             throw new IllegalStateException("Refresh leader failed");
         }
 
-        PeerId leader = RouteTable.getInstance().selectLeader(rpcConfigurationProperties.getBootstrap().getGroupId());
+        PeerId leader = RouteTable.getInstance().selectLeader(bootstrap.getGroupId());
         logger.info("Leader is {}:{}", leader.getIp(), leader.getPort());
         return (T) cliClientService.getRpcClient().invokeSync(leader.getEndpoint(), request, timoutMills);
     }

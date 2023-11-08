@@ -1,6 +1,6 @@
-package com.allinfinance.dev.rpc.scaffold.api;
+package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractProcessService implements ProcessService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractProcessService.class);
-    private RpcConfigurationProperties rpcConfigurationProperties;
-
+    private Bootstrap bootstrap;
 
     /**
      * 注册到网关后的验证接口
@@ -32,12 +31,12 @@ public abstract class AbstractProcessService implements ProcessService {
      * @return
      */
     @Override
-    public RpcConfigurationProperties.Bootstrap init() {
-        return rpcConfigurationProperties.getBootstrap();
+    public Bootstrap init() {
+        return bootstrap;
     }
 
     @Autowired
-    public void setRpcConfigurationProperties(RpcConfigurationProperties rpcConfigurationProperties) {
-        this.rpcConfigurationProperties = rpcConfigurationProperties;
+    public void setRpcConfigurationProperties(Bootstrap bootstrap) {
+        this.bootstrap = bootstrap;
     }
 }

@@ -1,15 +1,15 @@
-package com.allinfinance.dev.rpc.scaffold.bootstrap;
+package com.allinfinance.dev.gateway.scaffold.bootstrap;
 
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alipay.sofa.rpc.config.ApplicationConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
 import com.alipay.sofa.rpc.core.exception.SofaRouteException;
-import com.allinfinance.dev.rpc.scaffold.api.ProcessService;
-import com.allinfinance.dev.rpc.scaffold.api.dto.raft.ExporterOfflineRequest;
-import com.allinfinance.dev.rpc.scaffold.config.RaftRpcClientConfig;
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
-import com.allinfinance.dev.rpc.scaffold.config.SofaAPIConfig;
+import com.allinfinance.dev.gateway.scaffold.api.ExporterOfflineRequest;
+import com.allinfinance.dev.gateway.scaffold.api.ProcessService;
+import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
+import com.allinfinance.dev.gateway.scaffold.config.RaftRpcClientConfig;
+import com.allinfinance.dev.gateway.scaffold.config.SofaAPIConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -25,25 +25,24 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/1/27 16:36
  */
-@ConditionalOnProperty(value = RpcConfigurationProperties.Bootstrap.BOOT_ENABLE, havingValue = "true")
+@ConditionalOnProperty(value = Bootstrap.BOOT_ENABLE, havingValue = "true")
 @Configuration
 public class RpcGatewayBootstrapRegistrar implements InitializingBean, DisposableBean {
     private static final Logger logger = LoggerFactory.getLogger(RpcGatewayBootstrapRegistrar.class);
-    @Autowired
-    private RpcConfigurationProperties rpcConfigurationProperties;
 
     @Autowired(required = false)
     private ProcessService processService;
 
     @Autowired
     private RaftRpcClientConfig raftRpcClientConfig;
+    @Autowired
+    private Bootstrap bootstrap;
 
     @Override
     public void afterPropertiesSet() throws NacosException {
         if (processService == null) {
             throw new NullPointerException("未匹配到ProcessService实现!");
         }
-        RpcConfigurationProperties.Bootstrap bootstrap = rpcConfigurationProperties.getBootstrap();
         if (StringUtils.hasText(bootstrap.getAppUniqueId())
                 && StringUtils.hasText(bootstrap.getGateRegistry())) {
 
@@ -89,7 +88,7 @@ public class RpcGatewayBootstrapRegistrar implements InitializingBean, Disposabl
     @Override
     public void destroy() throws Exception {
         logger.info("开始调用网关下线服务");
-        boolean offlineResult = raftRpcClientConfig.invokeSync(new ExporterOfflineRequest(rpcConfigurationProperties.getBootstrap().getAppUniqueId()), 5000);
+        boolean offlineResult = raftRpcClientConfig.invokeSync(new ExporterOfflineRequest(bootstrap.getAppUniqueId()), 5000);
         if (offlineResult) {
             logger.info("调用网关下线服务成功");
         } else {

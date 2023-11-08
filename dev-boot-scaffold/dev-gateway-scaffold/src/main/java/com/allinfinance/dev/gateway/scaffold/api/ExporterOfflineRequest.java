@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.api.dto.raft;
+package com.allinfinance.dev.gateway.scaffold.api;
 
 import java.io.Serializable;
 

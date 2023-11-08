@@ -22,6 +22,7 @@
         <module>dev-socket-server-scaffold</module>
         <module>dev-disruptor-scaffold</module>
         <module>dev-socket-feign-scaffold</module>
+        <module>dev-gateway-scaffold</module>
     </modules>
 
     <properties>

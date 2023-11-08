@@ -1,4 +1,4 @@
-package com.allinfinance.dev.rpc.scaffold.api;
+package com.allinfinance.dev.gateway.scaffold.api;
 
 import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
 

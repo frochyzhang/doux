@@ -1,9 +1,9 @@
-package com.allinfinance.dev.rpc.scaffold.api;
+package com.allinfinance.dev.gateway.scaffold.api;
 
 import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
 import com.allinfinance.dev.common.dictionary.processor.dto.ProcessResponseDTO;
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
-import com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties;
+import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -23,7 +23,7 @@ public interface ProcessService {
      *
      * @return
      */
-    RpcConfigurationProperties.Bootstrap init();
+    Bootstrap init();
 
     /**
      * 应用系统业务处理服务
