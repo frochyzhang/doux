@@ -757,7 +757,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -913,10 +912,14 @@
 
     <distributionManagement>
         <repository>
-            <!--必须与 settings.xml 的 id 一致-->
-            <id>frochy-mgm-package</id>
-            <name>package</name>
-            <url>https://frochy-maven.pkg.coding.net/repository/mgm/package/</url>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://10.250.20.182:8081/repository/maven-releases//</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://10.250.20.182:8081/repository/maven-snapshots//</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>

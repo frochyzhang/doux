@@ -23,6 +23,12 @@
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.boot</groupId>
+                    <artifactId>nacos-config-spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
@@ -42,14 +48,19 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.allinfinance.dev</groupId>-->
+        <!--            <artifactId>dev-hsp-api</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-hsp-api</artifactId>
+            <artifactId>dev-core</artifactId>
+            <version>1.4.0-RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>com.allinfinance.dev</groupId>
-            <artifactId>dev-common-dictionary</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.allinfinance.dev</groupId>-->
+        <!--            <artifactId>dev-common-dictionary</artifactId>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <build>
