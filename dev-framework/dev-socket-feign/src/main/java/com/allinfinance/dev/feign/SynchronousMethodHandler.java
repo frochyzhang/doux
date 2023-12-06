@@ -17,16 +17,18 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
 
     @Override
     public <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable {
-        SocketRequestDTO requestDTO = new SocketRequestDTO(
-                target.url().split(":")[0],
-                target.url().split(":")[1],
-                target.name(),
-                String.valueOf(target.msgLengthSize()),
-                target.msgEncode()
-        );
+        SocketRequestDTO requestDTO;
 
         if (argv.length > 1 && argv[0] instanceof SocketRequestDTO) {
             requestDTO = ((SocketRequestDTO) argv[0]);
+        } else {
+            requestDTO = new SocketRequestDTO(
+                    target.url().split(":")[0],
+                    target.url().split(":")[1],
+                    target.name(),
+                    String.valueOf(target.msgLengthSize()),
+                    target.msgEncode()
+            );
         }
 
         return client.execute(requestDTO, argv[argv.length - 1], returnType);
