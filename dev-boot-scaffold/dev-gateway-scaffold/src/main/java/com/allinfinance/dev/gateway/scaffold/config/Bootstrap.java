@@ -1,6 +1,6 @@
 package com.allinfinance.dev.gateway.scaffold.config;
 
-import com.allinfinance.dev.common.http.api.constant.HttpMethod;
+import io.netty.handler.codec.http.HttpMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
