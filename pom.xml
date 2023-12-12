@@ -9,16 +9,13 @@
     <packaging>pom</packaging>
     <version>${revision}</version>
     <modules>
-        <!--        <module>dev-hsp</module>-->
         <module>dev-parent</module>
         <module>dev-boot-starters</module>
         <module>dev-boot-scaffold</module>
-        <!--        <module>dev-ccp</module>-->
-        <!--        <module>dev-gateway</module>-->
         <module>dev-framework</module>
         <module>dev-infrastructure</module>
         <module>dev-common</module>
-        <!--        <module>dev-tools</module>-->
+        <module>dev-tools</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 

@@ -14,6 +14,7 @@
     <modules>
         <module>dev-hsp-tool</module>
         <module>dev-socket-feign-example</module>
+        <module>dev-socket-server-tool</module>
     </modules>
 
     <properties>

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: dev-socket-server-tool
+
+com:
+  allinfinance:
+    socket:
+      server:
+        bootstrap:
+          enabled: true
+          bootstrap: default
+        scaffold:
+          server-metadata-list:
+            - name: socket-test
+              port: 8832
+              handlerClassName: com.allinfinance.dev.socket.server.tool.handler.SocketServerHandler
