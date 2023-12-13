@@ -1,9 +1,12 @@
 package com.allinfinance.dev.feign.scaffold;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.allinfinance.dev.feign.Client;
 import com.allinfinance.dev.feign.ReflectiveFeign;
 import com.allinfinance.dev.feign.Request;
 import com.allinfinance.dev.feign.Target;
+import com.allinfinance.dev.feign.codec.Decoder;
+import com.allinfinance.dev.feign.codec.Encoder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -49,6 +52,10 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
 
     private boolean refreshableClient = false;
 
+    private Class<Encoder> encoderClass;
+
+    private Class<Decoder> decoderClass;
+
     public void afterPropertiesSet() {
         Assert.hasText(contextId, "Context id must be set");
         Assert.hasText(name, "Name must be set");
@@ -60,6 +67,12 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
     }
 
     <T> T getTarget() {
+        if (this.encoderClass != null) {
+            this.client.setEncoder(SpringUtil.getBean(encoderClass));
+        }
+        if (this.decoderClass != null) {
+            this.client.setDecoder(SpringUtil.getBean(decoderClass));
+        }
         return (T) new ReflectiveFeign(this.client).newInstance(new Target.HardCodedTarget<>(type, name, url, msgEncode, timeout, msgLengthSize));
     }
 
@@ -207,5 +220,21 @@ public class FeignClientFactoryBean implements FactoryBean<Object>, Initializing
     public FeignClientFactoryBean setRefreshableClient(boolean refreshableClient) {
         this.refreshableClient = refreshableClient;
         return this;
+    }
+
+    public Class<Encoder> getEncoderClass() {
+        return encoderClass;
+    }
+
+    public void setEncoderClass(Class<Encoder> encoderClass) {
+        this.encoderClass = encoderClass;
+    }
+
+    public Class<Decoder> getDecoderClass() {
+        return decoderClass;
+    }
+
+    public void setDecoderClass(Class<Decoder> decoderClass) {
+        this.decoderClass = decoderClass;
     }
 }

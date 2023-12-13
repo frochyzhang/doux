@@ -3,15 +3,13 @@ package com.allinfinance.dev.feign.scaffold;
 import cn.hutool.core.net.NetUtil;
 import com.allinfinance.dev.feign.DevFeign;
 import com.allinfinance.dev.feign.Request;
+import com.allinfinance.dev.feign.codec.Decoder;
+import com.allinfinance.dev.feign.codec.Encoder;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.BeanExpressionContext;
-import org.springframework.beans.factory.config.BeanExpressionResolver;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
@@ -125,6 +123,17 @@ public class FeignClientBeansRegistrar implements ImportBeanDefinitionRegistrar,
                 factoryBean.setFallbackFactory(fallbackFactory instanceof Class ? (Class<?>) fallbackFactory
                     : ClassUtils.resolveClassName(fallbackFactory.toString(), null));
             }
+            Class encoderClass = (Class) attributes.get("encoderClass");
+            Class decoderClass = (Class) attributes.get("decoderClass");
+
+            if (Encoder.class.isAssignableFrom(encoderClass)) {
+                factoryBean.setEncoderClass(encoderClass);
+            }
+
+            if (Decoder.class.isAssignableFrom(decoderClass)) {
+                factoryBean.setDecoderClass(decoderClass);
+            }
+
             return factoryBean.getObject();
         });
         definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);

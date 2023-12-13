@@ -17,4 +17,8 @@ public @interface DevFeign {
     int timeout() default 3000;
 
     int msgLengthSize() default 6;
+
+    Class<?> encoderClass() default Void.class;
+
+    Class<?> decoderClass() default Void.class;
 }
