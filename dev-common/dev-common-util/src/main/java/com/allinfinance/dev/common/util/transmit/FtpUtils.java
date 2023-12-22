@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author qipeng
@@ -52,6 +53,19 @@ public class FtpUtils {
         FTPFile[] files = ftpClient.listFiles(fileName);
         if (files == null || files.length != 1) {
             logger.warn("远程文件不存在或不唯一: " + fileName);
+            return false;
+        }
+
+        try {
+            String previousSize = ftpClient.getSize(fileName);
+            TimeUnit.MILLISECONDS.sleep(100);
+            String latestSize = ftpClient.getSize(fileName);
+            if (!previousSize.equals(latestSize)) {
+                logger.error("文件大小发生变化，停止下载");
+                return false;
+            }
+        } catch (InterruptedException e) {
+            logger.error("判断文件状态异常", e);
             return false;
         }
 
@@ -100,6 +114,64 @@ public class FtpUtils {
         if (!isDirExists) {
             logger.warn("远程目录不存在，请检查配置是否正确: {}", remotePath);
             return false;
+        }
+
+        ftpClient.enterLocalPassiveMode();
+
+        String localAbsoluteFile = StringUtils.endsWith(localPath, "/") ? localPath + fileName : localPath + "/" + fileName;
+        try (FileInputStream fileInputStream = new FileInputStream(localAbsoluteFile)) {
+            boolean flag = ftpClient.storeFile(fileName, fileInputStream);
+            if (!flag) {
+                logger.warn("FTP上传失败，本地全路径：{}", localAbsoluteFile);
+                return false;
+            } else {
+                logger.info("FTP上传成功：{}", fileName);
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error("文件下载异常, 本地全路径：{}", localAbsoluteFile, e);
+            return false;
+        } finally {
+            ftpClient.logout();
+            if (ftpClient.isConnected()) {
+                ftpClient.disconnect();
+            }
+        }
+    }
+
+    /**
+     * ftp上传文件
+     *
+     * @param remoteIp   远程ip
+     * @param remotePort 远程端口
+     * @param username   用户名
+     * @param password   密码
+     * @param remotePath 远程路径
+     * @param localPath  本地路径
+     * @param fileName   文件名
+     * @return 上传成功返回true
+     */
+    public static boolean upload(String remoteIp, int remotePort, String username, String password, String remotePath,
+                                 String fileName, String localPath, boolean createRemotePath) throws IOException {
+        FTPClient ftpClient = getFtpClient(remoteIp, remotePort, username, password);
+        if (ObjectUtils.isEmpty(ftpClient)) {
+            logger.error("ftp连接失败！");
+            return false;
+        }
+
+        boolean isDirExists = ftpClient.changeWorkingDirectory(remotePath);
+        if (!isDirExists) {
+            if (createRemotePath) {
+                logger.info("远程目录不存在，创建远程目录：{}", remotePath);
+                ftpClient.makeDirectory(remotePath);
+                if (!ftpClient.changeWorkingDirectory(remotePath)) {
+                    logger.warn("远程目录创建失败");
+                    return false;
+                }
+            } else {
+                logger.warn("远程目录不存在，请检查配置是否正确: {}", remotePath);
+                return false;
+            }
         }
 
         ftpClient.enterLocalPassiveMode();

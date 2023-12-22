@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author qipeng
@@ -45,10 +46,28 @@ public class SftpUtils {
         }
         String remoteAbsoluteFile = StringUtils.endsWith(remotePath, "/") ? remotePath + fileName : remotePath + "/" + fileName;
         try {
+            long previousSize = sftpClient.lstat(remoteAbsoluteFile).getSize();
+            TimeUnit.MILLISECONDS.sleep(100);
+            long latestSize = sftpClient.lstat(remoteAbsoluteFile).getSize();
+            if (previousSize != latestSize) {
+                logger.error("文件大小发生变化，停止下载");
+                return false;
+            }
             sftpClient.get(remoteAbsoluteFile, new FileSystemFile(localPath));
         } catch (IOException e) {
             logger.error("下载远程文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
             return false;
+        } catch (InterruptedException e) {
+            logger.error("判断文件状态异常", e);
+            return false;
+        } finally {
+            if (sftpClient != null) {
+                try {
+                    sftpClient.close();
+                } catch (IOException e) {
+                    logger.error("SFTPClient关闭异常", e);
+                }
+            }
         }
         logger.info("下载文件成功！");
         return true;
@@ -86,6 +105,14 @@ public class SftpUtils {
         } catch (IOException e) {
             logger.error("上传本地文件异常，请检查文件路径，remotePath：{}，localPath：{}，fileName：{}", remotePath, localPath, fileName, e);
             return false;
+        } finally {
+            if (sftpClient != null) {
+                try {
+                    sftpClient.close();
+                } catch (IOException e) {
+                    logger.error("SFTPClient关闭异常", e);
+                }
+            }
         }
         logger.info("上传文件成功！");
         return true;

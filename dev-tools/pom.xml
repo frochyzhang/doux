@@ -13,13 +13,13 @@
     <packaging>pom</packaging>
     <modules>
         <module>dev-hsp-tool</module>
-        <module>dev-socket-feign-example</module>
         <module>dev-socket-server-tool</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
 </project>
