@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.advice.resolver;
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import org.slf4j.Logger;
@@ -75,9 +76,9 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
     @Override
     @Nullable
     public SofaResponse resolveException(
-            SofaRequest sofaRequest, Exception ex) {
+            SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception ex) {
 
-        SofaResponse result = doResolveException(sofaRequest, ex);
+        SofaResponse result = doResolveException(sofaRequest, providerConfig, ex);
         if (result != null) {
             // Print debug message when warn logger is not enabled.
             if (LOGGER.isDebugEnabled()) {
@@ -152,12 +153,13 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
      * resolved applies ("mappedHandlers" etc), so an implementation may simply proceed
      * with its actual exception handling.
      *
-     * @param sofaRequest current sofa request
-     * @param ex          the exception that got thrown during handler execution
+     * @param sofaRequest    current sofa request
+     * @param providerConfig current provider config
+     * @param ex             the exception that got thrown during handler execution
      * @return a corresponding {@code SofaResponse} to forward to,
      * or {@code null} for default processing in the resolution chain
      */
     @Nullable
-    protected abstract SofaResponse doResolveException(SofaRequest sofaRequest, Exception ex);
+    protected abstract SofaResponse doResolveException(SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception ex);
 
 }

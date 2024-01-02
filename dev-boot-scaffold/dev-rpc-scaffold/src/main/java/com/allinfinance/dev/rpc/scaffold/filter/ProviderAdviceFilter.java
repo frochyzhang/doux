@@ -13,6 +13,8 @@ import com.allinfinance.dev.rpc.scaffold.advice.resolver.ExceptionHandlerExcepti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * @author huanghf
  * @date 2023/3/20 16:57
@@ -37,7 +39,8 @@ public class ProviderAdviceFilter extends Filter {
     public SofaResponse invoke(FilterInvoker invoker, SofaRequest request) throws SofaRpcException {
         SofaResponse sofaResponse = invoker.invoke(request);
         if (sofaResponse.getAppResponse() instanceof Exception) {
-            return resolver.resolveException(request, (Exception) sofaResponse.getAppResponse());
+            return Optional.ofNullable(resolver.resolveException(request, (ProviderConfig<?>) invoker.getConfig(), (Exception) sofaResponse.getAppResponse()))
+                    .orElse(sofaResponse);
         } else {
             return sofaResponse;
         }

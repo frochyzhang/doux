@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.advice.resolver;
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.allinfinance.dev.rpc.scaffold.advice.handler.HandlerMethod;
@@ -16,9 +17,9 @@ public abstract class AbstractHandlerMethodExceptionResolver extends AbstractHan
 
     @Override
     @Nullable
-    protected final SofaResponse doResolveException(SofaRequest sofaRequest, Exception ex) {
+    protected final SofaResponse doResolveException(SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception ex) {
 
-        return doResolveHandlerMethodException(sofaRequest, ex);
+        return doResolveHandlerMethodException(sofaRequest, providerConfig, ex);
     }
 
     /**
@@ -29,12 +30,13 @@ public abstract class AbstractHandlerMethodExceptionResolver extends AbstractHan
      * resolved applies ("mappedHandlers" etc), so an implementation may simply proceed
      * with its actual exception handling.
      *
-     * @param sofaRequest current sofa request
-     * @param ex          the exception that got thrown during handler execution
+     * @param sofaRequest    current sofa request
+     * @param providerConfig current provider config
+     * @param ex             the exception that got thrown during handler execution
      * @return a corresponding SofaResponse to forward to, or {@code null} for default processing
      */
     @Nullable
     protected abstract SofaResponse doResolveHandlerMethodException(
-            SofaRequest sofaRequest, Exception ex);
+            SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception ex);
 
 }

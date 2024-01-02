@@ -53,22 +53,22 @@ public final class HandlerTypePredicate implements Predicate<Class<?>> {
 
 
     @Override
-    public boolean test(@Nullable Class<?> controllerType) {
+    public boolean test(@Nullable Class<?> providerType) {
         if (!hasSelectors()) {
             return true;
-        } else if (controllerType != null) {
+        } else if (providerType != null) {
             for (String basePackage : this.basePackages) {
-                if (controllerType.getName().startsWith(basePackage)) {
+                if (providerType.getName().startsWith(basePackage)) {
                     return true;
                 }
             }
             for (Class<?> clazz : this.assignableTypes) {
-                if (ClassUtils.isAssignable(clazz, controllerType)) {
+                if (ClassUtils.isAssignable(clazz, providerType)) {
                     return true;
                 }
             }
             for (Class<? extends Annotation> annotationClass : this.annotations) {
-                if (AnnotationUtils.findAnnotation(controllerType, annotationClass) != null) {
+                if (AnnotationUtils.findAnnotation(providerType, annotationClass) != null) {
                     return true;
                 }
             }

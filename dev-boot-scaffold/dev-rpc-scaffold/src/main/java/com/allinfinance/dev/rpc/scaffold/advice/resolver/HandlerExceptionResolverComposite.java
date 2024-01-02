@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.advice.resolver;
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import org.springframework.core.Ordered;
@@ -53,11 +54,11 @@ public class HandlerExceptionResolverComposite implements HandlerExceptionResolv
 	@Override
 	@Nullable
 	public SofaResponse resolveException(
-			SofaRequest sofaRequest, Exception ex) {
+			SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception ex) {
 
 		if (this.resolvers != null) {
 			for (HandlerExceptionResolver handlerExceptionResolver : this.resolvers) {
-				SofaResponse sofaResponse = handlerExceptionResolver.resolveException(sofaRequest, ex);
+				SofaResponse sofaResponse = handlerExceptionResolver.resolveException(sofaRequest, providerConfig, ex);
 				if (sofaResponse != null) {
 					return sofaResponse;
 				}

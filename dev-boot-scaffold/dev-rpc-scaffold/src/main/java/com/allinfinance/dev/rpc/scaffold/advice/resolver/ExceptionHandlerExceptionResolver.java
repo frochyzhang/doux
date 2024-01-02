@@ -1,5 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.advice.resolver;
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.allinfinance.dev.common.dictionary.dto.SofaResponseDTO;
@@ -267,9 +268,9 @@ public class ExceptionHandlerExceptionResolver extends AbstractHandlerMethodExce
      */
     @Override
     @Nullable
-    protected SofaResponse doResolveHandlerMethodException(SofaRequest sofaRequest, Exception exception) {
+    protected SofaResponse doResolveHandlerMethodException(SofaRequest sofaRequest, ProviderConfig<?> providerConfig, Exception exception) {
 
-        SofaInvocableHandlerMethod exceptionHandlerMethod = getExceptionHandlerMethod(exception);
+        SofaInvocableHandlerMethod exceptionHandlerMethod = getExceptionHandlerMethod(providerConfig, exception);
         if (exceptionHandlerMethod == null) {
             return null;
         }
@@ -314,17 +315,20 @@ public class ExceptionHandlerExceptionResolver extends AbstractHandlerMethodExce
      * methods assuming some {@linkplain ProviderAdvice @ProviderAdvice}
      * Spring-managed beans were detected.
      *
-     * @param exception the raised exception
+     * @param providerConfig current provider config
+     * @param exception      the raised exception
      * @return a method to handle the exception, or {@code null} if none
      */
     @Nullable
-    protected SofaInvocableHandlerMethod getExceptionHandlerMethod(Exception exception) {
+    protected SofaInvocableHandlerMethod getExceptionHandlerMethod(ProviderConfig<?> providerConfig, Exception exception) {
         for (Map.Entry<ProviderAdviceBean, ExceptionHandlerMethodResolver> entry : this.exceptionHandlerAdviceCache.entrySet()) {
             ProviderAdviceBean advice = entry.getKey();
-            ExceptionHandlerMethodResolver resolver = entry.getValue();
-            Method method = resolver.resolveMethod(exception);
-            if (method != null) {
-                return new SofaInvocableHandlerMethod(advice.resolveBean(), method);
+            if (advice.isApplicableToBeanType(providerConfig.getRef().getClass())) {
+                ExceptionHandlerMethodResolver resolver = entry.getValue();
+                Method method = resolver.resolveMethod(exception);
+                if (method != null) {
+                    return new SofaInvocableHandlerMethod(advice.resolveBean(), method);
+                }
             }
         }
 
