@@ -1,7 +1,7 @@
 package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
-import com.allinfinance.dev.common.dictionary.processor.dto.ProcessResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.ProcessRequestDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.ProcessResponseDTO;
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
 import com.allinfinance.dev.gateway.scaffold.config.Bootstrap;
 

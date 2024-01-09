@@ -1,9 +1,9 @@
-package com.allinfinance.dev.common.dictionary.processor;
+package com.allinfinance.dev.gateway.scaffold.processor;
 
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessedFactory;
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessor;
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractRequestDTO;
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessedFactory;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessor;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractRequestDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractResponseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

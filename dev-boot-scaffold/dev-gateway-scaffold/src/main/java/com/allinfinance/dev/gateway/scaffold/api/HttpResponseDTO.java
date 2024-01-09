@@ -1,6 +1,6 @@
 package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 

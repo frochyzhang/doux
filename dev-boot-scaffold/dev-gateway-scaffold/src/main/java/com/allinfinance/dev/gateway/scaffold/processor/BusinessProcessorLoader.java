@@ -1,8 +1,8 @@
-package com.allinfinance.dev.common.dictionary.processor;
+package com.allinfinance.dev.gateway.scaffold.processor;
 
 import cn.hutool.extra.spring.SpringUtil;
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessedFactory;
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessor;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessedFactory;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

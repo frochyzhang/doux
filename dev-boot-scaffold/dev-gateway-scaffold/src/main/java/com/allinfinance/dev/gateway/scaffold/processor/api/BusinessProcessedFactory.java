@@ -1,7 +1,7 @@
-package com.allinfinance.dev.common.dictionary.processor.api;
+package com.allinfinance.dev.gateway.scaffold.processor.api;
 
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractRequestDTO;
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractRequestDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractResponseDTO;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>

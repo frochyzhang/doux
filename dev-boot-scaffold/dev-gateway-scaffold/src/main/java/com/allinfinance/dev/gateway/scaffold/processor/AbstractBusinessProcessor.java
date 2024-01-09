@@ -1,6 +1,6 @@
-package com.allinfinance.dev.common.dictionary.processor;
+package com.allinfinance.dev.gateway.scaffold.processor;
 
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessor;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessor;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>

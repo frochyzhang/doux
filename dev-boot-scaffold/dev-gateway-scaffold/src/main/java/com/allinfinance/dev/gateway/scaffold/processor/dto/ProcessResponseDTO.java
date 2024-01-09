@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.dictionary.processor.dto;
+package com.allinfinance.dev.gateway.scaffold.processor.dto;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com">frochyZhang</a>

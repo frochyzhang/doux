@@ -1,4 +1,6 @@
-package com.allinfinance.dev.common.dictionary.dto;
+package com.allinfinance.dev.rpc.scaffold.advice.dto;
+
+import com.allinfinance.dev.common.dictionary.advice.ResponseCode;
 
 /**
  * 默认rpc响应码

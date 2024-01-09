@@ -1,9 +1,9 @@
 package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.common.dictionary.processor.api.BusinessProcessedFactory;
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractResponseDTO;
-import com.allinfinance.dev.common.dictionary.processor.dto.ProcessRequestDTO;
-import com.allinfinance.dev.common.dictionary.processor.dto.ProcessResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.api.BusinessProcessedFactory;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractResponseDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.ProcessRequestDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.ProcessResponseDTO;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

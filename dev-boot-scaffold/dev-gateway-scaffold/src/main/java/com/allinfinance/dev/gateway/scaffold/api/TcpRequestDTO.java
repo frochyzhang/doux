@@ -1,6 +1,6 @@
 package com.allinfinance.dev.gateway.scaffold.api;
 
-import com.allinfinance.dev.common.dictionary.processor.dto.AbstractRequestDTO;
+import com.allinfinance.dev.gateway.scaffold.processor.dto.AbstractRequestDTO;
 
 /**
  * @author huanghf

@@ -3,7 +3,7 @@ package com.allinfinance.dev.rpc.scaffold.advice.resolver;
 import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
-import com.allinfinance.dev.common.dictionary.dto.SofaResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.advice.dto.SofaResponseDTO;
 import com.allinfinance.dev.rpc.scaffold.advice.annotation.ExceptionHandlerMethodResolver;
 import com.allinfinance.dev.rpc.scaffold.advice.annotation.ProviderAdvice;
 import com.allinfinance.dev.rpc.scaffold.advice.annotation.ProviderAdviceBean;

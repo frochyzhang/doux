@@ -1,6 +1,6 @@
 package com.allinfinance.dev.rpc.scaffold.advice;
 
-import com.allinfinance.dev.common.dictionary.dto.SofaResponseDTO;
+import com.allinfinance.dev.rpc.scaffold.advice.dto.SofaResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

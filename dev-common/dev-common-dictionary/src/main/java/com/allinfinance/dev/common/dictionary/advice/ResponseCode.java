@@ -1,4 +1,4 @@
-package com.allinfinance.dev.common.dictionary.dto;
+package com.allinfinance.dev.common.dictionary.advice;
 
 public interface ResponseCode {
     String getCode();
