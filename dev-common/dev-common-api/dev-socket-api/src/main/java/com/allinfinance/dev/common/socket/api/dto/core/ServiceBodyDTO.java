@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
  * @date 2022/2/24 14:52
+ * @deprecated 请使用 {@link com.allinfinance.dev.common.socket.api.core.RequestBodyDTO}
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceBodyDTO {

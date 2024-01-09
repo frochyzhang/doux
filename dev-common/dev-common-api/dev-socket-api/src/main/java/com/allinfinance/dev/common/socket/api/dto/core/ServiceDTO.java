@@ -12,7 +12,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  * @author hongmr
  * @date 2017/6/19.
+ * @deprecated 请使用 {@link com.allinfinance.dev.common.socket.api.core.RequestDTO}
  */
+@Deprecated
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceDTO {
     @XStreamAlias("SERVICE_HEADER")

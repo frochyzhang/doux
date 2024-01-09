@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  * @author hongmr
  * @date 2017/6/19.
+ * @deprecated 请使用 {@link com.allinfinance.dev.common.socket.api.core.ServiceHeaderDTO}
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceHeaderDTO {

@@ -9,6 +9,7 @@ import java.io.Serializable;
  *
  * @author hongmr
  * @date 2017/6/19.
+ * @deprecated 请使用 {@link com.allinfinance.dev.common.socket.api.core.Auth}
  */
 @XStreamAlias("AUTH")
 public class Auth implements Serializable {
