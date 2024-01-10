@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
+
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author huanghf
@@ -16,12 +21,15 @@ public class JacksonUtils {
     private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final XmlMapper XML_MAPPER;
 
+    private static final Map<Type, JavaType> javaTypeMap = new ConcurrentHashMap<>();
+
     static {
         XML_MAPPER = (XmlMapper) new XmlMapper()
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .configure(SerializationFeature.INDENT_OUTPUT, true)
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .configure(SerializationFeature.INDENT_OUTPUT, true)
+            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(new KotlinModule.Builder().build());
     }
 
     public static <T> T fromXml(String xml, TypeReference<T> typeReference) {
@@ -42,6 +50,15 @@ public class JacksonUtils {
 
     public static <T> T fromXml(String xml, JavaType javaType) {
         try {
+            return XML_MAPPER.readValue(xml, javaType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("XML处理异常", e);
+        }
+    }
+
+    public static <T> T fromXml(String xml, Type type) {
+        try {
+            JavaType javaType = javaTypeMap.computeIfAbsent(type, t -> XML_MAPPER.getTypeFactory().constructType(t));
             return XML_MAPPER.readValue(xml, javaType);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("XML处理异常", e);

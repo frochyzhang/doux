@@ -2,6 +2,7 @@ package com.allinfinance.dev.feign;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 public interface InvocationHandlerFactory {
@@ -9,7 +10,7 @@ public interface InvocationHandlerFactory {
 
     interface MethodHandler {
 
-        <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable;
+        <T> T invoke(Object[] argv, Type returnType) throws Throwable;
     }
 
 

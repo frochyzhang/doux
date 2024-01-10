@@ -2,6 +2,8 @@ package com.allinfinance.dev.feign;
 
 import com.allinfinance.dev.common.socket.api.client.dto.SocketRequestDTO;
 
+import java.lang.reflect.Type;
+
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
  * @date 2023/10/18 15:38
@@ -16,7 +18,7 @@ public class SynchronousMethodHandler implements InvocationHandlerFactory.Method
     }
 
     @Override
-    public <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable {
+    public <T> T invoke(Object[] argv, Type returnType) throws Throwable {
         SocketRequestDTO requestDTO;
 
         if (argv.length > 1 && argv[0] instanceof SocketRequestDTO) {

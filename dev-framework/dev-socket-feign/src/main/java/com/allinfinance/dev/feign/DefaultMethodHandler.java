@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Handles default methods by directly invoking the default method code on the interface. The bindTo
@@ -128,7 +129,7 @@ final class DefaultMethodHandler implements InvocationHandlerFactory.MethodHandl
     }
 
     @Override
-    public <T> T invoke(Object[] argv, Class<T> returnType) throws Throwable {
+    public <T> T invoke(Object[] argv, Type returnType) throws Throwable {
         if (handle == null) {
             throw new IllegalStateException(
                     "Default method handler invoked before proxy has been bound.");

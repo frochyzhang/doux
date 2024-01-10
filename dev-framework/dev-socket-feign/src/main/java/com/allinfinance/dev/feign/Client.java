@@ -7,6 +7,7 @@ import com.allinfinance.dev.feign.codec.Encoder;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.socket.client.driver.SocketClient;
 
+import java.lang.reflect.Type;
 import java.util.Properties;
 
 public interface Client {
@@ -14,7 +15,7 @@ public interface Client {
 
     void setDecoder(Decoder decoder);
 
-    <T> T execute(SocketRequestDTO connectParams, Object data, Class<T> returnType) throws Exception;
+    <T> T execute(SocketRequestDTO connectParams, Object data, Type returnType) throws Exception;
 
     class Default implements Client {
 
@@ -41,7 +42,7 @@ public interface Client {
         }
 
         @Override
-        public <T> T execute(SocketRequestDTO connectParams, Object data, Class<T> returnType) throws Exception {
+        public <T> T execute(SocketRequestDTO connectParams, Object data, Type returnType) throws Exception {
             Properties properties = new Properties();
             PropertiesParseUtils.fromBean(properties, connectParams);
             String xml = encoder.encode(data);

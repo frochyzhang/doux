@@ -22,17 +22,27 @@ public class SocketServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String reqMsg = (String) msg;
         LOGGER.info("服务端收到请求消息:{}", reqMsg);
-        String responseXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<SMS>\n" +
-                "    <ORG_ID>000000000000</ORG_ID>\n" +
-                "    <SMS_NO>000000043457</SMS_NO>\n" +
-                "    <SMS_TYPE>00</SMS_TYPE>\n" +
-                "    <TEL>17621997673</TEL>\n" +
-                "    <CONTENT>您的验证码为189496</CONTENT>\n" +
-                "    <REQUEST_TIME>20221021102955</REQUEST_TIME>\n" +
-                "    <RESP_FLAG>00</RESP_FLAG>\n" +
-                "    <RESP_DETAIL>发送成功</RESP_DETAIL>\n" +
-                "</SMS>\n";
+        //language=XML
+        String responseXml = "<SERVICE>\n"
+            + "    <SERVICE_HEADER>\n"
+            + "        <SERVICE_SN>ALSKDJFLAKSDJF</SERVICE_SN>\n"
+            + "        <SERVICE_ID>16050</SERVICE_ID>\n"
+            + "        <SERV_RESPONSE>\n"
+            + "            <STATUS>S</STATUS>\n"
+            + "        </SERV_RESPONSE>\n"
+            + "    </SERVICE_HEADER>\n"
+            + "    <SERVICE_BODY>\n"
+            + "        <RESPONSE>\n"
+            + "            <CARD_NO>6288888888888888</CARD_NO>\n"
+            + "            <ID_TYPE>01</ID_TYPE>\n"
+            + "            <ID_NO>410482198302100584</ID_NO>\n"
+            + "            <CUST_NAME>张行行</CUST_NAME>\n"
+            +
+            "            <MOBILE_NO>13201569405</MOBILE_NO>\n"
+            + "        </RESPONSE>\n"
+            +
+            "    </SERVICE_BODY>\n"
+            + "</SERVICE>";
         ctx.writeAndFlush(responseXml);
     }
 

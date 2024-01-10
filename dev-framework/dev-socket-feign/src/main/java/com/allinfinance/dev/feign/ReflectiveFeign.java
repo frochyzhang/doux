@@ -4,7 +4,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:zhangyong@allinfinance.com">zhangyong</a>
@@ -26,8 +30,8 @@ public class ReflectiveFeign {
         // methods.
         final int synthetic = 0x00001000;
         return ((method.getModifiers()
-                & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC | synthetic)) == Modifier.PUBLIC)
-                && method.getDeclaringClass().isInterface();
+            & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC | synthetic)) == Modifier.PUBLIC)
+            && method.getDeclaringClass().isInterface();
     }
 
     public <T> T newInstance(Target<T> target) {
@@ -39,17 +43,17 @@ public class ReflectiveFeign {
         List<DefaultMethodHandler> defaultMethodHandlers = new LinkedList<DefaultMethodHandler>();
 
         Arrays.stream(methods)
-                .forEach(method -> {
-                    if (method.isAnnotationPresent(DevRequestLine.class)) {
-                        dispatch.put(method, methodHandlerFactory.create(target));
-                    } else if (isDefault(method)) {
-                        DefaultMethodHandler defaultMethodHandler = new DefaultMethodHandler(method);
-                        defaultMethodHandlers.add(defaultMethodHandler);
-                        dispatch.put(method, defaultMethodHandler);
-                    }
-                });
+            .forEach(method -> {
+                if (method.isAnnotationPresent(DevRequestLine.class)) {
+                    dispatch.put(method, methodHandlerFactory.create(target));
+                } else if (isDefault(method)) {
+                    DefaultMethodHandler defaultMethodHandler = new DefaultMethodHandler(method);
+                    defaultMethodHandlers.add(defaultMethodHandler);
+                    dispatch.put(method, defaultMethodHandler);
+                }
+            });
         InvocationHandler handler = factory.create(target, dispatch);
-        T proxy = (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[]{target.type()}, handler);
+        T proxy = (T) Proxy.newProxyInstance(target.type().getClassLoader(), new Class[] {target.type()}, handler);
         defaultMethodHandlers.forEach(defaultMethodHandler -> defaultMethodHandler.bindTo(proxy));
         return proxy;
     }
@@ -69,7 +73,7 @@ public class ReflectiveFeign {
                 case "equals":
                     try {
                         Object otherHandler =
-                                args.length > 0 && args[0] != null ? Proxy.getInvocationHandler(args[0]) : null;
+                            args.length > 0 && args[0] != null ? Proxy.getInvocationHandler(args[0]) : null;
                         return equals(otherHandler);
                     } catch (IllegalArgumentException e) {
                         return false;
@@ -81,7 +85,7 @@ public class ReflectiveFeign {
                 default:
             }
 
-            return dispatch.get(method).invoke(args, method.getReturnType());
+            return dispatch.get(method).invoke(args, method.getGenericReturnType());
         }
 
         @Override
