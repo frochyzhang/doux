@@ -17,7 +17,6 @@
 package com.allinfinance.dev.framework.extension.loader;
 
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.allinfinance.dev.framework.extension.annotation.Extensible;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
@@ -30,11 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -359,17 +356,6 @@ public class ExtensionLoader<T> {
         extensionClass.setOrder(extension.order());
         extensionClass.setOverride(extension.override());
         extensionClass.setRejection(extension.rejection());
-        Method[] initialMethods = Arrays.stream(extension.initial())
-                .map(methodName -> {
-                    try {
-                        return implClass.getDeclaredMethod(methodName);
-                    } catch (NoSuchMethodException e) {
-                        LOGGER.error("Initial Method [{}] is not exist", methodName);
-                    }
-                    return null;
-                }).filter(ObjectUtil::isNotNull)
-                .toArray(Method[]::new);
-        extensionClass.setInitialMethods(initialMethods);
         return extensionClass;
     }
 
@@ -438,6 +424,54 @@ public class ExtensionLoader<T> {
     }
 
     /**
+     * 根据别名和默认别名查找扩展类
+     *
+     * @param alias        扩展别名
+     * @param defaultAlias 默认扩展别名
+     * @return 扩展实例（已判断是否单例）
+     */
+    public T getExtension(String alias, String defaultAlias) {
+        ExtensionClass<T> extensionClass = getExtensionClass(alias);
+        if (extensionClass == null) {
+            extensionClass = getExtensionClass(defaultAlias);
+            if (extensionClass == null) {
+                throw new RuntimeException("没找到对应扩展!" + defaultAlias);
+            } else {
+                LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, defaultAlias);
+                return getInstance(extensionClass, defaultAlias);
+            }
+        } else {
+            LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, alias);
+            return getInstance(extensionClass, alias);
+        }
+    }
+
+    /**
+     * 根据别名和默认别名查找扩展类
+     *
+     * @param alias        扩展别名
+     * @param defaultAlias 默认扩展别名
+     * @param argTypes     扩展初始化需要的参数类型
+     * @param args         扩展初始化需要的参数
+     * @return 扩展实例（已判断是否单例）
+     */
+    public T getExtension(String alias, String defaultAlias, Class[] argTypes, Object[] args) {
+        ExtensionClass<T> extensionClass = getExtensionClass(alias);
+        if (extensionClass == null) {
+            extensionClass = getExtensionClass(defaultAlias);
+            if (extensionClass == null) {
+                throw new RuntimeException("没找到对应扩展!" + defaultAlias);
+            } else {
+                LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, defaultAlias);
+                return getInstance(extensionClass, defaultAlias, argTypes, args);
+            }
+        } else {
+            LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, alias);
+            return getInstance(extensionClass, alias, argTypes, args);
+        }
+    }
+
+    /**
      * 得到实例
      *
      * @param alias 别名
@@ -449,21 +483,7 @@ public class ExtensionLoader<T> {
             throw new RuntimeException("没找到对应扩展!" + alias);
         } else {
             LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, alias);
-            if (extensible.singleton() && factory != null) {
-                T t = factory.get(alias);
-                if (t == null) {
-                    synchronized (this) {
-                        t = factory.get(alias);
-                        if (t == null) {
-                            t = extensionClass.getExtInstance();
-                            factory.put(alias, t);
-                        }
-                    }
-                }
-                return t;
-            } else {
-                return extensionClass.getExtInstance();
-            }
+            return getInstance(extensionClass, alias);
         }
     }
 
@@ -480,21 +500,44 @@ public class ExtensionLoader<T> {
         if (extensionClass == null) {
             throw new RuntimeException("没找到对应扩展!" + alias);
         } else {
-            if (extensible.singleton() && factory != null) {
-                T t = factory.get(alias);
-                if (t == null) {
-                    synchronized (this) {
-                        t = factory.get(alias);
-                        if (t == null) {
-                            t = extensionClass.getExtInstance(argTypes, args);
-                            factory.put(alias, t);
-                        }
+            LOGGER.info("The following extension of [{}] is active: {}", this.interfaceName, alias);
+            return getInstance(extensionClass, alias, argTypes, args);
+        }
+    }
+
+    private T getInstance(ExtensionClass<T> extensionClass, String alias) {
+        if (extensible.singleton() && factory != null) {
+            T t = factory.get(alias);
+            if (t == null) {
+                synchronized (this) {
+                    t = factory.get(alias);
+                    if (t == null) {
+                        t = extensionClass.getExtInstance();
+                        factory.put(alias, t);
                     }
                 }
-                return t;
-            } else {
-                return extensionClass.getExtInstance(argTypes, args);
             }
+            return t;
+        } else {
+            return extensionClass.getExtInstance();
+        }
+    }
+
+    private T getInstance(ExtensionClass<T> extensionClass, String alias, Class[] argTypes, Object[] args) {
+        if (extensible.singleton() && factory != null) {
+            T t = factory.get(alias);
+            if (t == null) {
+                synchronized (this) {
+                    t = factory.get(alias);
+                    if (t == null) {
+                        t = extensionClass.getExtInstance(argTypes, args);
+                        factory.put(alias, t);
+                    }
+                }
+            }
+            return t;
+        } else {
+            return extensionClass.getExtInstance(argTypes, args);
         }
     }
 
