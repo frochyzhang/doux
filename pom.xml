@@ -25,9 +25,9 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>2.2.7-RELEASE</revision>
-        <dev.version>2.2.7-RELEASE</dev.version>
-        <jackson.version>2.12.1</jackson.version>
+        <revision>2.2.8-RELEASE</revision>
+        <dev.version>2.2.8-RELEASE</dev.version>
+        <jackson.version>2.13.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>
         <nacos.boot.version>0.2.12</nacos.boot.version>
@@ -487,56 +487,56 @@
                 <version>${dubbo.version}</version>
             </dependency>
             <!-- fix the bug:  java.lang.ClassNotFoundException: com.fasterxml.jackson.databind.JavaType-->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-base</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-parameter-names</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                <artifactId>jackson-databind</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                <artifactId>jackson-core</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--                <artifactId>jackson-annotations</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.dataformat</groupId>-->
+<!--                <artifactId>jackson-dataformat-yaml</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.datatype</groupId>-->
+<!--                <artifactId>jackson-datatype-jdk8</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.datatype</groupId>-->
+<!--                <artifactId>jackson-datatype-jsr310</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.jaxrs</groupId>-->
+<!--                <artifactId>jackson-jaxrs-base</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.jaxrs</groupId>-->
+<!--                <artifactId>jackson-jaxrs-json-provider</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.module</groupId>-->
+<!--                <artifactId>jackson-module-jaxb-annotations</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.fasterxml.jackson.module</groupId>-->
+<!--                <artifactId>jackson-module-parameter-names</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
             <!-- xxl-job-core -->
             <dependency>
                 <groupId>com.xuxueli</groupId>
