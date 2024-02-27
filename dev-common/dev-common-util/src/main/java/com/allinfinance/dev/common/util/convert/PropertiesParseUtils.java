@@ -20,7 +20,13 @@ public class PropertiesParseUtils {
         if (properties == null) {
             properties = new Properties();
         }
-        Field[] declaredFields = object.getClass().getDeclaredFields();
+        Field[] declaredFields;
+        Class<?> aClass = object.getClass();
+        if (aClass.getName().contains("$$EnhancerBySpringCGLIB$$")) {
+            declaredFields = aClass.getSuperclass().getDeclaredFields();
+        } else {
+            declaredFields = aClass.getDeclaredFields();
+        }
         Properties finalProperties = properties;
         Arrays.stream(declaredFields).forEach(field -> {
             try {
