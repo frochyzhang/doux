@@ -11,4 +11,10 @@
 
     <artifactId>dev-socket-feign-boot-starter</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-feign-scaffold</artifactId>
+        </dependency>
+    </dependencies>
 </project>

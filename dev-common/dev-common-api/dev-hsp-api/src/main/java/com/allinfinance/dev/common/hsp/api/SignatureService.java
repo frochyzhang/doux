@@ -6,6 +6,7 @@ import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyReques
 import com.allinfinance.dev.common.hsp.api.dto.SignatureGetBySM2PrivateKeyResponseDTO;
 import com.allinfinance.dev.common.hsp.api.dto.SignatureVerifyBySM2PublicKeyRequestDTO;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author huanghf
@@ -21,7 +22,7 @@ public interface SignatureService {
      * @return 签名信息
      */
     @PostMapping("/sign")
-    HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
+    HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(@RequestBody SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
 
     /**
      * 用SM2公钥做验签--D307
@@ -30,5 +31,5 @@ public interface SignatureService {
      * @return 验签结果
      */
     @PostMapping("/verify")
-    HspBaseResponseDTO verifySignatureBySM2PublicKey(SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
+    HspBaseResponseDTO verifySignatureBySM2PublicKey(@RequestBody SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
 }
