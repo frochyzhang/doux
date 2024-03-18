@@ -21,6 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>com.allinfinance.dev</groupId>
+            <artifactId>dev-socket-client-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-hsp-api</artifactId>
         </dependency>
         <dependency>

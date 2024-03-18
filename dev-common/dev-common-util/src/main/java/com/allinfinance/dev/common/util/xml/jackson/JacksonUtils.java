@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
@@ -24,12 +25,14 @@ public class JacksonUtils {
     private static final Map<Type, JavaType> javaTypeMap = new ConcurrentHashMap<>();
 
     static {
-        XML_MAPPER = (XmlMapper) new XmlMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .configure(SerializationFeature.INDENT_OUTPUT, true)
-            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .registerModule(new KotlinModule.Builder().build());
+        XML_MAPPER = (XmlMapper) XmlMapper.builder()
+                .enable(MapperFeature.USE_STD_BEAN_NAMING)
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
+                .configure(SerializationFeature.INDENT_OUTPUT, true)
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .build()
+                .registerModule(new KotlinModule.Builder().build());
     }
 
     public static <T> T fromXml(String xml, TypeReference<T> typeReference) {
