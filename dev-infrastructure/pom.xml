@@ -19,6 +19,7 @@
         <module>dev-http-okhttp</module>
         <module>dev-http-httpclient</module>
         <module>dev-socket-client-mina</module>
+        <module>dev-socket-server-mina</module>
     </modules>
 
     <properties>

@@ -1,6 +1,6 @@
 package com.allinfinance.dev.framework.http.driver.dto;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author qipeng
@@ -15,7 +15,7 @@ public class HttpRequest {
     /**
      * http header内容
      */
-    private HashMap<String, String> header;
+    private Map<String, String> header;
     /**
      * mediaType，调用方提供string，实现方自行解析
      */
@@ -41,12 +41,19 @@ public class HttpRequest {
         this.httpMethod = httpMethod;
     }
 
-    public HashMap<String, String> getHeader() {
+    public Map<String, String> getHeader() {
         return header;
     }
 
-    public void setHeader(HashMap<String, String> header) {
+    public void setHeader(Map<String, String> header) {
         this.header = header;
+    }
+
+    public String getHeader(String name) {
+        return this.header.entrySet().stream().filter(entry -> entry.getKey().equalsIgnoreCase(name))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse("");
     }
 
     public String getMediaType() {

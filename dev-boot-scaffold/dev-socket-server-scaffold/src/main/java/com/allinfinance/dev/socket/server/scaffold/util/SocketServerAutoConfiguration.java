@@ -1,6 +1,7 @@
 package com.allinfinance.dev.socket.server.scaffold.util;
 
 import com.allinfinance.dev.common.util.convert.PropertiesParseUtils;
+import com.allinfinance.dev.socket.server.scaffold.configure.ServerMetadataConfigure;
 import com.allinfinance.dev.socket.server.scaffold.configure.SocketScaffoldConfigure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -27,13 +30,14 @@ public class SocketServerAutoConfiguration {
 
     @ConditionalOnProperty(prefix = "com.allinfinance.socket.server.bootstrap", name = "enabled", havingValue = "true")
     @Bean(name = "socketServerList")
-    public List<Properties> getServerPropertiesList() {
+    public Map<String, List<Properties>> getServerPropertiesList() {
         return socketScaffoldConfigure.getServerMetadataList()
-                .stream().map(serverMetadataConfigure -> {
+                .stream()
+                .collect(Collectors.groupingBy(ServerMetadataConfigure::getBootstrap, HashMap::new, Collectors.mapping(serverMetadataConfigure -> {
                     logger.info("服务端配置信息：{}", serverMetadataConfigure);
                     Properties serverProperties = new Properties();
                     PropertiesParseUtils.fromBean(serverProperties, serverMetadataConfigure);
                     return serverProperties;
-                }).collect(Collectors.toList());
+                }, Collectors.toList())));
     }
 }

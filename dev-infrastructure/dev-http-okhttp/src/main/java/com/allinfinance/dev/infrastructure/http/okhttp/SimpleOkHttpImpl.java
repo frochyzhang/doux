@@ -14,6 +14,8 @@ import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,10 +45,14 @@ public class SimpleOkHttpImpl implements SimpleHttp {
     public HttpResponse execute(HttpRequest httpRequest) {
         HttpResponse httpResponse = new HttpResponse();
         Call call = createCall(httpRequest);
+        Map<String, String> headers = new HashMap<>();
         String response = null;
         try {
             Response execute = call.execute();
             response = execute.body().string();
+            execute.headers()
+                    .names()
+                    .forEach(name -> headers.put(name, execute.header(name)));
         } catch (IOException e) {
             httpResponse.setSuccess(false);
             httpResponse.setResponse("网络IO异常");
@@ -57,6 +63,7 @@ public class SimpleOkHttpImpl implements SimpleHttp {
             return httpResponse;
         }
         httpResponse.setSuccess(true);
+        httpResponse.setHeaders(headers);
         httpResponse.setResponse(response);
         return httpResponse;
     }
@@ -75,7 +82,7 @@ public class SimpleOkHttpImpl implements SimpleHttp {
                 break;
             case "POST":
                 request = builder.post(RequestBody.create(MediaType.get(
-                        StringUtils.isEmpty(httpRequest.getMediaType()) ? httpRequest.getHeader().get("Content-Type") : httpRequest.getMediaType()),
+                                StringUtils.isEmpty(httpRequest.getMediaType()) ? httpRequest.getHeader("Content-Type") : httpRequest.getMediaType()),
                         httpRequest.getBody())).build();
                 break;
             // TODO: 2022/9/7 暂时只做了get/post两种请求，后续可继续完善

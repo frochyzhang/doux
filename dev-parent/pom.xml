@@ -143,6 +143,11 @@
             </dependency>
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-socket-server-mina</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-socket-client-netty</artifactId>
                 <version>${dev.version}</version>
             </dependency>
@@ -225,6 +230,16 @@
             <dependency>
                 <groupId>com.allinfinance.dev</groupId>
                 <artifactId>dev-disruptor-boot-starter</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-white-list-diversion-http</artifactId>
+                <version>${dev.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.allinfinance.dev</groupId>
+                <artifactId>dev-white-list-diversion-socket</artifactId>
                 <version>${dev.version}</version>
             </dependency>
         </dependencies>

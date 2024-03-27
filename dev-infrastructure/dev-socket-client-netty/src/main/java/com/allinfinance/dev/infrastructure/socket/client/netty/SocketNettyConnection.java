@@ -6,8 +6,6 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.client.driver.Connection;
 import com.allinfinance.dev.infrastructure.socket.client.netty.codec.DemuxingMessageDecoder;
 import com.allinfinance.dev.infrastructure.socket.client.netty.codec.DemuxingMessageEncoder;
-import com.allinfinance.dev.infrastructure.socket.client.netty.codec.Message8583Decoder;
-import com.allinfinance.dev.infrastructure.socket.client.netty.codec.Message8583Encoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -20,8 +18,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ProgressivePromise;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,8 @@ public class SocketNettyConnection implements Connection {
         int serverPort = Integer.parseInt(properties.getProperty("remotePort"));
         int msgLengthSize = Integer.parseInt(properties.getProperty("msgLengthSize"));
         String msgEncode = properties.getProperty("msgEncode");
-        String clientAppName = properties.getProperty("clientAppName");
+        String encoderClassName = properties.getProperty("encoderClassName");
+        String decoderClassName = properties.getProperty("decoderClassName");
         String soLingerEnable = properties.getProperty("soLingerEnable");
         this.timeout = Integer.parseInt(properties.getProperty("timeout"));
         try {
@@ -95,10 +97,15 @@ public class SocketNettyConnection implements Connection {
             Bootstrap bootstrap = option
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) {
-                            if ("8583".equals(clientAppName)) {
-                                ch.pipeline().addLast(new Message8583Encoder())
-                                        .addLast(new Message8583Decoder());
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
+                                ByteToMessageDecoder decoder = (ByteToMessageDecoder) Class.forName(decoderClassName)
+                                        .getConstructor(Integer.class, String.class)
+                                        .newInstance(msgLengthSize, msgEncode);
+                                MessageToByteEncoder encoder = (MessageToByteEncoder) Class.forName(encoderClassName)
+                                        .getConstructor(Integer.class, String.class)
+                                        .newInstance(msgLengthSize, msgEncode);
+                                ch.pipeline().addLast(decoder, encoder);
                             } else {
                                 ch.pipeline().addLast(new DemuxingMessageDecoder(msgLengthSize, msgEncode))
                                         .addLast(new DemuxingMessageEncoder(msgLengthSize, msgEncode));

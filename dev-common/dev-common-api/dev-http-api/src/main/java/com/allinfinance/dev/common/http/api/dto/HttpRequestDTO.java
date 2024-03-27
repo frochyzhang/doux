@@ -2,7 +2,7 @@ package com.allinfinance.dev.common.http.api.dto;
 
 import com.allinfinance.dev.common.http.api.constant.HttpMethod;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author qipeng
@@ -17,7 +17,7 @@ public class HttpRequestDTO {
     /**
      * http header内容
      */
-    private HashMap<String, String> header;
+    private Map<String, String> header;
     /**
      * mediaType，调用方提供string，实现方自行解析
      */
@@ -47,11 +47,11 @@ public class HttpRequestDTO {
         this.httpMethod = httpMethod;
     }
 
-    public HashMap<String, String> getHeader() {
+    public Map<String, String> getHeader() {
         return header;
     }
 
-    public void setHeader(HashMap<String, String> header) {
+    public void setHeader(Map<String, String> header) {
         this.header = header;
     }
 

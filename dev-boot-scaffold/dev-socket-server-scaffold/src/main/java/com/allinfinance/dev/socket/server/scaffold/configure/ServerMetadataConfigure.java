@@ -44,15 +44,19 @@ public class ServerMetadataConfigure {
     /**
      * 解码器
      */
-    private String decoderClassName = "com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageDecoder";
+    private String decoderClassName;
     /**
      * 编码器
      */
-    private String encoderClassName = "com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageEncoder";
+    private String encoderClassName;
     /**
      * 服务端驱动：netty
      */
     private String serverDriver = "netty";
+    /**
+     * 服务端底层实现类：default
+     */
+    private String bootstrap = "default";
 
     public ServerMetadataConfigure() {
     }
@@ -153,6 +157,15 @@ public class ServerMetadataConfigure {
         this.writerIdleTime = writerIdleTime;
     }
 
+    public String getBootstrap() {
+        return bootstrap;
+    }
+
+    public ServerMetadataConfigure setBootstrap(String bootstrap) {
+        this.bootstrap = bootstrap;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "ServerMetadataConfigure{" +
@@ -168,6 +181,7 @@ public class ServerMetadataConfigure {
                 ", decoderClassName='" + decoderClassName + '\'' +
                 ", encoderClassName='" + encoderClassName + '\'' +
                 ", serverDriver='" + serverDriver + '\'' +
+                ", bootstrap='" + bootstrap + '\'' +
                 '}';
     }
 }

@@ -1,8 +1,11 @@
 package com.allinfinance.dev.infrastructure.socket.server.netty;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.StrUtil;
 import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.server.driver.SocketServer;
+import com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageDecoder;
+import com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageEncoder;
 import com.allinfinance.dev.infrastructure.socket.server.netty.handler.IdleHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -16,6 +19,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +66,7 @@ public class NettySocketServer implements SocketServer {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .childOption(ChannelOption.TCP_NODELAY, true)   //关闭nagle算法,其受TCP延迟确认影响, 会导致相继两次向连接发送请求包, 读数据时会有一个最多达500毫秒的延时
+                .childOption(ChannelOption.TCP_NODELAY, true)   // 关闭nagle算法,其受TCP延迟确认影响, 会导致相继两次向连接发送请求包, 读数据时会有一个最多达500毫秒的延时
 //                .childOption(ChannelOption.SO_LINGER, 0)  //关闭socket的延时时间，默认关闭
 //                .childOption(ChannelOption.SO_KEEPALIVE, true)    //通过发送数据包方式检测socket连接有效性
 //                .childOption(ChannelOption.SO_REUSEADDR, true)    //快速复用端口，默认关闭
@@ -70,15 +74,32 @@ public class NettySocketServer implements SocketServer {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
-                        pipeline.addLast((ByteToMessageDecoder) Class.forName(decoderClassName)
-                                .getConstructor(Integer.class, String.class)
-                                .newInstance(decodeMsgLength, decodeCharset))
-                                .addLast((MessageToByteEncoder) Class.forName(encoderClassName)
-                                        .getConstructor(Integer.class, String.class)
-                                        .newInstance(encodeMsgLength, encodeCharset))
-                                .addLast((ChannelInboundHandlerAdapter) Class.forName(handlerClassName)
-                                        .getConstructor(String.class)
-                                        .newInstance(name))
+                        if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
+                            ByteToMessageDecoder decoder = (ByteToMessageDecoder) Class.forName(decoderClassName)
+                                    .getConstructor(Integer.class, String.class)
+                                    .newInstance(decodeMsgLength, decodeCharset);
+                            MessageToByteEncoder encoder = (MessageToByteEncoder) Class.forName(encoderClassName)
+                                    .getConstructor(Integer.class, String.class)
+                                    .newInstance(encodeMsgLength, encodeCharset);
+                            pipeline.addLast(decoder, encoder);
+                        } else {
+                            pipeline.addLast(
+                                    new DemuxingMessageDecoder(decodeMsgLength, decodeCharset),
+                                    new DemuxingMessageEncoder(encodeMsgLength, encodeCharset)
+                            );
+                        }
+                        pipeline.addLast(StrUtil.split(handlerClassName, ",", true, true)
+                                        .stream()
+                                        .map(className -> {
+                                            try {
+                                                return (ChannelInboundHandlerAdapter) Class.forName(className)
+                                                        .getConstructor(String.class)
+                                                        .newInstance(name);
+                                            } catch (Exception e) {
+                                                logger.error("初始化handler失败，handlerClassName：{}", className, e);
+                                                throw new RuntimeException("初始化handler异常");
+                                            }
+                                        }).toArray(ChannelInboundHandlerAdapter[]::new))
                                 .addLast(new IdleStateHandler(readerIdleTime, writerIdleTime, 0, TimeUnit.MILLISECONDS))
                                 .addLast(new IdleHandler());
                     }

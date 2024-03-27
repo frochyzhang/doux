@@ -4,15 +4,17 @@ import com.allinfinance.dev.framework.extension.annotation.Extension;
 import com.allinfinance.dev.framework.socket.client.driver.Connection;
 import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.DemuxingMessageDecoder;
 import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.DemuxingMessageEncoder;
-import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.Message8583Decoder;
-import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.Message8583Encoder;
 import com.allinfinance.dev.infrastructure.socket.client.mina.socket.codec.MessageCodecFactory;
 import com.allinfinance.dev.infrastructure.socket.client.mina.socket.handler.ClientIoHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.ReadFuture;
+import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.codec.demux.MessageDecoder;
+import org.apache.mina.filter.codec.demux.MessageEncoder;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +32,9 @@ import java.util.concurrent.TimeUnit;
 public class SocketMinaConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(SocketMinaConnection.class);
 
-    IoSession session = null;
-    NioSocketConnector clientConnector = null;
-    int timeout;
+    private static final ThreadLocal<ConnectFuture> CONNECT_FUTURE = new ThreadLocal<>();
+
+    private int timeout;
 
     /**
      * 客户端发送请求
@@ -42,6 +44,8 @@ public class SocketMinaConnection implements Connection {
      */
     @Override
     public String send(String msg) {
+        IoSession session = CONNECT_FUTURE.get().getSession();
+        CONNECT_FUTURE.remove();
         String resp;
         try {
             session.write(msg);
@@ -60,9 +64,9 @@ public class SocketMinaConnection implements Connection {
                 session.closeNow();
                 session.getService().dispose();
             }
-            if (clientConnector != null) {
-                clientConnector.dispose();
-            }
+            // if (clientConnector != null) {
+            //     clientConnector.dispose();
+            // }
         }
         return resp;
     }
@@ -78,33 +82,52 @@ public class SocketMinaConnection implements Connection {
         int serverPort = Integer.parseInt(properties.getProperty("remotePort"));
         int msgLengthSize = Integer.parseInt(properties.getProperty("msgLengthSize"));
         String msgEncode = properties.getProperty("msgEncode");
-        String clientAppName = properties.getProperty("clientAppName");
+        String encoderClassName = properties.getProperty("encoderClassName");
+        String decoderClassName = properties.getProperty("decoderClassName");
         timeout = Integer.parseInt(properties.getProperty("timeout"));
         boolean checkMac = Boolean.parseBoolean(properties.getProperty("checkMac"));
+        IoConnector connector = null;
         try {
-            clientConnector = new NioSocketConnector();
-            clientConnector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);
-            if ("8583".equals(clientAppName)) {
-                clientConnector.getFilterChain().addLast(
-                        "8583MsgCodec",
-                        new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
+            connector = new NioSocketConnector();
+            connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);
+            if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
+                try {
+                    MessageEncoder messageEncoder = (MessageEncoder) Class.forName(encoderClassName)
+                            .getConstructor(Integer.class, String.class)
+                            .newInstance(msgLengthSize, msgEncode);
+                    MessageDecoder messageDecoder = (MessageDecoder) Class.forName(decoderClassName)
+                            .getConstructor(Integer.class, String.class)
+                            .newInstance(msgLengthSize, msgEncode);
+                    connector.getFilterChain().addLast(
+                            "codec",
+                            new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder))
+                    );
+                } catch (Exception e) {
+                    logger.error("初始化coder失败，encoder: {}, decoder: {}", encoderClassName, decoderClassName, e);
+                    throw new RuntimeException("初始化coder失败，encoder: " + encoderClassName + ", decoder: " + decoderClassName);
+                }
             } else {
-                clientConnector.getFilterChain().addLast(
-                        "diyMsgCodec",
-                        new ProtocolCodecFilter(new MessageCodecFactory(new DemuxingMessageDecoder(msgLengthSize, msgEncode), new DemuxingMessageEncoder(msgLengthSize, msgEncode))));
+                connector.getFilterChain().addLast(
+                        "codec",
+                        new ProtocolCodecFilter(
+                                new MessageCodecFactory(
+                                        new DemuxingMessageDecoder(msgLengthSize, msgEncode),
+                                        new DemuxingMessageEncoder(msgLengthSize, msgEncode)
+                                )
+                        )
+                );
             }
-            clientConnector.setHandler(new ClientIoHandler(checkMac));
-            clientConnector.getSessionConfig().setUseReadOperation(true);
-            clientConnector.setConnectTimeoutMillis(timeout);
-            ConnectFuture future = clientConnector
-                    .connect(new InetSocketAddress(serverIp, serverPort));
+            connector.setHandler(new ClientIoHandler(checkMac));
+            connector.getSessionConfig().setUseReadOperation(true);
+            connector.setConnectTimeoutMillis(timeout);
+            ConnectFuture future = connector.connect(new InetSocketAddress(serverIp, serverPort));
             future.awaitUninterruptibly();
             if (!future.isConnected()) {
                 logger.error("与server建立socket连接失败,ip:{},port:{}", serverIp, serverPort);
-                clientConnector.dispose();
+                connector.dispose();
                 throw new RuntimeException("与server建立socket连接失败");
             }
-            session = future.getSession();
+            CONNECT_FUTURE.set(future);
         } catch (Exception e) {
             logger.error("与server建立连接异常！", e);
         }
