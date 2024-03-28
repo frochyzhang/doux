@@ -21,6 +21,6 @@ public class TrafficBackupUtils {
             .registerModule(new JavaTimeModule());
 
     public static void writeLog(BackupInfo backupInfo) throws JsonProcessingException {
-        LOGGER.info("message - {}", OBJECT_MAPPER.writeValueAsString(backupInfo));
+        LOGGER.info("message - {} #=%,;,%=#", OBJECT_MAPPER.writeValueAsString(backupInfo));
     }
 }

@@ -2,7 +2,6 @@ package com.allinfinance.dev.white.list.diversion.http.logging;
 
 import com.allinfinance.dev.white.list.diversion.http.util.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.logging.LoggingInitializationContext;
 
 import java.io.File;
 
@@ -14,8 +13,6 @@ public abstract class AbstractBackupLogging {
     private static final String BACKUP_LOGGING_CONFIG_PROPERTY = "backup.logging.config";
     private static final String BACKUP_LOGGING_DEFAULT_CONFIG_ENABLED_PROPERTY = "backup.logging.default.config.enabled";
     private static final String BACKUP_LOGGING_PATH_DIR = "logs";
-
-    protected LoggingInitializationContext loggingInitializationContext;
 
     static {
         String loggingPath = System.getProperty(SysEnv.JM_LOG_PATH);

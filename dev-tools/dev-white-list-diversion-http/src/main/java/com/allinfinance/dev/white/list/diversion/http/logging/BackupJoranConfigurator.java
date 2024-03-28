@@ -30,6 +30,7 @@ public class BackupJoranConfigurator extends JoranConfigurator {
     public void addInstanceRules(RuleStore rs) {
         super.addInstanceRules(rs);
         rs.addRule(new ElementSelector("configuration/trafficBackupProperty"), new BackupPropertyAction());
+        rs.addRule(new ElementSelector("configuration/jvmContext"), new JvmContextAction());
     }
 
     /**

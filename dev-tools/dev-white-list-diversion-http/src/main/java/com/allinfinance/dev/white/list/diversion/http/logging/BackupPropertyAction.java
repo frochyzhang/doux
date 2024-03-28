@@ -5,7 +5,11 @@ import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import org.xml.sax.Attributes;
+
+import java.util.Optional;
 
 /**
  * @author huanghf
@@ -21,8 +25,8 @@ public class BackupPropertyAction extends Action {
         String source = attributes.getValue(SOURCE_ATTRIBUTE);
         ActionUtil.Scope scope = ActionUtil.stringToScope(attributes.getValue(SCOPE_ATTRIBUTE));
         String defaultValue = attributes.getValue(DEFAULT_VALUE_ATTRIBUTE);
-        if (OptionHelper.isEmpty(name)) {
-            addError("The \"name\" and \"source\"  attributes of <nacosClientProperty> must be set");
+        if (OptionHelper.isEmpty(name) || OptionHelper.isEmpty(source)) {
+            addError("The \"name\" and \"source\" attributes of <trafficBackupProperty> must be set");
         }
         ActionUtil.setProperty(interpretationContext, name, getValue(source, defaultValue), scope);
     }
@@ -33,6 +37,11 @@ public class BackupPropertyAction extends Action {
     }
 
     private String getValue(String source, String defaultValue) {
-        return System.getProperty(source, defaultValue);
+        String value = SpringUtil.getProperty(StrUtil.toCamelCase(source));
+        if (StrUtil.isEmpty(value)) {
+            value = Optional.ofNullable(SpringUtil.getProperty(StrUtil.toSymbolCase(source, '-')))
+                    .orElse(defaultValue);
+        }
+        return value;
     }
 }

@@ -2,17 +2,20 @@
 
 <configuration debug="false" scan="false"  packagingData="true">
     <trafficBackupProperty scope="context" name="logPath" source="JM.LOG.PATH"/>
-    <trafficBackupProperty scope="context" name="logRetainCount" source="JM.LOG.RETAIN.COUNT" defaultValue="7"/>
     <trafficBackupProperty scope="context" name="logFileSize" source="JM.LOG.FILE.SIZE" defaultValue="200MB"/>
-    <trafficBackupProperty scope="context" name="backupConfigLogLevel" source="com.allinfinance.dev.white.list.diversion.level" defaultValue="info"/>
+    <trafficBackupProperty scope="context" name="backupConfigLogLevel" source="com.allinfinance.white-list.backup.level" defaultValue="info"/>
+    <trafficBackupProperty scope="context" name="logRetainDays" source="com.allinfinance.white-list.backup.retainDays" defaultValue="30"/>
+    <trafficBackupProperty scope="context" name="enableAsync" source="com.allinfinance.white-list.backup.enableAsync" defaultValue="false"/>
+    <jvmContext scope="context" name="pid"/>
 
 
     <appender name="BACKUP_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPath}/${APP_NAME}/${APP_NAME}-backup.log</file>
+        <file>${logPath}/backup/messageInfo-${APP_NAME}-${pid}.log</file>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${logPath}/${APP_NAME}/${APP_NAME}-backup.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
-            <maxFileSize>200MB</maxFileSize>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/backup/messageInfo-${APP_NAME}-${pid}.log.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <!-- 设置最大历史记录天数，超过指定天数的日志文件将被删除，默认值为0（即不删除） -->
+            <maxHistory>${logRetainDays}</maxHistory>
         </rollingPolicy>
 
         <encoder>
@@ -30,8 +33,18 @@
         <appender-ref ref="BACKUP_LOG_FILE"/>
     </appender>
 
-    <logger name="com.allinfinance.dev.white.list.diversion.http.backup.TrafficBackupUtils" level="${backupConfigLogLevel}"
-            additivity="false">
-        <appender-ref ref="BACKUP-ASYNC"/>
-    </logger>
+    <if condition='property("enableAsync").equals("true")'>
+        <then>
+            <logger name="com.allinfinance.dev.white.list.diversion.http.backup.TrafficBackupUtils" level="${backupConfigLogLevel}"
+                    additivity="false">
+                <appender-ref ref="BACKUP-ASYNC"/>
+            </logger>
+        </then>
+        <else>
+            <logger name="com.allinfinance.dev.white.list.diversion.http.backup.TrafficBackupUtils" level="${backupConfigLogLevel}"
+                    additivity="false">
+                <appender-ref ref="BACKUP_LOG_FILE"/>
+            </logger>
+        </else>
+    </if>
 </configuration>

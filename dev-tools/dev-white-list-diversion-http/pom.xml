@@ -19,6 +19,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.allinfinance.dev</groupId>
             <artifactId>dev-common-util</artifactId>
         </dependency>
