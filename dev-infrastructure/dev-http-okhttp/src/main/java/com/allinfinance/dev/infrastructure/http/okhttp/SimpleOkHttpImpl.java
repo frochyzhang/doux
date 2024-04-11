@@ -45,14 +45,11 @@ public class SimpleOkHttpImpl implements SimpleHttp {
     public HttpResponse execute(HttpRequest httpRequest) {
         HttpResponse httpResponse = new HttpResponse();
         Call call = createCall(httpRequest);
-        Map<String, String> headers = new HashMap<>();
-        String response = null;
+        Response response;
+        String responseBody = null;
         try {
-            Response execute = call.execute();
-            response = execute.body().string();
-            execute.headers()
-                    .names()
-                    .forEach(name -> headers.put(name, execute.header(name)));
+            response = call.execute();
+            responseBody = response.body().string();
         } catch (IOException e) {
             httpResponse.setSuccess(false);
             httpResponse.setResponse("网络IO异常");
@@ -62,9 +59,14 @@ public class SimpleOkHttpImpl implements SimpleHttp {
             httpResponse.setResponse("获取响应为空");
             return httpResponse;
         }
+        Map<String, String> headers = new HashMap<>();
+        response.headers()
+                .names()
+                .forEach(name -> headers.put(name, response.header(name)));
         httpResponse.setSuccess(true);
         httpResponse.setHeaders(headers);
-        httpResponse.setResponse(response);
+        httpResponse.setResponse(responseBody);
+        httpResponse.setHttpStatus(response.code());
         return httpResponse;
     }
 
@@ -81,7 +83,7 @@ public class SimpleOkHttpImpl implements SimpleHttp {
                         .build();
                 break;
             case "POST":
-                request = builder.post(RequestBody.create(MediaType.get(
+                request = builder.post(RequestBody.create(MediaType.parse(
                                 StringUtils.isEmpty(httpRequest.getMediaType()) ? httpRequest.getHeader("Content-Type") : httpRequest.getMediaType()),
                         httpRequest.getBody())).build();
                 break;

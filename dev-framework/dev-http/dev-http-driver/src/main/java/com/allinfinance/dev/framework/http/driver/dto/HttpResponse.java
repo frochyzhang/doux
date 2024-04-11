@@ -21,6 +21,10 @@ public class HttpResponse {
      * 响应内容
      */
     private String response;
+    /**
+     * HTTP 响应码
+     */
+    private Integer httpStatus = 200;
 
     public HttpResponse() {
     }
@@ -55,12 +59,22 @@ public class HttpResponse {
         this.response = response;
     }
 
+    public Integer getHttpStatus() {
+        return httpStatus;
+    }
+
+    public HttpResponse setHttpStatus(Integer httpStatus) {
+        this.httpStatus = httpStatus;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "HttpResponse{" +
                 "success=" + success +
                 ", headers=" + headers +
                 ", response='" + response + '\'' +
+                ", httpStatus=" + httpStatus +
                 '}';
     }
 }

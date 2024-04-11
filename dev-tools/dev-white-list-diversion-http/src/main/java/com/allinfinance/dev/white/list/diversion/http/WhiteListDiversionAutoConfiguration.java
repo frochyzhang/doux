@@ -1,5 +1,6 @@
 package com.allinfinance.dev.white.list.diversion.http;
 
+import com.allinfinance.dev.white.list.diversion.http.config.TrafficBackupConfig;
 import com.allinfinance.dev.white.list.diversion.http.config.WhiteListConfig;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2024/3/19 11:42
  */
 @Configuration
-@EnableConfigurationProperties(WhiteListConfig.class)
+@EnableConfigurationProperties({WhiteListConfig.class, TrafficBackupConfig.class})
 @ComponentScan(basePackages = "com.allinfinance.dev.white.list.diversion.http")
 public class WhiteListDiversionAutoConfiguration {
 }

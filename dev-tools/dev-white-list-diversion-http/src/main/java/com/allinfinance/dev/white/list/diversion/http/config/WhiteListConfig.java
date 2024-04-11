@@ -16,21 +16,26 @@ import java.util.Map;
 @NacosConfigurationProperties(groupId = Constants.DEFAULT_GROUP, prefix = "com.allinfinance.white-list", dataId = "white-list-config",
         type = ConfigType.YAML, autoRefreshed = true)
 public class WhiteListConfig {
-    private Boolean backupFlag = Boolean.FALSE;
+    /**
+     * 白名单开关
+     */
     private Boolean onFlag = Boolean.FALSE;
+    /**
+     * 转发新服务地址-ip:port
+     */
     private String url;
+    /**
+     * 报文编码格式
+     */
     private String msgEncode = "UTF-8";
+    /**
+     * 转发新服务超时时间，单位：秒
+     */
     private Integer timeoutSec = 3;
+    /**
+     * 白名单配置列表
+     */
     private Map<String, WhiteListKeyParam> whiteListKeys = new HashMap<>();
-
-    public Boolean getBackupFlag() {
-        return backupFlag;
-    }
-
-    public WhiteListConfig setBackupFlag(Boolean backupFlag) {
-        this.backupFlag = backupFlag;
-        return this;
-    }
 
     public Boolean getOnFlag() {
         return onFlag;
@@ -84,8 +89,7 @@ public class WhiteListConfig {
     @Override
     public String toString() {
         return "WhiteListConfig{" +
-                "backupFlag=" + backupFlag +
-                ", onFlag=" + onFlag +
+                "onFlag=" + onFlag +
                 ", url='" + url + '\'' +
                 ", msgEncode='" + msgEncode + '\'' +
                 ", timeoutSec=" + timeoutSec +

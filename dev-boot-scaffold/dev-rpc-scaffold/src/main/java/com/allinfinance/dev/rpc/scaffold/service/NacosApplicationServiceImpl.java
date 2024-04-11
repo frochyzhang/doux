@@ -23,7 +23,7 @@ import java.util.Properties;
  * @Author: qipeng
  * @Date: 2022/3/24
  **/
-@ConditionalOnProperty(value = "com.allinfinance.rpc.config.enable", havingValue = "true")
+@ConditionalOnProperty(value = "com.allinfinance.rpc.nacos.config.enabled", havingValue = "true")
 @ConditionalOnClass(CacheableEventPublishingNacosServiceFactory.class)
 @Service("nacosApplicationService")
 public class NacosApplicationServiceImpl implements NacosApplicationService {

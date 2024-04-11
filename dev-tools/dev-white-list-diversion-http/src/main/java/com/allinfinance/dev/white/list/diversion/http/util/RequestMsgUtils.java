@@ -43,4 +43,14 @@ public class RequestMsgUtils {
         }
         return headerMap;
     }
+
+    public static Map<String, String> getParameters(HttpServletRequest request) {
+        Map<String, String> parameters = new HashMap<>();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            parameters.put(parameterName, request.getParameter(parameterName));
+        }
+        return parameters;
+    }
 }

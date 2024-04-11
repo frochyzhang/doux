@@ -1,6 +1,6 @@
-package com.allinfinance.dev.white.list.diversion.http.backup;
+package com.allinfinance.dev.white.list.diversion.http.util;
 
-import com.allinfinance.dev.white.list.diversion.http.util.LogUtils;
+import com.allinfinance.dev.white.list.diversion.http.backup.BackupInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +21,6 @@ public class TrafficBackupUtils {
             .registerModule(new JavaTimeModule());
 
     public static void writeLog(BackupInfo backupInfo) throws JsonProcessingException {
-        LOGGER.info("message - {} #=%,;,%=#", OBJECT_MAPPER.writeValueAsString(backupInfo));
+        LOGGER.info("message - {}#=%,;,%=#", OBJECT_MAPPER.writeValueAsString(backupInfo));
     }
 }

@@ -1,5 +1,6 @@
 package com.allinfinance.dev.white.list.diversion.http.client;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.allinfinance.dev.framework.extension.loader.ExtensionLoaderFactory;
 import com.allinfinance.dev.framework.http.driver.SimpleHttp;
 import com.allinfinance.dev.framework.http.driver.dto.HttpRequest;
@@ -27,7 +28,14 @@ public class ForwardClientService implements InitializingBean {
 
     public HttpResponse forward(HttpRequestDTO requestDTO, String mediaType) throws IOException {
         HttpRequest httpRequest = new HttpRequest();
-        httpRequest.setUrl(whiteListConfig.getUrl() + requestDTO.getUri());
+        StringBuilder urlBuilder = new StringBuilder(whiteListConfig.getUrl() + requestDTO.getUri());
+        if (CollectionUtil.isNotEmpty(requestDTO.getParameters())) {
+            urlBuilder.append("?");
+            requestDTO.getParameters()
+                    .forEach((name, value) -> urlBuilder.append(name).append("=").append(value).append("&"));
+            urlBuilder.deleteCharAt(urlBuilder.lastIndexOf("&"));
+        }
+        httpRequest.setUrl(urlBuilder.toString());
         httpRequest.setHttpMethod(requestDTO.getMethod());
         httpRequest.setHeader(requestDTO.getHeaders());
         httpRequest.setBody(requestDTO.getBody());

@@ -35,13 +35,13 @@
 
     <if condition='property("enableAsync").equals("true")'>
         <then>
-            <logger name="com.allinfinance.dev.white.list.diversion.http.backup.TrafficBackupUtils" level="${backupConfigLogLevel}"
+            <logger name="com.allinfinance.dev.white.list.diversion.http.util.TrafficBackupUtils" level="${backupConfigLogLevel}"
                     additivity="false">
                 <appender-ref ref="BACKUP-ASYNC"/>
             </logger>
         </then>
         <else>
-            <logger name="com.allinfinance.dev.white.list.diversion.http.backup.TrafficBackupUtils" level="${backupConfigLogLevel}"
+            <logger name="com.allinfinance.dev.white.list.diversion.http.util.TrafficBackupUtils" level="${backupConfigLogLevel}"
                     additivity="false">
                 <appender-ref ref="BACKUP_LOG_FILE"/>
             </logger>

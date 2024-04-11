@@ -11,12 +11,14 @@ public class HttpRequestDTO {
     private final Map<String, String> headers;
     private final String body;
     private final String method;
+    private final Map<String, String> parameters;
 
-    public HttpRequestDTO(String uri, Map<String, String> headers, String body, String method) {
+    public HttpRequestDTO(String uri, Map<String, String> headers, String body, String method, Map<String, String> parameters) {
         this.uri = uri;
         this.headers = headers;
         this.body = body;
         this.method = method;
+        this.parameters = parameters;
     }
 
     public String getUri() {
@@ -35,6 +37,10 @@ public class HttpRequestDTO {
         return method;
     }
 
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
     @Override
     public String toString() {
         return "HttpRequestDTO{" +
@@ -42,6 +48,18 @@ public class HttpRequestDTO {
                 ", headers=" + headers +
                 ", body='" + body + '\'' +
                 ", method='" + method + '\'' +
+                ", parameters=" + parameters +
                 '}';
+    }
+
+    public String getHeader(String name) {
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return null;
     }
 }
