@@ -1,0 +1,2 @@
+default=cn.lezoo.doux.infrastructure.conn.netty.DefaultNettyConnection
+hsp=cn.lezoo.doux.infrastructure.conn.netty.HspNettyConnection

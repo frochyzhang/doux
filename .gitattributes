@@ -4,3 +4,4 @@
 *.sql text eol=lf
 *.json text eol=lf
 *.xml text eol=lf
+*.* text eol=lf

@@ -7,15 +7,15 @@
 > 三部众多系统中，各技术组件版本存在不一致且杂乱的情况，无形中增加了各系统间的技术壁垒，不易于维护，且各系统各自维护第三方技术组件，对于组件的使用方式等存在差异。为了统一各技术组件，决定自研统一技术框架Dev-Framework，该框架经过多个版本迭代，易用性和可靠性层面均已得到验证，可放心使用。为方便各应用系统开发人员更好的使用Dev-Framework，特在此对框架中众多组件做如下说明。
 
 - 版本信息
-  `当前版本为： dev.version=2.0.0-RELEASE`
+  `当前版本为： doux.version=2.0.0-RELEASE`
 - 基础依赖
 
 ```xml
 
 <dependency>
   <artifactId>dev-parent</artifactId>
-  <groupId>com.allinfinance.dev</groupId>
-  <version>${dev.version}</version>
+  <groupId>cn.lezoo.doux</groupId>
+  <version>${doux.version}</version>
 </dependency>
 ```
 
@@ -234,7 +234,7 @@ com:
 ##### 2.1.3.2 **RpcConfigurationProperties**
 
 > 配置类：
-> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties`
+> `config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties`
 > 配置前缀：`com.allinfinance.rpc`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -246,7 +246,7 @@ com:
 ##### 2.1.3.3 **RpcConfigurationProperties.Consumer**
 
 > 配置类：
-> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Consumer`
+> `config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Consumer`
 > 配置前缀：`com.allinfinance.rpc.consumer`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -261,7 +261,7 @@ com:
 ##### 2.1.3.4 **RpcConfigurationProperties.Provider**
 
 > 配置类：
-> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Provider`
+> `config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Provider`
 > 配置前缀：`com.allinfinance.rpc.provider`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -273,7 +273,7 @@ com:
 ##### 2.1.3.5 **RpcConfigurationProperties.Consumer.Reference.**
 
 > 配置类：
-> `com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Consumer.Reference`
+> `config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Consumer.Reference`
 > 配置前缀：`com.allinfinance.rpc.consumer.reference-list`、`com.allinfinance.rpc.consumer.reference-list`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -348,7 +348,7 @@ public interface IJobHandler {
 ##### 2.2.3.1 **JobExecutorProperties**
 
 > 配置类：
-> `com.allinfinance.dev.dispatch.scaffold.config.JobExecutorProperties`
+> `config.cn.lezoo.doux.dispatch.scaffold.JobExecutorProperties`
 > 配置前缀：`com.allinfinance.xxl.job`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -359,7 +359,7 @@ public interface IJobHandler {
 ##### 2.2.3.2 **XxlJobCustomExecutor**
 
 > 配置类：
-> `com.allinfinance.dev.dispatch.scaffold.executor.XxlJobCustomExecutor`
+> `executor.cn.lezoo.doux.dispatch.scaffold.XxlJobCustomExecutor`
 > 配置前缀：`com.allinfinance.xxl.job.executor`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -556,10 +556,13 @@ public class BatchCutJobHandler extends AbstractSpringBatchHandler {
 }
 ```
 
-- 批量任务类需要继承抽象类`com.allinfinance.dev.batch.scaffold.job.AbstractBatchJob`，然后再进行任务的各种Step、Tasklet以及Listener的编排。
-- 在使用xxl-job调度时，可以根据实际场景需要考虑是否用封装过后的调度抽象类`com.allinfinance.dev.batch.scaffold.job.AbstractSpringBatchHandler`
+- 批量任务类需要继承抽象类`job.cn.lezoo.doux.batch.scaffold.AbstractBatchJob`，然后再进行任务的各种Step、Tasklet以及Listener的编排。
+-
+
+在使用xxl-job调度时，可以根据实际场景需要考虑是否用封装过后的调度抽象类`job.cn.lezoo.doux.batch.scaffold.AbstractSpringBatchHandler`
   来代替原有实现`IJobHandler`接口的形式，前者在`execute()`方法上进行了一层封装：即将批量任务执行过程中的异常捕获后不会继续向上层抛出，从而避免了批量任务再已经调度成功后又重复发起调度，造成无效地重试。
-- 成功进入到调度方法后，使用`com.allinfinance.dev.batch.scaffold.service.BatchJobService`的方法来进行Spring Batch Job的发起、停止或重试。
+
+- 成功进入到调度方法后，使用`service.cn.lezoo.doux.batch.scaffold.BatchJobService`的方法来进行Spring Batch Job的发起、停止或重试。
 
 - **注意事项**
 
@@ -603,7 +606,7 @@ com:
 - **必要参数列表**
 
 > 配置类：
-> `com.allinfinance.dev.datasource.scaffold.config.DevDatasourceProperties`
+> `config.cn.lezoo.doux.datasource.scaffold.DevDatasourceProperties`
 > 配置前缀：`com.allinfinance.datasource`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -613,7 +616,7 @@ com:
 | password | 数据库用户密码 | String   | 无默认值，必须填写 |
 
 > 配置类：
-> `com.allinfinance.dev.datasource.scaffold.config.DevMybatisProperties`
+> `config.cn.lezoo.doux.datasource.scaffold.DevMybatisProperties`
 > 配置前缀：`com.allinfinance.datasource.mybatis`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -621,7 +624,7 @@ com:
 | mapper-locations | Mapper文件存放位置 | String   | classpath*:/mapper/*Mapper.xml |
 
 > 配置类：
-> `com.allinfinance.dev.datasource.scaffold.DruidDataSourceWrapper `
+> `cn.lezoo.doux.datasource.scaffold.DruidDataSourceWrapper `
 > 配置前缀：`com.allinfinance.datasource.druid`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -715,7 +718,7 @@ com:
 ##### 2.5.3.1 **ConnectionPoolConfigure**
 
 > 配置类：
-> `com.allinfinance.dev.connection.pool.scaffold.configure.ConnectionPoolConfigure`
+> `configure.cn.lezoo.doux.connection.pool.scaffold.ConnectionPoolConfigure`
 > 配置前缀：`com.allinfinance.connection.pool`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -728,11 +731,11 @@ com:
 ##### 2.5.3.2 **ScaffoldConfigure**
 
 > 配置类：
-> `com.allinfinance.dev.connection.pool.scaffold.configure.ScaffoldConfigure`
+> `configure.cn.lezoo.doux.connection.pool.scaffold.ScaffoldConfigure`
 > 配置前缀：`com.allinfinance.connection.scaffold`
 
 - **`ScaffoldConfigure`**
-  `com.allinfinance.dev.connection.pool.scaffold.configure.ServerMetadataConfigure`
+  `configure.cn.lezoo.doux.connection.pool.scaffold.ServerMetadataConfigure`
 
 | **配置项** | **说明** | **类型** | **默认值** |
 | ------ | ------ | ------ | ------ |
@@ -762,7 +765,8 @@ com:
 ### 2.6 **dev-socket-server-boot-starter**
 
 本组件整合`dev-socket-server-wrapper`
-提供了默认基于netty的服务端实现，并支持对服务端接口`com.allinfinance.dev.framework.socket.server.driver.SocketServerWrapper`进行SPI扩展。
+提供了默认基于netty的服务端实现，并支持对服务端接口`cn.lezoo.doux.framework.socket.server.driver.SocketServerWrapper`
+进行SPI扩展。
 
 #### 2.6.1 **maven依赖**
 
@@ -795,8 +799,8 @@ com:
               decode-charset: UTF-8
               encode-charset: UTF-8
               handler-class-name: com.allinfinance.example.socket.server.handler.TestNettyHandler
-              decoder-class-name: com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageDecoder
-              encoder-class-name: com.allinfinance.dev.infrastructure.socket.server.netty.codec.DemuxingMessageEncoder
+              decoder-class-name: codec.cn.lezoo.doux.infrastructure.socket.server.netty.DemuxingMessageDecoder
+              encoder-class-name: codec.cn.lezoo.doux.infrastructure.socket.server.netty.DemuxingMessageEncoder
               server-driver: netty
 ```
 
@@ -805,7 +809,7 @@ com:
 ##### 2.6.3.1 **ServerBootstrapConfigure**
 
 > 配置类：
-> `com.allinfinance.dev.socket.server.scaffold.configure.ServerBootstrapConfigure`
+> `configure.cn.lezoo.doux.socket.server.scaffold.ServerBootstrapConfigure`
 > 配置前缀：`com.allinfinance.socket.server.bootstrap`
 
 | **配置项** | **说明** | **类型** | **默认值** |
@@ -816,7 +820,7 @@ com:
 ##### 2.6.3.2 **ScaffoldConfigure**
 
 > 配置类：
-> `com.allinfinance.dev.socket.server.scaffold.configure.SocketScaffoldConfigure`
+> `configure.cn.lezoo.doux.socket.server.scaffold.SocketScaffoldConfigure`
 > 配置前缀：`com.allinfinance.socket.server.scaffold`
 
 - **`SocketScaffoldConfigure`**
@@ -826,7 +830,7 @@ com:
 | server-metadata-list | 服务端参数列表 | Map<String, ServerMetadataConfigure> | 无 |
 
 - **`ServerMetadataConfigure`**
-  `com.allinfinance.dev.socket.server.scaffold.configure.ServerMetadataConfigure`
+  `configure.cn.lezoo.doux.socket.server.scaffold.ServerMetadataConfigure`
 
 | **配置项** | **说明** | **类型** | **默认值** |
 | ------ | ------ | ------ | ------ |
@@ -983,7 +987,7 @@ com:
 
 ##### 3.1.2.1 RpcConfigurationProperties.Bootstrap
 
-> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap`
+> 配置类：`config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Bootstrap`
 > 配置前缀：`com.allinfinance.rpc.bootstrap`
 
 | 配置项 | 说明 | 类型 | 默认值 |
@@ -999,7 +1003,7 @@ com:
 
 ##### 3.1.2.2 RpcConfigurationProperties.Bootstrap.AppConfigList
 
-> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList`
+> 配置类：`config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Bootstrap.AppConfigList`
 > 配置前缀：`com.allinfinance.rpc.bootstrap.appList`
 
 | 配置项 | 说明 | 类型 | 默认值 |
@@ -1012,7 +1016,7 @@ com:
 
 ##### 3.1.2.3 RpcConfigurationProperties.Bootstrap.AppConfigList.TcpConfig
 
-> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.TcpConfig`
+> 配置类：`config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Bootstrap.AppConfigList.TcpConfig`
 > 配置前缀：`com.allinfinance.rpc.bootstrap.appList.tcpConfig`
 
 | 配置项 | 说明 | 类型 | 默认值 |
@@ -1032,7 +1036,7 @@ com:
 
 ##### 3.1.2.4 RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig
 
-> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig`
+> 配置类：`config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig`
 > 配置前缀：`com.allinfinance.rpc.bootstrap.appList.httpConfig`
 
 | 配置项 | 说明 | 类型 | 默认值 |
@@ -1047,7 +1051,7 @@ com:
 
 ##### 3.1.2.5 RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig
 
-> 配置类：`com.allinfinance.dev.rpc.scaffold.config.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig`
+> 配置类：`config.cn.lezoo.doux.rpc.scaffold.RpcConfigurationProperties.Bootstrap.AppConfigList.HttpConfig.UrlConfig`
 > 配置前缀：`com.allinfinance.rpc.bootstrap.appList.httpConfig.urlList`
 
 | 配置项 | 说明 | 类型 | 默认值 |

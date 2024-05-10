@@ -1,0 +1,153 @@
+spring:
+  application:
+    name: dev-hsp-tool
+  profiles:
+    active: dev
+
+server:
+  port: 9999
+
+nacos:
+  config:
+    auto-refresh: true
+    bootstrap:
+      enable: true
+    config-long-poll-timeout: 46000
+    data-ids: dev-ccp-tool
+    config-retry-time: 3000
+    enable-remote-sync-config: true
+    group: DEFAULT_GROUP
+    max-retry: 10
+    remote-first: true
+    type: yaml
+
+---
+spring:
+  profiles: dev
+
+nacos:
+  config:
+    namespace: dev-sit
+    server-addr: 10.250.28.142:8848
+    username: iasp-lzk
+    password: iasp-lzk
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/dev-sit
+cn:
+  lezoo:
+    rpc:
+      consumer:
+        reference-list:
+          - interface-name: cn.lezoo.doux.common.socket.api.client.SocketClientService
+    socket:
+      server:
+        bootstrap:
+          enabled: true
+          bootstrap: default
+        scaffold:
+          server-metadata-list:
+            - name: test1
+              port: 11111
+              handlerClassName: cn.lezoo.doux.tools.hsp.handler.CcpResponseHandler
+            - name: test2
+              port: 22222
+              decodeMsgLength: 4
+              encodeMsgLength: 4
+              handlerClassName: cn.lezoo.doux.tools.hsp.handler.CcpResponseHandler
+dev:
+  hsp:
+    msg-length: 4
+    ip: 127.0.0.1
+
+  tool:
+    mina-flag: false
+    sleep-flag: false
+---
+spring:
+  profiles: sit
+
+nacos:
+  config:
+    namespace: dev-sit
+    server-addr: 10.250.28.142:8848
+    username: iasp-lzk
+    password: iasp-lzk
+
+com:
+  alipay:
+    sofa:
+      rpc:
+        registry-address: nacos://10.250.28.142:8848/dev-sit
+cn:
+  lezoo:
+    rpc:
+      consumer:
+        reference-list:
+          - interface-name: cn.lezoo.doux.common.socket.api.client.SocketClientService
+    socket:
+      server:
+        bootstrap:
+          enabled: true
+          bootstrap: default
+        scaffold:
+          server-metadata-list:
+            - name: test1
+              port: 11111
+              handlerClassName: cn.lezoo.doux.tools.hsp.handler.CcpResponseHandler
+            - name: test2
+              port: 22222
+              decodeMsgLength: 4
+              encodeMsgLength: 4
+              handlerClassName: cn.lezoo.doux.tools.hsp.handler.CcpResponseHandler
+dev:
+  hsp:
+    ip: 127.0.0.1
+
+  tool:
+    mina-flag: true
+    sleep-flag: false
+
+
+
+#spring:
+#  application:
+#    name: dev-hsp-tool
+#  profiles:
+#    active: dev
+#
+#server:
+#  port: 10000
+#
+#nacos:
+#  config:
+#    auto-refresh: true
+#    bootstrap:
+#      enable: true
+#    config-long-poll-timeout: 46000
+#    config-retry-time: 3000
+#    enable-remote-sync-config: true
+#    group: DEFAULT_GROUP
+#    max-retry: 10
+#    remote-first: true
+#    type: yaml
+#    namespace: public-sit
+#    server-addr: 10.250.28.142:8848
+#    username: iasp-lzk
+#    password: iasp-lzk
+#    data-id: dev-hsp-tool
+#
+#
+#com:
+#  alipay:
+#    sofa:
+#      rpc:
+#        registry-address: nacos://10.250.28.142:8848/wk2021
+#        bolt-port: 10001
+#  allinfinance:
+#    rpc:
+#      reference-list:
+#        - cn.lezoo.doux.core.util.hsp.SignatureService

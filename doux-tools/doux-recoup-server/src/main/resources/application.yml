@@ -1,0 +1,10 @@
+server:
+  port: 8080
+cn:
+  lezoo:
+    xxl:
+      job:
+        admin-addresses: http://10.100.79.102:8082/xxl-job-admin
+        app-name: dev-recoup-server
+        executor:
+          port: 9998

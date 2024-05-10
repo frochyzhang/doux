@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: doux-recoup-scaffold
+
+server:
+  port: 8888

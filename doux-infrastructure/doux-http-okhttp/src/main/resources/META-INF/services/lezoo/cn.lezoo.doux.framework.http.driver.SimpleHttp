@@ -1,0 +1,1 @@
+okhttp=cn.lezoo.doux.infrastructure.http.okhttp.SimpleOkHttpImpl

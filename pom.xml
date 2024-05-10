@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.allinfinance.dev</groupId>
-    <artifactId>dev-project</artifactId>
+    <groupId>cn.lezoo.doux</groupId>
+    <artifactId>doux-project</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
     <modules>
-        <module>dev-parent</module>
-        <module>dev-boot-starters</module>
-        <module>dev-boot-scaffold</module>
-        <module>dev-framework</module>
-        <module>dev-infrastructure</module>
-        <module>dev-common</module>
-        <module>dev-tools</module>
+        <module>doux-parent</module>
+        <module>doux-boot-starters</module>
+        <module>doux-boot-scaffold</module>
+        <module>doux-framework</module>
+        <module>doux-infrastructure</module>
+        <module>doux-common</module>
+        <module>doux-tools</module>
     </modules>
     <name>dev-project - 开发三部应用程序开发框架</name>
 
@@ -25,8 +25,8 @@
         <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>2.2.10-RELEASE</revision>
-        <dev.version>2.2.10-RELEASE</dev.version>
+        <revision>2.2.12-RELEASE</revision>
+        <doux.version>2.2.12-RELEASE</doux.version>
         <jackson.version>2.13.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>
@@ -35,7 +35,6 @@
         <springframework.version>5.3.21</springframework.version>
         <batch.version>4.2.8.RELEASE</batch.version>
         <mina.version>2.2.1</mina.version>
-        <dubbo.version>2.7.12</dubbo.version>
         <curator.version>4.3.0</curator.version>
         <slf4j.version>1.7.30</slf4j.version>
         <commons.version>2.8.0</commons.version>
@@ -53,12 +52,13 @@
         <sshj.version>0.34.0</sshj.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis-typetrans.version>1.0.1</mybatis-typetrans.version>
-        <jmh.version>1.35</jmh.version>
         <sun.jaxb.version>2.2.11</sun.jaxb.version>
         <jraft.version>1.3.11</jraft.version>
         <bolt.version>1.6.4</bolt.version>
         <diruptor.version>3.4.4</diruptor.version>
         <spring.cloud.version>2021.0.7</spring.cloud.version>
+        <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
+        </sonatypeOssDistMgmtSnapshotsUrl>
     </properties>
 
     <developers>
@@ -92,17 +92,6 @@
                 <artifactId>bolt</artifactId>
                 <version>${bolt.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core</artifactId>
-                <version>${jmh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-generator-annprocess</artifactId>
-                <version>${jmh.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.mina</groupId>
                 <artifactId>mina-core</artifactId>
@@ -210,12 +199,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springframework.version}</version>
-            </dependency>
-            <!-- Quartz -->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${quartz.version}</version>
             </dependency>
             <!-- db connector -->
             <dependency>
@@ -397,13 +380,6 @@
                 <artifactId>xstream</artifactId>
                 <version>1.4.11.1</version>
             </dependency>
-            <!-- TODO: zy@20201127待删除 -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>1.18.16</version>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>com.jcraft</groupId>
                 <artifactId>jsch</artifactId>
@@ -420,16 +396,6 @@
                 <version>1.2.75</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-registry-nacos</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-api</artifactId>
                 <version>${nacos.version}</version>
@@ -444,99 +410,6 @@
                 <artifactId>nacos-common</artifactId>
                 <version>${nacos.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>3.4.13</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>slf4j-log4j12</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-framework</artifactId>
-                <version>${curator.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-recipes</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-client</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-x-discovery</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-            <!-- fix the bug:  java.lang.ClassNotFoundException: com.fasterxml.jackson.databind.JavaType-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--                <artifactId>jackson-databind</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--                <artifactId>jackson-core</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--                <artifactId>jackson-annotations</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.dataformat</groupId>-->
-<!--                <artifactId>jackson-dataformat-yaml</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.datatype</groupId>-->
-<!--                <artifactId>jackson-datatype-jdk8</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.datatype</groupId>-->
-<!--                <artifactId>jackson-datatype-jsr310</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.jaxrs</groupId>-->
-<!--                <artifactId>jackson-jaxrs-base</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.jaxrs</groupId>-->
-<!--                <artifactId>jackson-jaxrs-json-provider</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.module</groupId>-->
-<!--                <artifactId>jackson-module-jaxb-annotations</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.module</groupId>-->
-<!--                <artifactId>jackson-module-parameter-names</artifactId>-->
-<!--                <version>${jackson.version}</version>-->
-<!--            </dependency>-->
             <!-- xxl-job-core -->
             <dependency>
                 <groupId>com.xuxueli</groupId>
@@ -579,34 +452,34 @@
                 <version>${sun.jaxb.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-hsp-api</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-hsp-api</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-rpc-scaffold-boot-starter</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-rpc-scaffold-boot-starter</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-common-util</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-common-util</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-client-mina</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-socket-client-mina</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-disruptor-boot-starter</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-disruptor-boot-starter</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-disruptor-scaffold</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-disruptor-scaffold</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
@@ -614,25 +487,35 @@
                 <version>${caffeine.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-api</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-socket-api</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-server-boot-starter</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-socket-server-boot-starter</artifactId>
+                <version>${doux.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.allinfinance.dev</groupId>
-                <artifactId>dev-socket-client-wrapper</artifactId>
-                <version>${dev.version}</version>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-socket-client-wrapper</artifactId>
+                <version>${doux.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.lezoo.doux</groupId>
+                <artifactId>doux-recoup-scaffold</artifactId>
+                <version>${doux.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <!-- 所有的项目都要用到的依赖项 -->
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -690,17 +573,6 @@
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-generator-annprocess</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -913,11 +785,64 @@
 
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>${sonatypeOssDistMgmtSnapshotsUrl}</url>
+        </snapshotRepository>
         <repository>
-            <!--必须与 settings.xml 的 id 一致-->
-            <id>frochy-mgm-package</id>
-            <name>package</name>
-            <url>https://frochy-maven.pkg.coding.net/repository/mgm/package/</url>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+    <profiles>
+        <profile>
+            <id>sonatype-oss-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

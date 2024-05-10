@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>doux-parent</artifactId>
+        <groupId>cn.lezoo.doux</groupId>
+        <version>${revision}</version>
+        <relativePath>../doux-parent</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>doux-boot-scaffold</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>doux-rpc-scaffold</module>
+        <module>doux-dispatch-scaffold</module>
+        <module>doux-datasource-scaffold</module>
+        <module>doux-batch-scaffold</module>
+<!--        <module>dev-connection-scaffold</module>-->
+        <module>doux-connection-pool-scaffold</module>
+        <module>doux-socket-server-scaffold</module>
+        <module>doux-disruptor-scaffold</module>
+        <module>doux-socket-feign-scaffold</module>
+        <module>doux-gateway-scaffold</module>
+        <module>doux-recoup-scaffold</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <proguard.maven.plugin.version>2.3.1</proguard.maven.plugin.version>
+    </properties>
+
+</project>

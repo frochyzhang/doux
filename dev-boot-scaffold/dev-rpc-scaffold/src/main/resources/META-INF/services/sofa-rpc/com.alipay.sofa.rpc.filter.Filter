@@ -1,4 +1,0 @@
-# name                                                         # order
-com.allinfinance.dev.rpc.scaffold.filter.TraceIdProviderFilter             # -19900
-com.allinfinance.dev.rpc.scaffold.filter.TraceIdConsumerFilter             # -19900
-com.allinfinance.dev.rpc.scaffold.filter.ProviderAdviceFilter             # -19800

@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.allinfinance.dev.white.list.diversion.http.WhiteListDiversionAutoConfiguration
