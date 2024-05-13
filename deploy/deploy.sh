@@ -21,8 +21,10 @@ function dbChange() {
 }
 
 function db2Cmd() {
-    echo "请输入sql脚本路径：\c"
-    read -r sqlPath
+    read -p "请输入数据库名称：" database
+    read -p "请输入数据库用户名：" user
+    read -p "请输入数据库密码：" password
+    read -p "请输入sql脚本路径：" sqlPath
     if [ ! -e "${sqlPath}" ]; then
         echo "sql脚本不存在，请重新输入"
     else
@@ -35,7 +37,12 @@ function db2Cmd() {
 }
 
 function mysqlCmd() {
-    echo "请输入sql脚本路径：\c"
+    read -p "请输入数据库地址：" host
+    read -p "请输入数据库端口：" port
+    read -p "请输入数据库名称：" database
+    read -p "请输入数据库用户名：" user
+    read -p "请输入数据库密码：" password
+    read -p "请输入sql脚本路径：" sqlPath
     read -r sqlPath
     if [ ! -e "${sqlPath}" ]; then
         echo "sql脚本不存在，请重新输入"
@@ -56,7 +63,7 @@ function nacosChange() {
     nacos_user=${nacos_user:-nacos}
     nacos_passwd=${nacos_passwd:-nacos}
     # 登录获取accessToken
-    access_token=$(curl -X POST http://${nacos_server}/nacos/v1/auth/users/login -d "message=true&username=${nacos_user}&password=${nacos_passwd}" | grep -o '"accessToken":"[^"]*' | awk -F'"' '{print $4}')
+    access_token=$(curl -X POST http://"${nacos_server}"/nacos/v1/auth/users/login -d "message=true&username=${nacos_user}&password=${nacos_passwd}" | grep -o '"accessToken":"[^"]*' | awk -F'"' '{print $4}')
 
     # 判断accessToken是否获取成功
     if [ -z "$access_token" ]; then
@@ -75,10 +82,10 @@ function nacosChange() {
     fi
 
     # 上传配置到Nacos
-    response=`curl -X POST "http://${nacos_server}/nacos/v1/cs/configs?import=true&namespace=${namespace_id}&accessToken=${access_token}&username=${nacos_user}" \
+    response=$(curl -X POST "http://${nacos_server}/nacos/v1/cs/configs?import=true&namespace=${namespace_id}&accessToken=${access_token}&username=${nacos_user}" \
          --form "policy=OVERWRITE" \
          --form "file=@${content_zip}" \
-         --insecure`
+         --insecure)
 
     # 提取各个键值对并输出
     code=$(echo "$response" | grep -o '"code":[0-9]*' | sed 's/"code"://')
@@ -214,7 +221,44 @@ function uploadFiles() {
 
 
 function restart() {
- echo "开始执行换包重启操作"
+    echo "开始执行换包重启操作"
+    # 输入远程服务器IP
+    read -p "请输入远程服务器IP：" remote_ip
+    # 输入远程服务器用户名
+    read -p "请输入远程服务器用户名：" remote_user
+    # 输入应用名称
+    read -p "请输入应用名称：" app_name
+    # 输入是否需要解压缩包
+    read -p "是否需要解压缩包(y/n)：" uncompress_flag
+    # 输入是否需要备份
+    read -p "是否需要备份(y/d)：" backup_flag
+    # 根据输入的应用名称，查找对应最新的应用包
+    app_package=$(ls -t ${HOME} | grep "${app_name}" | head -n 1)
+    # 如果需要解压缩包，则解压缩
+    if [ "${uncompress_flag}" == "y" ]; then
+        # 远程解压缩
+        ssh ${remote_user}@${remote_ip} "sh ${HOME}/uncompress.sh ${app_package} ${backup_flag}"
+    fi
+    # 是否还有其他操作
+    read -p "是否还有其他操作(y/n)：" other_flag
+    if [ "${other_flag}" == "y" ]; then
+        # 其他操作，直接输入命令
+        read -p "请输入其他操作命令：" other_cmd
+        ssh ${remote_user}@${remote_ip} "${other_cmd}"
+    fi
+    # 输入停止应用命令参数
+    read -p "请输入停止应用命令参数：" shutdown_param
+    ssh ${remote_user}@${remote_ip} "sh ${HOME}/bin/${app_name}/${app_name}-shutdown.sh ${shutdown_param}"
+    # 输入启动应用命令参数
+    read -p "请输入启动应用命令参数：" startup_param
+    ssh ${remote_user}@${remote_ip} "sh ${HOME}/bin/${app_name}/${app_name}-startup.sh ${startup_param}"
+    echo "换包重启操作完成"
+    # 是否需要tail远程日志
+    read -p "是否需要tail远程日志(y/n)：" tail_flag
+    if [ "${tail_flag}" == "y" ]; then
+        # 输入tail日志命令参数
+        ssh ${remote_user}@${remote_ip} "tail -f ${HOME}/logs/${app_name}/${app_name}.log"
+    fi
 }
 
 option=0
@@ -231,6 +275,7 @@ while [ $option != 5 ]; do
     echo "*  2. 执行nacos配置更新操作                             *"
     echo "*  3. 执行换包重启操作                                  *"
     echo "*  4. 新增免密登录                                     *"
+    echo "*  5. 执行文件上传                                     *"
     echo "*  exit. 退出                                         *"
     echo "*                                                    *"
     echo "*  请输入选项编号：                                     *"
@@ -251,11 +296,15 @@ while [ $option != 5 ]; do
       ;;
     3)
       echo "执行换包重启操作"
-
+      restart
       ;;
     4)
       echo "新增免密登录"
       addSSHKey
+      ;;
+    5)
+      echo "执行文件上传"
+      uploadFiles
       ;;
     exit)
       echo "感谢使用，再见！"
