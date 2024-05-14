@@ -20,13 +20,13 @@
     <name>dev-project - 开发三部应用程序开发框架</name>
 
     <scm>
-        <connection>scm:git:git://10.250.20.182:8899/dev/dev.git</connection>
-        <developerConnection>scm:git:git://10.250.20.182:8899/dev/dev.git</developerConnection>
-        <url>http://10.250.20.182:8899/dev/dev/-/tree/master-starter</url>
+        <connection>scm:git:https://e.coding.net/frochy/dev-project/doux.git</connection>
+        <developerConnection>scm:git:https://e.coding.net/frochy/dev-project/doux.git</developerConnection>
+        <url>https://e.coding.net/frochy/dev-project/doux/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>2.2.12-RELEASE</revision>
-        <doux.version>2.2.12-RELEASE</doux.version>
+        <revision>1.0.0</revision>
+        <doux.version>1.0.0</doux.version>
         <jackson.version>2.13.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>
@@ -57,24 +57,8 @@
         <bolt.version>1.6.4</bolt.version>
         <diruptor.version>3.4.4</diruptor.version>
         <spring.cloud.version>2021.0.7</spring.cloud.version>
-        <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
-        </sonatypeOssDistMgmtSnapshotsUrl>
     </properties>
 
-    <developers>
-        <developer>
-            <name>frochyzhang</name>
-            <email>zhangyong@allinfinance.com</email>
-            <organization>Allinfinance</organization>
-            <organizationUrl>https://www.allinfinance.com/</organizationUrl>
-        </developer>
-        <developer>
-            <name>qipeng</name>
-            <email>qipeng@allinfinance.com</email>
-            <organization>Allinfinance</organization>
-            <organizationUrl>https://www.allinfinance.com/</organizationUrl>
-        </developer>
-    </developers>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -785,73 +769,11 @@
 
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <!--必须与 settings.xml 的 id 一致-->
+            <id>frochy-mgm-package</id>
+            <name>package</name>
+            <url>https://frochy-maven.pkg.coding.net/repository/mgm/package/</url>
         </repository>
     </distributionManagement>
-    <profiles>
-        <profile>
-            <id>sonatype-oss-release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.3.0</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.6.0</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--                    <plugin>-->
-                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-                    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
-                    <!--                        <version>3.1.0</version>-->
-                    <!--                        <executions>-->
-                    <!--                            <execution>-->
-                    <!--                                <id>sign-artifacts</id>-->
-                    <!--                                <phase>verify</phase>-->
-                    <!--                                <goals>-->
-                    <!--                                    <goal>sign</goal>-->
-                    <!--                                </goals>-->
-                    <!--                            </execution>-->
-                    <!--                        </executions>-->
-                    <!--                    </plugin>-->
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
