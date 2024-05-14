@@ -17,7 +17,6 @@
         <module>doux-common</module>
         <module>doux-tools</module>
     </modules>
-    <name>dev-project - 开发三部应用程序开发框架</name>
 
     <scm>
         <connection>scm:git:https://e.coding.net/frochy/dev-project/doux.git</connection>
