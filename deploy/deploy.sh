@@ -1,5 +1,69 @@
 #!/bin/bash
 
+current_dir=$(dirname "$(realpath "$0")")
+
+# 读取app-info.lst文件并提取唯一应用程序名
+function getAppNames() {
+    script_dir="$(dirname "$(realpath "$0")")"
+    declare -A app_names
+    app_name_list=()
+
+    while read -r user ip app_name; do
+        if [[ -z "${app_names[$app_name]}" ]]; then
+            app_names[$app_name]=1
+            app_name_list+=("$app_name")
+        fi
+    done < "$script_dir/app-info.lst"
+}
+
+# 提供选择应用程序名的菜单
+function selectAppName() {
+    getAppNames
+
+    echo "请选择应用包名称："
+    for i in "${!app_name_list[@]}"; do
+        echo "$((i + 1)). ${app_name_list[$i]}"
+    done
+
+    while true; do
+        read -p "请输入序号: " app_index
+        if [[ "$app_index" =~ ^[0-9]+$ ]] && ((app_index >= 1 && app_index <= ${#app_name_list[@]})); then
+            app_name_input="${app_name_list[$((app_index - 1))]}"
+            break
+        else
+            echo "无效的序号，请重新输入。"
+        fi
+    done
+}
+
+function db2Cmd() {
+    read -p "请输入db2脚本执行参数文件: " db2Params
+    while IFS= read -r line; do
+        read -r database user password sqlPath <<<"$line"
+        if [ ! -e "${sqlPath}" ]; then
+            echo "sql脚本不存在，${sqlPath}"
+        else
+            echo "开始执行sql脚本"
+            db2 connect to "${database}" user "${user}" using "${password}"
+            db2 -tvf "${sqlPath}"
+            db2 quit
+        fi
+    done <"$db2Params"
+}
+
+function mysqlCmd() {
+    read -p "请输入mysql脚本执行参数文件: " mysqlParams
+    while IFS= read -r line; do
+        read -r host port database user password sqlPath <<<"$line"
+        if [ ! -e "${sqlPath}" ]; then
+            echo "sql脚本不存在，${sqlPath}"
+        else
+          echo "开始执行sql脚本"
+          mysql -h "${host}" -u "${user}" -P "${port}" -p"${password}" "${database}" < "${sqlPath}"
+        fi
+    done <"$mysqlParams"
+}
+
 function dbChange() {
     echo "开始执行数据库变更操作"
     case $1 in
@@ -17,39 +81,11 @@ function dbChange() {
       fi
       mysqlCmd
       ;;
+    *)
+      echo "无效的数据库类型！"
+      exit 1
+      ;;
     esac
-}
-
-function db2Cmd() {
-    read -p "请输入数据库名称：" database
-    read -p "请输入数据库用户名：" user
-    read -p "请输入数据库密码：" password
-    read -p "请输入sql脚本路径：" sqlPath
-    if [ ! -e "${sqlPath}" ]; then
-        echo "sql脚本不存在，请重新输入"
-    else
-        echo "开始执行sql脚本"
-        # 创建远程数据库映射
-        db2 connect to "${database}" user "${user}" using "${password}"
-        db2 -tvf "${sqlPath}"
-        db2 quit
-    fi
-}
-
-function mysqlCmd() {
-    read -p "请输入数据库地址：" host
-    read -p "请输入数据库端口：" port
-    read -p "请输入数据库名称：" database
-    read -p "请输入数据库用户名：" user
-    read -p "请输入数据库密码：" password
-    read -p "请输入sql脚本路径：" sqlPath
-    read -r sqlPath
-    if [ ! -e "${sqlPath}" ]; then
-        echo "sql脚本不存在，请重新输入"
-    else
-      echo "开始执行sql脚本"
-      mysql -h "${host}" -u "${user}" -P "${port}" -p "${password}" -D "${database}" < "${sqlPath}"
-    fi
 }
 
 function nacosChange() {
@@ -62,10 +98,8 @@ function nacosChange() {
     nacos_server=${nacos_server:-10.100.79.102:8848}
     nacos_user=${nacos_user:-nacos}
     nacos_passwd=${nacos_passwd:-nacos}
-    # 登录获取accessToken
-    access_token=$(curl -X POST http://"${nacos_server}"/nacos/v1/auth/users/login -d "message=true&username=${nacos_user}&password=${nacos_passwd}" | grep -o '"accessToken":"[^"]*' | awk -F'"' '{print $4}')
+    access_token=$(curl -X POST http://"${nacos_server}"/nacos/v1/auth/users/login -d "username=${nacos_user}&password=${nacos_passwd}" | grep -o '"accessToken":"[^"]*' | awk -F'"' '{print $4}')
 
-    # 判断accessToken是否获取成功
     if [ -z "$access_token" ]; then
         echo "登录失败. Exiting."
         exit 1
@@ -74,20 +108,16 @@ function nacosChange() {
     read -p "请输入命名空间ID（如果没有，请直接按回车）：" namespace_id
     read -p "请输入配置信息文件路径：" content_zip
 
-    content_zip=${content_zip:-/Users/zhangyong/Downloads/MGM_GROUP.zip}
-
     if [ ! -f "$content_zip" ]; then
         echo "错误：配置信息文件不存在！"
         exit 1
     fi
 
-    # 上传配置到Nacos
     response=$(curl -X POST "http://${nacos_server}/nacos/v1/cs/configs?import=true&namespace=${namespace_id}&accessToken=${access_token}&username=${nacos_user}" \
          --form "policy=OVERWRITE" \
          --form "file=@${content_zip}" \
          --insecure)
 
-    # 提取各个键值对并输出
     code=$(echo "$response" | grep -o '"code":[0-9]*' | sed 's/"code"://')
     message=$(echo "$response" | grep -o '"message":"[^"]*"' | sed 's/"message":"//;s/"$//')
     succCount=$(echo "$response" | grep -o '"succCount":[0-9]*' | sed 's/"succCount"://')
@@ -95,32 +125,27 @@ function nacosChange() {
     skipCount=$(echo "$response" | grep -o '"skipCount":[0-9]*' | sed 's/"skipCount"://')
     unrecognizedData=$(echo "$response" | grep -o '"unrecognizedData":\[{"itemName":"[^"]*"}\]' | sed 's/"unrecognizedData":\[{"itemName":"//;s/"}\]//')
 
-    # 输出解析结果
     echo "[**确认信息**]Code: $code"
     echo "[**确认信息**]导入结果: $message"
     echo "[**确认信息**]导入成功数: $succCount"
     echo "[**确认信息**]不识别的配置数: $unrecognizedCount"
     echo "[**确认信息**]跳过的配置数（需额外检查）: $skipCount"
     echo "[**确认信息**]不识别的配置文件名: $unrecognizedData"
-    # 提示用户进行检查
     read -p "请检查输出结果，确认后按回车键退出。"
 }
 
 function addSSHKey() {
     echo "开始设置SSH免密登录..."
 
-    # 检查本地是否已存在SSH密钥对
     if [ -f ~/.ssh/id_rsa ] || [ -f ~/.ssh/id_rsa.pub ]; then
         echo "本地已存在SSH密钥对，无需重新生成。"
     else
-        # 生成SSH密钥对
         ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
     fi
 
-    # 读取服务器列表文件路径
     read -p "请输入服务器列表文件路径(请确保每行末尾都有换行符)：" server_list_file
+    server_list_file=${server_list_file:-$current_dir/ssh-copy.lst}
 
-    # 检查文件是否存在
     if [ ! -f "$server_list_file" ]; then
         echo "错误：服务器列表文件不存在！"
         exit 1
@@ -128,18 +153,13 @@ function addSSHKey() {
 
     success_count=0
 
-    # 逐行读取服务器列表文件并进行处理
     while IFS= read -r line; do
-        # 分割每行，提取服务器IP地址和用户名
         read -r target_ip target_user <<<"$line"
 
-        # 将公钥拷贝到目标服务器的authorized_keys文件中
         ssh-copy-id -i ~/.ssh/id_rsa.pub "${target_user}@${target_ip}"
 
-        # 输出成功信息
         echo "免密登录设置完成：${target_user}@${target_ip}"
 
-        # 验证免密登录是否成功
         echo "正在验证免密登录..."
         ssh -o PasswordAuthentication=no "${target_user}@${target_ip}" exit
         if [ $? -eq 0 ]; then
@@ -149,120 +169,128 @@ function addSSHKey() {
             echo "免密登录验证失败，请检查设置。"
         fi
     done <"$server_list_file"
-    # 比对添加成功的数量和文件行数
+
     total_count=$(wc -l < "$server_list_file")
 
     echo "[**确认信息**]文件中共有 $((total_count)) 个服务器。成功设置免密登录的服务器数量为 $success_count"
-
-    # 提示用户确认
     read -p "请确认上述信息是否正确，OK后按回车键继续。"
 }
 
 function uploadFiles() {
     echo "开始执行文件上传操作"
 
-    # 读取待上传文件列表文件路径
     read -p "请输入待上传文件列表文件路径：" file_list_file
+    file_list_file=${file_list_file:-$current_dir/file-trans.lst}
 
-    # 检查文件是否存在
     if [ ! -f "$file_list_file" ]; then
         echo "错误：文件列表文件不存在！"
         exit 1
     fi
 
-    # 初始化成功上传文件数量
     success_count=0
 
-    # 使用while read循环结合文件描述符遍历文件内容
     while IFS= read -r line; do
-        # 分割每行，提取本地文件路径、目标服务器信息和覆盖方式
-        read -r local_path target_info overwrite <<<"$line"
+        read -r local_path target_info <<<"$line"
 
-        # 分割目标服务器信息，提取用户名、IP和目标路径
-        read -r target_user target_ip target_path <<<$(echo "$target_info" | tr '@' ' ')
+        echo "开始上传文件：$local_path -> ${target_info}"
 
-        # 使用ssh命令连接到目标服务器，检查远程文件是否存在
-        ssh "${target_user}@${target_ip}" "[ -f '${target_path}' ]"
+        scp "$local_path" "${target_info}"
 
-        # 检查ssh命令执行结果
         if [ $? -eq 0 ]; then
-            # 文件存在，根据覆盖方式判断是否终止上传
-            if [ "$overwrite" == "R" ]; then
-                echo "目标服务器已存在相同路径的文件，覆盖上传文件：$local_path -> ${target_user}@${target_ip}:${target_path}"
-            else
-                echo "目标服务器已存在相同路径的文件，终止上传文件：$local_path -> ${target_user}@${target_ip}:${target_path}"
-                continue
-            fi
-        else
-            # 文件不存在，直接上传
-            echo "开始上传文件：$local_path -> ${target_user}@${target_ip}:${target_path}"
-        fi
-
-        # 使用scp命令将文件上传到目标服务器的指定路径
-        scp "$local_path" "${target_user}@${target_ip}:${target_path}"
-
-        # 检查命令执行结果
-        if [ $? -eq 0 ]; then
-            # 输出成功信息
-            echo "文件上传成功：$local_path -> ${target_user}@${target_ip}:${target_path}"
+            echo "文件上传成功：$local_path -> ${target_info}"
             ((success_count++))
         else
-            echo "文件上传失败：$local_path -> ${target_user}@${target_ip}:${target_path}"
+            echo "文件上传失败：$local_path -> ${target_info}"
         fi
     done < "$file_list_file"
 
-    # 输出上传结果
     total_count=$(wc -l < "$file_list_file")
     echo "[**确认信息**]文件中共有 $((total_count)) 个文件，共有 $success_count 个文件上传成功。"
-
-    # 提示用户确认
     read -p "请确认上述信息是否正确，OK后按回车键继续。"
 }
 
-
 function restart() {
     echo "开始执行换包重启操作"
-    # 输入远程服务器IP
-    read -p "请输入远程服务器IP：" remote_ip
-    # 输入远程服务器用户名
-    read -p "请输入远程服务器用户名：" remote_user
-    # 输入应用名称
-    read -p "请输入应用名称：" app_name
-    # 输入是否需要解压缩包
-    read -p "是否需要解压缩包(y/n)：" uncompress_flag
-    # 输入是否需要备份
-    read -p "是否需要备份(y/d)：" backup_flag
-    # 根据输入的应用名称，查找对应最新的应用包
-    app_package=$(ls -t ${HOME} | grep "${app_name}" | head -n 1)
-    # 如果需要解压缩包，则解压缩
-    if [ "${uncompress_flag}" == "y" ]; then
-        # 远程解压缩
-        ssh ${remote_user}@${remote_ip} "sh ${HOME}/uncompress.sh ${app_package} ${backup_flag}"
-    fi
-    # 是否还有其他操作
-    read -p "是否还有其他操作(y/n)：" other_flag
-    if [ "${other_flag}" == "y" ]; then
-        # 其他操作，直接输入命令
-        read -p "请输入其他操作命令：" other_cmd
-        ssh ${remote_user}@${remote_ip} "${other_cmd}"
-    fi
-    # 输入停止应用命令参数
-    read -p "请输入停止应用命令参数：" shutdown_param
-    ssh ${remote_user}@${remote_ip} "sh ${HOME}/bin/${app_name}/${app_name}-shutdown.sh ${shutdown_param}"
-    # 输入启动应用命令参数
-    read -p "请输入启动应用命令参数：" startup_param
-    ssh ${remote_user}@${remote_ip} "sh ${HOME}/bin/${app_name}/${app_name}-startup.sh ${startup_param}"
-    echo "换包重启操作完成"
-    # 是否需要tail远程日志
-    read -p "是否需要tail远程日志(y/n)：" tail_flag
-    if [ "${tail_flag}" == "y" ]; then
-        # 输入tail日志命令参数
-        ssh ${remote_user}@${remote_ip} "tail -f ${HOME}/logs/${app_name}/${app_name}.log"
-    fi
+
+    # 提供应用名选项并选择
+    selectAppName
+
+    script_dir="$(dirname "$(realpath "$0")")"
+
+    exec 3< "$script_dir/app-info.lst"
+
+    while read -u 3 -r user ip app_name; do
+        if [[ "$app_name" != "$app_name_input" ]]; then
+            continue
+        fi
+        # 查找最新的应用包命令
+        FIND_LATEST_PACKAGE_CMD="ls -t ~/${app_name}*.tar.gz | head -n 1"
+
+        # 获取最新的应用包的全路径
+        LATEST_PACKAGE_PATH=$(ssh $user@$ip "$FIND_LATEST_PACKAGE_CMD")
+
+        if [[ -z "$LATEST_PACKAGE_PATH" ]]; then
+            echo "没有找到 $app_name 的应用包在 $ip 的用户主目录下"
+            exit 1
+        fi
+
+        # 提取包名
+        LATEST_PACKAGE=$(basename "$LATEST_PACKAGE_PATH")
+
+        echo "在 $ip 上找到最新的包：$LATEST_PACKAGE"
+
+        # 询问用户是否需要备份
+        read -p "你是否需要备份 $app_name 的当前版本？(y/d): " backup_answer
+
+        # 执行解压命令
+        ssh $user@$ip "sh ~/uncompress.sh $LATEST_PACKAGE $backup_answer"
+
+        # 判断是否有额外操作
+        while true; do
+            read -p "你是否有其他命令需要在 $ip 上执行？(yes/no): " answer
+            if [[ "$answer" == "yes" ]]; then
+                read -p "请输入命令: " extra_command
+                ssh $user@$ip "$extra_command"
+            elif [[ "$answer" == "no" ]]; then
+                break
+            else
+                echo "请输入 yes 或 no。"
+            fi
+        done
+
+        # 执行 shutdown 脚本
+        ssh $user@$ip "~/bin/${app_name}/${app_name}-shutdown.sh"
+
+        # 执行 startup 脚本
+        startup_params=""
+        # 判断是否有参数，必须要输入启动脚本参数，用while循环
+        while [ -z "$startup_params" ]; do
+            read -p "请输入 $app_name-startup.sh 在 $ip 上的参数: " startup_params
+        done
+        ssh $user@$ip "~/bin/${app_name}/${app_name}-startup.sh $startup_params"
+        # 检查启动脚本启动的进程信息
+        echo "正在检查启动脚本启动的进程信息..."
+        ssh $user@$ip "~/bin/${app_name}/${app_name}-check.sh"
+
+        # 询问用户是否需要查看日志
+        while true; do
+            read -p "你是否需要查看日志文件？(yes/no): " log_answer
+            if [[ "$log_answer" == "yes" ]]; then
+                echo "按 Ctrl+C 停止查看日志"
+                ssh $user@$ip "tail -f ~/logs/${app_name}/${app_name}.log"
+                break
+            elif [[ "$log_answer" == "no" ]]; then
+                break
+            else
+                echo "请输入 yes 或 no。"
+            fi
+        done
+    done
 }
 
+# 添加主菜单逻辑
 option=0
-while [ $option != 5 ]; do
+while [ "$option" != "exit" ]; do
     echo "*******************************************************"
     echo "*                                                     *"
     echo "*             欢迎使用变更步骤选择器                      *"
@@ -273,17 +301,15 @@ while [ $option != 5 ]; do
     echo "*                                                     *"
     echo "*  1. 执行数据库操作                                    *"
     echo "*  2. 执行nacos配置更新操作                             *"
-    echo "*  3. 执行换包重启操作                                  *"
-    echo "*  4. 新增免密登录                                     *"
-    echo "*  5. 执行文件上传                                     *"
+    echo "*  3. 新增免密登录                                     *"
+    echo "*  4. 执行文件上传                                     *"
+    echo "*  5. 执行换包重启操作                                  *"
     echo "*  exit. 退出                                         *"
-    echo "*                                                    *"
-    echo "*  请输入选项编号：                                     *"
     echo "*                                                     *"
     echo "*******************************************************"
-    read -r inputOption
+    read -p "请输入选项编号： " inputOption
     option=${inputOption}
-    clear
+
     case $inputOption in
     1)
       echo "请输入数据库类型，db2 or mysql: \c"
@@ -295,16 +321,16 @@ while [ $option != 5 ]; do
       nacosChange
       ;;
     3)
-      echo "执行换包重启操作"
-      restart
-      ;;
-    4)
       echo "新增免密登录"
       addSSHKey
       ;;
-    5)
+    4)
       echo "执行文件上传"
       uploadFiles
+      ;;
+    5)
+      echo "执行换包重启操作"
+      restart
       ;;
     exit)
       echo "感谢使用，再见！"

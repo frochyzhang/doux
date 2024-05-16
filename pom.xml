@@ -773,7 +773,7 @@
             <!--必须与 settings.xml 的 id 一致-->
             <id>frochy-mgm-package</id>
             <name>package</name>
-            <url>https://frochy-maven.pkg.coding.net/repository/mgm/package/</url>
+            <url>https://frochy-maven.pkg.coding.net/repository/dev-project/doux/</url>
         </repository>
     </distributionManagement>
 </project>
