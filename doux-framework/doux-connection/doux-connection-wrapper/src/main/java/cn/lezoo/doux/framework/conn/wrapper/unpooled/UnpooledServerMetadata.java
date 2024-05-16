@@ -73,18 +73,6 @@ public class UnpooledServerMetadata implements ServerMetadata {
         this.defaultNetworkTimeout = defaultNetworkTimeout;
     }
 
-    public void setServerIp(String serverIp) {
-        this.serverIp = serverIp;
-    }
-
-    public void setServerPort(Integer serverPort) {
-        this.serverPort = serverPort;
-    }
-
-    public void setAdditionalProperties(Properties additionalProperties) {
-        this.additionalProperties = additionalProperties;
-    }
-
     private Connection doGetConnection(String serverIp, Integer serverPort) {
         Properties props = new Properties();
         if (serverIp != null) {

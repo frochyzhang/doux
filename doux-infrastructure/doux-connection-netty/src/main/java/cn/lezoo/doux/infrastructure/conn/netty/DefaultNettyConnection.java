@@ -87,7 +87,6 @@ public class DefaultNettyConnection implements Connection {
 
         channel.writeAndFlush(msg);
 
-        // FIXME: 2022/6/30 记得处理我
         try {
             return promise.get(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

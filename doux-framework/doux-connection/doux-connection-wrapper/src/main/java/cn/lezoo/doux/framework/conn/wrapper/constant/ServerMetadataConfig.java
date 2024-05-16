@@ -70,4 +70,8 @@ public class ServerMetadataConfig {
      * 连接池名称
      */
     public static final String NAME = "name";
+    /**
+     * 连接补充间隔
+     */
+    public static final String HOUSE_KEEP_INTERVAL = "houseKeepInterval";
 }

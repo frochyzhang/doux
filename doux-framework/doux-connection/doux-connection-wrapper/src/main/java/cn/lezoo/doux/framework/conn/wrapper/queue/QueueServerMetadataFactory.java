@@ -10,6 +10,7 @@ import java.util.Properties;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.BUFFER_SIZE;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.CONNECT_TIMEOUT;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.DEFAULT_NETWORK_TIMEOUT;
+import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.HOUSE_KEEP_INTERVAL;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.LENGTH_FIELD;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_ACTIVE_CONNECTIONS;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.MAX_CHECKOUT_TIME;
@@ -29,7 +30,7 @@ import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig
 public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
 
     public QueueServerMetadataFactory() {
-        this.metadata = new QueueServerMetadata();
+        this.metadata = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata();
     }
 
     @Override
@@ -38,13 +39,14 @@ public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
                 Integer.parseInt(properties.getProperty(SERVER_PORT)));
         unpooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "500")));
 
-        QueueServerMetadata queueServerMetadata = new QueueServerMetadata(unpooledServerMetadata);
+        cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata queueServerMetadata = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata(unpooledServerMetadata);
         queueServerMetadata.setName(properties.getProperty(NAME, "queue-connection-pool"));
         queueServerMetadata.setMaxActiveConnections(Integer.parseInt(properties.getProperty(MAX_ACTIVE_CONNECTIONS, "10")));
         queueServerMetadata.setMaxCheckoutTime(Integer.parseInt(properties.getProperty(MAX_CHECKOUT_TIME, "1200000")));
         queueServerMetadata.setPingEnabled(Boolean.parseBoolean(properties.getProperty(PING_ENABLED, "true")));
         queueServerMetadata.setPingQueryContent(properties.getProperty(PING_QUERY_CONTENT, ""));
         queueServerMetadata.setPingVerifyContent(properties.getProperty(PING_VERIFY_CONTENT, ""));
+        queueServerMetadata.setHouseKeepInterval(Integer.parseInt(properties.getProperty(HOUSE_KEEP_INTERVAL, "10000")));
 
         /* additional properties */
         Properties additional = new Properties();

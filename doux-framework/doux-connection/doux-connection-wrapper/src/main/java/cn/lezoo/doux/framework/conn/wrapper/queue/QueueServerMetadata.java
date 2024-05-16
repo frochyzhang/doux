@@ -1,13 +1,11 @@
 package cn.lezoo.doux.framework.conn.wrapper.queue;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.lezoo.doux.framework.conn.driver.Connection;
-import cn.lezoo.doux.framework.conn.driver.PingService;
 import cn.lezoo.doux.framework.conn.driver.ServerMetadata;
-import cn.lezoo.doux.framework.conn.wrapper.constant.ConnectionConfig;
 import cn.lezoo.doux.framework.conn.wrapper.constant.enums.ConnectionStatus;
 import cn.lezoo.doux.framework.conn.wrapper.unpooled.UnpooledServerMetadata;
-import cn.lezoo.doux.framework.extension.loader.ExtensionLoaderFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -46,13 +44,17 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     private UnpooledServerMetadata metadata;
     /**
+     * 正在被使用的连接
+     */
+    private Set<cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection> usedConnections;
+    /**
      * 池里面的最大活跃连接数
      */
     protected int maxActiveConnections = 10;
     /**
      * 空闲连接检查时间，单位：ms，默认值5秒
      */
-    protected int maxCheckoutTime = 5000;
+    protected int maxCheckoutTime;
     /**
      * 连接检查请求内容
      */
@@ -66,9 +68,9 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     protected boolean pingEnabled = true;
     /**
-     * 连接测试服务，用于校验连接是否正常
+     * 连接补充间隔，单位：ms，默认10秒
      */
-    protected PingService pingService;
+    protected int houseKeepInterval;
 
     public QueueServerMetadata() {
     }
@@ -78,6 +80,7 @@ public class QueueServerMetadata implements ServerMetadata {
     }
 
     private ScheduledThreadPoolExecutor houseKeepingExecutorService;
+    private ScheduledThreadPoolExecutor keepaliveExecutorService;
     private ScheduledFuture<?> houseKeeperTask;
     private ThreadPoolExecutor addConnectionExecutor;
     private final ConnectionCreator connectionCreator = new ConnectionCreator();
@@ -92,44 +95,44 @@ public class QueueServerMetadata implements ServerMetadata {
                 new NamedThreadFactory(name + "-housekeeper-", true),
                 new ThreadPoolExecutor.DiscardPolicy());
         houseKeepingExecutorService.setRemoveOnCancelPolicy(true);
-        houseKeeperTask = houseKeepingExecutorService.scheduleWithFixedDelay(new HouseKeeper(), 100L, 1000L, TimeUnit.MILLISECONDS);
+        houseKeeperTask = houseKeepingExecutorService.scheduleWithFixedDelay(new HouseKeeper(), 100L, houseKeepInterval, TimeUnit.MILLISECONDS);
+        // 心跳探活
+        keepaliveExecutorService = new ScheduledThreadPoolExecutor(10,
+                new NamedThreadFactory(name + "-keepalive-", true),
+                new ThreadPoolExecutor.DiscardPolicy());
+        keepaliveExecutorService.setRemoveOnCancelPolicy(true);
+        // 建立连接
         addConnectionExecutor = new ThreadPoolExecutor(1, 1, 5, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(maxActiveConnections),
                 new NamedThreadFactory(name + "-connectionCreator-", true),
                 new ThreadPoolExecutor.DiscardPolicy());
         addConnectionExecutor.allowCoreThreadTimeOut(true);
-
+        // 正在使用的连接
+        usedConnections = new ConcurrentHashSet<>();
+        // 连接池状态
         state = new QueueState(this, this.maxActiveConnections);
-        // for (int i = 0; i < maxActiveConnections; i++) {
-        //     this.addConnection();
-        // }
-        Properties properties = metadata.getAdditionalProperties();
-        String pingServiceAlias = properties.getProperty(ConnectionConfig.PING_SERVICE);
-        // pingService提供自定义扩展后，优先使用自定义扩展
-        pingService = ExtensionLoaderFactory.getExtensionLoader(PingService.class)
-                .getExtension(StringUtils.isNotBlank(pingServiceAlias) ? pingServiceAlias : "default");
     }
 
     /**
      * 新增连接
      */
-    public QueueConnection addConnection() {
+    public cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection addConnection() {
         Connection connection = metadata.getConnection();
         if (metadata.getDefaultNetworkTimeout() != null) {
             connection.setNetworkTimeout(Executors.newSingleThreadExecutor(), metadata.getDefaultNetworkTimeout());
         }
 
-        QueueConnection queueConnection = new QueueConnection(this, connection);
+        cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection queueConnection = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection(this, connection);
         if (!isConnectionAlive(queueConnection)) {
-            log.warn("连接补充失败");
+            log.error("新增连接不可用，请检查配置是否正确");
             return null;
         }
-        if (maxCheckoutTime > 0) {
+        if (pingEnabled && maxCheckoutTime > 0) {
             // variance up to 10% of the heartbeat time
             // final long variance = ThreadLocalRandom.current().nextLong(maxCheckoutTime / 10);
             // final long heartbeatTime = maxCheckoutTime - variance;
             // queueConnection.setKeepaliveTask(houseKeepingExecutorService.scheduleWithFixedDelay(new KeepaliveTask(queueConnection), heartbeatTime, heartbeatTime, TimeUnit.MILLISECONDS));
-            queueConnection.setKeepaliveTask(houseKeepingExecutorService.scheduleWithFixedDelay(new KeepaliveTask(queueConnection), maxCheckoutTime, maxCheckoutTime, TimeUnit.MILLISECONDS));
+            queueConnection.setKeepaliveTask(keepaliveExecutorService.scheduleWithFixedDelay(new KeepaliveTask(queueConnection), maxCheckoutTime, maxCheckoutTime, TimeUnit.MILLISECONDS));
         }
 
         pushConnection(queueConnection);
@@ -141,41 +144,34 @@ public class QueueServerMetadata implements ServerMetadata {
      *
      * @param connection
      */
-    public void pushConnection(QueueConnection connection) {
+    public void pushConnection(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
             if (state.queue.size() < maxActiveConnections) {
                 if (log.isDebugEnabled()) {
                     log.debug("回收连接：{}", connection.hashCode());
                 }
                 try {
+                    usedConnections.remove(connection);
+                    connection.setLastUsedTimestamp(System.currentTimeMillis());
                     state.queue.add(connection);
                 } catch (Exception e) {
-                    closeConnection(connection);
-                    if (log.isDebugEnabled()) {
-                        log.debug("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
-                    }
+                    connection.closeConnection();
+                    log.warn("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
                 }
             } else {
                 // 否则，连接还比较充足，直接将connection关闭
-                closeConnection(connection);
-                if (log.isDebugEnabled()) {
-                    log.debug("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
-                }
+                connection.closeConnection();
+                log.warn("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
             }
         }
     }
 
-    public boolean removeConnection(QueueConnection connection) {
-        return state.queue.removeFirstOccurrence(connection);
-    }
-
-    /**
-     * 获取连接
-     *
-     * @return
-     */
-    public QueueConnection popConnection() {
-        return state.queue.poll();
+    public boolean removeTemporarily(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
+        boolean result = state.queue.removeFirstOccurrence(connection);
+        if (result) {
+            usedConnections.add(connection);
+        }
+        return result;
     }
 
     /**
@@ -184,8 +180,8 @@ public class QueueServerMetadata implements ServerMetadata {
     public void forceCloseAll() {
         log.info("强制关闭所有连接！");
         while (!state.queue.isEmpty()) {
-            QueueConnection connection = state.queue.remove();
-            closeConnection(connection);
+            cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = state.queue.remove();
+            connection.closeConnection();
         }
         // if (houseKeeperTask != null) {
         //     houseKeeperTask.cancel(false);
@@ -206,10 +202,11 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     @Override
     public Connection getConnection() {
-        QueueConnection connection = popConnection();
+        cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = state.queue.poll();
         if (connection == null) {
             return null;
         }
+        usedConnections.add(connection);
         return connection.getProxyConnection();
     }
 
@@ -236,7 +233,7 @@ public class QueueServerMetadata implements ServerMetadata {
     public String send(String msg) {
         Connection connection = getConnection();
         String response = connection.send(msg);
-        pushConnection((QueueConnection) connection);
+        pushConnection((cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection) connection);
         return response;
     }
 
@@ -248,13 +245,13 @@ public class QueueServerMetadata implements ServerMetadata {
 
         @Override
         public void run() {
-            int activeCount = getCount(ConnectionStatus.ACTIVE);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("触发houseKeeper，当前有效链接数:{}", activeCount);
-            }
+            int activeCount = getActiveCount();
+            LOGGER.info("触发houseKeeper，当前有效连接数: {}", activeCount);
             final int connectionsToAdd = maxActiveConnections - activeCount;
-            if (connectionsToAdd <= 0) {
-                LOGGER.debug("{} - Fill pool skipped, pool is at sufficient level.", name);
+            if (connectionsToAdd == 0) {
+                LOGGER.info("{} - Fill pool skipped, pool is at sufficient level.", name);
+            } else if (connectionsToAdd < 0) {
+                LOGGER.warn("{} - Active active connections count is over max active connections.", name);
             }
 
             for (int i = 0; i < connectionsToAdd; i++) {
@@ -268,19 +265,20 @@ public class QueueServerMetadata implements ServerMetadata {
     private final class KeepaliveTask implements Runnable {
         private final Logger LOGGER = LoggerFactory.getLogger(KeepaliveTask.class);
 
-        private final QueueConnection connection;
+        private final cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection;
 
-        private KeepaliveTask(QueueConnection connection) {
+        private KeepaliveTask(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
             this.connection = connection;
         }
 
         @Override
         public void run() {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("触发心跳,当前连接状态:{}", connection.getStatus());
-            }
-            if (removeConnection(connection) && isConnectionAlive(connection)) {
-                pushConnection(connection);
+            // 连接未使用时间需要大于maxCheckoutTime
+            if (connection.getTimeElapsedSinceLastUse() >= maxCheckoutTime && removeTemporarily(connection)) {
+                LOGGER.info("触发心跳，当前连接状态: {}, id: {}", connection.getStatus(), connection.getHashCode());
+                if (isConnectionAlive(connection)) {
+                    pushConnection(connection);
+                }
             }
         }
     }
@@ -302,46 +300,22 @@ public class QueueServerMetadata implements ServerMetadata {
 
         @Override
         public void run() {
-            long sleepBackoff = 250L;
-            while (shouldCreateAnotherConnection()) {
-                final QueueConnection connection = addConnection();
-                if (connection != null) {
-                    LOGGER.debug("{} - Added connection {}", name, connection.getRealConnection());
-                    if (loggingPrefix != null) {
-                        logPoolState(loggingPrefix);
-                    }
-                    return;
-                }
-
-                // failed to get connection from db, sleep and retry
+            final cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = addConnection();
+            if (connection != null) {
+                LOGGER.debug("{} - Added connection {}", name, connection.getRealConnection());
                 if (loggingPrefix != null) {
-                    LOGGER.debug("{} - Connection add failed, sleeping with backoff: {}ms", name, sleepBackoff);
+                    logPoolState(loggingPrefix);
                 }
-
-                quietlySleep(sleepBackoff);
-                sleepBackoff = Math.min(TimeUnit.SECONDS.toMillis(10), Math.min(maxCheckoutTime, (long) (sleepBackoff * 1.5)));
+                return;
             }
-        }
 
-        /**
-         * We only create connections if we need another idle connection or have threads still waiting
-         * for a new connection.  Otherwise we bail out of the request to create.
-         *
-         * @return true if we should create a connection, false if the need has disappeared
-         */
-        private synchronized boolean shouldCreateAnotherConnection() {
-            return getCount(ConnectionStatus.ACTIVE) < maxActiveConnections;
+            // failed to get connection from db, sleep and retry
+            LOGGER.debug("{} - Connection add failed", name);
         }
     }
 
-    private int getCount(ConnectionStatus status) {
-        int count = 0;
-        for (QueueConnection connection : state.queue) {
-            if (connection.getStatus() == status) {
-                count++;
-            }
-        }
-        return count;
+    private int getActiveCount() {
+        return state.queue.size() + usedConnections.size();
     }
 
     public Integer getDefaultNetworkTimeout() {
@@ -359,27 +333,13 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     void logPoolState(String... prefix) {
         if (log.isDebugEnabled()) {
-            log.debug("{} - {}stats (total={}, active={}, inactive={})",
+            log.debug("{} - {}stats (total={}, notInUse={}, used={})",
                     name, (prefix.length > 0 ? prefix[0] : ""),
-                    state.queue.size(), getCount(ConnectionStatus.ACTIVE), getCount(ConnectionStatus.INACTIVE));
+                    getActiveCount(), state.queue.size(), usedConnections.size());
         }
     }
 
-    /**
-     * Sleep and suppress InterruptedException (but re-signal it).
-     *
-     * @param millis the number of milliseconds to sleep
-     */
-    public static void quietlySleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            // I said be quiet!
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private boolean isConnectionAlive(QueueConnection connection) {
+    private boolean isConnectionAlive(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
         boolean result = false;
         try {
             long startTime = System.currentTimeMillis();
@@ -399,26 +359,10 @@ public class QueueServerMetadata implements ServerMetadata {
                     "Execution of ping query '" + pingQueryContent + "' failed: " + e.getMessage());
         }
         if (!result) {
-            closeConnection(connection);
+            connection.closeConnection();
 
             log.warn("Connection " + connection.getRealConnection().hashCode() + " is BAD");
         }
         return result;
-    }
-
-    private void closeConnection(QueueConnection connection) {
-        try {
-            connection.getRealConnection().close();
-        } catch (Exception e2) {
-            log.error("关闭连接异常", e2);
-        }
-        connection.setStatus(ConnectionStatus.INACTIVE);
-        ScheduledFuture<?> keepaliveTask = connection.getKeepaliveTask();
-        if (keepaliveTask != null) {
-            keepaliveTask.cancel(true);
-            if (keepaliveTask.isCancelled()) {
-                log.warn("keepalive任务已被取消");
-            }
-        }
     }
 }

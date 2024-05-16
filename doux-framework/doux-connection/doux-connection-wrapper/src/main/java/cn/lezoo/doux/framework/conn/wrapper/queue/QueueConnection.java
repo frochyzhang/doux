@@ -21,6 +21,7 @@ import java.util.concurrent.ScheduledFuture;
 @Slf4j
 public class QueueConnection implements InvocationHandler {
     private static final String CLOSE = "close";
+    private static final String SEND = "send";
     private static final Class<?>[] IFACES = new Class<?>[]{Connection.class};
 
     private final int hashCode;
@@ -43,6 +44,15 @@ public class QueueConnection implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
+        if (SEND.equals(methodName)) {
+            try {
+                return method.invoke(realConnection, args);
+            } catch (Exception e) {
+                log.error("请求发送异常", e);
+                this.closeConnection();
+                return null;
+            }
+        }
         if (CLOSE.equals(methodName)) {
             metadata.pushConnection(this);
             return null;
@@ -53,7 +63,7 @@ public class QueueConnection implements InvocationHandler {
             }
             return method.invoke(realConnection, args);
         } catch (Throwable t) {
-            log.error("异常", t);
+            log.error("方法[{}]执行异常", methodName, t);
             throw t;
         }
     }
@@ -62,5 +72,42 @@ public class QueueConnection implements InvocationHandler {
         if (!ConnectionStatus.ACTIVE.equals(status)) {
             throw new RuntimeException("Error accessing QueueConnection. Connection is invalid.");
         }
+    }
+
+    /**
+     * Getter for the time since this connection was last used.
+     *
+     * @return - the time since the last use
+     */
+    public long getTimeElapsedSinceLastUse() {
+        return System.currentTimeMillis() - lastUsedTimestamp;
+    }
+
+    public void closeConnection() {
+        try {
+            log.warn("连接关闭，id: {}, 距离上次使用时间: {}", this.getHashCode(), this.getTimeElapsedSinceLastUse());
+            this.getRealConnection().close();
+        } catch (Exception e2) {
+            log.error("关闭连接异常", e2);
+        }
+        metadata.getUsedConnections().remove(this);
+        this.setStatus(ConnectionStatus.INACTIVE);
+        ScheduledFuture<?> keepaliveTask = this.getKeepaliveTask();
+        if (keepaliveTask != null) {
+            keepaliveTask.cancel(true);
+            if (keepaliveTask.isCancelled()) {
+                log.warn("keepalive任务已被取消");
+            }
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

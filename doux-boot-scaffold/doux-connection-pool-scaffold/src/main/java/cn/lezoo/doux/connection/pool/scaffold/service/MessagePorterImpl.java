@@ -39,7 +39,6 @@ public class MessagePorterImpl implements MessagePorter {
         }
         Connection conn = null;
 
-        // TODO: 2023/5/29 重试次数控制
         AtomicInteger fetchCount = new AtomicInteger(Integer.parseInt(connectionPoolConfigure.getFetchTimes()));
         // 轮询遍历各个连接池，直到找到空闲连接
         while (conn == null && fetchCount.decrementAndGet() >= 0) {

@@ -1,10 +1,17 @@
 package cn.lezoo.doux.connection.pool.scaffold.configure;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @Description:
  * @Author: qipeng
  * @Date: 2022/7/7
  **/
+@Getter
+@Setter
+@ToString
 public class ServerMetadataConfigure {
     /**
      * 服务端ip
@@ -62,136 +69,8 @@ public class ServerMetadataConfigure {
      * 缓冲区大小，默认为: 65535
      */
     private String bufferSize;
-
-    public String getServerIp() {
-        return serverIp;
-    }
-
-    public void setServerIp(String serverIp) {
-        this.serverIp = serverIp;
-    }
-
-    public String getServerPort() {
-        return serverPort;
-    }
-
-    public void setServerPort(String serverPort) {
-        this.serverPort = serverPort;
-    }
-
-    public String getMaxActiveConnections() {
-        return maxActiveConnections;
-    }
-
-    public void setMaxActiveConnections(String maxActiveConnections) {
-        this.maxActiveConnections = maxActiveConnections;
-    }
-
-    public String getMaxIdleConnections() {
-        return maxIdleConnections;
-    }
-
-    public void setMaxIdleConnections(String maxIdleConnections) {
-        this.maxIdleConnections = maxIdleConnections;
-    }
-
-    public String getMaxCheckoutTime() {
-        return maxCheckoutTime;
-    }
-
-    public void setMaxCheckoutTime(String maxCheckoutTime) {
-        this.maxCheckoutTime = maxCheckoutTime;
-    }
-
-    public String getDefaultNetworkTimeout() {
-        return defaultNetworkTimeout;
-    }
-
-    public void setDefaultNetworkTimeout(String defaultNetworkTimeout) {
-        this.defaultNetworkTimeout = defaultNetworkTimeout;
-    }
-
-    public String getRetryTimeToWait() {
-        return retryTimeToWait;
-    }
-
-    public void setRetryTimeToWait(String retryTimeToWait) {
-        this.retryTimeToWait = retryTimeToWait;
-    }
-
-    public String getMaxLocalBadConnectionTolerance() {
-        return maxLocalBadConnectionTolerance;
-    }
-
-    public void setMaxLocalBadConnectionTolerance(String maxLocalBadConnectionTolerance) {
-        this.maxLocalBadConnectionTolerance = maxLocalBadConnectionTolerance;
-    }
-
-    public String getPingQueryContent() {
-        return pingQueryContent;
-    }
-
-    public void setPingQueryContent(String pingQueryContent) {
-        this.pingQueryContent = pingQueryContent;
-    }
-
-    public String getPingVerifyContent() {
-        return pingVerifyContent;
-    }
-
-    public void setPingVerifyContent(String pingVerifyContent) {
-        this.pingVerifyContent = pingVerifyContent;
-    }
-
-    public String getPingEnabled() {
-        return pingEnabled;
-    }
-
-    public void setPingEnabled(String pingEnabled) {
-        this.pingEnabled = pingEnabled;
-    }
-
-    public String getPingConnectionsNotUsed() {
-        return pingConnectionsNotUsed;
-    }
-
-    public void setPingConnectionsNotUsed(String pingConnectionsNotUsed) {
-        this.pingConnectionsNotUsed = pingConnectionsNotUsed;
-    }
-
-    public String getLengthField() {
-        return lengthField;
-    }
-
-    public void setLengthField(String lengthField) {
-        this.lengthField = lengthField;
-    }
-
-    public String getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(String bufferSize) {
-        this.bufferSize = bufferSize;
-    }
-
-    @Override
-    public String toString() {
-        return "ServerMetadataConfigure{" +
-                "serverIp='" + serverIp + '\'' +
-                ", serverPort='" + serverPort + '\'' +
-                ", maxActiveConnections='" + maxActiveConnections + '\'' +
-                ", maxIdleConnections='" + maxIdleConnections + '\'' +
-                ", maxCheckoutTime='" + maxCheckoutTime + '\'' +
-                ", defaultNetworkTimeout='" + defaultNetworkTimeout + '\'' +
-                ", retryTimeToWait='" + retryTimeToWait + '\'' +
-                ", maxLocalBadConnectionTolerance='" + maxLocalBadConnectionTolerance + '\'' +
-                ", pingQueryContent='" + pingQueryContent + '\'' +
-                ", pingVerifyContent='" + pingVerifyContent + '\'' +
-                ", pingEnabled='" + pingEnabled + '\'' +
-                ", pingConnectionsNotUsed='" + pingConnectionsNotUsed + '\'' +
-                ", lengthField='" + lengthField + '\'' +
-                ", bufferSize='" + bufferSize + '\'' +
-                '}';
-    }
+    /**
+     * 连接补充间隔
+     */
+    private String houseKeepInterval;
 }

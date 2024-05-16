@@ -3,6 +3,7 @@ package cn.lezoo.doux.connection.pool.scaffold;
 import cn.lezoo.doux.common.util.convert.PropertiesParseUtils;
 import cn.lezoo.doux.connection.pool.scaffold.configure.ConnectionPoolConfigure;
 import cn.lezoo.doux.connection.pool.scaffold.configure.ScaffoldConfigure;
+import cn.lezoo.doux.connection.pool.scaffold.configure.ServerMetadataConfigure;
 import cn.lezoo.doux.framework.conn.driver.ServerMetadata;
 import cn.lezoo.doux.framework.conn.driver.ServerMetadataFactory;
 import cn.lezoo.doux.framework.extension.loader.ExtensionLoader;
@@ -18,6 +19,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.NAME;
 
 /**
  * @Description:
@@ -37,11 +40,15 @@ public class ConnectionPoolAutoConfiguration {
 
     @Bean(name = "serverMetadataList")
     public List<ServerMetadata> getServerMetadataList() {
-        return scaffoldConfigure.getServerMetadataMap().values()
-                .stream().map(metadataConfigure -> {
-                    logger.info("服务端配置信息：{}", metadataConfigure);
+        return scaffoldConfigure.getServerMetadataMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    ServerMetadataConfigure metadataConfigure = entry.getValue();
+                    logger.info("[{}]服务端配置信息：{}", entry.getKey(), metadataConfigure);
 
                     Properties properties = new Properties();
+                    properties.setProperty(NAME, entry.getKey());
                     PropertiesParseUtils.fromBean(properties, metadataConfigure);
                     PropertiesParseUtils.fromBean(properties, connectionPoolConfigure);
                     ExtensionLoader<ServerMetadataFactory> serverMetadataExtensionLoader = ExtensionLoaderFactory.getExtensionLoader(ServerMetadataFactory.class);

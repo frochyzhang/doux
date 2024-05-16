@@ -12,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultEventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,11 +41,13 @@ public class HspNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(HspNettyConnection.class);
 
     private final EventLoopGroup loopGroup = new NioEventLoopGroup(16,
-            new NamedThreadFactory("hsp-netty-", true));
+            new NamedThreadFactory("hsp-netty-", false));
 
     private ChannelFuture channelFuture;
 
     public static final ConcurrentHashMap<Long, Promise<String>> PROMISE_MAP = new ConcurrentHashMap<>();
+
+    private final DefaultEventLoop nettyEventLoop = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
     private int timeout;
 
@@ -63,18 +65,7 @@ public class HspNettyConnection implements Connection {
 
     @Override
     public void close() {
-        CountDownLatch latch = new CountDownLatch(1);
-        loopGroup.shutdownGracefully().addListener(future -> {
-            if (future.isSuccess()) {
-                latch.countDown();
-            }
-        });
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        loopGroup.shutdownGracefully();
     }
 
     @Override
@@ -86,7 +77,7 @@ public class HspNettyConnection implements Connection {
     public String send(String msg) {
         Channel channel = channelFuture.channel();
 
-        Promise<String> promise = loopGroup.next().newPromise();
+        Promise<String> promise = nettyEventLoop.newPromise();
 
         long requestId = ATOMIC_LONG.addAndGet(1);
         msg = String.format("%016x", requestId) + msg;
@@ -114,7 +105,6 @@ public class HspNettyConnection implements Connection {
         int bufferSize = Integer.parseInt(properties.getProperty("bufferSize"));
         this.timeout = Integer.parseInt(properties.getProperty("defaultNetworkTimeout"));
         int connectTimeout = Integer.parseInt(properties.getProperty("connectTimeout"));
-        CountDownLatch latch = new CountDownLatch(1);
 
         try {
             bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
@@ -139,12 +129,6 @@ public class HspNettyConnection implements Connection {
                                     });
                         }
                     }).connect(serverIp, serverPort).sync();
-            channelFuture.addListener(f -> {
-                if (f.isSuccess()) {
-                    latch.countDown(); // 连接成功，释放 latch
-                }
-            });
-            latch.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
