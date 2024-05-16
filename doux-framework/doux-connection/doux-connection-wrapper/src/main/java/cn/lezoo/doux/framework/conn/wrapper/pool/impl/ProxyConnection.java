@@ -16,6 +16,7 @@
 
 package cn.lezoo.doux.framework.conn.wrapper.pool.impl;
 
+import cn.lezoo.doux.framework.conn.driver.Connection;
 import cn.lezoo.doux.framework.conn.wrapper.pool.SQLExceptionOverride;
 import cn.lezoo.doux.framework.conn.wrapper.pool.util.FastList;
 import org.slf4j.Logger;
@@ -23,14 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
-import java.sql.Savepoint;
-import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -60,17 +53,9 @@ public abstract class ProxyConnection implements Connection
 
    private final PoolEntry poolEntry;
    private final ProxyLeakTask leakTask;
-   private final FastList<Statement> openStatements;
 
    private int dirtyBits;
    private boolean isCommitStateDirty;
-
-   private boolean isReadOnly;
-   private boolean isAutoCommit;
-   private int networkTimeout;
-   private int transactionIsolation;
-   private String dbcatalog;
-   private String dbschema;
 
    // static initializer
    static {
@@ -93,16 +78,10 @@ public abstract class ProxyConnection implements Connection
 
    protected ProxyConnection(final PoolEntry poolEntry,
                              final Connection connection,
-                             final FastList<Statement> openStatements,
-                             final ProxyLeakTask leakTask,
-                             final boolean isReadOnly,
-                             final boolean isAutoCommit) {
+                             final ProxyLeakTask leakTask) {
       this.poolEntry = poolEntry;
       this.delegate = connection;
-      this.openStatements = openStatements;
       this.leakTask = leakTask;
-      this.isReadOnly = isReadOnly;
-      this.isAutoCommit = isAutoCommit;
    }
 
    /** {@inheritDoc} */
@@ -245,20 +224,12 @@ public abstract class ProxyConnection implements Connection
 
    /** {@inheritDoc} */
    @Override
-   public final void close() throws SQLException
+   public final void close()
    {
-      // Closing statements can cause connection eviction, so this must run before the conditional below
-      closeStatements();
-
       if (delegate != ClosedConnection.CLOSED_CONNECTION) {
          leakTask.cancel();
 
          try {
-            if (isCommitStateDirty && !isAutoCommit) {
-               delegate.rollback();
-               LOGGER.debug("{} - Executed rollback on connection {} due to dirty commit state on close().", poolEntry.getPoolName(), delegate);
-            }
-
             if (dirtyBits != 0) {
                poolEntry.resetConnectionState(this, dirtyBits);
             }
