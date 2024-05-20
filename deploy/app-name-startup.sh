@@ -106,7 +106,12 @@ JVM_PARAM="-Xms${XMS}m -Xmx${XMX}m -Dspring.profiles.active=${ACTIVE_PROFILE} -D
 -Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
 HEAP_DUMP_PARAM="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:HeapDumpPath=${HOME}/dump/${APP_NAME}-$(date "+%Y%m%d").hprof"
 
-PID_PATH="$BASE_PACKAGE/pid/$APP_NAME/$APP_NAME.pid"
+PID_DIR="${BASE_PACKAGE}/pid/${APP_NAME}"
+if [ ! -d "${PID_DIR}" ]; then
+    echo "Pid file path not exist, create it now..."
+    mkdir -p "${PID_DIR}"
+fi
+PID_PATH="${PID_DIR}/${APP_NAME}.pid"
 if [ -e "${PID_PATH}" ]; then
     PIDS=$(pgrep -F "${PID_PATH}")
     if [ -z "$PIDS" ]; then
