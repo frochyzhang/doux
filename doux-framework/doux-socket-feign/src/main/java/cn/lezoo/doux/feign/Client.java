@@ -6,6 +6,7 @@ import cn.lezoo.doux.feign.codec.Decoder;
 import cn.lezoo.doux.feign.codec.Encoder;
 import cn.lezoo.doux.framework.extension.loader.ExtensionLoaderFactory;
 import cn.lezoo.doux.framework.socket.client.driver.SocketClient;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.Properties;
@@ -48,7 +49,11 @@ public interface Client {
             String xml = encoder.encode(data);
             String result = ExtensionLoaderFactory.getExtension(SocketClient.class, "default")
                     .send(properties, xml);
-            return decoder.decode(result, returnType);
+            if (StringUtils.isNotEmpty(result)) {
+                return decoder.decode(result, returnType);
+            } else {
+                return null;
+            }
         }
     }
 }
