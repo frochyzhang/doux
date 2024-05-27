@@ -16,15 +16,16 @@
 
 package cn.lezoo.doux.framework.conn.wrapper.pool.metrics.dropwizard;
 
+import cn.lezoo.doux.framework.conn.driver.Connection;
+import cn.lezoo.doux.framework.conn.wrapper.pool.HikariConfig;
+import cn.lezoo.doux.framework.conn.wrapper.pool.exception.PoolException;
+import cn.lezoo.doux.framework.conn.wrapper.pool.impl.HikariPool;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import cn.lezoo.doux.framework.conn.wrapper.pool.HikariConfig;
-import cn.lezoo.doux.framework.conn.wrapper.pool.impl.HikariPool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
@@ -44,83 +45,87 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Brett Wooldridge
  */
-public final class CodahaleHealthChecker
-{
-   /**
-    * Register Dropwizard health checks.
-    *
-    * @param pool the pool to register health checks for
-    * @param hikariConfig the pool configuration
-    * @param registry the HealthCheckRegistry into which checks will be registered
-    */
-   public static void registerHealthChecks(final HikariPool pool, final HikariConfig hikariConfig, final HealthCheckRegistry registry)
-   {
-      final Properties healthCheckProperties = hikariConfig.getHealthCheckProperties();
+public final class CodahaleHealthChecker {
+    /**
+     * Register Dropwizard health checks.
+     *
+     * @param pool         the pool to register health checks for
+     * @param hikariConfig the pool configuration
+     * @param registry     the HealthCheckRegistry into which checks will be registered
+     */
+    public static void registerHealthChecks(final HikariPool pool, final HikariConfig hikariConfig,
+        final HealthCheckRegistry registry) {
+        final Properties healthCheckProperties = hikariConfig.getHealthCheckProperties();
 
-      final long checkTimeoutMs = Long.parseLong(healthCheckProperties.getProperty("connectivityCheckTimeoutMs", String.valueOf(hikariConfig.getConnectionTimeout())));
-      registry.register(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "ConnectivityCheck"), new ConnectivityHealthCheck(pool, checkTimeoutMs));
+        final long checkTimeoutMs = Long.parseLong(healthCheckProperties.getProperty("connectivityCheckTimeoutMs",
+            String.valueOf(hikariConfig.getConnectionTimeout())));
+        registry.register(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "ConnectivityCheck"),
+            new ConnectivityHealthCheck(pool, checkTimeoutMs));
 
-      final long expected99thPercentile = Long.parseLong(healthCheckProperties.getProperty("expected99thPercentileMs", "0"));
+        final long expected99thPercentile =
+            Long.parseLong(healthCheckProperties.getProperty("expected99thPercentileMs", "0"));
 
-      final Object metricRegistryObj = hikariConfig.getMetricRegistry();
+        final Object metricRegistryObj = hikariConfig.getMetricRegistry();
 
-      if (expected99thPercentile > 0 && metricRegistryObj instanceof MetricRegistry) {
-         final MetricRegistry metricRegistry = (MetricRegistry) metricRegistryObj;
-         SortedMap<String,Timer> timers = metricRegistry.getTimers((name, metric) -> name.equals(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "Wait")));
+        if (expected99thPercentile > 0 && metricRegistryObj instanceof MetricRegistry) {
+            final MetricRegistry metricRegistry = (MetricRegistry) metricRegistryObj;
+            SortedMap<String, Timer> timers = metricRegistry.getTimers(
+                (name, metric) -> name.equals(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "Wait")));
 
-         if (!timers.isEmpty()) {
-            final Timer timer = timers.entrySet().iterator().next().getValue();
-            registry.register(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "Connection99Percent"), new Connection99Percent(timer, expected99thPercentile));
-         }
-      }
-   }
+            if (!timers.isEmpty()) {
+                final Timer timer = timers.entrySet().iterator().next().getValue();
+                registry.register(MetricRegistry.name(hikariConfig.getPoolName(), "pool", "Connection99Percent"),
+                    new Connection99Percent(timer, expected99thPercentile));
+            }
+        }
+    }
 
-   private CodahaleHealthChecker()
-   {
-      // private constructor
-   }
+    private CodahaleHealthChecker() {
+        // private constructor
+    }
 
-   private static class ConnectivityHealthCheck extends HealthCheck
-   {
-      private final HikariPool pool;
-      private final long checkTimeoutMs;
+    private static class ConnectivityHealthCheck extends HealthCheck {
+        private final HikariPool pool;
+        private final long checkTimeoutMs;
 
-      ConnectivityHealthCheck(final HikariPool pool, final long checkTimeoutMs)
-      {
-         this.pool = pool;
-         this.checkTimeoutMs = (checkTimeoutMs > 0 && checkTimeoutMs != Integer.MAX_VALUE ? checkTimeoutMs : TimeUnit.SECONDS.toMillis(10));
-      }
+        ConnectivityHealthCheck(final HikariPool pool, final long checkTimeoutMs) {
+            this.pool = pool;
+            this.checkTimeoutMs = (checkTimeoutMs > 0 && checkTimeoutMs != Integer.MAX_VALUE ?
+                checkTimeoutMs :
+                TimeUnit.SECONDS.toMillis(10));
+        }
 
-      /** {@inheritDoc} */
-      @Override
-      protected Result check() throws Exception
-      {
-         try (Connection connection = pool.getConnection(checkTimeoutMs)) {
-            return Result.healthy();
-         }
-         catch (SQLException e) {
-            return Result.unhealthy(e);
-         }
-      }
-   }
+        /** {@inheritDoc} */
+        @Override
+        protected Result check() throws Exception {
+            try {
+                pool.getConnection(checkTimeoutMs);
+                return Result.healthy();
+            } catch (PoolException e) {
+                return Result.unhealthy(e);
+            }
+        }
+    }
 
-   private static class Connection99Percent extends HealthCheck
-   {
-      private final Timer waitTimer;
-      private final long expected99thPercentile;
 
-      Connection99Percent(final Timer waitTimer, final long expected99thPercentile)
-      {
-         this.waitTimer = waitTimer;
-         this.expected99thPercentile = expected99thPercentile;
-      }
+    private static class Connection99Percent extends HealthCheck {
+        private final Timer waitTimer;
+        private final long expected99thPercentile;
 
-      /** {@inheritDoc} */
-      @Override
-      protected Result check() throws Exception
-      {
-         final long the99thPercentile = TimeUnit.NANOSECONDS.toMillis(Math.round(waitTimer.getSnapshot().get99thPercentile()));
-         return the99thPercentile <= expected99thPercentile ? Result.healthy() : Result.unhealthy("99th percentile connection wait time of %dms exceeds the threshold %dms", the99thPercentile, expected99thPercentile);
-      }
-   }
+        Connection99Percent(final Timer waitTimer, final long expected99thPercentile) {
+            this.waitTimer = waitTimer;
+            this.expected99thPercentile = expected99thPercentile;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        protected Result check() throws Exception {
+            final long the99thPercentile =
+                TimeUnit.NANOSECONDS.toMillis(Math.round(waitTimer.getSnapshot().get99thPercentile()));
+            return the99thPercentile <= expected99thPercentile ?
+                Result.healthy() :
+                Result.unhealthy("99th percentile connection wait time of %dms exceeds the threshold %dms",
+                    the99thPercentile, expected99thPercentile);
+        }
+    }
 }

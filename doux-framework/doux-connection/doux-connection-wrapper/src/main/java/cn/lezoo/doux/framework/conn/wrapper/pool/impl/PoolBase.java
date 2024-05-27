@@ -17,18 +17,22 @@
 package cn.lezoo.doux.framework.conn.wrapper.pool.impl;
 
 import cn.lezoo.doux.framework.conn.driver.Connection;
+import cn.lezoo.doux.framework.conn.wrapper.constant.ConnectionConfig;
+import cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig;
 import cn.lezoo.doux.framework.conn.wrapper.pool.HikariConfig;
 import cn.lezoo.doux.framework.conn.wrapper.pool.exception.PoolException;
 import cn.lezoo.doux.framework.conn.wrapper.pool.metrics.IMetricsTracker;
 import cn.lezoo.doux.framework.conn.wrapper.unpooled.UnpooledServerMetadata;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
+import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import org.slf4j.LoggerFactory;
 
 import static cn.lezoo.doux.framework.conn.wrapper.pool.util.ClockSource.currentTime;
 import static cn.lezoo.doux.framework.conn.wrapper.pool.util.ClockSource.elapsedMillis;
@@ -51,7 +55,7 @@ abstract class PoolBase {
     /**
      * 连接检查请求内容
      */
-    protected String pingQueryContent = "";
+    protected String pingQueryContent = "00";
     /**
      * 连接检查校验内容
      */
@@ -69,7 +73,18 @@ abstract class PoolBase {
         this.validationTimeout = config.getValidationTimeout();
         this.lastConnectionFailure = new AtomicReference<>();
 
-        // initializeDataSource();
+        initiateMetaData();
+    }
+
+    private void initiateMetaData() {
+        this.unpooledServerMetadata = new UnpooledServerMetadata("localhost", 9999);
+        Properties properties = new Properties();
+        properties.setProperty(ConnectionConfig.CONNECTION_DRIVER, "hsp");
+        properties.setProperty(ServerMetadataConfig.LENGTH_FIELD, "2");
+        properties.setProperty(ServerMetadataConfig.BUFFER_SIZE, "8192");
+        properties.setProperty(ServerMetadataConfig.DEFAULT_NETWORK_TIMEOUT, "500");
+        properties.setProperty(ServerMetadataConfig.CONNECT_TIMEOUT, "500");
+        this.unpooledServerMetadata.setAdditionalProperties(properties);
     }
 
     /**
@@ -105,7 +120,7 @@ abstract class PoolBase {
         } catch (Exception e) {
             lastConnectionFailure.set(e);
             log.warn("{} - Failed to validate connection {} ({}). Possibly consider using a shorter maxLifetime value.",
-                    poolName, connection, e.getMessage());
+                poolName, connection, e.getMessage());
             return true;
         }
     }
@@ -141,10 +156,12 @@ abstract class PoolBase {
 
             ObjectName beanConfigName, beanPoolName;
             if ("true".equals(System.getProperty("hikaricp.jmx.register2.0"))) {
-                beanConfigName = new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=PoolConfig,name=" + poolName);
+                beanConfigName =
+                    new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=PoolConfig,name=" + poolName);
                 beanPoolName = new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=Pool,name=" + poolName);
             } else {
-                beanConfigName = new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=PoolConfig (" + poolName + ")");
+                beanConfigName =
+                    new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=PoolConfig (" + poolName + ")");
                 beanPoolName = new ObjectName("cn.lezoo.doux.framework.conn.wrapper.pool:type=Pool (" + poolName + ")");
             }
             if (register) {
@@ -212,7 +229,9 @@ abstract class PoolBase {
         try {
             final int validationSeconds = (int) Math.max(1000L, validationTimeout) / 1000;
             if (!connection.isValid(validationSeconds, pingQueryContent)) {
-                log.warn("{} - Connection {} failed alive test with query '{}'; consider configuring the connection test query.", poolName, connection, pingQueryContent);
+                log.warn(
+                    "{} - Connection {} failed alive test with query '{}'; consider configuring the connection test query.",
+                    poolName, connection, pingQueryContent);
                 throw new PoolException("Connection is not alive, possibly failed the validation query test.");
             }
         } catch (PoolException e) {
@@ -224,6 +243,7 @@ abstract class PoolBase {
     //                      Private Static Classes
     // ***********************************************************************
 
+
     static class ConnectionSetupException extends Exception {
         private static final long serialVersionUID = 929872118275916521L;
 
@@ -231,6 +251,7 @@ abstract class PoolBase {
             super(t);
         }
     }
+
 
     /**
      * Special executor used only to work around a MySQL issue that has not been addressed.
@@ -250,6 +271,7 @@ abstract class PoolBase {
             }
         }
     }
+
 
     interface IMetricsTrackerDelegate extends AutoCloseable {
         default void recordConnectionUsage(PoolEntry poolEntry) {
@@ -271,6 +293,7 @@ abstract class PoolBase {
         default void close() {
         }
     }
+
 
     /**
      * A class that delegates to a MetricsTracker implementation.  The use of a delegate
@@ -316,6 +339,7 @@ abstract class PoolBase {
             tracker.close();
         }
     }
+
 
     /**
      * A no-op implementation of the IMetricsTrackerDelegate that is used when metrics capture is

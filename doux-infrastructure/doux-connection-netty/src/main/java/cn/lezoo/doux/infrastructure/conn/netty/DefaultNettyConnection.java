@@ -130,4 +130,9 @@ public class DefaultNettyConnection implements Connection {
             Thread.currentThread().interrupt();
         }
     }
+
+    @Override
+    public boolean isValid(int validationTimeoutSeconds, String connectionTestQuery) {
+        return true;
+    }
 }

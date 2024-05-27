@@ -705,8 +705,6 @@ public final class HikariPool extends PoolBase implements HikariPoolMXBean, IBag
      */
     private final class HouseKeeper implements Runnable {
         private volatile long previous = plusMillis(currentTime(), -housekeepingPeriodMs);
-        @SuppressWarnings("AtomicFieldUpdaterNotStaticFinal")
-        private final AtomicReferenceFieldUpdater<PoolBase, String> catalogUpdater = AtomicReferenceFieldUpdater.newUpdater(PoolBase.class, String.class, "catalog");
 
         @Override
         public void run() {
