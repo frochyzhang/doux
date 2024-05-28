@@ -18,15 +18,36 @@ function checkAllByNode() {
     local node_number="$1"
     script_dir="$(dirname "$(realpath "$0")")"
     exec 3< "$script_dir/lst/app-info.lst"
+    problem_count=0
+    declare -a problem_apps  # 用于存储有问题的进程名
+
     while read -u 3 -r user ip app_name node; do
         if [[ -z "$node_number" || "$node" == "$node_number" ]]; then
             echo "正在检查节点 $node_number 上的所有进程：$user@$ip $app_name"
-            ssh -t $user@$ip "~/bin/${app_name}/${app_name}-check.sh"
+            output=$(ssh -t $user@$ip "~/bin/${app_name}/${app_name}-check.sh")
+
+            # 检查输出中是否包含“有问题啦”或“进程数居然不为1”
+            if [[ $output == *"有问题啦"* || $output == *"进程数居然不为1"* ]]; then
+                ((problem_count++))
+                problem_apps+=("$app_name")  # 将有问题的进程名添加到数组中
+            else
+                echo "$output"
+            fi
         fi
     done
     exec 3<&-
+
+    echo "检查完成，有 $problem_count 个进程检查存在问题。"
+    if [ $problem_count -gt 0 ]; then
+        echo "以下进程未启动成功："
+        for app in "${problem_apps[@]}"; do
+            echo "- $app"
+        done
+    fi
+
     read -p "请确认上述信息是否正确，OK后按回车键继续。"
 }
+
 
 function startAllByNode() {
     local node_number="$1"
