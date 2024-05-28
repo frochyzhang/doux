@@ -28,6 +28,26 @@ function checkAllByNode() {
     read -p "请确认上述信息是否正确，OK后按回车键继续。"
 }
 
+function startAllByNode() {
+    local node_number="$1"
+    script_dir="$(dirname "$(realpath "$0")")"
+    exec 3< "$script_dir/lst/app-info.lst"
+    while read -u 3 -r user ip app_name node; do
+        if [[ -z "$node_number" || "$node" == "$node_number" ]]; then
+            echo "正在启动节点 $node_number 上的所有进程：$user@$ip $app_name"
+            # 执行 startup 脚本
+            startup_params=""
+            # 判断是否有参数，必须要输入启动脚本参数，用while循环
+            while [ -z "$startup_params" ]; do
+                read -p "请输入 $app_name-startup.sh 在 $ip 上的参数: " startup_params
+            done
+            ssh $user@$ip "source /etc/profile; source ~/.bash_profile;sh ~/bin/${app_name}/${app_name}-startup.sh $startup_params"
+        fi
+    done
+    exec 3<&-
+    read -p "请确认上述信息是否正确，OK后按回车键继续。"
+}
+
 function restart() {
     echo "开始执行换包重启操作"
 

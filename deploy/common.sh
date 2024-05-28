@@ -55,15 +55,18 @@ current_dir="$(dirname "$(realpath "$0")")"
 # 读取app-info.lst文件并提取唯一应用程序名
 function getAppNames() {
     script_dir="$(dirname "$(realpath "$0")")"
-    declare -A app_names
+    declare -A app_names  # 声明一个关联数组
     app_name_list=()
 
-    while read -r user ip app_name; do
+    while read -r user ip app_name node; do
         if [[ -z "${app_names[$app_name]}" ]]; then
             app_names[$app_name]=1
             app_name_list+=("$app_name")
         fi
     done < "$script_dir/lst/app-info.lst"
+
+    # 如果你想在函数外使用 app_name_list，需要显式地返回它
+    echo "${app_name_list[@]}"
 }
 
 # 提供选择应用程序名的菜单

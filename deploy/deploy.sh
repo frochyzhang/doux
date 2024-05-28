@@ -54,7 +54,8 @@ while [ "$option" != "exit" ]; do
       echo "1. 根据节点编号停止所有进程"
       echo "2. 换包重启操作"
       echo "3. 根据节点编号检查所有进程"
-      read -p "请输入选项 (1/2/3): " option
+      echo "4. 根据节点编号启动所有进程"
+      read -p "请输入选项 (1/2/3/4): " option
 
       case "$option" in
           1)
@@ -67,6 +68,10 @@ while [ "$option" != "exit" ]; do
           3)
               read -p "请输入节点编号: " node_number
               checkAllByNode "$node_number"
+              ;;
+          4)
+              read -p "请输入节点编号: " node_number
+              startAllByNode "$node_number"
               ;;
           *)
               echo "无效的选项"
