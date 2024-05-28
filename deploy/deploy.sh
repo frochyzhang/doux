@@ -50,7 +50,29 @@ while [ "$option" != "exit" ]; do
       ;;
     5)
       echo "执行换包重启操作"
-      restart
+      echo "请选择操作："
+      echo "1. 根据节点编号停止所有进程"
+      echo "2. 换包重启操作"
+      echo "3. 根据节点编号检查所有进程"
+      read -p "请输入选项 (1/2/3): " option
+
+      case "$option" in
+          1)
+              read -p "请输入节点编号: " node_number
+              stopAllByNode "$node_number"
+              ;;
+          2)
+              restart
+              ;;
+          3)
+              read -p "请输入节点编号: " node_number
+              checkAllByNode "$node_number"
+              ;;
+          *)
+              echo "无效的选项"
+              exit 1
+              ;;
+      esac
       ;;
     exit)
       echo "感谢使用，再见！"

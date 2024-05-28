@@ -17,8 +17,7 @@ function readNacosInfoFromFile() {
 function nacosChange() {
     echo "开始执行 Nacos 变更操作"
 
-    local nacos_file="$1"
-    readNacosInfoFromFile "$nacos_file"
+    readNacosInfoFromFile
 
     nacos_server=${nacos_server:-10.100.79.102:8848}
     nacos_user=${nacos_user:-nacos}
