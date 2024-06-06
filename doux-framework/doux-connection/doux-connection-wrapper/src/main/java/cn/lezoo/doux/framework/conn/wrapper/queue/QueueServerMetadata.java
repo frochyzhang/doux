@@ -46,7 +46,7 @@ public class QueueServerMetadata implements ServerMetadata {
     /**
      * 正在被使用的连接
      */
-    private Set<cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection> usedConnections;
+    private Set<QueueConnection> usedConnections;
     /**
      * 池里面的最大活跃连接数
      */
@@ -116,13 +116,13 @@ public class QueueServerMetadata implements ServerMetadata {
     /**
      * 新增连接
      */
-    public cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection addConnection() {
+    public QueueConnection addConnection() {
         Connection connection = metadata.getConnection();
         if (metadata.getDefaultNetworkTimeout() != null) {
             connection.setNetworkTimeout(Executors.newSingleThreadExecutor(), metadata.getDefaultNetworkTimeout());
         }
 
-        cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection queueConnection = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection(this, connection);
+        QueueConnection queueConnection = new QueueConnection(this, connection);
         if (!isConnectionAlive(queueConnection)) {
             log.error("新增连接不可用，请检查配置是否正确");
             return null;
@@ -144,7 +144,7 @@ public class QueueServerMetadata implements ServerMetadata {
      *
      * @param connection
      */
-    public void pushConnection(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
+    public void pushConnection(QueueConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
             if (state.queue.size() < maxActiveConnections) {
                 if (log.isDebugEnabled()) {
@@ -166,7 +166,7 @@ public class QueueServerMetadata implements ServerMetadata {
         }
     }
 
-    public boolean removeTemporarily(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
+    public boolean removeTemporarily(QueueConnection connection) {
         boolean result = state.queue.removeFirstOccurrence(connection);
         if (result) {
             usedConnections.add(connection);
@@ -180,7 +180,7 @@ public class QueueServerMetadata implements ServerMetadata {
     public void forceCloseAll() {
         log.info("强制关闭所有连接！");
         while (!state.queue.isEmpty()) {
-            cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = state.queue.remove();
+            QueueConnection connection = state.queue.remove();
             connection.closeConnection();
         }
         // if (houseKeeperTask != null) {
@@ -202,7 +202,7 @@ public class QueueServerMetadata implements ServerMetadata {
      */
     @Override
     public Connection getConnection() {
-        cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = state.queue.poll();
+        QueueConnection connection = state.queue.poll();
         if (connection == null) {
             return null;
         }
@@ -233,7 +233,7 @@ public class QueueServerMetadata implements ServerMetadata {
     public String send(String msg) {
         Connection connection = getConnection();
         String response = connection.send(msg);
-        pushConnection((cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection) connection);
+        pushConnection((QueueConnection) connection);
         return response;
     }
 
@@ -241,17 +241,17 @@ public class QueueServerMetadata implements ServerMetadata {
     @Setter
     @Getter
     private final class HouseKeeper implements Runnable {
-        private final Logger LOGGER = LoggerFactory.getLogger(HouseKeeper.class);
+        private final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
 
         @Override
         public void run() {
             int activeCount = getActiveCount();
-            LOGGER.info("触发houseKeeper，当前有效连接数: {}", activeCount);
+            logger.info("触发houseKeeper，当前有效连接数: {}", activeCount);
             final int connectionsToAdd = maxActiveConnections - activeCount;
             if (connectionsToAdd == 0) {
-                LOGGER.info("{} - Fill pool skipped, pool is at sufficient level.", name);
+                logger.info("{} - Fill pool skipped, pool is at sufficient level.", name);
             } else if (connectionsToAdd < 0) {
-                LOGGER.warn("{} - Active active connections count is over max active connections.", name);
+                logger.warn("{} - Active active connections count is over max active connections.", name);
             }
 
             for (int i = 0; i < connectionsToAdd; i++) {
@@ -263,11 +263,11 @@ public class QueueServerMetadata implements ServerMetadata {
     @Getter
     @Setter
     private final class KeepaliveTask implements Runnable {
-        private final Logger LOGGER = LoggerFactory.getLogger(KeepaliveTask.class);
+        private final Logger logger = LoggerFactory.getLogger(KeepaliveTask.class);
 
-        private final cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection;
+        private final QueueConnection connection;
 
-        private KeepaliveTask(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
+        private KeepaliveTask(QueueConnection connection) {
             this.connection = connection;
         }
 
@@ -275,7 +275,7 @@ public class QueueServerMetadata implements ServerMetadata {
         public void run() {
             // 连接未使用时间需要大于maxCheckoutTime
             if (connection.getTimeElapsedSinceLastUse() >= maxCheckoutTime && removeTemporarily(connection)) {
-                LOGGER.info("触发心跳，当前连接状态: {}, id: {}", connection.getStatus(), connection.getHashCode());
+                logger.info("触发心跳，当前连接状态: {}, id: {}", connection.getStatus(), connection.getHashCode());
                 if (isConnectionAlive(connection)) {
                     pushConnection(connection);
                 }
@@ -287,11 +287,11 @@ public class QueueServerMetadata implements ServerMetadata {
      * Creating and adding poolEntries (connections) to the pool.
      */
     private final class ConnectionCreator implements Runnable {
-        private final Logger LOGGER = LoggerFactory.getLogger(ConnectionCreator.class);
+        private final Logger logger = LoggerFactory.getLogger(ConnectionCreator.class);
 
         private String loggingPrefix;
 
-        public ConnectionCreator() {
+        private ConnectionCreator() {
         }
 
         private ConnectionCreator(String loggingPrefix) {
@@ -300,9 +300,9 @@ public class QueueServerMetadata implements ServerMetadata {
 
         @Override
         public void run() {
-            final cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection = addConnection();
+            final QueueConnection connection = addConnection();
             if (connection != null) {
-                LOGGER.debug("{} - Added connection {}", name, connection.getRealConnection());
+                logger.debug("{} - Added connection {}", name, connection.getRealConnection());
                 if (loggingPrefix != null) {
                     logPoolState(loggingPrefix);
                 }
@@ -310,7 +310,7 @@ public class QueueServerMetadata implements ServerMetadata {
             }
 
             // failed to get connection from db, sleep and retry
-            LOGGER.debug("{} - Connection add failed", name);
+            logger.debug("{} - Connection add failed", name);
         }
     }
 
@@ -339,7 +339,7 @@ public class QueueServerMetadata implements ServerMetadata {
         }
     }
 
-    private boolean isConnectionAlive(cn.lezoo.doux.framework.conn.wrapper.queue.QueueConnection connection) {
+    private boolean isConnectionAlive(QueueConnection connection) {
         boolean result = false;
         try {
             long startTime = System.currentTimeMillis();

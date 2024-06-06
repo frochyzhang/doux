@@ -30,7 +30,7 @@ import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig
 public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
 
     public QueueServerMetadataFactory() {
-        this.metadata = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata();
+        this.metadata = new QueueServerMetadata();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class QueueServerMetadataFactory extends UnpooledServerMetadataFactory {
                 Integer.parseInt(properties.getProperty(SERVER_PORT)));
         unpooledServerMetadata.setDefaultNetworkTimeout(Integer.parseInt(properties.getProperty(DEFAULT_NETWORK_TIMEOUT, "500")));
 
-        cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata queueServerMetadata = new cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadata(unpooledServerMetadata);
+        QueueServerMetadata queueServerMetadata = new QueueServerMetadata(unpooledServerMetadata);
         queueServerMetadata.setName(properties.getProperty(NAME, "queue-connection-pool"));
         queueServerMetadata.setMaxActiveConnections(Integer.parseInt(properties.getProperty(MAX_ACTIVE_CONNECTIONS, "10")));
         queueServerMetadata.setMaxCheckoutTime(Integer.parseInt(properties.getProperty(MAX_CHECKOUT_TIME, "1200000")));

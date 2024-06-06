@@ -17,7 +17,7 @@
         <module>doux-common</module>
         <module>doux-tools</module>
     </modules>
-    <name>dev-project - 开发三部应用程序开发框架</name>
+    <name>doux-project - 动物园-甜蜜の应用程序开发框架</name>
 
     <scm>
         <connection>scm:git:https://e.coding.net/frochy/dev-project/doux.git</connection>
@@ -25,8 +25,8 @@
         <url>https://e.coding.net/frochy/dev-project/doux/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.0.0</revision>
-        <doux.version>1.0.0</doux.version>
+        <revision>1.0.1</revision>
+        <doux.version>1.0.1</doux.version>
         <jackson.version>2.13.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>
