@@ -24,8 +24,8 @@ fi
 tar -zxvf "${HOME}/${APP_FULL_NAME}" -C "${HOME}"
 mkdir -p "${HOME}/bin"
 mkdir -p "${HOME}/apps"
-mv "${HOME}/${APP_NAME_INCLUDE_VERSION}/bin/*" "${HOME}/bin/"
-mv "${HOME}/${APP_NAME_INCLUDE_VERSION}/apps/*" "${HOME}/apps/"
+mv "${HOME}"/"${APP_NAME_INCLUDE_VERSION}"/bin/* "${HOME}/bin/"
+mv "${HOME}"/"${APP_NAME_INCLUDE_VERSION}"/apps/* "${HOME}/apps/"
 rm -rf "${HOME:?}/${APP_NAME_INCLUDE_VERSION}"
 
 echo "${APP_NAME_INCLUDE_VERSION}解压完成"

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 
 import java.lang.reflect.Type;
@@ -32,7 +33,8 @@ public class JacksonUtils {
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .build()
-                .registerModule(new KotlinModule.Builder().build());
+                .registerModule(new KotlinModule.Builder().build())
+                .registerModule(new JavaTimeModule());
     }
 
     public static <T> T fromXml(String xml, TypeReference<T> typeReference) {
