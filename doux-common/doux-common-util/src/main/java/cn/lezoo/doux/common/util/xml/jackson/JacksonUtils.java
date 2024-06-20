@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2024/1/9 15:08
  */
 public class JacksonUtils {
-    private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final XmlMapper XML_MAPPER;
 
     private static final Map<Type, JavaType> javaTypeMap = new ConcurrentHashMap<>();
@@ -72,7 +71,7 @@ public class JacksonUtils {
 
     public static String toXml(Object object) {
         try {
-            return XML_HEAD + "\n" + XML_MAPPER.writeValueAsString(object);
+            return XML_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("XML处理异常", e);
         }
