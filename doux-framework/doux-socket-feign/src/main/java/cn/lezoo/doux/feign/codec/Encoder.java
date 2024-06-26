@@ -1,6 +1,6 @@
 package cn.lezoo.doux.feign.codec;
 
-import cn.lezoo.doux.common.util.xml.jackson.JacksonUtils;
+import cn.lezoo.doux.common.util.serialize.JacksonUtils;
 
 public interface Encoder {
     String encode(Object data);

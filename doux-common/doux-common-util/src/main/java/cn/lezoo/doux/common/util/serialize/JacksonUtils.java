@@ -1,4 +1,4 @@
-package cn.lezoo.doux.common.util.xml.jackson;
+package cn.lezoo.doux.common.util.serialize;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JacksonUtils {
     private static final XmlMapper XML_MAPPER;
+    private static final JsonMapper JSON_MAPPER;
 
     private static final Map<Type, JavaType> javaTypeMap = new ConcurrentHashMap<>();
 
@@ -29,8 +31,15 @@ public class JacksonUtils {
                 .enable(MapperFeature.USE_STD_BEAN_NAMING)
                 .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .configure(SerializationFeature.INDENT_OUTPUT, true)
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build()
+                .registerModule(new KotlinModule.Builder().build())
+                .registerModule(new JavaTimeModule());
+        JSON_MAPPER = (JsonMapper) JsonMapper.builder()
+                .enable(MapperFeature.USE_STD_BEAN_NAMING)
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .build()
                 .registerModule(new KotlinModule.Builder().build())
                 .registerModule(new JavaTimeModule());
@@ -74,6 +83,47 @@ public class JacksonUtils {
             return XML_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("XML处理异常", e);
+        }
+    }
+
+    public static <T> T fromJson(String json, TypeReference<T> typeReference) {
+        try {
+            return JSON_MAPPER.readValue(json, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON处理异常", e);
+        }
+    }
+
+    public static <T> T fromJson(String json, Class<T> tClass) {
+        try {
+            return JSON_MAPPER.readValue(json, tClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON处理异常", e);
+        }
+    }
+
+    public static <T> T fromJson(String json, JavaType javaType) {
+        try {
+            return JSON_MAPPER.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON处理异常", e);
+        }
+    }
+
+    public static <T> T fromJson(String json, Type type) {
+        try {
+            JavaType javaType = javaTypeMap.computeIfAbsent(type, t -> JSON_MAPPER.getTypeFactory().constructType(t));
+            return JSON_MAPPER.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON处理异常", e);
+        }
+    }
+
+    public static String toJson(Object object) {
+        try {
+            return JSON_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON处理异常", e);
         }
     }
 }
