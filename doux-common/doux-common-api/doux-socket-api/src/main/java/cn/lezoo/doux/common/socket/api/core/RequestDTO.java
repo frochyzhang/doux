@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.lezoo.doux.common.util.common.DateUtils;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Date;
@@ -14,6 +16,8 @@ import java.util.Date;
  * @author hongmr
  * @date 2017/6/19.
  */
+@Data
+@Accessors(chain = true)
 @JacksonXmlRootElement(localName = "SERVICE")
 public class RequestDTO<T> {
     @JacksonXmlProperty(isAttribute = true)
@@ -24,42 +28,6 @@ public class RequestDTO<T> {
 
     @JacksonXmlProperty(localName = "SERVICE_BODY")
     protected RequestBodyDTO<T> requestBody;
-
-    public String getXmlns() {
-        return xmlns;
-    }
-
-    public RequestDTO<T> setXmlns(String xmlns) {
-        this.xmlns = xmlns;
-        return this;
-    }
-
-    public ServiceHeaderDTO getHeader() {
-        return header;
-    }
-
-    public RequestDTO<T> setHeader(ServiceHeaderDTO header) {
-        this.header = header;
-        return this;
-    }
-
-    public RequestBodyDTO<T> getRequestBody() {
-        return requestBody;
-    }
-
-    public RequestDTO<T> setRequestBody(RequestBodyDTO<T> requestBody) {
-        this.requestBody = requestBody;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "RequestDTO{" +
-                "xmlns='" + xmlns + '\'' +
-                ", header=" + header +
-                ", requestBody=" + requestBody +
-                '}';
-    }
 
     public ResponseDTO<?> createResp() {
         return new ResponseDTO<>()
@@ -129,9 +97,8 @@ public class RequestDTO<T> {
                 );
     }
 
-    public <S> RequestDTO<S> createRequest(String org, String channelId, String serviceId, String versionId, S request) {
+    public static <S> RequestDTO<S> createRequest(String org, String channelId, String serviceId, String versionId, S request) {
         return new RequestDTO<S>()
-                .setXmlns(xmlns)
                 .setHeader(
                         new ServiceHeaderDTO()
                                 .setOrg(org)

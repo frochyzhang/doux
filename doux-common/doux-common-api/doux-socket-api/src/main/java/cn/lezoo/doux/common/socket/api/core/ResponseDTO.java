@@ -2,11 +2,15 @@ package cn.lezoo.doux.common.socket.api.core;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author huanghf
  * @date 2024/1/8 14:56
  */
+@Data
+@Accessors(chain = true)
 @JacksonXmlRootElement(localName = "SERVICE")
 public class ResponseDTO<T> {
     @JacksonXmlProperty(isAttribute = true)
@@ -17,40 +21,4 @@ public class ResponseDTO<T> {
 
     @JacksonXmlProperty(localName = "SERVICE_BODY")
     protected ResponseBodyDTO<T> responseBody;
-
-    public String getXmlns() {
-        return xmlns;
-    }
-
-    public ResponseDTO<T> setXmlns(String xmlns) {
-        this.xmlns = xmlns;
-        return this;
-    }
-
-    public ServiceHeaderDTO getHeader() {
-        return header;
-    }
-
-    public ResponseDTO<T> setHeader(ServiceHeaderDTO header) {
-        this.header = header;
-        return this;
-    }
-
-    public ResponseBodyDTO<T> getResponseBody() {
-        return responseBody;
-    }
-
-    public ResponseDTO<T> setResponseBody(ResponseBodyDTO<T> responseBody) {
-        this.responseBody = responseBody;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "ResponseDTO{" +
-                "xmlns='" + xmlns + '\'' +
-                ", header=" + header +
-                ", responseBody=" + responseBody +
-                '}';
-    }
 }

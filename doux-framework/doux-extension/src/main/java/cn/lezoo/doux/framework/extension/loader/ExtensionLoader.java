@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -47,9 +48,7 @@ public class ExtensionLoader<T> {
     /**
      * slf4j Logger for this class
      */
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ExtensionLoader.class);
-    private static final String LOAD_FROM_CODE = "DYNAMIC LOAD EXTENSION BY CODE";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionLoader.class);
 
     /**
      * 当前加载的接口类名
@@ -127,8 +126,8 @@ public class ExtensionLoader<T> {
             this.extensible = extensible;
         }
 
-        this.factory = extensible.singleton() ? new ConcurrentHashMap<String, T>() : null;
-        this.all = new ConcurrentHashMap<String, ExtensionClass<T>>();
+        this.factory = extensible.singleton() ? new ConcurrentHashMap<>() : null;
+        this.all = new ConcurrentHashMap<>();
         if (autoLoad) {
             List<String> paths = new ArrayList<>();
             paths.add("META-INF/services/lezoo/");
@@ -145,9 +144,8 @@ public class ExtensionLoader<T> {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Loading extension of extensible {} from path: {}", interfaceName, path);
         }
-        // 默认如果不指定文件名字，就是接口名
-        String file = StrUtil.isBlank(extensible.file()) ? interfaceName : extensible.file().trim();
-        String fullFileName = path + file;
+        // 文件名字就是接口名
+        String fullFileName = path + interfaceName;
         try {
             ClassLoader classLoader = ClassLoaderUtils.getClassLoader(getClass());
             loadFromClassLoader(classLoader, fullFileName);
@@ -171,9 +169,7 @@ public class ExtensionLoader<T> {
                     LOGGER.debug("Loading extension of extensible {} from classloader: {} and file: {}",
                             interfaceName, classLoader, url);
                 }
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         readLine(url, line);
@@ -182,10 +178,6 @@ public class ExtensionLoader<T> {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Failed to load extension of extensible " + interfaceName
                                 + " from classloader: " + classLoader + " and file:" + url, t);
-                    }
-                } finally {
-                    if (reader != null) {
-                        reader.close();
                     }
                 }
             }
@@ -200,7 +192,7 @@ public class ExtensionLoader<T> {
         String alias = aliasAndClassName[0];
         String className = aliasAndClassName[1];
         // 读取配置的实现类
-        Class tmp;
+        Class<?> tmp;
         try {
             tmp = ClassUtils.forName(className, false);
         } catch (Throwable e) {
@@ -217,7 +209,7 @@ public class ExtensionLoader<T> {
         loadExtension(alias, tmp, StrUtil.toString(url), className);
     }
 
-    private void loadExtension(String alias, Class loadedClazz, String location, String className) {
+    private void loadExtension(String alias, Class<?> loadedClazz, String location, String className) {
         if (!interfaceClass.isAssignableFrom(loadedClazz)) {
             throw new IllegalArgumentException("Error when load extension of extensible " + interfaceName +
                     " from file:" + location + ", " + className + " is not subtype of interface.");
@@ -266,7 +258,7 @@ public class ExtensionLoader<T> {
         // }
 
         // 检查是否有存在同名的
-        ExtensionClass old = all.get(alias);
+        ExtensionClass<T> old = all.get(alias);
         ExtensionClass<T> extensionClass = null;
         if (old != null) {
             // 如果当前扩展可以覆盖其它同名扩展
@@ -307,7 +299,7 @@ public class ExtensionLoader<T> {
         if (extensionClass != null) {
             // 检查是否有互斥的扩展点
             for (Map.Entry<String, ExtensionClass<T>> entry : all.entrySet()) {
-                ExtensionClass existed = entry.getValue();
+                ExtensionClass<T> existed = entry.getValue();
                 if (extensionClass.getOrder() >= existed.getOrder()) {
                     // 新的优先级 >= 老的优先级，检查新的扩展是否排除老的扩展
                     String[] rejection = extensionClass.getRejection();
@@ -317,7 +309,7 @@ public class ExtensionLoader<T> {
                             if (existed == null || extensionClass.getOrder() < existed.getOrder()) {
                                 continue;
                             }
-                            ExtensionClass removed = all.remove(rej);
+                            ExtensionClass<T> removed = all.remove(rej);
                             if (removed != null) {
                                 if (LOGGER.isInfoEnabled()) {
                                     LOGGER.info(
@@ -350,12 +342,13 @@ public class ExtensionLoader<T> {
     }
 
     private ExtensionClass<T> buildClass(Extension extension, Class<? extends T> implClass, String alias) {
-        ExtensionClass<T> extensionClass = new ExtensionClass<T>(implClass, alias);
+        ExtensionClass<T> extensionClass = new ExtensionClass<>(implClass, alias);
         extensionClass.setCode(extension.code());
         extensionClass.setSingleton(extensible.singleton());
         extensionClass.setOrder(extension.order());
         extensionClass.setOverride(extension.override());
         extensionClass.setRejection(extension.rejection());
+        extensionClass.setTrusteeship(extension.trusteeship());
         return extensionClass;
     }
 
@@ -382,7 +375,7 @@ public class ExtensionLoader<T> {
         }
         line = line.trim();
         int i0 = line.indexOf('#');
-        if (i0 == 0 || line.length() == 0) {
+        if (i0 == 0 || line.isEmpty()) {
             return null; // 当前行是注释 或者 空
         }
         if (i0 > 0) {
@@ -398,7 +391,7 @@ public class ExtensionLoader<T> {
         } else {
             className = line;
         }
-        if (className.length() == 0) {
+        if (className.isEmpty()) {
             return null;
         }
         return new String[]{alias, className};
@@ -455,7 +448,7 @@ public class ExtensionLoader<T> {
      * @param args         扩展初始化需要的参数
      * @return 扩展实例（已判断是否单例）
      */
-    public T getExtension(String alias, String defaultAlias, Class[] argTypes, Object[] args) {
+    public T getExtension(String alias, String defaultAlias, Class<?>[] argTypes, Object[] args) {
         ExtensionClass<T> extensionClass = getExtensionClass(alias);
         if (extensionClass == null) {
             extensionClass = getExtensionClass(defaultAlias);
@@ -495,7 +488,7 @@ public class ExtensionLoader<T> {
      * @param args     扩展初始化需要的参数
      * @return 扩展实例（已判断是否单例）
      */
-    public T getExtension(String alias, Class[] argTypes, Object[] args) {
+    public T getExtension(String alias, Class<?>[] argTypes, Object[] args) {
         ExtensionClass<T> extensionClass = getExtensionClass(alias);
         if (extensionClass == null) {
             throw new RuntimeException("没找到对应扩展!" + alias);
@@ -523,7 +516,7 @@ public class ExtensionLoader<T> {
         }
     }
 
-    private T getInstance(ExtensionClass<T> extensionClass, String alias, Class[] argTypes, Object[] args) {
+    private T getInstance(ExtensionClass<T> extensionClass, String alias, Class<?>[] argTypes, Object[] args) {
         if (extensible.singleton() && factory != null) {
             T t = factory.get(alias);
             if (t == null) {
@@ -539,13 +532,6 @@ public class ExtensionLoader<T> {
         } else {
             return extensionClass.getExtInstance(argTypes, args);
         }
-    }
-
-    public void loadExtension(Class loadedClass) {
-        if (loadedClass == null) {
-            throw new IllegalArgumentException("Can not load extension of null");
-        }
-        loadExtension(null, loadedClass, LOAD_FROM_CODE, loadedClass.getName());
     }
 
     public void addListener(ExtensionLoaderListener<T> listener) {
@@ -565,6 +551,5 @@ public class ExtensionLoader<T> {
                 }
             }
         }
-
     }
 }

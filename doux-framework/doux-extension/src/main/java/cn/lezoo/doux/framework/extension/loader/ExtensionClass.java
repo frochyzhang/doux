@@ -16,11 +16,12 @@
  */
 package cn.lezoo.doux.framework.extension.loader;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.lezoo.doux.framework.extension.annotation.Extensible;
 import cn.lezoo.doux.framework.extension.annotation.Extension;
 import cn.lezoo.doux.framework.extension.util.ClassUtils;
-
-import java.util.Arrays;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 扩展接口实现类
@@ -30,6 +31,8 @@ import java.util.Arrays;
  * @see Extension
  * @see Extensible
  */
+@Data
+@Accessors(chain = true)
 public class ExtensionClass<T> implements Sortable {
 
     /**
@@ -65,6 +68,11 @@ public class ExtensionClass<T> implements Sortable {
     protected String[] rejection;
 
     /**
+     * 是否交给Spring托管
+     */
+    protected boolean trusteeship;
+
+    /**
      * 服务端实例对象（只在是单例的时候保留）
      */
     private transient volatile T instance;
@@ -96,158 +104,35 @@ public class ExtensionClass<T> implements Sortable {
      * @param args     构造函数参数值
      * @return 扩展点对象实例 ext instance
      */
-    public T getExtInstance(Class[] argTypes, Object[] args) {
+    public T getExtInstance(Class<?>[] argTypes, Object[] args) {
         if (clazz != null) {
             try {
-                if (singleton) { // 如果是单例
+                if (singleton) {
+                    // 如果是单例
                     if (instance == null) {
                         synchronized (this) {
                             if (instance == null) {
-                                instance = ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                                if (trusteeship) {
+                                    instance = SpringUtil.getBean(clazz);
+                                } else {
+                                    instance = ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                                }
                             }
                         }
                     }
-                    return instance; // 保留单例
+                    // 保留单例
+                    return instance;
                 } else {
-                    return ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                    if (trusteeship) {
+                        return SpringUtil.getBean(clazz);
+                    } else {
+                        return ClassUtils.newInstanceWithArgs(clazz, argTypes, args);
+                    }
                 }
-            } catch (RuntimeException e) {
-                throw e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         throw new RuntimeException("LogCodes.getLog(LogCodes.ERROR_EXTENSION_CLASS_NULL)");
-    }
-
-    /**
-     * Gets tag.
-     *
-     * @return the tag
-     */
-    public String getAlias() {
-        return alias;
-    }
-
-    /**
-     * Gets code.
-     *
-     * @return the code
-     */
-    public byte getCode() {
-        return code;
-    }
-
-    /**
-     * Sets code.
-     *
-     * @param code the code
-     * @return the code
-     */
-    public ExtensionClass setCode(byte code) {
-        this.code = code;
-        return this;
-    }
-
-    /**
-     * Is singleton boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isSingleton() {
-        return singleton;
-    }
-
-    /**
-     * Sets singleton.
-     *
-     * @param singleton the singleton
-     */
-    public void setSingleton(boolean singleton) {
-        this.singleton = singleton;
-    }
-
-    /**
-     * Gets clazz.
-     *
-     * @return the clazz
-     */
-    public Class<? extends T> getClazz() {
-        return clazz;
-    }
-
-    /**
-     * Gets order.
-     *
-     * @return the order
-     */
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    /**
-     * Sets order.
-     *
-     * @param order the order
-     * @return the order
-     */
-    public ExtensionClass setOrder(int order) {
-        this.order = order;
-        return this;
-    }
-
-    /**
-     * Is override boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isOverride() {
-        return override;
-    }
-
-    /**
-     * Sets override.
-     *
-     * @param override the override
-     * @return the override
-     */
-    public ExtensionClass setOverride(boolean override) {
-        this.override = override;
-        return this;
-    }
-
-    /**
-     * Get rejection string [ ].
-     *
-     * @return the string [ ]
-     */
-    public String[] getRejection() {
-        return rejection;
-    }
-
-    /**
-     * Sets rejection.
-     *
-     * @param rejection the rejection
-     * @return the rejection
-     */
-    public ExtensionClass setRejection(String[] rejection) {
-        this.rejection = rejection;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "ExtensionClass{" +
-                "clazz=" + clazz +
-                ", alias='" + alias + '\'' +
-                ", code=" + code +
-                ", singleton=" + singleton +
-                ", order=" + order +
-                ", override=" + override +
-                ", rejection=" + Arrays.toString(rejection) +
-                ", instance=" + instance +
-                '}';
     }
 }

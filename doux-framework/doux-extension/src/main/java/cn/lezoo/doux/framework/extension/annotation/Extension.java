@@ -69,4 +69,12 @@ public @interface Extension {
      * @since 5.2.0
      */
     String[] rejection() default {};
+
+    /**
+     * true：注册为Spring Bean
+     * false：普通Extension对象
+     *
+     * @return 是否交给Spring托管
+     */
+    boolean trusteeship() default true;
 }

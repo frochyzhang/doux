@@ -51,7 +51,7 @@ public class ExtensionLoaderFactory {
             synchronized (ExtensionLoaderFactory.class) {
                 loader = LOADER_MAP.get(clazz);
                 if (loader == null) {
-                    loader = new ExtensionLoader<T>(clazz, listener);
+                    loader = new ExtensionLoader<>(clazz, listener);
                     LOADER_MAP.put(clazz, loader);
                 }
             }
@@ -91,7 +91,7 @@ public class ExtensionLoaderFactory {
      * @param args     扩展初始化需要的参数
      * @return 扩展实例（已判断是否单例）
      */
-    public static <T> T getExtension(Class<T> clazz, String alias, Class[] argTypes, Object[] args) {
+    public static <T> T getExtension(Class<T> clazz, String alias, Class<?>[] argTypes, Object[] args) {
         ExtensionLoader<T> extensionLoader = getExtensionLoader(clazz);
         return extensionLoader.getExtension(alias, argTypes, args);
     }

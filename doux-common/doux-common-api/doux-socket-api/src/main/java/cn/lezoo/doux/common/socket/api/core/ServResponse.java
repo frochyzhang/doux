@@ -1,6 +1,8 @@
 package cn.lezoo.doux.common.socket.api.core;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * ServResponse
@@ -8,6 +10,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author hongmr
  * @date 2017/6/19
  */
+@Data
+@Accessors(chain = true)
 public class ServResponse {
     /**
      * STATUS: S:交易成功 F:交易失败
@@ -18,40 +22,4 @@ public class ServResponse {
     private String code;
     @JacksonXmlProperty(localName = "DESC")
     private String desc;
-
-    public String getStatus() {
-        return status;
-    }
-
-    public ServResponse setStatus(String status) {
-        this.status = status;
-        return this;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public ServResponse setCode(String code) {
-        this.code = code;
-        return this;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public ServResponse setDesc(String desc) {
-        this.desc = desc;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "ServResponse{" +
-                "status='" + status + '\'' +
-                ", code='" + code + '\'' +
-                ", desc='" + desc + '\'' +
-                '}';
-    }
 }
