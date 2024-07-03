@@ -68,7 +68,7 @@ public class DruidDataSourceAutoConfigure {
     public DruidDataSourceWrapper druidDataSourceWrapper() throws Exception {
         LOGGER.info("Init DruidDataSource");
         DruidDataSourceWrapper druidDataSourceWrapper = new DruidDataSourceWrapper();
-        druidDataSourceWrapper.setName("lezoo-datasource");
+        druidDataSourceWrapper.setName("doux-datasource");
         if (!ObjectUtils.isEmpty(datasourceEncryptProperties) && datasourceEncryptProperties.isEncrypted()) {
             if (!StringUtils.isEmpty(datasourceEncryptProperties.getPublicKey())) {
                 druidDataSourceWrapper.setPassword(ConfigTools.decrypt(datasourceEncryptProperties.getPublicKey(), dataSourceProperties.getPassword()));

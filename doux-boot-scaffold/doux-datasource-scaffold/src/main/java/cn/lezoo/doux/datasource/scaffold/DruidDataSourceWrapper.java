@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author lihengming [89921218@qq.com]
  */
-@ConfigurationProperties("cn.lezoo.datasource.druid")
+@ConfigurationProperties("doux.datasource.druid")
 public class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
     @Autowired
     private DataSourceProperties basicProperties;

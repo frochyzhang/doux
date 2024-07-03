@@ -10,6 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>doux-socket-api</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -20,19 +26,8 @@
             <artifactId>doux-common-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.lezoo.doux</groupId>
-            <artifactId>doux-common-dictionary</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
         </dependency>
-
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
 </project>

@@ -1,5 +1,7 @@
 package cn.lezoo.doux.datasource.scaffold.config;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,10 +10,12 @@ import org.springframework.context.annotation.Configuration;
  * @Author: qipeng
  * @Date: 2022/3/24
  **/
+@Data
+@Accessors(chain = true)
 @Configuration
-@ConfigurationProperties(prefix = "cn.lezoo.datasource.transaction")
+@ConfigurationProperties(prefix = "doux.datasource.transaction")
 public class TransactionPointProperties {
-    public static final String TRANSACTION_ENABLE = "cn.lezoo.datasource.transaction.enabled";
+    public static final String TRANSACTION_ENABLE = "doux.datasource.transaction.enabled";
 
     /**
      * 是否开启事务
@@ -21,20 +25,4 @@ public class TransactionPointProperties {
      * point-cut表达式
      */
     private String expression = "execution(* cn.lezoo.*..dal.service.Tbl*.*(..)) || execution(* cn.lezoo.*..infrastructure.service.Tbl*.*(..))";
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
 }

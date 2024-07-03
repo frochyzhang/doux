@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Primary;
 public class DevMybatisProperties {
 
     @Primary
-    @ConfigurationProperties(prefix = "cn.lezoo.datasource.mybatis")
+    @ConfigurationProperties(prefix = "doux.datasource.mybatis")
     @Bean("mybatisProperties")
     public MybatisProperties fillMybatisProperties() {
         return new MybatisProperties();

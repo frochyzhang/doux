@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!--
+    说明：
+        1. 文件的命名和加载顺序有关
+           logback.xml早于application.yml加载，logback-spring.xml晚于application.yml加载
+           如果logback配置需要使用application.yml中的属性，需要命名为logback-spring.xml
+        2. logback使用application.yml中的属性
+           使用springProperty才可使用application.yml中的值 可以设置默认值
+    -->
+    <!-- 通用参数配置 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="LOG_HOME" source="log.base-path"
+                    defaultValue="${user.home}/logs/${APP_NAME}/"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="log.level" defaultValue="info"/>
+    <springProperty scope="context" name="ACTIVE_PROFILE" source="spring.profiles.active" defaultValue="dev"/>
+
+    <!-- 文件输出 -->
+    <appender name="LOG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<Encoding>UTF-8</Encoding>-->
+        <file>${LOG_HOME}/${APP_NAME}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <maxFileSize>200MB</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="cn.lezoo.doux.recoup.server.log.TraceIdPatternLogbackLayout">
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- feign client日志文件输出 -->
+    <appender name="FEIGN-LOG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<Encoding>UTF-8</Encoding>-->
+        <file>${LOG_HOME}/feign-client.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/feign-client.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <maxFileSize>200MB</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="cn.lezoo.doux.recoup.server.log.TraceIdPatternLogbackLayout">
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- 控制台输出 -->
+    <appender name="LOG-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+            <level>${LOG_LEVEL}</level>
+        </filter>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="cn.lezoo.doux.recoup.server.log.TraceIdPatternLogbackLayout">
+                <Pattern>%date [%contextName] %level [%thread] [%tid] %logger{36} [%file : %line] %msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="LOG-FILE"/>
+    </appender>
+
+    <if condition='property("ACTIVE_PROFILE").equals("dev")'>
+        <then>
+            <!--开发环境配置-->
+            <root level="${LOG_LEVEL}">
+                <appender-ref ref="LOG-CONSOLE"/>
+            </root>
+        </then>
+        <else>
+            <root level="${LOG_LEVEL}">
+                <appender-ref ref="LOG-FILE"/>
+            </root>
+        </else>
+    </if>
+
+    <logger name="cn.lezoo.doux.recoup.server.client" level="debug" additivity="false">
+        <appender-ref ref="FEIGN-LOG-FILE"/>
+    </logger>
+</configuration>

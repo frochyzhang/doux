@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 public class DevDatasourceProperties {
-    private static final String DATASOURCE_PREFIX = "cn.lezoo.datasource";
+    private static final String DATASOURCE_PREFIX = "doux.datasource";
 
     @Primary
     @ConfigurationProperties(prefix = DATASOURCE_PREFIX)

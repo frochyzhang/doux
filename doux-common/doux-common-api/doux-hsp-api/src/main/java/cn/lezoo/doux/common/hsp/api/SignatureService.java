@@ -1,12 +1,13 @@
 package cn.lezoo.doux.common.hsp.api;
 
-
 import cn.lezoo.doux.common.hsp.api.dto.HspBaseResponseDTO;
 import cn.lezoo.doux.common.hsp.api.dto.SignatureGetBySM2PrivateKeyRequestDTO;
 import cn.lezoo.doux.common.hsp.api.dto.SignatureGetBySM2PrivateKeyResponseDTO;
 import cn.lezoo.doux.common.hsp.api.dto.SignatureVerifyBySM2PublicKeyRequestDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 /**
  * @author huanghf
@@ -22,7 +23,7 @@ public interface SignatureService {
      * @return 签名信息
      */
     @PostMapping("/sign")
-    HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(@RequestBody SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
+    HspBaseResponseDTO<SignatureGetBySM2PrivateKeyResponseDTO> getSignatureBySM2PrivateKey(@Valid @RequestBody SignatureGetBySM2PrivateKeyRequestDTO requestDTO);
 
     /**
      * 用SM2公钥做验签--D307
@@ -31,5 +32,5 @@ public interface SignatureService {
      * @return 验签结果
      */
     @PostMapping("/verify")
-    HspBaseResponseDTO verifySignatureBySM2PublicKey(@RequestBody SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
+    HspBaseResponseDTO<?> verifySignatureBySM2PublicKey(@Valid @RequestBody SignatureVerifyBySM2PublicKeyRequestDTO requestDTO);
 }

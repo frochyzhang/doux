@@ -1,8 +1,13 @@
 package cn.lezoo.doux.dispatch.scaffold.executor;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.lezoo.doux.dispatch.scaffold.api.IJobHandler;
 import com.xxl.job.core.executor.XxlJobExecutor;
 import com.xxl.job.core.handler.impl.MethodJobHandler;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,7 +22,11 @@ import java.util.List;
  * @author qipeng
  * @date 2022/1/20 11:38
  */
-@ConfigurationProperties(prefix = "cn.lezoo.xxl.job.executor")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Accessors(chain = true)
+@ConfigurationProperties(prefix = "doux.xxl.job.executor")
 @Configuration
 public class XxlJobCustomExecutor extends XxlJobExecutor {
     private static final Logger logger = LoggerFactory.getLogger(XxlJobCustomExecutor.class);
@@ -48,7 +57,7 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
 
 
     private void initJobHandlerMethodRepository(List<IJobHandler> xxlJobBeanList) {
-        if (xxlJobBeanList == null || xxlJobBeanList.size() == 0) {
+        if (CollectionUtil.isEmpty(xxlJobBeanList)) {
             logger.info("缺少JobHandler！");
             return;
         }
@@ -76,29 +85,5 @@ public class XxlJobCustomExecutor extends XxlJobExecutor {
             // registry jobHandler
             registJobHandler(name, new MethodJobHandler(bean, executeMethod, null, null));
         }
-    }
-
-    public List<IJobHandler> getXxlJobBeanList() {
-        return xxlJobBeanList;
-    }
-
-    public void setXxlJobBeanList(List<IJobHandler> xxlJobBeanList) {
-        this.xxlJobBeanList = xxlJobBeanList;
-    }
-
-    public Integer getPoolCoreSize() {
-        return poolCoreSize;
-    }
-
-    public void setPoolCoreSize(Integer poolCoreSize) {
-        this.poolCoreSize = poolCoreSize;
-    }
-
-    public Integer getPoolMaximumSize() {
-        return poolMaximumSize;
-    }
-
-    public void setPoolMaximumSize(Integer poolMaximumSize) {
-        this.poolMaximumSize = poolMaximumSize;
     }
 }

@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 /**
  * @author lihengming [89921218@qq.com]
  */
-@ConditionalOnProperty("cn.lezoo.datasource.druid.aop-patterns")
+@ConditionalOnProperty("doux.datasource.druid.stat.aop-patterns")
 public class DruidSpringAopConfiguration {
 
     @Bean

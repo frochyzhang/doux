@@ -11,6 +11,13 @@
 
     <artifactId>doux-recoup-server</artifactId>
 
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <start-class>cn.lezoo.doux.recoup.server.RecoupServerApplication</start-class>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -19,15 +26,6 @@
         <dependency>
             <groupId>cn.lezoo.doux</groupId>
             <artifactId>doux-recoup-scaffold</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.12.4</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,4 +50,78 @@
             <artifactId>doux-dispatch-scaffold-boot-starter</artifactId>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>**/*.sh</exclude>
+                            <exclude>**/*.yml</exclude>
+                            <exclude>**/*.xml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <!-- 指定 Spring Boot 启动类，实际测试中必须 -->
+                                    <mainClass>${start-class}</mainClass>
+                                    <!-- 将所有第三方 jar 添加到项目 jar 的 MANIFEST.MF 文件中，这样运行 jar 时依赖包才能被加载 -->
+                                    <addClasspath>true</addClasspath>
+                                    <!-- 指定复制第三方 jar 的目标目录为 target/lib/-->
+                                    <classpathPrefix>./lib/</classpathPrefix>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <!--指定的依赖路径-->
+                                    <outputDirectory>
+                                        ${project.build.directory}/lib
+                                    </outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <descriptors>src/main/assembly/assembly.xml</descriptors>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

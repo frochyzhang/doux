@@ -24,10 +24,6 @@
             <groupId>cn.lezoo.doux</groupId>
             <artifactId>doux-extension</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.lezoo.doux</groupId>
-            <artifactId>doux-common-dictionary</artifactId>
-        </dependency>
         <!--nacos注册中心-->
         <dependency>
             <groupId>com.alibaba.nacos</groupId>

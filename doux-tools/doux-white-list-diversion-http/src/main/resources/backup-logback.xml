@@ -3,9 +3,9 @@
 <configuration debug="false" scan="false"  packagingData="true">
     <trafficBackupProperty scope="context" name="logPath" source="JM.LOG.PATH"/>
     <trafficBackupProperty scope="context" name="logFileSize" source="JM.LOG.FILE.SIZE" defaultValue="200MB"/>
-    <trafficBackupProperty scope="context" name="backupConfigLogLevel" source="com.allinfinance.white-list.backup.level" defaultValue="info"/>
-    <trafficBackupProperty scope="context" name="logRetainDays" source="com.allinfinance.white-list.backup.retainDays" defaultValue="30"/>
-    <trafficBackupProperty scope="context" name="enableAsync" source="com.allinfinance.white-list.backup.enableAsync" defaultValue="false"/>
+    <trafficBackupProperty scope="context" name="backupConfigLogLevel" source="cn.lezoo.white-list.backup.level" defaultValue="info"/>
+    <trafficBackupProperty scope="context" name="logRetainDays" source="cn.lezoo.white-list.backup.retainDays" defaultValue="30"/>
+    <trafficBackupProperty scope="context" name="enableAsync" source="cn.lezoo.white-list.backup.enableAsync" defaultValue="false"/>
     <jvmContext scope="context" name="pid"/>
 
 

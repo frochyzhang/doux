@@ -1,6 +1,8 @@
 package cn.lezoo.doux.dispatch.scaffold.config;
 
 import cn.lezoo.doux.dispatch.scaffold.executor.XxlJobCustomExecutor;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +14,10 @@ import javax.annotation.PostConstruct;
  * @description: 获取xxl-job执行器相关配置
  * @date 2022/1/7 16:12
  */
+@Data
+@Accessors(chain = true)
 @Configuration
-@ConfigurationProperties(prefix = "cn.lezoo.xxl.job")
+@ConfigurationProperties(prefix = "doux.xxl.job")
 public class JobExecutorProperties {
     private String adminAddresses;
     private String appName;
@@ -24,21 +28,5 @@ public class JobExecutorProperties {
     private void initXxlJobExecutor() {
         xxlJobCustomExecutor.setAppname(appName);
         xxlJobCustomExecutor.setAdminAddresses(adminAddresses);
-    }
-
-    public String getAdminAddresses() {
-        return adminAddresses;
-    }
-
-    public void setAdminAddresses(String adminAddresses) {
-        this.adminAddresses = adminAddresses;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 }

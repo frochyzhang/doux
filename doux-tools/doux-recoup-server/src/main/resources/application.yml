@@ -1,3 +1,9 @@
+spring:
+  application:
+    name: recoup-server
+  profiles:
+    active: dev
+
 server:
   port: 8080
 cn:

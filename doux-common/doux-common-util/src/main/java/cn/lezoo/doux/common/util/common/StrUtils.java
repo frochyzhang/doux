@@ -1,9 +1,9 @@
 package cn.lezoo.doux.common.util.common;
 
 
+import cn.hutool.core.lang.Assert;
 import cn.lezoo.doux.common.util.constant.CommonConstants;
 
-import javax.validation.constraints.NotNull;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
@@ -18,8 +18,9 @@ import java.util.Random;
 public class StrUtils {
     /**
      * 直接获取xml指定标签内容
+     *
      * @param xmlContent xml报文
-     * @param label xml标签(如：<label>)
+     * @param label      xml标签(如：<label>)
      * @return 所需标签值
      */
     public static String getLabelValue(String xmlContent, String label) {
@@ -32,6 +33,7 @@ public class StrUtils {
             return xmlContent.substring(beginIndex, endIndex);
         }
     }
+
     /**
      * 已分隔符来输出传入的字符串
      *
@@ -170,7 +172,8 @@ public class StrUtils {
      * @throws Exception
      * @author jared
      */
-    public static String filterSpecial(@NotNull(message = "filterSpecial方法参数不能为null") String str) {
+    public static String filterSpecial(String str) {
+        Assert.notNull(str, "filterSpecial方法参数不能为null");
         String res = str.replaceAll("<[^>]*>", "");
         res = res.replaceAll("<", "");
         res = res.replaceAll(">", "");

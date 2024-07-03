@@ -1,11 +1,16 @@
 package cn.lezoo.doux.common.hsp.api.dto;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 
 /**
  * @author huanghf
  * @date 2022/6/22 17:13
  */
+@Data
+@Accessors(chain = true)
 public class HspBaseResponseDTO<T> implements Serializable {
     /**
      * 是否成功
@@ -29,41 +34,9 @@ public class HspBaseResponseDTO<T> implements Serializable {
         this.response = response;
     }
 
-    public HspBaseResponseDTO(Boolean success) {
-        this.success = success;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public T getResponse() {
-        return response;
-    }
-
-    public void setResponse(T response) {
-        this.response = response;
-    }
-
-    @Override
-    public String toString() {
-        return "HspBaseResponseDTO{" +
-                "success=" + success +
-                ", desc='" + desc + '\'' +
-                ", response=" + response +
-                '}';
+    public static HspBaseResponseDTO<?> success() {
+        return new HspBaseResponseDTO<>()
+                .setSuccess(Boolean.TRUE);
     }
 
     public static <T> HspBaseResponseDTO<T> success(String msg, T response) {
