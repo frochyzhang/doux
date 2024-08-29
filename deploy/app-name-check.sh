@@ -7,7 +7,7 @@ BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
 SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-check.sh}
 
-PID_PATH="$BASE_PACKAGE/pid/$APP_NAME/$APP_NAME.pid"
+PID_PATH="$BASE_PACKAGE"/pid/"$APP_NAME"/"$APP_NAME".pid
 if [ -e "${PID_PATH}" ]; then
     PID=$(pgrep -F "${PID_PATH}")
     if [ -z "${PID}" ]; then
@@ -15,7 +15,7 @@ if [ -e "${PID_PATH}" ]; then
       echo "${APP_NAME}有问题啦，进程数居然不为1，当前进程数0"
       exit 1
     else
-      PINF=$(ps -eo pid,lstart,cmd | grep "${PID}" | grep "${USER}" | grep "${APP_NAME}" | grep -v $0 | grep -v grep)
+      PINF=$(ps -eo pid,lstart,cmd | grep "${PID}" | grep "${USER}" | grep "${APP_NAME}" | grep -v "$0" | grep -v grep)
 
       PTM=$(echo "${PINF}" | awk '{print $2,$3,$4,$5,$6}')
 

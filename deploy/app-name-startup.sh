@@ -1,3 +1,13 @@
+# Base Folder Path like "/folder/packages"
+CURRENT_DIR=$(readlink -f "$0")
+BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
+# Shell Script file name after removing path like "start-yaml-validator.sh"
+SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
+# Shell Script file name after removing extension like "start-yaml-validator"
+#SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.sh}"
+# App name after removing start/stop strings like "yaml-validator"
+APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
+
 while getopts :hs:x:j:w:r:p:v: opt
 do
     case $opt in
@@ -22,12 +32,12 @@ do
         j)
                 JMX_PORT=$OPTARG
                 echo "jmx port=${JMX_PORT}"
-                JMX_PROMETHEUS_AGENT=$(find "${HOME}" -type f -name "jmx_prometheus_javaagent*.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
+                JMX_PROMETHEUS_AGENT=$(find "${BASE_PACKAGE}" -type f -name "jmx_prometheus_javaagent*.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
                 if [ ! -e "${JMX_PROMETHEUS_AGENT}" ]; then
                   echo "jmx_prometheus_javaagent is not found, please check it out." 1>&2
                   exit 1
                 fi
-                PROMETHEUS_CONFIG=$(find "${HOME}" -type f -name "prometheus-config.yml" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
+                PROMETHEUS_CONFIG=$(find "${BASE_PACKAGE}" -type f -name "prometheus-config.yml" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
                 if [ ! -e "${PROMETHEUS_CONFIG}" ]; then
                   echo "prometheus-config.yml is not found, please check it out." 1>&2
                   exit 1
@@ -37,7 +47,7 @@ do
         w)
                 echo "skywalking backend address=$OPTARG"
                 SKYWALKING_BACKEND_ADDRESS=$OPTARG
-                SKYWALKING_AGENT=$(find "${HOME}" -type f -name "skywalking-agent.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
+                SKYWALKING_AGENT=$(find "${BASE_PACKAGE}" -type f -name "skywalking-agent.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
                 if [ ! -e "${SKYWALKING_AGENT}" ]; then
                     echo "skywalking agent is not found, please check it out." 1>&2
                     exit 1
@@ -91,22 +101,13 @@ if [ -z "$XMX" ]; then
   XMX=128
 fi
 
-# Base Folder Path like "/folder/packages"
-CURRENT_DIR=$(readlink -f "$0")
-BASE_PACKAGE="${CURRENT_DIR%/bin/*}"
-# Shell Script file name after removing path like "start-yaml-validator.sh"
-SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
-# Shell Script file name after removing extension like "start-yaml-validator"
-#SHELL_SCRIPT_FILE_NAME_WITHOUT_EXT="${SHELL_SCRIPT_FILE_NAME%.sh}"
-# App name after removing start/stop strings like "yaml-validator"
-APP_NAME=${SHELL_SCRIPT_FILE_NAME%-startup.sh}
 # JVM Parameters and Spring boot initialization parameters
 JVM_PARAM="-Xms${XMS}m -Xmx${XMX}m -Dspring.profiles.active=${ACTIVE_PROFILE} -Dcom.webmethods.jms.clientIDSharing=true
 -Dspring.config.location=$BASE_PACKAGE/apps/$APP_NAME/config/
 -Dlogging.config=$BASE_PACKAGE/apps/$APP_NAME/config/logback-spring.xml"
-HEAP_DUMP_PARAM="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:HeapDumpPath=${HOME}/dump/${APP_NAME}-$(date "+%Y%m%d").hprof"
+HEAP_DUMP_PARAM="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:HeapDumpPath=${BASE_PACKAGE}/dump/${APP_NAME}-$(date "+%Y%m%d").hprof"
 
-PID_DIR="${BASE_PACKAGE}/pid/${APP_NAME}"
+PID_DIR="${BASE_PACKAGE}"/pid/"${APP_NAME}"
 if [ ! -d "${PID_DIR}" ]; then
     echo "Pid file path not exist, create it now..."
     mkdir -p "${PID_DIR}"
@@ -130,7 +131,7 @@ fi
 # Preparing the java home path for execution
 JAVA_EXEC=${JAVA_HOME}/bin/java
 # Java Executable - Jar Path Obtained from latest file in directory
-JAVA_APP=$(find "$BASE_PACKAGE/apps/$APP_NAME" -maxdepth 1 -type f -name "$APP_NAME*.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
+JAVA_APP=$(find "$BASE_PACKAGE"/apps/"$APP_NAME" -maxdepth 1 -type f -name "$APP_NAME*.jar" -exec stat --format '%Y %n' {} \; | sort -nr | head -n 1 | awk '{print $2}')
 # To execute the application.
 FINAL_EXEC="$JAVA_EXEC $JVM_PARAM $HEAP_DUMP_PARAM $SKYWALKING_PARAM $SKYWALKING_PLUGIN_PARAM ${JMX_PARAM} ${REMOTE_DEBUG_PARAM} ${JMX_REMOTE_PARAM} -jar $JAVA_APP"
 # Making executable command using tilde symbol and running completely detached from terminal

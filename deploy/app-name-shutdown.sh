@@ -11,7 +11,7 @@ SHELL_SCRIPT_FILE_NAME=$(basename -- "$0")
 APP_NAME=${SHELL_SCRIPT_FILE_NAME%-shutdown.sh}
 
 # Script to stop the application
-PID_PATH="$BASE_PACKAGE/pid/$APP_NAME/$APP_NAME.pid"
+PID_PATH="$BASE_PACKAGE"/pid/"$APP_NAME"/"$APP_NAME".pid
 if [ -e "${PID_PATH}" ]; then
     PIDS=$(pgrep -f -F "${PID_PATH}" -u "${USER}" "[j]ava.*-Dspring.profiles.active=$ACTIVE_PROFILE.*$APP_NAME.*jar")
     if [ -z "$PIDS" ]; then
@@ -19,7 +19,7 @@ if [ -e "${PID_PATH}" ]; then
     else
       for PROCESS_ID in $PIDS
       do
-        kill $PROCESS_ID;
+        kill "$PROCESS_ID";
         echo "Gracefully stopping $APP_NAME with PROCESS_ID:$PROCESS_ID..."
         sleep 5s
       done
@@ -36,7 +36,7 @@ if [ -n "${ACTIVE_PROFILE}" ]; then
   else
     for PROCESS_ID in $PIDS
     do
-      kill $PROCESS_ID;
+      kill "$PROCESS_ID";
       echo "Gracefully stopping $APP_NAME with PROCESS_ID:$PROCESS_ID..."
       sleep 5s
     done
