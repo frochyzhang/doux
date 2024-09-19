@@ -20,4 +20,6 @@ public interface Connection {
     String send(String msg);
 
     void connect(Properties properties);
+
+    boolean isValid(int validationTimeoutSeconds, String connectionTestQuery);
 }

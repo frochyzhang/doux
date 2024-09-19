@@ -210,33 +210,6 @@ public class QueueServerMetadata implements ServerMetadata {
         return connection.getProxyConnection();
     }
 
-    /**
-     * 获取连接
-     *
-     * @param serverIp   服务端ip
-     * @param serverPort 服务端端口
-     * @return Connection
-     */
-    @Override
-    public Connection getConnection(String serverIp, Integer serverPort) {
-        // FIXME: 2022/7/1 暂未实现
-        return null;
-    }
-
-    /**
-     * 发送请求
-     *
-     * @param msg 请求报文
-     * @return 响应报文
-     */
-    @Override
-    public String send(String msg) {
-        Connection connection = getConnection();
-        String response = connection.send(msg);
-        pushConnection((QueueConnection) connection);
-        return response;
-    }
-
     // 顶梁柱
     @Setter
     @Getter

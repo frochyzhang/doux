@@ -73,14 +73,9 @@ public class PooledServerMetadata implements ServerMetadata {
         return popConnection(metadata.getServerIp(), metadata.getServerPort()).getProxyConnection();
     }
 
-    @Override
+    // @Override
     public Connection getConnection(String serverIp, Integer serverPort) {
         return popConnection(serverIp, serverPort).getProxyConnection();
-    }
-
-    @Override
-    public String send(String msg) {
-        return getConnection().send(msg);
     }
 
     public void setServerIp(String serverIp) {
