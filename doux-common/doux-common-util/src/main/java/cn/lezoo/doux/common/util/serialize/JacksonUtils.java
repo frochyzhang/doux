@@ -30,7 +30,7 @@ public class JacksonUtils {
         XML_MAPPER = (XmlMapper) XmlMapper.builder()
                 .enable(MapperFeature.USE_STD_BEAN_NAMING)
                 .serializationInclusion(JsonInclude.Include.NON_NULL)
-                .configure(SerializationFeature.INDENT_OUTPUT, true)
+                .enable(SerializationFeature.INDENT_OUTPUT)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .build()
                 .registerModule(new KotlinModule.Builder().build())

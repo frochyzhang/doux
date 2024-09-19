@@ -58,21 +58,6 @@ public class UnpooledServerMetadata implements ServerMetadata {
         return doGetConnection(serverIp, serverPort);
     }
 
-    @Override
-    public Connection getConnection(String serverIp, Integer serverPort) {
-        return doGetConnection(serverIp, serverPort);
-    }
-
-    @Deprecated
-    @Override
-    public String send(String msg) {
-        return getConnection().send(msg);
-    }
-
-    public void setDefaultNetworkTimeout(Integer defaultNetworkTimeout) {
-        this.defaultNetworkTimeout = defaultNetworkTimeout;
-    }
-
     private Connection doGetConnection(String serverIp, Integer serverPort) {
         Properties props = new Properties();
         if (serverIp != null) {

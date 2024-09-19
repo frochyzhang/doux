@@ -76,5 +76,5 @@ public @interface Extension {
      *
      * @return 是否交给Spring托管
      */
-    boolean trusteeship() default true;
+    boolean trusteeship() default false;
 }

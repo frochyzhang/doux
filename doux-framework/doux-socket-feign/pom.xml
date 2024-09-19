@@ -13,10 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>cn.lezoo.doux</groupId>
-            <artifactId>doux-extension</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.lezoo.doux</groupId>
             <artifactId>doux-socket-api</artifactId>
         </dependency>
         <dependency>

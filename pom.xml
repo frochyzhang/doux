@@ -25,8 +25,8 @@
         <url>https://e.coding.net/frochy/dev-project/doux/tree/master-starter</url>
     </scm>
     <properties>
-        <revision>1.0.6</revision>
-        <doux.version>1.0.6</doux.version>
+        <revision>1.0.7</revision>
+        <doux.version>1.0.7</doux.version>
         <jackson.version>2.13.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.boot.version>2.6.9</springframework.boot.version>

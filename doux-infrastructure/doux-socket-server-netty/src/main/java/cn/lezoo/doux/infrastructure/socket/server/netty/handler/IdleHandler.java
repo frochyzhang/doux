@@ -5,8 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -15,16 +13,12 @@ import org.slf4j.LoggerFactory;
  */
 @ChannelHandler.Sharable
 public class IdleHandler extends ChannelInboundHandlerAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(IdleHandler.class);
-
-
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object paramObject) throws Exception {
-        logger.info("userEventTriggered");
         if (paramObject instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) paramObject).state();
             if (state == IdleState.ALL_IDLE) {
-                //关闭连接
+                // 关闭连接
                 ctx.channel().close();
             }
         } else {

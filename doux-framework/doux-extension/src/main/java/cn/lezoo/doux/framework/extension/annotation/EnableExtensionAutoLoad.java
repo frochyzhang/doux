@@ -14,9 +14,4 @@ import java.lang.annotation.Target;
 @Documented
 @Import(ExtensionBeanRegistrar.class)
 public @interface EnableExtensionAutoLoad {
-    String[] value() default {};
-
-    String[] basePackages() default {};
-
-    Class<?>[] basePackageClasses() default {};
 }

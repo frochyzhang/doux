@@ -25,9 +25,5 @@
             <groupId>cn.lezoo.doux</groupId>
             <artifactId>doux-common-util</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec</artifactId>
-        </dependency>
     </dependencies>
 </project>
