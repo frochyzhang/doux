@@ -1,9 +1,9 @@
 #!/bin/bash
-source "$(dirname "$(realpath "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
 
 function stopAllByNode() {
     local node_number="$1"
-    script_dir="$(dirname "$(realpath "$0")")"
+    script_dir="$(dirname "$(readlink -f "$0")")"
     exec 3< "$script_dir/lst/app-info.lst"
     while read -u 3 -r user ip app_name node; do
         if [[ -z "$node_number" || "$node" == "$node_number" ]]; then
@@ -16,7 +16,7 @@ function stopAllByNode() {
 
 function checkAllByNode() {
     local node_number="$1"
-    script_dir="$(dirname "$(realpath "$0")")"
+    script_dir="$(dirname "$(readlink -f "$0")")"
     exec 3< "$script_dir/lst/app-info.lst"
     problem_count=0
     declare -a problem_apps  # 用于存储有问题的进程名
@@ -51,7 +51,7 @@ function checkAllByNode() {
 
 function startAllByNode() {
     local node_number="$1"
-    script_dir="$(dirname "$(realpath "$0")")"
+    script_dir="$(dirname "$(readlink -f "$0")")"
     exec 3< "$script_dir/lst/app-info.lst"
     while read -u 3 -r user ip app_name node; do
         if [[ -z "$node_number" || "$node" == "$node_number" ]]; then
@@ -75,7 +75,7 @@ function restart() {
     # 提供应用名选项并选择
     selectAppName
 
-    script_dir="$(dirname "$(realpath "$0")")"
+    script_dir="$(dirname "$(readlink -f "$0")")"
 
     exec 3< "$script_dir/lst/app-info.lst"
 

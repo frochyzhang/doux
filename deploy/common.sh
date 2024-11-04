@@ -50,11 +50,11 @@ function checkDependencies() {
 
 checkDependencies
 
-current_dir="$(dirname "$(realpath "$0")")"
+current_dir="$(dirname "$(readlink -f "$0")")"
 
 # 读取app-info.lst文件并提取唯一应用程序名
 function getAppNames() {
-    script_dir="$(dirname "$(realpath "$0")")"
+    script_dir="$(dirname "$(readlink -f "$0")")"
     declare -A app_names  # 声明一个关联数组
     app_name_list=()
 

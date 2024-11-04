@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$(dirname "$(realpath "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
 
 function readNacosInfoFromFile() {
     read -p "请输入列表文件路径(请确保每行末尾都有换行符)：" nacos_file
@@ -14,11 +14,7 @@ function readNacosInfoFromFile() {
     fi
 }
 
-function nacosChange() {
-    echo "开始执行 Nacos 变更操作"
-
-    readNacosInfoFromFile
-
+function uploadContentZip() {
     nacos_server=${nacos_server:-10.100.79.102:8848}
     nacos_user=${nacos_user:-nacos}
     nacos_passwd=${nacos_passwd:-nacos}
@@ -50,5 +46,23 @@ function nacosChange() {
     echo "[**确认信息**]跳过的配置数（需额外检查）: $skipCount"
     echo "[**确认信息**]不识别的配置文件名: $unrecognizedData"
     log "Nacos变更操作：Code: $code，导入结果: $message，成功数: $succCount，不识别数: $unrecognizedCount，跳过数: $skipCount，不识别文件: $unrecognizedData"
+}
+
+function nacosChange() {
+    echo "开始执行 Nacos 变更操作"
+
+    read -p "请输入列表文件路径(请确保每行末尾都有换行符)：" nacos_file
+    nacos_file=${nacos_file:-$current_dir/lst/nacos_file.lst}
+    checkFileExists "$nacos_file"
+    while IFS= read -r line; do
+        read -r nacos_server nacos_user nacos_passwd content_zip namespace_id <<<"$line"
+        if [ -z "$nacos_server" ] || [ -z "$nacos_user" ] || [ -z "$nacos_passwd" ] || [ -z "$content_zip" ]; then
+            echo "错误：文件格式不正确，必须包含 Nacos 服务器地址、用户名、密码、配置文件路径、命名空间ID"
+            exit 1
+        fi
+        checkFileExists "${content_zip}"
+        uploadContentZip
+    done <"$nacos_file"
+
     read -p "请检查输出结果，确认后按回车键退出。"
 }

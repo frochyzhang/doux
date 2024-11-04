@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$(dirname "$(realpath "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
 
 function addDatabaseInfo() {
     read -p "请输入主机: " host
@@ -37,11 +37,12 @@ function db2Cmd() {
     read -p "请输入db2脚本执行参数文件: " db2Params
     checkFileExists "$db2Params"
     while IFS= read -r line; do
-        read -r database user password sqlPath <<<"$line"
+        read -r database user password sqlPath schema <<<"$line"
         checkFileExists "${sqlPath}"
         echo "开始执行sql脚本"
         log "开始执行db2脚本：数据库 ${database}，用户 ${user}"
         db2 connect to "${database}" user "${user}" using "${password}"
+        db2 set current schema = "${schema}"
         db2 -tvf "${sqlPath}"
         db2 quit
     done <"$db2Params"

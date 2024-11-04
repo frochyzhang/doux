@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$(dirname "$(realpath "$0")")/common.sh"
-source "$(dirname "$(realpath "$0")")/db-change.sh"
-source "$(dirname "$(realpath "$0")")/ssh-copy.sh"
-source "$(dirname "$(realpath "$0")")/package-upload.sh"
-source "$(dirname "$(realpath "$0")")/app-restart.sh"
-source "$(dirname "$(realpath "$0")")/nacos-change.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/db-change.sh"
+source "$(dirname "$(readlink -f "$0")")/ssh-copy.sh"
+source "$(dirname "$(readlink -f "$0")")/package-upload.sh"
+source "$(dirname "$(readlink -f "$0")")/app-restart.sh"
+source "$(dirname "$(readlink -f "$0")")/nacos-change.sh"
 
 
 # 添加主菜单逻辑
@@ -32,8 +32,7 @@ while [ "$option" != "exit" ]; do
 
     case $inputOption in
     1)
-      echo "请输入数据库类型，db2 or mysql: \c"
-      read -r dbType
+      read -p "请输入数据库类型，db2 or mysql: " dbType
       dbChange "${dbType}"
       ;;
     2)

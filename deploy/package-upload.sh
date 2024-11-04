@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$(dirname "$(realpath "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
 
 function uploadFiles() {
     echo "开始执行文件上传操作"

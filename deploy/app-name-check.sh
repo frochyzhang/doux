@@ -37,6 +37,5 @@ if [ -e "${PID_PATH}" ]; then
     fi
 else
   echo "Process Id FilePath($PID_PATH) Not found"
-  echo "!!!Warning!!!"
-  echo "${APP_NAME}有问题啦，进程数居然不为1，当前进程数0"
+  exit 1
 fi

@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$(dirname "$(realpath "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh"
 
 function addSSHKey() {
     echo "开始设置SSH免密登录..."
