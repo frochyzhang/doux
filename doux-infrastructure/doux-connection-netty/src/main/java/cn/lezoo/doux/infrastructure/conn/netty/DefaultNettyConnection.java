@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -59,12 +58,6 @@ public class DefaultNettyConnection implements Connection {
     private static final DefaultEventLoop NETTY_EVENT_LOOP = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
     private static final AttributeKey<RequestContext> REQUEST_CONTEXT_ATTRIBUTE_KEY = AttributeKey.valueOf("REQUEST_CONTEXT_ATTRIBUTE_KEY");
-
-    @Override
-
-    public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
-
-    }
 
     @Override
     public void close() {

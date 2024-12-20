@@ -3,7 +3,6 @@ package cn.lezoo.doux.framework.conn.driver;
 import cn.lezoo.doux.framework.extension.annotation.Extensible;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author <a href="mailto:frochyzhang@gmail.com>frochyZhang</a>
@@ -11,8 +10,6 @@ import java.util.concurrent.ExecutorService;
  */
 @Extensible(singleton = false)
 public interface Connection {
-    void setNetworkTimeout(ExecutorService executor, Integer timeout);
-
     void close();
 
     boolean isClosed();

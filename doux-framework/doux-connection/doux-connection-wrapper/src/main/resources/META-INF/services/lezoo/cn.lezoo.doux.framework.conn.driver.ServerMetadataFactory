@@ -1,3 +1,3 @@
-pool=cn.lezoo.doux.framework.conn.wrapper.PooledServerMetadataFactory
-unPool=cn.lezoo.doux.framework.conn.wrapper.UnpooledServerMetadataFactory
-queue=cn.lezoo.doux.framework.conn.wrapper.QueueServerMetadataFactory
+pool=cn.lezoo.doux.framework.conn.wrapper.pooled.PooledServerMetadataFactory
+unPool=cn.lezoo.doux.framework.conn.wrapper.unpooled.UnpooledServerMetadataFactory
+queue=cn.lezoo.doux.framework.conn.wrapper.queue.QueueServerMetadataFactory

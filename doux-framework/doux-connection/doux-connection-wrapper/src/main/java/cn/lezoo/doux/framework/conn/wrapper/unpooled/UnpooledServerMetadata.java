@@ -24,7 +24,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Properties;
-import java.util.concurrent.Executors;
 
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_IP;
 import static cn.lezoo.doux.framework.conn.wrapper.constant.ServerMetadataConfig.SERVER_PORT;
@@ -75,14 +74,7 @@ public class UnpooledServerMetadata implements ServerMetadata {
     private Connection doGetConnection(Properties properties) {
         ExtensionLoader<Connection> extensionLoader = ExtensionLoaderFactory.getExtensionLoader(Connection.class);
         Connection connection = extensionLoader.getExtension(properties.getProperty(ConnectionConfig.CONNECTION_DRIVER));
-        configureConnection(connection);
         connection.connect(properties);
         return connection;
-    }
-
-    private void configureConnection(Connection conn) {
-        if (defaultNetworkTimeout != null) {
-            conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), defaultNetworkTimeout);
-        }
     }
 }

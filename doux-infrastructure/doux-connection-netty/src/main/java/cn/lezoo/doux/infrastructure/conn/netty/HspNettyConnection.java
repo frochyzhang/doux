@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,14 +39,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class HspNettyConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(HspNettyConnection.class);
 
-    private final EventLoopGroup loopGroup = new NioEventLoopGroup(16,
+    private static final EventLoopGroup loopGroup = new NioEventLoopGroup(16,
             new NamedThreadFactory("hsp-netty-", false));
 
     private ChannelFuture channelFuture;
 
     public static final ConcurrentHashMap<Long, Promise<String>> PROMISE_MAP = new ConcurrentHashMap<>();
 
-    private final DefaultEventLoop nettyEventLoop = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
+    private static final DefaultEventLoop nettyEventLoop = new DefaultEventLoop(null, new NamedThreadFactory("NETTY_EVENT_LOOP", false));
 
     private int timeout;
 
@@ -59,18 +58,21 @@ public class HspNettyConnection implements Connection {
     private static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
 
     @Override
-    public void setNetworkTimeout(ExecutorService executor, Integer timeout) {
-
-    }
-
-    @Override
     public void close() {
-        loopGroup.shutdownGracefully();
+        Channel channel = channelFuture.channel();
+        if (channel != null && channel.isActive()) {
+            try {
+                channel.close().sync();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.error("关闭连接时中断", e);
+            }
+        }
     }
 
     @Override
     public boolean isClosed() {
-        return loopGroup.isShutdown();
+        return channelFuture.channel() == null || !channelFuture.channel().isActive();
     }
 
     @Override
@@ -108,27 +110,26 @@ public class HspNettyConnection implements Connection {
 
         try {
             bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
-            channelFuture = bootstrap
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-                            if (lengthField != 0) {
-                                // 长度域不为0时才注册长度解析的decoder和encoder
-                                ch.pipeline()
-                                        .addLast(new LengthFieldBasedFrameDecoder(bufferSize, 0, lengthField, 0, 2))
-                                        .addLast(new LengthFieldPrepender(lengthField));
-                            }
-                            ch.pipeline()
-                                    .addLast(new ByteToHexDecoder())
-                                    .addLast(new HexToByteEncoder())
-                                    .addLast(new ChannelInboundHandlerAdapter() {
-                                        @Override
-                                        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                            ctx.fireChannelReadComplete();
-                                        }
-                                    });
-                        }
-                    }).connect(serverIp, serverPort).sync();
+            channelFuture = bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) {
+                    if (lengthField != 0) {
+                        // 长度域不为0时才注册长度解析的decoder和encoder
+                        ch.pipeline()
+                                .addLast(new LengthFieldBasedFrameDecoder(bufferSize, 0, lengthField, 0, 2))
+                                .addLast(new LengthFieldPrepender(lengthField));
+                    }
+                    ch.pipeline()
+                            .addLast(new ByteToHexDecoder())
+                            .addLast(new HexToByteEncoder())
+                            .addLast(new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                    ctx.fireChannelReadComplete();
+                                }
+                            });
+                }
+            }).connect(serverIp, serverPort).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

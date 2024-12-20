@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -117,9 +117,12 @@ public class QueueServerMetadata implements ServerMetadata {
      * 新增连接
      */
     public QueueConnection addConnection() {
-        Connection connection = metadata.getConnection();
-        if (metadata.getDefaultNetworkTimeout() != null) {
-            connection.setNetworkTimeout(Executors.newSingleThreadExecutor(), metadata.getDefaultNetworkTimeout());
+        Connection connection;
+        try {
+            connection = metadata.getConnection();
+        } catch (Exception e) {
+            log.warn("建立连接异常，ip: {}, port: {}", metadata.getServerIp(), metadata.getServerPort(), e);
+            return null;
         }
 
         QueueConnection queueConnection = new QueueConnection(this, connection);
@@ -129,10 +132,10 @@ public class QueueServerMetadata implements ServerMetadata {
         }
         if (pingEnabled && maxCheckoutTime > 0) {
             // variance up to 10% of the heartbeat time
-            // final long variance = ThreadLocalRandom.current().nextLong(maxCheckoutTime / 10);
-            // final long heartbeatTime = maxCheckoutTime - variance;
-            // queueConnection.setKeepaliveTask(houseKeepingExecutorService.scheduleWithFixedDelay(new KeepaliveTask(queueConnection), heartbeatTime, heartbeatTime, TimeUnit.MILLISECONDS));
-            queueConnection.setKeepaliveTask(keepaliveExecutorService.scheduleWithFixedDelay(new KeepaliveTask(queueConnection), maxCheckoutTime, maxCheckoutTime, TimeUnit.MILLISECONDS));
+            final long variance = ThreadLocalRandom.current().nextLong(maxCheckoutTime / 10);
+            final long heartbeatTime = maxCheckoutTime - variance;
+            queueConnection.setKeepaliveTask(keepaliveExecutorService.scheduleWithFixedDelay(
+                    new KeepaliveTask(queueConnection), heartbeatTime, heartbeatTime, TimeUnit.MILLISECONDS));
         }
 
         pushConnection(queueConnection);
@@ -142,7 +145,7 @@ public class QueueServerMetadata implements ServerMetadata {
     /**
      * 回收连接
      *
-     * @param connection
+     * @param connection queueConnection
      */
     public void pushConnection(QueueConnection connection) {
         if (!ConnectionStatus.INACTIVE.equals(connection.getStatus())) {
@@ -155,13 +158,13 @@ public class QueueServerMetadata implements ServerMetadata {
                     connection.setLastUsedTimestamp(System.currentTimeMillis());
                     state.queue.add(connection);
                 } catch (Exception e) {
-                    connection.closeConnection();
                     log.warn("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
+                    connection.closeConnection();
                 }
             } else {
                 // 否则，连接还比较充足，直接将connection关闭
-                connection.closeConnection();
                 log.warn("当前连接数充足: {}，关闭连接：{}", state.queue.size(), connection.hashCode());
+                connection.closeConnection();
             }
         }
     }
@@ -219,7 +222,7 @@ public class QueueServerMetadata implements ServerMetadata {
         @Override
         public void run() {
             int activeCount = getActiveCount();
-            logger.info("触发houseKeeper，当前有效连接数: {}", activeCount);
+            logger.info("{} - 触发houseKeeper，当前有效连接数: {}", name, activeCount);
             final int connectionsToAdd = maxActiveConnections - activeCount;
             if (connectionsToAdd == 0) {
                 logger.info("{} - Fill pool skipped, pool is at sufficient level.", name);
@@ -275,15 +278,15 @@ public class QueueServerMetadata implements ServerMetadata {
         public void run() {
             final QueueConnection connection = addConnection();
             if (connection != null) {
-                logger.debug("{} - Added connection {}", name, connection.getRealConnection());
+                logger.debug("{} - Added connection {}", name, connection.getRealConnection().hashCode());
                 if (loggingPrefix != null) {
                     logPoolState(loggingPrefix);
                 }
                 return;
             }
 
-            // failed to get connection from db, sleep and retry
-            logger.debug("{} - Connection add failed", name);
+            // failed to get connection, sleep and retry
+            logger.warn("{} - Connection add failed", name);
         }
     }
 
@@ -319,22 +322,20 @@ public class QueueServerMetadata implements ServerMetadata {
             String response = connection.getRealConnection().send(pingQueryContent);
             long endTime = System.currentTimeMillis();
             if (StringUtils.isNotBlank(pingVerifyContent)) {
-                // 标准相应结果result不为空时进行ping相应的校验
+                // 标准响应结果result不为空时进行ping相应的校验
                 result = pingVerifyContent.equals(response)
                         && (endTime - startTime) <= getDefaultNetworkTimeout();
             } else {
-                // 标准相应结果为空时，仅需要服务端相应不为空且在目标时间内即可
+                // 标准响应结果为空时，仅需要服务端响应不为空且在目标时间内即可
                 result = ObjectUtils.allNotNull(response)
                         && (endTime - startTime) <= getDefaultNetworkTimeout();
             }
         } catch (Throwable e) {
-            log.warn(
-                    "Execution of ping query '" + pingQueryContent + "' failed: " + e.getMessage());
+            log.warn("Execution of ping query '{}' failed: {}", pingQueryContent, e.getMessage());
         }
         if (!result) {
+            log.warn("Connection {} is BAD, close it now.", connection.getRealConnection().hashCode());
             connection.closeConnection();
-
-            log.warn("Connection " + connection.getRealConnection().hashCode() + " is BAD");
         }
         return result;
     }

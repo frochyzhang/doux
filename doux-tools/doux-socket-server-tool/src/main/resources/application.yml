@@ -8,7 +8,6 @@ cn:
       server:
         bootstrap:
           enabled: true
-          bootstrap: default
         scaffold:
           server-metadata-list:
             - name: socket-test

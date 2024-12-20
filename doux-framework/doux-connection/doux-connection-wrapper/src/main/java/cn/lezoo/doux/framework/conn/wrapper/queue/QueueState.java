@@ -1,5 +1,7 @@
 package cn.lezoo.doux.framework.conn.wrapper.queue;
 
+import lombok.Getter;
+
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
@@ -7,6 +9,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @Author: qipeng
  * @Date: 2022/7/1
  **/
+@Getter
 public class QueueState {
     /**
      * 连接队列元数据
@@ -20,9 +23,5 @@ public class QueueState {
     public QueueState(QueueServerMetadata serverMetadata, int queueSize) {
         this.serverMetadata = serverMetadata;
         this.queue = new LinkedBlockingDeque<>(queueSize);
-    }
-
-    public LinkedBlockingDeque<QueueConnection> getQueue() {
-        return queue;
     }
 }
