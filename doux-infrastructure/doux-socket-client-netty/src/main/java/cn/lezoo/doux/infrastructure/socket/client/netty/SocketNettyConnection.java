@@ -115,7 +115,7 @@ public class SocketNettyConnection implements Connection {
 
                                 @Override
                                 public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-                                    ctx.channel().close();
+                                    ctx.fireChannelReadComplete();
                                 }
 
                                 @Override
