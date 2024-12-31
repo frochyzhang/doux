@@ -121,7 +121,7 @@ public class QueueServerMetadata implements ServerMetadata {
         try {
             connection = metadata.getConnection();
         } catch (Exception e) {
-            log.warn("建立连接异常，ip: {}, port: {}", metadata.getServerIp(), metadata.getServerPort(), e);
+            log.error("建立连接异常，ip: {}, port: {}", metadata.getServerIp(), metadata.getServerPort(), e);
             return null;
         }
 
@@ -286,7 +286,7 @@ public class QueueServerMetadata implements ServerMetadata {
             }
 
             // failed to get connection, sleep and retry
-            logger.warn("{} - Connection add failed", name);
+            logger.error("{} - Connection add failed", name);
         }
     }
 
