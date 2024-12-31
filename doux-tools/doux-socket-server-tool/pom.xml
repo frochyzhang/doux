@@ -22,6 +22,10 @@
             <groupId>cn.lezoo.doux</groupId>
             <artifactId>doux-socket-server-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.lezoo.doux</groupId>
+            <artifactId>doux-socket-server-mina</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

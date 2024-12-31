@@ -10,6 +10,16 @@ cn:
           enabled: true
         scaffold:
           server-metadata-list:
-            - name: socket-test
-              port: 8832
-              handlerClassName: cn.lezoo.doux.socket.server.tool.handler.SocketServerHandler
+            - name: abiip-server
+              port: 10066
+              handler-class-name: cn.lezoo.doux.socket.server.tool.handler.AbiipMinaServerHandler
+              server-driver: mina
+#            - name: short-msg-server
+#              port: 9001
+#              encode-msg-length: 6
+#              decode-msg-length: 6
+#              handler-class-name: com.allinfinance.dev.socket.server.tool.handler.ShortMsgServerHandler
+#              server-driver: mina
+#            - name: abiip-server
+#              port: 10066
+#              handler-class-name: com.allinfinance.dev.socket.server.tool.handler.AbiipNettyServerHandler

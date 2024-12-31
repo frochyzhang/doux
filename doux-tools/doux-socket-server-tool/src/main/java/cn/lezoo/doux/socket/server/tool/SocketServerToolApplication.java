@@ -11,14 +11,8 @@ import java.util.concurrent.TimeUnit;
  */
 @SpringBootApplication
 public class SocketServerToolApplication {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SpringApplication.run(SocketServerToolApplication.class, args);
-        while (true) {
-            try {
-                TimeUnit.HOURS.sleep(1L);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        TimeUnit.HOURS.sleep(1L);
     }
 }
