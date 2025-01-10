@@ -1,4 +1,4 @@
 # name                                                         # order
-cn.lezoo.doux.rpc.scaffold.TraceIdProviderFilter             # -19900
-cn.lezoo.doux.rpc.scaffold.TraceIdConsumerFilter             # -19900
-cn.lezoo.doux.rpc.scaffold.ProviderAdviceFilter             # -19800
+cn.lezoo.doux.rpc.scaffold.filter.TraceIdProviderFilter             # -19900
+cn.lezoo.doux.rpc.scaffold.filter.TraceIdConsumerFilter             # -19900
+cn.lezoo.doux.rpc.scaffold.filter.ProviderAdviceFilter             # -19800

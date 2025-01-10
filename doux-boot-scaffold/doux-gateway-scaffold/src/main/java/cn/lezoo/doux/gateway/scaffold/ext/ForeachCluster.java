@@ -1,4 +1,4 @@
-package cn.lezoo.doux.rpc.scaffold.ext;
+package cn.lezoo.doux.gateway.scaffold.ext;
 
 import com.alipay.sofa.rpc.bootstrap.ConsumerBootstrap;
 import com.alipay.sofa.rpc.client.AbstractCluster;
