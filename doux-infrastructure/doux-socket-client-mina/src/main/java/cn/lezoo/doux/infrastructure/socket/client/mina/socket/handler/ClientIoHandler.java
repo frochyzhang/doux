@@ -15,14 +15,7 @@ import java.net.InetSocketAddress;
  * @date 2017/1/5
  */
 public class ClientIoHandler extends IoHandlerAdapter {
-
     private static final Logger logger = LoggerFactory.getLogger(ClientIoHandler.class);
-    private final boolean checkMac;
-
-    public ClientIoHandler(boolean checkMac) {
-        super();
-        this.checkMac = checkMac;
-    }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
@@ -63,12 +56,5 @@ public class ClientIoHandler extends IoHandlerAdapter {
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         // TODO Auto-generated method stub
-    }
-
-    private boolean checkMac(Object pkg) {
-        if (!checkMac || pkg == null) {
-            return true;
-        }
-        return true;
     }
 }

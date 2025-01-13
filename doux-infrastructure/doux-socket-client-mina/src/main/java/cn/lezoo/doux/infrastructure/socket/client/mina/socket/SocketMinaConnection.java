@@ -4,12 +4,13 @@ import cn.lezoo.doux.framework.extension.annotation.Extension;
 import cn.lezoo.doux.framework.socket.client.driver.Connection;
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.DemuxingMessageDecoder;
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.DemuxingMessageEncoder;
+import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.Message8583Decoder;
+import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.Message8583Encoder;
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.MessageCodecFactory;
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.handler.ClientIoHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.ReadFuture;
-import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -64,9 +65,6 @@ public class SocketMinaConnection implements Connection {
                 session.closeNow();
                 session.getService().dispose();
             }
-            // if (clientConnector != null) {
-            //     clientConnector.dispose();
-            // }
         }
         return resp;
     }
@@ -84,13 +82,24 @@ public class SocketMinaConnection implements Connection {
         String msgEncode = properties.getProperty("msgEncode");
         String encoderClassName = properties.getProperty("encoderClassName");
         String decoderClassName = properties.getProperty("decoderClassName");
+        String soLingerEnable = properties.getProperty("soLingerEnable");
         timeout = Integer.parseInt(properties.getProperty("timeout"));
-        boolean checkMac = Boolean.parseBoolean(properties.getProperty("checkMac"));
-        IoConnector connector = null;
+        String clientAppName = properties.getProperty("clientAppName");
+        NioSocketConnector connector;
         try {
             connector = new NioSocketConnector();
             connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);
-            if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
+            if (Boolean.parseBoolean(soLingerEnable)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("开启SO_LINGER");
+                }
+                connector.getSessionConfig().setSoLinger(0);
+            }
+            if (StringUtils.isNotEmpty(clientAppName) && clientAppName.contains("8583")) {
+                connector.getFilterChain().addLast(
+                        "8583MsgCodec",
+                        new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
+            } else if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
                 try {
                     MessageEncoder messageEncoder = (MessageEncoder) Class.forName(encoderClassName)
                             .getConstructor(Integer.class, String.class)
@@ -117,7 +126,7 @@ public class SocketMinaConnection implements Connection {
                         )
                 );
             }
-            connector.setHandler(new ClientIoHandler(checkMac));
+            connector.setHandler(new ClientIoHandler());
             connector.getSessionConfig().setUseReadOperation(true);
             connector.setConnectTimeoutMillis(timeout);
             ConnectFuture future = connector.connect(new InetSocketAddress(serverIp, serverPort));

@@ -89,7 +89,7 @@ public class SocketNettyConnection implements Connection {
                     .channel(NioSocketChannel.class)
 //                    .option(ChannelOption.SO_REUSEADDR, true)  //快速复用端口，默认关闭
                     .option(ChannelOption.TCP_NODELAY, true);
-            if ("true".equals(soLingerEnable)) {
+            if (Boolean.parseBoolean(soLingerEnable)) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("开启SO_LINGER");
                 }
