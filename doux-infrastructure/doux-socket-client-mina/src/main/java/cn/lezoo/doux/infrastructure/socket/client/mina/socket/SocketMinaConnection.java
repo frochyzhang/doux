@@ -9,13 +9,16 @@ import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.Message8583E
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.codec.MessageCodecFactory;
 import cn.lezoo.doux.infrastructure.socket.client.mina.socket.handler.ClientIoHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.mina.core.filterchain.IoFilterChain;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.ReadFuture;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.core.session.IoSessionConfig;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.demux.MessageDecoder;
 import org.apache.mina.filter.codec.demux.MessageEncoder;
+import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +37,13 @@ public class SocketMinaConnection implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(SocketMinaConnection.class);
 
     private static final ThreadLocal<ConnectFuture> CONNECT_FUTURE = new ThreadLocal<>();
+    private static final NioSocketConnector CONNECTOR = new NioSocketConnector(16);
+    private static final String TIMEOUT_KEY = "timeout";
 
-    private int timeout;
+    static {
+        CONNECTOR.setHandler(new ClientIoHandler());
+        CONNECTOR.getSessionConfig().setUseReadOperation(true);
+    }
 
     /**
      * 客户端发送请求
@@ -49,6 +57,7 @@ public class SocketMinaConnection implements Connection {
         CONNECT_FUTURE.remove();
         String resp;
         try {
+            Integer timeout = (Integer) session.getAttribute(TIMEOUT_KEY, 3);
             session.write(msg);
             resp = null;
             ReadFuture readFuture = session.read();
@@ -63,7 +72,6 @@ public class SocketMinaConnection implements Connection {
         } finally {
             if (session != null) {
                 session.closeNow();
-                session.getService().dispose();
             }
         }
         return resp;
@@ -83,60 +91,60 @@ public class SocketMinaConnection implements Connection {
         String encoderClassName = properties.getProperty("encoderClassName");
         String decoderClassName = properties.getProperty("decoderClassName");
         String soLingerEnable = properties.getProperty("soLingerEnable");
-        timeout = Integer.parseInt(properties.getProperty("timeout"));
+        int timeout = Integer.parseInt(properties.getProperty("timeout"));
         String clientAppName = properties.getProperty("clientAppName");
-        NioSocketConnector connector;
         try {
-            connector = new NioSocketConnector();
-            connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);
-            if (Boolean.parseBoolean(soLingerEnable)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("开启SO_LINGER");
+            ConnectFuture connectFuture = CONNECTOR.connect(new InetSocketAddress(serverIp, serverPort), (session, future) -> {
+                IoSessionConfig sessionConfig = session.getConfig();
+                sessionConfig.setIdleTime(IdleStatus.BOTH_IDLE, timeout / 1000);
+                if (Boolean.parseBoolean(soLingerEnable) && sessionConfig instanceof SocketSessionConfig) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("开启SO_LINGER");
+                    }
+                    ((SocketSessionConfig) sessionConfig).setSoLinger(0);
                 }
-                connector.getSessionConfig().setSoLinger(0);
-            }
-            if (StringUtils.isNotEmpty(clientAppName) && clientAppName.contains("8583")) {
-                connector.getFilterChain().addLast(
-                        "8583MsgCodec",
-                        new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder())));
-            } else if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
-                try {
-                    MessageEncoder messageEncoder = (MessageEncoder) Class.forName(encoderClassName)
-                            .getConstructor(Integer.class, String.class)
-                            .newInstance(msgLengthSize, msgEncode);
-                    MessageDecoder messageDecoder = (MessageDecoder) Class.forName(decoderClassName)
-                            .getConstructor(Integer.class, String.class)
-                            .newInstance(msgLengthSize, msgEncode);
-                    connector.getFilterChain().addLast(
-                            "codec",
-                            new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder))
+                IoFilterChain filterChain = session.getFilterChain();
+                if (StringUtils.isNotEmpty(clientAppName) && clientAppName.contains("8583")) {
+                    filterChain.addLast(
+                            "8583MsgCodec",
+                            new ProtocolCodecFilter(new MessageCodecFactory(new Message8583Decoder(), new Message8583Encoder()))
                     );
-                } catch (Exception e) {
-                    logger.error("初始化coder失败，encoder: {}, decoder: {}", encoderClassName, decoderClassName, e);
-                    throw new RuntimeException("初始化coder失败，encoder: " + encoderClassName + ", decoder: " + decoderClassName);
+                } else if (StringUtils.isNotEmpty(encoderClassName) && StringUtils.isNotEmpty(decoderClassName)) {
+                    try {
+                        MessageEncoder messageEncoder = (MessageEncoder) Class.forName(encoderClassName)
+                                .getConstructor(Integer.class, String.class)
+                                .newInstance(msgLengthSize, msgEncode);
+                        MessageDecoder messageDecoder = (MessageDecoder) Class.forName(decoderClassName)
+                                .getConstructor(Integer.class, String.class)
+                                .newInstance(msgLengthSize, msgEncode);
+                        filterChain.addLast(
+                                "codec",
+                                new ProtocolCodecFilter(new MessageCodecFactory(messageDecoder, messageEncoder))
+                        );
+                    } catch (Exception e) {
+                        logger.error("初始化coder失败，encoder: {}, decoder: {}", encoderClassName, decoderClassName, e);
+                        throw new RuntimeException("初始化coder失败，encoder: " + encoderClassName + ", decoder: " + decoderClassName);
+                    }
+                } else {
+                    filterChain.addLast(
+                            "codec",
+                            new ProtocolCodecFilter(
+                                    new MessageCodecFactory(
+                                            new DemuxingMessageDecoder(msgLengthSize, msgEncode),
+                                            new DemuxingMessageEncoder(msgLengthSize, msgEncode)
+                                    )
+                            )
+                    );
                 }
-            } else {
-                connector.getFilterChain().addLast(
-                        "codec",
-                        new ProtocolCodecFilter(
-                                new MessageCodecFactory(
-                                        new DemuxingMessageDecoder(msgLengthSize, msgEncode),
-                                        new DemuxingMessageEncoder(msgLengthSize, msgEncode)
-                                )
-                        )
-                );
-            }
-            connector.setHandler(new ClientIoHandler());
-            connector.getSessionConfig().setUseReadOperation(true);
-            connector.setConnectTimeoutMillis(timeout);
-            ConnectFuture future = connector.connect(new InetSocketAddress(serverIp, serverPort));
-            future.awaitUninterruptibly();
-            if (!future.isConnected()) {
+                session.setAttribute(TIMEOUT_KEY, timeout);
+            });
+            connectFuture.awaitUninterruptibly(timeout);
+            if (!connectFuture.isConnected()) {
                 logger.error("与server建立socket连接失败,ip:{},port:{}", serverIp, serverPort);
-                connector.dispose();
+                connectFuture.getSession().closeNow();
                 throw new RuntimeException("与server建立socket连接失败");
             }
-            CONNECT_FUTURE.set(future);
+            CONNECT_FUTURE.set(connectFuture);
         } catch (Exception e) {
             logger.error("与server建立连接异常！", e);
         }

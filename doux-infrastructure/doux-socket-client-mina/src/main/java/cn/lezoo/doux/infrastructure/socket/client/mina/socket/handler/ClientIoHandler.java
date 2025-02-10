@@ -19,42 +19,34 @@ public class ClientIoHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        logger.info("连接已创建@" + session);
+        logger.info("连接已创建@{}", session);
     }
 
     @Override
     public void sessionOpened(IoSession session) throws Exception {
-        String clientIP = ((InetSocketAddress) session.getRemoteAddress())
-                .getAddress().getHostAddress();
-        logger.info("连接已打开@" + session + "，远端IP：" + clientIP);
+        logger.info("连接已打开@{}", session);
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        logger.info("连接关闭@" + session);
+        logger.info("连接关闭@{}", session);
     }
 
     @Override
-    public void sessionIdle(IoSession session, IdleStatus status)
-            throws Exception {
-        logger.info("超时关闭连接@" + session);
+    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+        logger.info("超时关闭连接@{}", session);
         session.closeNow();
     }
 
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause)
-            throws Exception {
-        logger.error("连接异常@" + session, cause);
+    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+        logger.error("连接异常@{}", session, cause);
     }
 
     @Override
-    public void messageReceived(IoSession session, Object message)
-            throws Exception {
-        logger.debug("报文格式的应答信息：" + message);
-    }
-
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        // TODO Auto-generated method stub
+    public void messageReceived(IoSession session, Object message) throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("报文格式的应答信息：{}", message);
+        }
     }
 }
